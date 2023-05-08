@@ -1,0 +1,10 @@
+name: py38
+channels:
+  - fair-robotics
+  - anaconda
+  - aihabitat
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - polymetis

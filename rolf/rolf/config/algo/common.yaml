@@ -1,0 +1,40 @@
+name: null
+
+# Training
+max_global_step: 1000000
+warm_up_steps: 0
+train_every: 0
+log_every: 1000
+evaluate_every: 100000
+ckpt_every: 200000
+reward_scale: 1
+
+batch_size: 128
+
+# Observation norm
+ob_norm: true
+max_ob_norm_step: 100000000
+clip_obs: inf
+clip_range: 10
+
+# Actor
+policy_mlp_dim: [256, 256]
+policy_activation: relu
+tanh_policy: true
+gaussian_policy: true
+actor_lr: 3e-4
+actor_weight_decay: 0
+min_std: 1e-10
+max_std: 2
+use_log_std_bias: true
+target_init_std: 0.5
+
+# Encoder
+encoder_type: mlp
+encoder_image_size: [224, 224]
+encoder_conv_dim: 32
+encoder_kernel_size: [3, 3, 3, 3]
+encoder_stride: [2, 1, 1, 1]
+encoder_conv_output_dim: 50
+encoder_soft_update_weight: 0.95
+asym_ac: false

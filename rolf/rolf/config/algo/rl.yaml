@@ -1,0 +1,17 @@
+defaults:
+  - common
+  - _self_
+
+# RL parameters
+rl_discount: 0.99
+warm_up_steps: 0
+train_every: 2048
+reward_scale: 1
+
+# Actor-Critic
+critic_mlp_dim: [256, 256]
+critic_ensemble: 1
+critic_lr: 3e-4
+critic_soft_update_weight: 0.995
+
+absorbing_state: false

@@ -1,0 +1,9 @@
+defaults:
+  - ddpg
+  - _self_
+
+name: td3
+
+critic_ensemble: 2
+policy_noise: 0.2
+policy_noise_clip: 0.5

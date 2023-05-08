@@ -1,0 +1,37 @@
+# basic
+requests
+numpy
+scipy
+absl-py
+ipdb
+
+# configuration
+hydra-core
+
+# logging
+wandb
+colorlog
+tqdm
+h5py
+slack_sdk
+
+
+# video
+opencv-python
+imageio
+imageio-ffmpeg
+moviepy
+
+# multi-processing
+mpi4py
+
+# environments
+gym
+mujoco-py
+git+git://github.com/deepmind/dm_control.git
+git+git://github.com/1nadequacy/dmc2gym.git
+
+# DL framework
+tensorflow
+#torch
+#torchvision

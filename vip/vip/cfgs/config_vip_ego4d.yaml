@@ -1,0 +1,38 @@
+defaults:
+  - _self_
+  - override hydra/launcher:  local
+  - override hydra/output:  local
+
+# snapshot
+save_snapshot: false
+load_snap: ""
+
+# replay buffer
+num_workers: 10
+batch_size: 32 
+train_steps: 2000000
+eval_freq: 20000
+
+# misc
+seed: 1
+device: cuda
+
+# experiment
+experiment: train_vip
+wandbproject: 
+wandbuser: 
+
+# data
+dataset:
+datapath: 
+doaug: "rctraj"
+
+agent:
+  _target_: vip.VIP
+  device: ${device}
+  lr: 1e-4
+  hidden_dim: 1024
+  size: 50
+  l2weight: 0.001
+  l1weight: 0.001
+  num_negatives: 3

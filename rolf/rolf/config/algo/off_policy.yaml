@@ -1,0 +1,13 @@
+defaults:
+  - rl
+  - _self_
+
+buffer_size: 1000000
+warm_up_steps: 1000
+train_every: 1
+
+ob_norm: false
+
+evaluate_every: 5000
+ckpt_every: 10000
+log_every: 500

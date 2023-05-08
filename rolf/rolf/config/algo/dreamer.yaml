@@ -1,0 +1,64 @@
+defaults:
+  - common
+  - _self_
+
+name: dreamer
+
+# Training
+max_global_step: 2000000
+warm_up_steps: 2500
+train_every: 2000 # changed from 500; maze needs longer rollout (800+) for reward signal
+train_steps: 100
+log_every: 500
+evaluate_every: 10000
+ckpt_every: 50000
+
+batch_size: 50
+batch_length: 50  # RNN sequence length
+model_lr: 6e-4
+critic_lr: 8e-5
+actor_lr: 8e-5
+grad_clip: 100.0
+dataset_balance: false
+rl_discount: 0.99
+gae_lambda: 0.95
+horizon: 15
+ob_norm: false
+
+buffer_size: 1000000
+reward_scale: 1.0
+
+expl: additive_gaussian
+expl_noise: 0.3
+expl_decay: 0.0
+expl_min: 0.0
+
+# Model
+deter_dim: 200
+stoch_dim: 30
+num_units: 400
+dense_act: elu
+pcont: false
+free_nats: 3.0
+kl_scale: 1.0
+pcont_scale: 10.0
+weight_decay: 0.0
+
+encoder:
+  image_shape: [64, 64, 3]
+  kernel_size: [4, 4, 4, 4]
+  stride: [2, 2, 2, 2]
+  conv_dim: [32, 64, 128, 256]
+  cnn_act: relu
+  embed_dim: 256
+  hidden_dims: [256, 256]
+  dense_act: elu
+
+decoder:
+  image_shape: [64, 64, 3]
+  kernel_size: [5, 5, 6, 6]
+  stride: [2, 2, 2, 2]
+  conv_dim: [1024, 128, 64, 32]
+  cnn_act: relu
+  hidden_dims: [256, 256]
+  dense_act: elu
