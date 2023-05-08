@@ -1,0 +1,488 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Teleoperation using Oculus/Keyboard &#8212; FurnitureBench</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/minipres.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/custom_toc_highlight.js"></script>
+    <script src="../_static/scripts/add_br_to_sections.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FurnitureSim" href="furniture_sim.html" />
+    <link rel="prev" title="Dataset" href="../getting_started/dataset.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">FurnitureBench</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started/furniturebench_overview.html">
+   FurnitureBench Overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started/installation_guide.html">
+   Installation Guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started/installation_guide_furniture_sim.html">
+   Installation Guide (FurnitureSim)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started/dataset.html">
+   Dataset
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Teleoperation using Oculus/Keyboard
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="furniture_sim.html">
+   FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tools_and_scripts.html">
+   Tools and Scripts
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  References
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/code_organization.html">
+   Code Organization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/development_roadmap.html">
+   Development Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/additional_information.html">
+   Additional Information
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/clvrai/furniture-bench"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/tutorials/teleop_oculus_keyboard.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#setup-oculus-quest-2">
+   Setup Oculus Quest 2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#run-client-with-docker-volume">
+   Run Client with Docker Volume
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Teleoperation using Oculus/Keyboard</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#setup-oculus-quest-2">
+   Setup Oculus Quest 2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#run-client-with-docker-volume">
+   Run Client with Docker Volume
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section id="teleoperation-using-oculus-keyboard">
+<h1>Teleoperation using Oculus/Keyboard<a class="headerlink" href="#teleoperation-using-oculus-keyboard" title="Permalink to this headline">#</a></h1>
+<p>Our system supports Oculus Quest 2 controller and keyboard for demonstration collections.
+After setting up the environment (workspace, cameras, Client, Server), you are ready to collect the data.</p>
+<a class="reference internal image-reference" href="../_images/teleoperation.jpg"><img alt="Teleoperation" class="align-center" src="../_images/teleoperation.jpg" style="width: 70%;" /></a>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When you use Docker, make sure to mount a storage to save your data (<a class="reference internal" href="../getting_started/installation_guide.html#run-client"><span class="std std-ref">Run Client</span></a>). Otherwise, the collected data will be deleted once you close the docker container.</p>
+</div>
+<section id="setup-oculus-quest-2">
+<h2>Setup Oculus Quest 2<a class="headerlink" href="#setup-oculus-quest-2" title="Permalink to this headline">#</a></h2>
+<p>Setup the Oculus Quest 2 when you run it for the first time.</p>
+<ol class="arabic simple">
+<li><p>Turn on the Oculus Quest 2.</p></li>
+<li><p>Download the Oculus app (Meta Quest) on your phone.</p></li>
+<li><p>Create an Oculus account.</p></li>
+<li><p>Pair Your Headset</p></li>
+<li><p>Go to headset settings and select “Developer Mode”.</p></li>
+<li><p>Wear the headset and go to “Settings &gt; System &gt; Power” and set “Auto Sleep Headset to 4 hours”</p></li>
+<li><p>Go to “settings &gt; System &gt; Developer” and disable “Guardian”</p></li>
+<li><p>Connect the Oculus Quest 2 to your computer with USB-A to USB-C cable.</p></li>
+</ol>
+</section>
+<section id="run-client-with-docker-volume">
+<h2>Run Client with Docker Volume<a class="headerlink" href="#run-client-with-docker-volume" title="Permalink to this headline">#</a></h2>
+<p>For the run client and run server, please refer to <a class="reference internal" href="../getting_started/installation_guide.html#run-client"><span class="std std-ref">Run Client</span></a> and <a class="reference internal" href="../getting_started/installation_guide.html#run-server"><span class="std std-ref">Run Server</span></a>.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># The default control device is Oculus + keyboard.</span>
+python<span class="w"> </span>furniture_bench/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span><span class="o">{</span>furniture<span class="o">}</span><span class="w"> </span>--out-data-path<span class="w"> </span><span class="o">{</span>/path/to/save/data<span class="o">}</span>
+
+<span class="c1"># only use keyboard</span>
+python<span class="w"> </span>furniture_env/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span><span class="o">{</span>furniture<span class="o">}</span><span class="w"> </span>--device<span class="w"> </span>keyboard
+</pre></div>
+</div>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When you first run the scripts, prompt in Oculus Quest 2 will ask you to allow the connection.
+Wear the headset and press the “Allow” button.</p>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>The command above will launch GUI initialization tool. Place furniture parts in reset positions as guided by GUI tool.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/initialization_tool.gif"><img alt="GUI Tool" class="align-center" src="../_images/initialization_tool.gif" style="width: 70%;" /></a>
+<ol class="arabic simple" start="5">
+<li><p>After completing the trajectory, press “A” to save it as successful. If the trajectory fails to achieve the task, press “B.” Both “A” and “B” save the trajectory, but if “B” is pressed, the metadata will be marked as “failed.”</p></li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<ul class="simple">
+<li><p>The data will be saved at {path/to/save/data/&lt;furniture_name&gt;/&lt;current_timestamp&gt;} directory.</p></li>
+<li><p>The data directory contains pkl-serialized Python dictionary, mp4, and png.</p></li>
+</ul>
+<p>For example,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">51</span>
+  <span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mf">51.</span><span class="n">pkl</span>                  <span class="c1"># Demonstration data         (224x224 images, actions, rewards, etc.)</span>
+  <span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">51</span><span class="n">_color_image1</span><span class="o">.</span><span class="n">mp4</span>     <span class="c1"># Wrist camera RGB images    (1280x720)</span>
+  <span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">51</span><span class="n">_color_image2</span><span class="o">.</span><span class="n">mp4</span>     <span class="c1"># Front camera RGB images    (1280x720)</span>
+  <span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">51</span><span class="n">_color_image3</span><span class="o">.</span><span class="n">mp4</span>     <span class="c1"># Rear camera RGB images     (1280x720)</span>
+  <span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">51</span><span class="n">_depth_image1</span>         <span class="c1"># Wrist camera depth images  (1280x720)</span>
+  <span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">51</span><span class="n">_depth_image2</span>         <span class="c1"># Front camera depth images  (1280x720)</span>
+  <span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">51</span><span class="n">_depth_image3</span>         <span class="c1"># Rear camera depth images   (1280x720)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>mp4 files contains original resolution RGB images, and png files contains depth images from all three cameras.</p></li>
+<li><p>The structure of the .pkl files is described in <a class="reference internal" href="../getting_started/dataset.html#demonstration-data-format"><span class="std std-ref">Demonstration Data Format</span></a></p></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../getting_started/dataset.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Dataset</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="furniture_sim.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">FurnitureSim</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By CLVR @ KAIST<br/>
+  
+      &copy; Copyright 2023.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

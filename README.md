@@ -2,7 +2,7 @@
 
 [**Paper**](#)
 | [**Website**](https://clvrai.github.io/furniture-bench/)
-| [**Documentation**](https://clvrai.github.io/furniture-bench/website/build/html/index.html)
+| [**Documentation**](https://clvrai.github.io/furniture-bench/docs/index.html)
 
 ![FurnitureBench](docs/readme_img/banner.jpg)
 

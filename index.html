@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FurnitureBench: Real-World Furniture Assembly Benchmark</title>
+
+    <meta charset="UTF-8">
+    <meta property="og:title" content="🛋️ FurnitureBench">
+    <meta property="og:description" content="FurnitureBench: Reproducible Real-World Benchmark for Long-Horizon Complex Manipulation.">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="https://minoring.github.io/furniture-benchmark/thumbnail.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:type" content="website">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100, 100i,300,400,500,700,900" rel="stylesheet">
+    <link rel="icon" type="image/png" href="website_img/icons/furniture-icon.png">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="theme.css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- Data table -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZPW9DVMJEV"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZPW9DVMJEV');
+    </script>
+</head>
+
+
+<body>
+    <!-- Header -->
+    <header class="hd-container w3-container content-center">
+        <div class="w3-center bg-text" style="width:85%; max-width:800px; margin-top:10px; margin-bottom:10px">
+            <div class="w3-container w3-cell-middle">
+                <div class="title">FurnitureBench: Real-World Furniture Assembly Benchmark</div>
+
+                <!-- Author -->
+                <div class="authorship-container">
+                    <ul class="horizontal-list">
+                        <li><a href="https://minoring.github.io" target="_blank"><i class="far fa-user"></i> Minho Heo</a><sup style="color:white;">*1</sup></li>
+                        <li><a href="https://youngwoon.github.io" target="_blank"><i class="far fa-user"></i> Youngwoon Lee</a><sup style="color:white;">*2</sup></li>
+                        <li><a href=""><i class="far fa-user"></i> Doohyun Lee</a><sup style="color:white;">1</sup></li>
+                        <li><a href="https://clvrai.com/web_lim/" target="_blank"><i class="far fa-user"></i> Joseph J. Lim</a><sup style="color:white;">1</sup></li>
+                    </ul>
+                    <ul class="horizontal-list">
+                        <li><a href="https://clvrai.com/" target="_blank"><i class="fas fa-university"></i> CLVR Lab, KAIST<sup style="color:white;">1</sup></a></li>
+                        <li><i class="fas fa-university"></i> UC Berkeley<sup style="color:white;">2</sup></li>
+                    </ul>
+                </div>
+
+                <!-- Title Intro -->
+                <div class="hide-narrow excerpt" style="text-align: justify;">
+                    FurnitureBench is the <b>real-world furniture assembly benchmark</b>, which aims at providing a reproducible and easy-to-use platform for long-horizon complex robotic manipulation. Furniture assembly poses integral robotic manipulation challenges that autonomous robots must be capable of: long-horizon planning, dexterous control, and robust visual perception. By presenting a well-defined suite of tasks with a lower barrier of entry (large-scale human teleoperation data and standardized configurations), we encourage the research community to push the boundaries of the current robotic system, reaching the level of automating everyday activities.
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- Main Body -->
+    <div class="main-body">
+            <!-- Links -->
+            <div class="w3-content" style="max-width:800px">
+                <div class="link-container">
+                    <ul class="horizontal-list">
+                        <li><button class="w3-button w3-card-4 w3-light-grey w3-round-large" style="padding-left: 8px; padding-right: 8px;"><i class="fas fa-file-alt"></i><a href="" target="_blank"> Paper </a></button></li>
+                        <li><button class="w3-button w3-card-4 w3-light-grey w3-round-large" style="padding-left: 8px; padding-right: 8px;"><i class="fas fa-code"></i><a href="https://github.com/clvrai/furniture-bench" target="_blank"> Code </a></button></li>
+                        <li><button class="w3-button w3-card-4 w3-light-grey w3-round-large" style="padding-left: 8px; padding-right: 8px;"><i class="fas fa-database"></i><a href="docs/getting_started/dataset.html" target="_blank"> Dataset </a></button></li>
+                        <li><button class="w3-button w3-card-4 w3-light-grey w3-round-large" style="padding-left: 8px; padding-right: 8px;"><i class="fas fa-database"></i><a href="docs/index.html" target="_blank"> Docs </a></button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="container1" style="padding-top:60px;">
+                <div class="w3-container w3-center mdcontainer">
+                    <!-- <div class="w3-center " style="width:80%; max-width:800px; margin-top: 10px; margin-bottom: 10px"></div> -->
+                    <div class="w3-center w3-quarter"/>
+                        <div class="show-narrow excerpt authorship-container bg-text" style="text-align: justify;  width: 100%; padding-left: 10px; padding-right: 10px;">
+                            FurnitureBench is the <b>real-world furniture assembly benchmark</b>, which aims at providing a reproducible and easy-to-use platform for long-horizon complex robotic manipulation. Furniture assembly poses integral robotic manipulation challenges that autonomous robots must be capable of: long-horizon planning, dexterous control, and robust visual perception. By presenting a well-defined suite of tasks with a lower barrier of entry (large-scale human teleoperation data and standardized configurations), we encourage the research community to push the boundaries of the current robotic system, reaching the level of automating everyday activities.
+                        </div>
+                    </div>
+
+                    <div class="w3-center w3-quarter"/>
+                        <img width="25%" src="./website_img/icons/chair-solid.svg"/>
+                        <h4 class="icon-header">Furniture Assembly</h4>
+                        <p class="icon-desc">Long-horizon complex manipulation tasks</p>
+                    </div>
+                    <div class="w3-center w3-quarter"/>
+                        <img width="25%" src="./website_img/icons/lab-svgrepo-com.svg"/>
+                        <h4 class="icon-header" style="overflow-wrap: break-word;">Reproducible</h4>
+                        <p class="icon-desc">Standardized environment setup</p>
+                    </div>
+                    <div class="w3-center w3-quarter"/>
+                        <img width="25%" src="./website_img/icons/cake-4-svgrepo-com.svg"/>
+                        <h4 class="icon-header">Easy to Use</h4>
+                        <p class="icon-desc">Python-based robot control stack / Simulator</p>
+                    </div>
+                    <div class="w3-center w3-quarter"/>
+                        <img width="25%" src="./website_img/icons/data-center-data-warehouse-svgrepo-com.svg"/>
+                        <h4 class="icon-header">Large-Scale Dataset</h4>
+                        <p class="icon-desc">200+ hours of 5000+ teleoperation trajectories</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teaser video -->
+            <div class="container2">
+                <div class="mdcontainer">
+                    <div class="youtube-container">
+                        <iframe class="youtube" src="https://www.youtube.com/embed/qfJEivnHVuE" title="Teaser video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Long-horizon and Complex Manipulation Tasks -->
+            <div class="container1">
+                <div class="mdcontainer">
+                    <h2>Furniture Assembly: Long-horizon Complex Manipulation Task</h2>
+                    <div style="text-align: justify;">
+                        <p>
+                        Reinforcement learning (RL), imitation learning
+                        (IL), and task and motion planning (TAMP) have demonstrated
+                        impressive performance across various robotic manipulation tasks.
+                        However, these approaches have been limited to learning simple
+                        behaviors in current real-world manipulation benchmarks, such
+                        as pushing or pick-and-place. To enable more complex, long-horizon behaviors of an autonomous robot, we propose to focus
+                        on <b>real-world furniture assembly</b>, a complex, long-horizon robot
+                        manipulation task that requires addressing many current robotic
+                        manipulation challenges to solve.
+                        </p>
+
+                    </div>
+                    <div id="myCarousel" class="carousel slide responsivevideo" data-ride="carousel" data-interval="false" style="margin: auto;">
+                        <ol class="carousel-indicators" style=" height: 15px;">
+                            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                            <li data-target="#myCarousel" data-slide-to="1"></li>
+                            <li data-target="#myCarousel" data-slide-to="2"></li>
+                            <li data-target="#myCarousel" data-slide-to="3"></li>
+                            <li data-target="#myCarousel" data-slide-to="4"></li>
+                            <li data-target="#myCarousel" data-slide-to="5"></li>
+                            <li data-target="#myCarousel" data-slide-to="6"></li>
+                            <li data-target="#myCarousel" data-slide-to="7"></li>
+                        </ol>
+
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <video autoplay loop muted playsinline controls width="100%">
+                                    <source src="website_img/assembly/chair_assembly_3x.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            <div class="carousel-item">
+                                <video autoplay loop muted playsinline controls width="100%">
+                                    <source src="website_img/assembly/square_table_assembly_3x.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            <div class="carousel-item">
+                                <video autoplay loop muted playsinline controls width="100%">
+                                    <source src="website_img/assembly/drawer_assembly_3x.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            <div class="carousel-item">
+                                <video autoplay loop muted playsinline controls width="100%">
+                                    <source src="website_img/assembly/round_table_assembly_3x.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            <div class="carousel-item">
+                                <video autoplay loop muted playsinline controls width="100%">
+                                    <source src="website_img/assembly/cabinet_assembly_3x.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            <div class="carousel-item">
+                                <video autoplay loop muted playsinline controls width="100%">
+                                    <source src="website_img/assembly/stool_assembly_3x.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            <div class="carousel-item">
+                                <video autoplay loop muted playsinline controls width="100%">
+                                    <source src="website_img/assembly/lamp_assembly_3x.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            <div class="carousel-item">
+                                <video autoplay loop muted playsinline controls width="100%">
+                                    <source src="website_img/assembly/desk_assembly_3x.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+                        </div>
+
+                        <div style="vertical-align: middle;">
+                            <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev" style=" max-height:21%; margin-top:21%;">
+                                <span class="carousel-control-prev-icon" aria-hidden="true" style="width: 40%"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </div>
+                        <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next" style=" max-height:21%; margin-top:21%;">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container2">
+                <div class="mdcontainer">
+                    <h2>FurnitureBench</h2>
+                    <div style="text-align: justify;">
+                        <p>
+                            <b>FurnitureBench</b> is a
+                            reproducible real-world furniture assembly benchmark aimed at
+                            providing a low barrier for entry and being easily reproducible, so
+                            that researchers across the world can reliably test their algorithms
+                            and compare them against prior work.
+                        </p>
+
+                        <p>
+                            The robot takes as an observation the images from front and wrist cameras and proprioceptive robot state, and operates with delta end-effector pose and gripper action commands at 10Hz. Then, Operational Space Control (OSC) converts an action into joint torques.
+                        </p>
+
+                    </div>
+                    <div class="responsiveimg" style="width:100%; margin:auto; text-align:center">
+                        <img width="100%" src="website_img/furniture_bench.jpg">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reproducible Environment -->
+            <div class="container1">
+                <div class="mdcontainer">
+                    <h2>Reproducible Environment</h2>
+                    <div style="text-align: justify;">
+                        <p>
+                            To make the real-robot environment easy to reproduce, we opt for widely used products across the world (e.g. Franka Panda, Intel RealSense cameras, IKEA table) and 3D-printing objects. 10 participants could successfully reproduce the environment from scratch with the performance gaps smaller than 16%.
+                        </p>
+                        <p>
+                            Our benchmark has three different levels of randomness in the initial states: low, medium, and high. The higher the randomness in the initial state is, the more generalization capability is required for an agent.
+                            We provide a task initialization GUI tool to evaluate algorithms under those initial state distribution.
+                        </p>
+                    </div>
+
+                    <div style="display: flex;">
+                        <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                            <tbody>
+                                <tr>
+                                    <td class="break-narrow" style="text-align: center; vertical-align: bottom; display: inline-block;">
+                                        <div style="text-align: center;">
+                                            <img id="single_skill_benchmark" class="border" src="website_img/task_randomness_level.jpg" width="100%">
+                                            <figcaption class="imgcaption"><b>Three Task Levels w.r.t. Initial Randomness</b></figcaption>
+                                        </div>
+                                    </td>
+                                    <td class="break-narrow" style="text-align: center; vertical-align: bottom; display: inline-block;">
+                                        <div style="text-align: center;">
+                                            <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                                <source src="website_img/initialization_tool.mp4" type="video/mp4">
+                                            </video>
+                                            <figcaption class="imgcaption"><b>Task Initialization Guide GUI</b></figcaption>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Easy to Use -->
+            <div class="container2">
+                <div class="mdcontainer">
+                    <h2>Easy-to-Use Environment</h2>
+                    <div style="text-align: justify;">
+                        <p>
+                            We provide a Python-based plug-and-play software stack, including scripts for environment setup, data collection, evaluation, training, and more. Our pre-built Docker image can make the installation even simpler.
+                        </p>
+                        <pre><code style="font-family: monospace;"># Install software using Docker 🐳
+$ docker pull furniture-benchmark</code></pre>
+                    </div>
+
+                    <div style="text-align: justify;">
+                        <p>FurnitureBench's Python APIs are shared across real-world and simulated environments.</p>
+                    </div>
+                    <div class="dropdown">
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                        <div>
+                            <select id="unified-interface" onchange="updateEaseOfUse()">
+                            <option value="real-world-policy" selected="selected">FurnitureBench</option>
+                            <option value="sim-policy">FurnitureSim</option>
+                            <option value="teleop">Teleoperation</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex;">
+                        <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                            <tbody>
+                                <tr>
+                                    <td class="break-narrow" style="text-align: center; vertical-align: top; display: inline-block;">
+                                        <div id="unified-interface-code-real" style="display: inline-block; width:100%; overflow: auto;">
+                                            <script src="https://gist.github.com/minoring/1aa65198e2ee63a7bc9e4727e2bc561f.js"></script>
+                                        </div>
+                                        <div id="unified-interface-code-sim" style="display: none; width:100%; overflow: auto;">
+                                            <script src="https://gist.github.com/minoring/db7dbca12b10f17ff6a4920726baeefa.js"></script>
+                                        </div>
+                                        <div id="unified-interface-code-teleop" style="display: none; width:100%; overflow: auto;">
+                                            <script src="https://gist.github.com/minoring/772c7780462ebff6cc0facc165406e13.js"></script>
+                                        </div>
+                                        <div id="unified-interface-code-sim" style="display: none; width:100%; overflow: auto;">
+                                            <script src="https://gist.github.com/minoring/db7dbca12b10f17ff6a4920726baeefa.js"></script>
+                                        </div>
+                                    </td>
+
+                                    <td class="break-narrow" style="text-align: center; vertical-align: top; display: inline-block;">
+                                        <video id="unified-interface-video" autoplay="" loop="" muted="" playsinline="" controls="" width="100%"" >
+                                            <source src="website_img/experiment/qualitative_analysis/one_leg/one_leg_best_2x.mp4" type="video/mp4">
+                                        </video>
+                                        <figcaption id="unified-interface-video-figcaption" class="imgcaption"><b>FurnitureBench</b> <br>(2x speed)</figcaption>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FurnitureSim-->
+            <div class="container1">
+                <div class="mdcontainer">
+                    <h2>FurnitureSim</h2>
+                    <p>
+                        <b>FurnitureSim</b> is a fast and realistic simulator of FurnitureBench, based on <a href="https://developer.nvidia.com/isaac-gym" target="_blank">IsaacGym</a> and <a href="https://sites.google.com/nvidia.com/factory/">Factory</a>. FurnitureSim is designed to be a seamless substitution of the real-world environment, and enables rapid prototyping of new algorithms!
+                    </p>
+
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/simulator/real.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>FurnitureBench</b> <br>(5.2x speed)</figcaption>
+                                </td>
+                                <td style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/simulator/sim.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>FurnitureSim</b> <br>(4x speed)</figcaption>
+                                </td>
+                                <td style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/simulator/ray_tracing.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Offline Ray Tracing</b> <br>(6x speed)</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Dataset -->
+            <div class="container2">
+                <div class="mdcontainer">
+                    <h2 id="large-scale-datasets">Large-Scale Datasets</h2>
+                    <div style="text-align: justify;">
+                        <p>The complexity and long task horizon of FurnitureBench tasks make <i>tabula rasa</i> RL with real-world interactions challenging. To make our benchmark tractable, we provide <b>219.6 hours</b> of <b>5100</b> teleoperation demonstrations. The table below summarizes the dataset statistics.</p>
+                    </div>
+                    <table id="data-table" class="display dataTable" style="width:100%; margin: auto; max-width: 1200px;">
+                        <thead>
+                            <tr>
+                                <th>Furniture</th>
+                                <th>Initial randomness</th>
+                                <th># demos</th>
+                                <th>Avg. length</th>
+                                <th>Total hrs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>lamp</td>
+                                <td>low</td>
+                                <td>150</td>
+                                <td>594</td>
+                                <td>4.9</td>
+                            </tr>
+                            <tr>
+                                <td>lamp</td>
+                                <td>medium</td>
+                                <td>150</td>
+                                <td>598</td>
+                                <td>5.0</td>
+                            </tr>
+                            <tr>
+                                <td>lamp</td>
+                                <td>high</td>
+                                <td>50</td>
+                                <td>768</td>
+                                <td>2.1</td>
+                            </tr>
+                            <tr>
+                                <td>square_table</td>
+                                <td>low</td>
+                                <td>150</td>
+                                <td>1689</td>
+                                <td>14.1</td>
+                            </tr>
+                            <tr>
+                                <td>square_table</td>
+                                <td>medium</td>
+                                <td>150</td>
+                                <td>1660</td>
+                                <td>13.8</td>
+                            </tr>
+                            <tr>
+                                <td>square_table</td>
+                                <td>high</td>
+                                <td>50</td>
+                                <td>1682</td>
+                                <td>4.7</td>
+                            </tr>
+                            <tr>
+                                <td>desk</td>
+                                <td>low</td>
+                                <td>100</td>
+                                <td>1531</td>
+                                <td>8.5</td>
+                            </tr>
+                            <tr>
+                                <td>desk</td>
+                                <td>medium</td>
+                                <td>100</td>
+                                <td>1914</td>
+                                <td>10.6</td>
+                            </tr>
+                            <tr>
+                                <td>desk</td>
+                                <td>high</td>
+                                <td>50</td>
+                                <td>1687</td>
+                                <td>4.7</td>
+                            </tr>
+                            <tr>
+                                <td>drawer</td>
+                                <td>low</td>
+                                <td>250</td>
+                                <td>571</td>
+                                <td>7.9</td>
+                            </tr>
+                            <tr>
+                                <td>drawer</td>
+                                <td>medium</td>
+                                <td>250</td>
+                                <td>520</td>
+                                <td>7.2</td>
+                            </tr>
+                            <tr>
+                                <td>drawer</td>
+                                <td>high</td>
+                                <td>50</td>
+                                <td>781</td>
+                                <td>2.2</td>
+                            </tr>
+                            <tr>
+                                <td>cabinet</td>
+                                <td>low</td>
+                                <td>150</td>
+                                <td>883</td>
+                                <td>7.4</td>
+                            </tr>
+                            <tr>
+                                <td>cabinet</td>
+                                <td>medium</td>
+                                <td>150</td>
+                                <td>814</td>
+                                <td>6.8</td>
+                            </tr>
+                            <tr>
+                                <td>cabinet</td>
+                                <td>high</td>
+                                <td>50</td>
+                                <td>1166</td>
+                                <td>3.2</td>
+                            </tr>
+                            <tr>
+                                <td>round_table</td>
+                                <td>low</td>
+                                <td>100</td>
+                                <td>847</td>
+                                <td>4.7</td>
+                            </tr>
+                            <tr>
+                                <td>round_table</td>
+                                <td>medium</td>
+                                <td>100</td>
+                                <td>867</td>
+                                <td>4.8</td>
+                            </tr>
+                            <tr>
+                                <td>round_table</td>
+                                <td>high</td>
+                                <td>50</td>
+                                <td>1060</td>
+                                <td>2.9</td>
+                            </tr>
+                            <tr>
+                                <td>stool</td>
+                                <td>low</td>
+                                <td>100</td>
+                                <td>1231</td>
+                                <td>6.8</td>
+                            </tr>
+                            <tr>
+                                <td>stool</td>
+                                <td>medium</td>
+                                <td>100</td>
+                                <td>1419</td>
+                                <td>7.9</td>
+                            </tr>
+                            <tr>
+                                <td>stool</td>
+                                <td>high</td>
+                                <td>50</td>
+                                <td>1273</td>
+                                <td>3.5</td>
+                            </tr>
+                            <tr>
+                                <td>chair</td>
+                                <td>low</td>
+                                <td>100</td>
+                                <td>1817</td>
+                                <td>10.1</td>
+                            </tr>
+                            <tr>
+                                <td>chair</td>
+                                <td>medium</td>
+                                <td>100</td>
+                                <td>2282</td>
+                                <td>12.7</td>
+                            </tr>
+                            <tr>
+                                <td>chair</td>
+                                <td>high</td>
+                                <td>50</td>
+                                <td>2066</td>
+                                <td>5.7</td>
+                            </tr>
+                            <tr>
+                                <td>one_leg</td>
+                                <td>low</td>
+                                <td>1000</td>
+                                <td>374</td>
+                                <td>20.8</td>
+                            </tr>
+                            <tr>
+                                <td>one_leg</td>
+                                <td>medium</td>
+                                <td>1000</td>
+                                <td>429</td>
+                                <td>23.8</td>
+                            </tr>
+                            <tr>
+                                <td>one_leg</td>
+                                <td>high</td>
+                                <td>500</td>
+                                <td>461</td>
+                                <td>12.8</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Office</th>
+                                <th>Age</th>
+                                <th>Start date</th>
+                                <th>Salary</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Benchmark Results -->
+            <div class="container1">
+                <div class="mdcontainer">
+                    <h2 id="experiments">Benchmark Results</h2>
+                    <p>Our experiments consist of two benchmarks:</p>
+                    <ul class="browser-default" style="text-align: justify;">
+                        <li><b>Single-Skill Benchmark</b> evaluates each individual subtask (e.g. grasping, pushing, inserting, screwing)</li>
+                        <li><b>Full-Assembly Benchmark</b> evaluates entire assembly tasks that requires long-horizon planning and dexterous control</li>
+                    </ul>
+                    <p>We evaluate our benchmark with imitation learning (BC) and the state-of-the-art offline RL (IQL).</p>
+                </div>
+            </div>
+
+            <div class="container2">
+                <div class="mdcontainer">
+                    <h2>Single-Skill Benchmark</h2>
+                    <p style="text-align: justify;">
+                        We benchmark first five skills of each furniture task. The results in the table below demonstrate that individual skill policies can successfully learn <i>grasping</i> and <i>placing</i> skills; but, mostly fails at <i>inserting</i>, which requires precise alignment.
+                    </p>
+                    <div style="text-align: center;">
+                        <figure>
+                            <img id="single_skill_benchmark" src="website_img/experiment/single_skill_benchmark.png" width="90%">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container1">
+                <div class="mdcontainer">
+                    <h2>Full-Assembly Benchmark</h2>
+                    <p style="text-align: justify;">
+                        We present both quantitative and qualitative results on full furniture assembly tasks below. The completed phases represent the number of successful subtasks (e.g. grasping, placing, inserting) of full-assembly tasks. Overall, neither BC nor IQL achieve a single part assembly except for <i>one-leg</i>.
+                    </p>
+                    <div style="text-align: center;">
+                        <figure>
+                            <img id="full_assembly_benchmark" src="website_img/experiment/full_assembly_benchmark.png" width="100%">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container2">
+                <div class="mdcontainer">
+                    <h2>Qualitative Results</h2>
+                    <p style="font-size: small;">Videos play in 2x speed.</p>
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <i>lamp</i>
+                        <tbody>
+                            <tr>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;" >
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/lamp/lamp_best_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Best-performing policy:</b> inserts bulb but fails to screw</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/lamp/lamp_fail_insertion_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails on inserting bulb #1</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center;width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/lamp/lamp_fail_insertion2_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails on inserting bulb #2</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <i>square_table</i>
+                        <tbody>
+                            <tr>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/square_table/square_table_best_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Best-performing policy:</b> picks up leg but fails to hold</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/square_table/square_table_fail_grasping_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Repeats opening and closing gripper, and then stops moving</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center;width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/square_table/square_table_fail_grapsing2_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails grasping tabletop</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <i>desk</i>
+                        <tbody>
+                            <tr>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/desk/desk_best_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Best-performing policy:</b> screws one leg and grasps the other.</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/desk/desk_fail_insertion_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails to insert leg #1</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center;width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/desk/desk_fail_insertion2_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails to insert leg #2</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <i>drawer</i>
+                        <tbody>
+                            <tr>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/drawer/drawer_best_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Best-performing policy:</b> fails to insert drawer</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/drawer/drawer_fail_grasping_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Collides with drawer body and fails grasping</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center;width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/drawer/drawer_fail_placing_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Stucks at drawer body</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <i>cabinet</i>
+                        <tbody>
+                            <tr>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/cabinet/cabinet_best_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Best-performing policy:</b> fails on inserting cabinet door</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/cabinet/cabinet_fail_grasping_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Places cabinet in the corner but stops moving afterwards</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center;width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/cabinet/cabinet_fail_placing_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails to place cabinet in the corner</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <i>round_table</i>
+                        <tbody>
+                            <tr>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/round_table/round_table_best_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Best-performing policy:</b> repeats screwing even after the screw is tightened</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/round_table/round_table_fail_insertion_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails to insert leg but tries to screw</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center;width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/round_table/round_table_fail_grasping_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Table top hits leg, making grasping leg failed</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <i>stool</i>
+                        <tbody>
+                            <tr>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/stool/stool_best_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Best-performing policy:</b> tries to screw leg</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center;width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/stool/stool_fail_insertion_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails to insert leg #1</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/stool/stool_fail_insertion2_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails to insert leg #2</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <i>chair</i>
+                        <tbody>
+                            <tr>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/chair/chair_best_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Best-performing policy:</b> fails on insertion</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center;width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/chair/chair_fail_grasping_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails to grasp leg, instead grasps nut</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/chair/chair_fail_grasping2_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Randomly grasps the chair back</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
+                        <i>one_leg</i>
+                        <tbody>
+                            <tr>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/one_leg/one_leg_best_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption"><b>Best-performing policy:</b> successfully assembles the leg</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center; width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/one_leg/one_leg_fail_screwing_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Luckily inserts leg but fails to screw</figcaption>
+                                </td>
+                                <td class="padding-td" style="text-align: center;width:33%; vertical-align: top;">
+                                    <video autoplay="" loop="" muted="" playsinline="" controls="" width="100%">
+                                        <source src="website_img/experiment/qualitative_analysis/one_leg/one_leg_fail_insertion_2x.mp4" type="video/mp4">
+                                    </video>
+                                    <figcaption class="imgcaption">Fails to insert leg</figcaption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="container1">
+                <div class="mdcontainer">
+                    <h2 id="citations">Related Work</h2>
+                    <div style="text-align: justify;">
+                        <ul>
+                            <li><a href="https://clvrai.github.io/furniture/">IKEA Furniture Assembly Environment</a> introduces a furniture assembly simulator as a testbed for long-horizon and complex manipulation tasks; but, it does not support screwing.</li>
+                            <li><a href="https://sites.google.com/nvidia.com/factory/">Factory</a> and <a href="https://isaac-orbit.github.io/">Orbit</a> enables complex physics simulation and photo-realistic rendering, respectively.</li>
+                            <li>There are prior works on reproducible real-world benchmarking environments, namely <a href="https://www.deepmind.com/blog/stacking-our-way-to-more-general-robots">RGB-Stacking</a>, <a href="https://sites.google.com/view/roboticsbenchmarks/">ROBEL</a>, <a href="https://sites.google.com/view/replab/">REPLAB</a>, and <a href="https://real-robot-challenge.com/">Real Robot Challenge</a>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container2">
+                <div class="mdcontainer">
+                    <h2 id="citations">Citations</h2>
+                    <pre><code>@inproceedings{heo2023furniturebench,
+  title={FurnitureBench: Reproducible Real-World Benchmark for Long-Horizon Complex Manipulation},
+  author={Minho Heo and Youngwoon Lee and Doohyun Lee and Joseph J. Lim},
+  booktitle={Robotics: Science and Systems},
+  year={2023}
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w3-center w3-light-grey w3-padding-32 w3-small">
+        <p style="color: grey">
+            This work is supported by IITP grant (No.2019-0-00075, Artificial Intelligence Graduate School Program, KAIST) and National Research Foundation of Korea (NRF) grant (NRF-2021H1D3A2A03103683).
+            <br>
+            &copy; Copyright 2023, CLVR @ KAIST.
+        </p>
+    </footer>
+
+
+    <script>
+    function updateEaseOfUse() {
+        let interface = document.getElementById('unified-interface').value;
+        console.log(interface);
+
+        if (interface == 'teleop') {
+            let video = document.getElementById("unified-interface-video");
+            video.src = 'website_img/unified_interface/teleop.mp4';
+            document.getElementById("unified-interface-code-real").style.display = 'none';
+            document.getElementById("unified-interface-code-sim").style.display = 'none';
+            document.getElementById("unified-interface-code-teleop").style.display = "inline-block";
+
+            document.getElementById("unified-interface-video-figcaption").innerHTML = "<b>Teleoperation</b> <br>(3x speed)";
+        } else if (interface == 'sim-policy') {
+            let video = document.getElementById("unified-interface-video");
+            video.src = 'website_img/unified_interface/furniture_sim_2x.mp4';
+            document.getElementById("unified-interface-code-teleop").style.display = 'none';
+            document.getElementById("unified-interface-code-real").style.display = 'none';
+            document.getElementById("unified-interface-code-sim").style.display = 'inline-block';
+
+            document.getElementById("unified-interface-video-figcaption").innerHTML = "<b>FurnitureSim</b> <br>(2x speed)";
+        } else if (interface == 'real-world-policy') {
+            let video = document.getElementById("unified-interface-video");
+            video.src = 'website_img/experiment/qualitative_analysis/one_leg/one_leg_best_2x.mp4';
+            document.getElementById("unified-interface-code-teleop").style.display = 'none';
+            document.getElementById("unified-interface-code-sim").style.display = 'none';
+            document.getElementById("unified-interface-code-real").style.display = 'inline-block';
+
+            document.getElementById("unified-interface-video-figcaption").innerHTML = "<b>FurnitureBench</b> <br>(2x speed)";
+        }
+    }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#data-table').DataTable({
+                info: false,
+                searching: false,
+                paging: true,
+                padding: true,
+                lengthChange: false,
+                pagingType: "numbers",
+                pageLength: 9,
+                ordering: false,
+            }).columns.adjust();
+        document.getElementById("data-table").deleteTFoot();
+        });
+    </script>
+
+</body>
+</html>

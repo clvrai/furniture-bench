@@ -1,0 +1,48 @@
+td ol {
+    text-align: center;
+    padding-top: 0px !important;
+}
+
+dt {
+    font-weight: 400;
+}
+
+
+div.admonition dt {
+    font-weight: normal;
+}
+
+:root {
+    --pst-font-size-h2: 28px;
+}
+
+:root {
+    --pst-font-size-h3: 22px;
+}
+
+figure {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
+ul, ol {
+    margin-left: 0.7em;
+    padding-left: 0.7em;
+}
+
+ul ul, ol ol, ul ol, ol ul {
+    padding-left: 0.3em;
+    margin-left: 0.3em;
+  }
+
+.wrap-image-right {
+    float: right;
+    clear: right;
+    text-align: right;
+    /* margin: 0px 1em 1em 0; */
+}
+
+.wrap-image-left {
+    float: left;
+    margin: 0px 1em 1em 0;
+}

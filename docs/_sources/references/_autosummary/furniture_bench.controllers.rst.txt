@@ -1,0 +1,6 @@
+furniture\_bench.controllers
+============================
+
+.. currentmodule:: furniture_bench
+
+.. automodule:: controllers

@@ -1,0 +1,684 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Installation Guide (FurnitureSim) &#8212; FurnitureBench</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/minipres.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/custom_toc_highlight.js"></script>
+    <script src="../_static/scripts/add_br_to_sections.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Dataset" href="dataset.html" />
+    <link rel="prev" title="Installation Guide" href="installation_guide.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">FurnitureBench</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="furniturebench_overview.html">
+   FurnitureBench Overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="installation_guide.html">
+   Installation Guide
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Installation Guide (FurnitureSim)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="dataset.html">
+   Dataset
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
+   Teleoperation using Oculus/Keyboard
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/furniture_sim.html">
+   FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/tools_and_scripts.html">
+   Tools and Scripts
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  References
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/code_organization.html">
+   Code Organization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/development_roadmap.html">
+   Development Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/additional_information.html">
+   Additional Information
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/clvrai/furniture-bench"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/getting_started/installation_guide_furniture_sim.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#installation-using-docker-option-1">
+   Installation using Docker (Option 1)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#local-installation-option-2">
+   Local Installation (Option 2)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#running-furnituresim">
+   Running FurnitureSim
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#run-docker-image">
+     Run Docker image
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#test-run-for-simulator">
+     Test Run for Simulator
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furnituresim-parameters">
+   FurnitureSim Parameters
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#supported-furniture-models">
+   Supported Furniture Models
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Installation Guide (FurnitureSim)</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#installation-using-docker-option-1">
+   Installation using Docker (Option 1)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#local-installation-option-2">
+   Local Installation (Option 2)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#running-furnituresim">
+   Running FurnitureSim
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#run-docker-image">
+     Run Docker image
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#test-run-for-simulator">
+     Test Run for Simulator
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furnituresim-parameters">
+   FurnitureSim Parameters
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#supported-furniture-models">
+   Supported Furniture Models
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section id="installation-guide-furnituresim">
+<h1>Installation Guide (FurnitureSim)<a class="headerlink" href="#installation-guide-furnituresim" title="Permalink to this headline">#</a></h1>
+<p>FurnitureSim is a high-speed and realistic simulation of FurnitureBench, built using IsaacGym and Factory.
+It is designed to be a seamless substitution of the real-world environment, and enables rapid prototyping of new algorithms.</p>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="real" src="../_static/images/real.jpg" /></p></th>
+<th class="head"><p><img alt="simulator" src="../_static/images/simulator.jpg" /></p></th>
+<th class="head"><p><img alt="rendering" src="../_static/images/rendering.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) Real-world environment</p></td>
+<td><p>(b) Simluator</p></td>
+<td><p>(c) Offline rendering</p></td>
+</tr>
+</tbody>
+</table>
+<p>Now we will take a look how to install FurnitureSim.
+You can install FurnitureSim using Docker or from source.</p>
+<div class="admonition-prerequisites prerequisites admonition" id="prerequisites-0">
+<p class="admonition-title">Prerequisites</p>
+<ul class="simple">
+<li><p>🛠️ Ubuntu 20.04 LTS</p></li>
+<li><p>NVIDIA RTX GPU</p></li>
+<li><p>📖 Download <a class="reference external" href="https://developer.nvidia.com/isaac-gym">Isaac Gym</a></p></li>
+<li><p>📖 <a class="reference external" href="https://www.anaconda.com/">Anaconda</a></p></li>
+</ul>
+</div>
+<section id="installation-using-docker-option-1">
+<h2>Installation using Docker (Option 1)<a class="headerlink" href="#installation-using-docker-option-1" title="Permalink to this headline">#</a></h2>
+<p>We provide a docker image that includes everything needed for FurnitureSim. To use FurnitureSim, you only need to run our docker image.</p>
+<ol class="arabic simple">
+<li><p>Download IsaacGym from <a class="reference external" href="https://developer.nvidia.com/isaac-gym">NVIDIA Developer</a>. Start by creating an NVIDIA account, agree to the terms and conditions, and then download <cite>Isaac Gym - Ubuntu Linux 18.04 / 20.04 Preview 4 release</cite>. Unzip the downloaded file and move the folder to the desired location.</p></li>
+<li><p>📖 Download <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">nvidia-docker2</a></p></li>
+<li><p>In case you initiate, execute the GPU-supported client Docker by following <a class="reference internal" href="installation_guide.html#run-client"><span class="std std-ref">Run Client</span></a>.</p></li>
+</ol>
+</section>
+<section id="local-installation-option-2">
+<h2>Local Installation (Option 2)<a class="headerlink" href="#local-installation-option-2" title="Permalink to this headline">#</a></h2>
+<p>If you need FurnitureSim in your own environment, you can install FurnitureSim by manually installing dependencies as follows:</p>
+<ol class="arabic simple">
+<li><p>(Optional) Create and activate a conda environment:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">furniture</span><span class="o">-</span><span class="n">bench</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span>
+<span class="n">conda</span> <span class="n">activate</span> <span class="n">furniture</span><span class="o">-</span><span class="n">bench</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Download IsaacGym from <a class="reference external" href="https://developer.nvidia.com/isaac-gym">https://developer.nvidia.com/isaac-gym</a> and install it:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">isaacgym</span><span class="o">&gt;</span>
+<span class="n">cd</span> <span class="n">python</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">isaacgym</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Clone and install IsaacGymEnvs:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">NVIDIA</span><span class="o">-</span><span class="n">Omniverse</span><span class="o">/</span><span class="n">IsaacGymEnvs</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">IsaacGymEnvs</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Clone and install FurnitureBench:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">clvrai</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">.</span><span class="n">git</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">furniture</span><span class="o">-</span><span class="n">bench</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Install other dependencies:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">mamba</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
+<span class="n">mamba</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">pytorch</span> <span class="o">-</span><span class="n">c</span> <span class="n">fair</span><span class="o">-</span><span class="n">robotics</span> <span class="o">-</span><span class="n">c</span> <span class="n">aihabitat</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">polymetis</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="6">
+<li><p>Install PyTorch again if you want another PyTorch version (Polymetis overrides PyTorch). As an example, we install PyTorch 1.10 with CUDA 11.3:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">pytorch</span><span class="o">==</span><span class="mf">1.10</span> <span class="n">torchvision</span> <span class="n">cudatoolkit</span><span class="o">=</span><span class="mf">11.3</span> <span class="o">-</span><span class="n">c</span> <span class="n">pytorch</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="running-furnituresim">
+<h2>Running FurnitureSim<a class="headerlink" href="#running-furnituresim" title="Permalink to this headline">#</a></h2>
+<section id="run-docker-image">
+<h3>Run Docker image<a class="headerlink" href="#run-docker-image" title="Permalink to this headline">#</a></h3>
+<p>Run the docker image if you did not install the code with local installation.</p>
+<ol class="arabic simple">
+<li><p>Set the environment variables</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># With display</span>
+xhost<span class="w"> </span>+
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_DOCKER</span><span class="o">=</span>client-gpu<span class="w">                        </span><span class="c1"># (Case1: local build)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_DOCKER</span><span class="o">=</span>furniturebench/client-gpu:latest<span class="w">  </span><span class="c1"># (Case2: docker pull)</span>
+
+<span class="c1"># Set absolute path to the furniture-benchmark repo</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;/path/to/furniture-benchmark&gt;
+
+<span class="c1"># Isaac Gym absolute path</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;/path/to/isaacgym&gt;<span class="w">         </span><span class="c1"># path to isaacgym downloaded from https://developer.nvidia.com/isaac-gym</span>
+
+<span class="c1"># Launch the image</span>
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$FURNITURE_BENCH</span>
+./launch_client.sh<span class="w"> </span>--sim-gpu
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="test-run-for-simulator">
+<h3>Test Run for Simulator<a class="headerlink" href="#test-run-for-simulator" title="Permalink to this headline">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/furniture-bench
+
+<span class="c1"># args: --furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg]</span>
+
+python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--no-action
+<span class="c1"># Headless</span>
+python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--no-action<span class="w"> </span>--headless
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>In FurnitureSim, the 3D furniture models from FurnitureBench are transformed into the Signed Distance Function (SDF) format for use in the simulation.
+The first time the simulator is run, it will take some time (~ few minutes) to generate the SDF meshes, but subsequent runs will be faster as the simulator can load the pre-cached SDF meshes.</p>
+</div>
+</section>
+</section>
+<section id="furnituresim-parameters">
+<h2>FurnitureSim Parameters<a class="headerlink" href="#furnituresim-parameters" title="Permalink to this headline">#</a></h2>
+<p>Simulation parameters including mass, inertia, dt, etc. can be found in <code class="docutils literal notranslate"><span class="pre">furniture_bench/sim_config.py</span></code>.</p>
+</section>
+<section id="supported-furniture-models">
+<h2>Supported Furniture Models<a class="headerlink" href="#supported-furniture-models" title="Permalink to this headline">#</a></h2>
+<p>The simulator currently supports the following furniture models.
+Automatic assembly scripts for all furniture models will be available in May 2023.
+The 3D models for all furniture are partially complete.
+Additionally, other models do not yet have the AprilTag marker texture applied yet, but it will be updated soon.</p>
+<blockquote>
+<div><table class="table">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 39%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Furniture</p></th>
+<th class="head"><p>Assembly script</p></th>
+<th class="head"><p>3D model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>lamp</p></td>
+<td><p>⏳</p></td>
+<td><p>🔜</p></td>
+</tr>
+<tr class="row-odd"><td><p>square_table</p></td>
+<td><p>⏳</p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-even"><td><p>desk</p></td>
+<td><p>⏳</p></td>
+<td><p>🔜</p></td>
+</tr>
+<tr class="row-odd"><td><p>round_table</p></td>
+<td><p>⏳</p></td>
+<td><p>🔜</p></td>
+</tr>
+<tr class="row-even"><td><p>stool</p></td>
+<td><p>⏳</p></td>
+<td><p>🔜</p></td>
+</tr>
+<tr class="row-odd"><td><p>chair</p></td>
+<td><p>⏳</p></td>
+<td><p>🔜</p></td>
+</tr>
+<tr class="row-even"><td><p>drawer</p></td>
+<td><p>⏳</p></td>
+<td><p>🔜</p></td>
+</tr>
+<tr class="row-odd"><td><p>cabinet</p></td>
+<td><p>⏳</p></td>
+<td><p>🔜</p></td>
+</tr>
+<tr class="row-even"><td><p>one_leg</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</section>
+</section>
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="installation_guide.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Installation Guide</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="dataset.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Dataset</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By CLVR @ KAIST<br/>
+  
+      &copy; Copyright 2023.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

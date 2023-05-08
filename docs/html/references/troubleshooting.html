@@ -1,0 +1,704 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Troubleshooting &#8212; FurnitureBench</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/minipres.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/custom_toc_highlight.js"></script>
+    <script src="../_static/scripts/add_br_to_sections.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Development Roadmap" href="development_roadmap.html" />
+    <link rel="prev" title="Code Organization" href="code_organization.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">FurnitureBench</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started/furniturebench_overview.html">
+   FurnitureBench Overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started/installation_guide.html">
+   Installation Guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started/installation_guide_furniture_sim.html">
+   Installation Guide (FurnitureSim)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started/dataset.html">
+   Dataset
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
+   Teleoperation using Oculus/Keyboard
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/furniture_sim.html">
+   FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/tools_and_scripts.html">
+   Tools and Scripts
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  References
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="code_organization.html">
+   Code Organization
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="development_roadmap.html">
+   Development Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="commands_overview.html">
+   Commands Overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="additional_information.html">
+   Additional Information
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/clvrai/furniture-bench"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/references/troubleshooting.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#polymetis">
+   Polymetis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#device-connections">
+   Device Connections
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#training-and-evaluation">
+   Training and Evaluation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#oculus">
+   Oculus
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#camera">
+   Camera
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simulator">
+   Simulator
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gym">
+   Gym
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#display">
+   Display
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Troubleshooting</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#polymetis">
+   Polymetis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#device-connections">
+   Device Connections
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#training-and-evaluation">
+   Training and Evaluation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#oculus">
+   Oculus
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#camera">
+   Camera
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simulator">
+   Simulator
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gym">
+   Gym
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#display">
+   Display
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">#</a></h1>
+<section id="polymetis">
+<h2><a class="reference external" href="https://facebookresearch.github.io/fairo/polymetis/">Polymetis</a><a class="headerlink" href="#polymetis" title="Permalink to this headline">#</a></h2>
+<p><strong>Q:</strong> What should I do if I get the <code class="docutils literal notranslate"><span class="pre">communication_constraints_violation</span></code> error on the server while using Polymetis (Library for Franka robot interface)?</p>
+<blockquote>
+<div><p><strong>A:</strong> Consider disabling CPU frequency scaling. Refer to this page for <a class="reference external" href="https://frankaemika.github.io/docs/troubleshooting.html#disabling-cpu-frequency-scaling">instructions</a></p>
+</div></blockquote>
+<p><strong>Q:</strong> What should I do if I encounter <code class="docutils literal notranslate"><span class="pre">OSError:</span> <span class="pre">libtorch_cuda.so:</span> <span class="pre">cannot</span> <span class="pre">open</span> <span class="pre">shared</span> <span class="pre">object</span> <span class="pre">file:</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></code> error?</p>
+<blockquote>
+<div><p><strong>A:</strong> If you encounter a Segmentation fault (core dumped) error in the client PC while using a robot, you should rebuild fairo by running the command below in the Docker image. This might be cause by the linking error because of the reinstall of PyTorch.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/fairo/polymetis/polymetis/build/
+$<span class="w"> </span>make<span class="w"> </span>-j
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Q:</strong> I faced <code class="docutils literal notranslate"><span class="pre">grpc.RpcError:</span> <span class="pre">POLYMETIS</span> <span class="pre">SERVER</span> <span class="pre">ERROR</span> <span class="pre">--</span>
+<span class="pre">Failed</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">new</span> <span class="pre">controller:</span> <span class="pre">isTuple()INTERNAL</span> <span class="pre">ASSERT</span> <span class="pre">FAILED</span> <span class="pre">at...</span> <span class="pre">please</span> <span class="pre">report</span> <span class="pre">a</span> <span class="pre">bug</span> <span class="pre">to</span> <span class="pre">PyTorch.</span></code> error. What should I do?</p>
+<blockquote>
+<div><p><strong>A:</strong> This might be due to the version of PyTorch. Please try to use PyTorch 1.10 by running the following command.
+.. code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">pytorch</span><span class="o">==</span><span class="mf">1.10</span> <span class="n">torchvision</span> <span class="n">cudatoolkit</span><span class="o">=</span><span class="mf">11.3</span> <span class="o">-</span><span class="n">c</span> <span class="n">pytorch</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Q:</strong> What should I do with warnings like
+<code class="docutils literal notranslate"><span class="pre">Warning:</span> <span class="pre">Failed</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">'libtorchrot.so'</span> <span class="pre">from</span> <span class="pre">CONDA_PREFIX</span></code> or
+<code class="docutils literal notranslate"><span class="pre">Warning:</span> <span class="pre">Failed</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">'libtorchscript_pinocchio.so'</span> <span class="pre">from</span> <span class="pre">CONDA_PREFIX</span></code></p>
+<blockquote>
+<div><p><strong>A:</strong> It does not affect the functionality of the system, so you can ignore it.</p>
+</div></blockquote>
+</section>
+<section id="device-connections">
+<h2>Device Connections<a class="headerlink" href="#device-connections" title="Permalink to this headline">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure all the devices (cameras, Oculus if you are collecting the data) are using USB 3.x.</p>
+</div>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> How can I check if my devices (cameras, Oculus) are using USB 3.x?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> Run <code class="docutils literal notranslate"><span class="pre">lsusb</span></code> and <code class="docutils literal notranslate"><span class="pre">lsusb</span> <span class="pre">-t</span></code>. When you run <code class="docutils literal notranslate"><span class="pre">lsusb</span> <span class="pre">-t</span></code>,
+the communication speed in Mbps located at the end of each line must be
+equal to or above 5000M (USB 3.0).</p>
+<p>For example,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>lsusb
+Bus<span class="w"> </span><span class="m">002</span><span class="w"> </span>Device<span class="w"> </span><span class="m">006</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">8086</span>:0b07<span class="w"> </span>Intel<span class="w"> </span>Corp.<span class="w"> </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>RealSense<span class="o">(</span>TM<span class="o">)</span><span class="w"> </span>Depth<span class="w"> </span>Camera<span class="w"> </span><span class="m">435</span>
+Bus<span class="w"> </span><span class="m">002</span><span class="w"> </span>Device<span class="w"> </span><span class="m">007</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">8086</span>:0b07<span class="w"> </span>Intel<span class="w"> </span>Corp.<span class="w"> </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>RealSense<span class="o">(</span>TM<span class="o">)</span><span class="w"> </span>Depth<span class="w"> </span>Camera<span class="w"> </span><span class="m">435</span>
+
+Bus<span class="w"> </span><span class="m">004</span><span class="w"> </span>Device<span class="w"> </span><span class="m">008</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">2833</span>:0183<span class="w"> </span>GenesysLogic<span class="w"> </span>USB3.2<span class="w"> </span>Hub
+Bus<span class="w"> </span><span class="m">004</span><span class="w"> </span>Device<span class="w"> </span><span class="m">002</span>:<span class="w"> </span>ID<span class="w"> </span>05e3:0625<span class="w"> </span>Genesys<span class="w"> </span>Logic,<span class="w"> </span>Inc.<span class="w"> </span>USB3.2<span class="w"> </span>Hub
+Bus<span class="w"> </span><span class="m">004</span><span class="w"> </span>Device<span class="w"> </span><span class="m">001</span>:<span class="w"> </span>ID<span class="w"> </span>1d6b:0003<span class="w"> </span>Linux<span class="w"> </span>Foundation<span class="w"> </span><span class="m">3</span>.0<span class="w"> </span>root<span class="w"> </span>hub
+
+$<span class="w"> </span>lsusb<span class="w"> </span>-t
+/:<span class="w">  </span>Bus<span class="w"> </span><span class="m">04</span>.Port<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>root_hub,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>xhci_hcd/2p,<span class="w"> </span>10000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">2</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Hub,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>hub/4p,<span class="w"> </span>5000M
+<span class="w">        </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">8</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Imaging,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>usbfs,<span class="w"> </span>5000M
+<span class="w">        </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">8</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Vendor<span class="w"> </span>Specific<span class="w"> </span>Class,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>,<span class="w"> </span>5000M
+<span class="w">        </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">8</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Vendor<span class="w"> </span>Specific<span class="w"> </span>Class,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>usbfs,<span class="w"> </span>5000M
+/:<span class="w">  </span>Bus<span class="w"> </span><span class="m">02</span>.Port<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>root_hub,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>xhci_hcd/6p,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+</pre></div>
+</div>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> The robot does not follow Oculus Quest 2 even after the connection is established. What should I do?</div>
+</div>
+<blockquote>
+<div><dl class="simple">
+<dt><strong>A:</strong></dt><dd><ul class="simple">
+<li><p>Make sure you find Oculus device when running <cite>adb devices</cite> commands in Client.</p></li>
+<li><p>Please double-check if you follow the instructions in the <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html#setup-oculus-quest-2"><span class="std std-ref">Setup Oculus Quest 2</span></a> section.</p></li>
+<li><p>If the problem persist, restart the Oculus.</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+<section id="training-and-evaluation">
+<h2>Training and Evaluation<a class="headerlink" href="#training-and-evaluation" title="Permalink to this headline">#</a></h2>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What should I do if I face a CUDA Out of memory (OOM) issue while trying to learn implicit_q_learning (IQL)?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> If you face a CUDA Out of memory (OOM) issue while trying to learn implicit_q_learning (IQL), it might be due to preallocated GPU memory. You can adjust the memory fraction by setting <code class="docutils literal notranslate"><span class="pre">XLA_PYTHON_CLIENT_MEM_FRACTION=.XX</span></code> to resolve this issue.</p>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What should I do if I face <code class="docutils literal notranslate"><span class="pre">Access</span> <span class="pre">denied</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">following</span> <span class="pre">error:</span></code> or <cite>FileNotFoundError: [Errno 2] No such file or directory: ‘/root/.r3m/r3m_50/model.pt’</cite> while downloading r3m checkpoints?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> This might be due to the permission issue. Please download the checkpoints manually from the Google Drive and copy them to the Docker image.</p>
+<ul class="simple">
+<li><p>(Here we show the example of downloading the checkpoint for <code class="docutils literal notranslate"><span class="pre">r3m</span> <span class="pre">ResNet50</span></code>.)</p></li>
+<li><p>Download the <a class="reference external" href="https://drive.google.com/uc?id=1Xu0ssuG0N1zjZS54wmWzJ7-nb0-7XzbA">checkpoint</a> in your local machine</p></li>
+<li><p>Get the container ID by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code></p></li>
+<li><p>Copy the checkpoint to the container by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">cp</span> <span class="pre">&lt;checkpoint_path&gt;</span> <span class="pre">&lt;container_id&gt;:/root/.r3m/r3m_50/</span></code></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="oculus">
+<h2>Oculus<a class="headerlink" href="#oculus" title="Permalink to this headline">#</a></h2>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What should I do to prevent sudden actions from the robot due to wrong signal readings when using Oculus?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> To prevent sudden actions from the robot due to wrong signal readings when using Oculus, ensure that the cable connection is stable.</p>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What if the robot is not moving when I use Oculus?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> Make sure to control the robot in the guidance area of Oculus, allow the access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also check the the Oculus is turned on (white light is on in the front).</p>
+</div></blockquote>
+</section>
+<section id="camera">
+<h2>Camera<a class="headerlink" href="#camera" title="Permalink to this headline">#</a></h2>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> How can I check if my camera is connected stably?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> Consider
+installing <a class="reference external" href="https://robots.uc3m.es/installation-guides/install-realsense2.html">realsense
+viewer</a>
+and test whether the camera is connected stably. Also there are other
+features in the viewer that can be used to check the camera status.</p>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What should I do if I encounter a RuntimeError: Frame didn’t arrive within 5000 error when using a camera?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> You should unplug
+your camera and then plug it back in.</p>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What does the error message “RuntimeError: xioctl(VIDIOC_S_FMT) failed Last Error: Device or resource busy” mean when working with a camera?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> This error message indicates that there is another
+program, such as realsense-viewer or a Python code, using the camera.
+The camera should only run in a single program at a time. To resolve
+this issue, check if there is another program that may be using the
+camera and close it before running the desired program.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Make sure recent firmware is installed. (Our setting was 05.13.00.50 version)</p></li>
+<li><p>Make the camera is connected using USB 3.x</p></li>
+</ul>
+</div>
+</div></blockquote>
+</section>
+<section id="simulator">
+<h2>Simulator<a class="headerlink" href="#simulator" title="Permalink to this headline">#</a></h2>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">isaacgymenvs</span> <span class="pre">setup</span> <span class="pre">command:</span> <span class="pre">'python_requires'</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">string</span> <span class="pre">containing</span> <span class="pre">valid</span> <span class="pre">version</span> <span class="pre">specifiers;</span> <span class="pre">Invalid</span> <span class="pre">specifier:</span> <span class="pre">'&gt;=3.6.*</span></code>?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> execute the following commands</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip<span class="w"> </span>setuptools
+pip<span class="w"> </span>install<span class="w"> </span><span class="nv">setuptools</span><span class="o">==</span><span class="m">58</span>
+</pre></div>
+</div>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">[Error]</span> <span class="pre">[carb.windowing-glfw.plugin]</span> <span class="pre">GLFW</span> <span class="pre">initialization</span> <span class="pre">failed.</span></code> or <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">protocol</span> <span class="pre">specified</span></code>?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> Shut down the current Docker container, run <code class="docutils literal notranslate"><span class="pre">xhost</span> <span class="pre">+</span></code>, and then restart the Docker container.</p>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">[Error]</span> <span class="pre">[carb.gym.plugin]</span> <span class="pre">cudaExternamMemoryGetMappedBuffer</span> <span class="pre">failed</span> <span class="pre">on</span> <span class="pre">rgbImage</span> <span class="pre">buffer</span> <span class="pre">wit</span> <span class="pre">h</span> <span class="pre">error</span> <span class="pre">101</span></code>?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> You should specify vulkan explicitely.</p>
+<p>Shut down the current Docker container, and then run the following commands</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt<span class="w"> </span>install<span class="w"> </span>vulkan-tools
+<span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span>list<span class="w"> </span>vulkaninfo
+</pre></div>
+</div>
+<p>Rerun the Docker container, and then specify device</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># e.g.,</span>
+<span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span><span class="s1">&#39;10de:2204&#39;</span><span class="w"> </span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--no-action
+</pre></div>
+</div>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> Simulator does not terminate even after I press Ctrl+C. What should I do?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> It could happen when the input streams are blocked. The work around is to press Ctrl+Z and then <code class="docutils literal notranslate"><span class="pre">kill</span> <span class="pre">%1</span></code> to terminate the first job.</p>
+</div></blockquote>
+</section>
+<section id="gym">
+<h2>Gym<a class="headerlink" href="#gym" title="Permalink to this headline">#</a></h2>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What should I do if I encounter an observation space error while working with Gym? (such as <code class="docutils literal notranslate"><span class="pre">'python_requires'</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">string</span> <span class="pre">containing</span> <span class="pre">valid</span> <span class="pre">version</span> <span class="pre">specifiers;</span> <span class="pre">Invalid</span> <span class="pre">specifier:</span> <span class="pre">'&gt;=3.6.*'</span></code>)</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> Install Gym version 0.21.0 by running
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gym==0.21.0</span></code>.</p>
+</div></blockquote>
+</section>
+<section id="display">
+<h2>Display<a class="headerlink" href="#display" title="Permalink to this headline">#</a></h2>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">cannot</span> <span class="pre">connect</span> <span class="pre">to</span> <span class="pre">X</span> <span class="pre">server</span> <span class="pre">:1</span></code>?</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> Shut down the current Docker container, run <code class="docutils literal notranslate"><span class="pre">xhost</span> <span class="pre">+</span></code>, and then restart the Docker container.</p>
+</div></blockquote>
+</section>
+</section>
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="code_organization.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Code Organization</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="development_roadmap.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Development Roadmap</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By CLVR @ KAIST<br/>
+  
+      &copy; Copyright 2023.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,40 @@
+﻿furniture\_bench
+================
+
+.. automodule:: furniture_bench
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst                 <-- add this line
+   :recursive:
+
+   furniture_bench.config
+   furniture_bench.controllers
+   furniture_bench.data
+   furniture_bench.device
+   furniture_bench.envs
+   furniture_bench.furniture
+   furniture_bench.perception
+   furniture_bench.robot
+   furniture_bench.sim_config
+
