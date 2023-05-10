@@ -1,0 +1,11 @@
+pip==22.2.2
+setuptools==65.5.0
+gym==0.21.0
+protobuf==3.20.*
+opencv-python
+numba
+
+# Misc for FurntiureBench
+pyrealsense2
+dt-apriltags
+keyboard

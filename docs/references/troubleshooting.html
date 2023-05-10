@@ -436,20 +436,75 @@ title="Print to PDF"
 </div></blockquote>
 <p><strong>Q:</strong> What should I do if I encounter <code class="docutils literal notranslate"><span class="pre">OSError:</span> <span class="pre">libtorch_cuda.so:</span> <span class="pre">cannot</span> <span class="pre">open</span> <span class="pre">shared</span> <span class="pre">object</span> <span class="pre">file:</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></code> error?</p>
 <blockquote>
-<div><p><strong>A:</strong> If you encounter a Segmentation fault (core dumped) error in the client PC while using a robot, you should rebuild fairo by running the command below in the Docker image. This might be cause by the linking error because of the reinstall of PyTorch.</p>
+<div><p><strong>A:</strong> If you encounter a Segmentation fault (core dumped) error in the client PC while using a robot, you should rebuild fairo by running the command below in the Docker image. This might be caused by the linking error because of the reinstall of PyTorch.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/fairo/polymetis/polymetis/build/
 $<span class="w"> </span>make<span class="w"> </span>-j
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>Q:</strong> I faced <code class="docutils literal notranslate"><span class="pre">grpc.RpcError:</span> <span class="pre">POLYMETIS</span> <span class="pre">SERVER</span> <span class="pre">ERROR</span> <span class="pre">--</span>
-<span class="pre">Failed</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">new</span> <span class="pre">controller:</span> <span class="pre">isTuple()INTERNAL</span> <span class="pre">ASSERT</span> <span class="pre">FAILED</span> <span class="pre">at...</span> <span class="pre">please</span> <span class="pre">report</span> <span class="pre">a</span> <span class="pre">bug</span> <span class="pre">to</span> <span class="pre">PyTorch.</span></code> error. What should I do?</p>
+<p><strong>Q:</strong> I’m encountering issues while building Polymetis from source. How can I resolve this?</p>
 <blockquote>
-<div><p><strong>A:</strong> This might be due to the version of PyTorch. Please try to use PyTorch 1.10 by running the following command.
-.. code:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">pytorch</span><span class="o">==</span><span class="mf">1.10</span> <span class="n">torchvision</span> <span class="n">cudatoolkit</span><span class="o">=</span><span class="mf">11.3</span> <span class="o">-</span><span class="n">c</span> <span class="n">pytorch</span>
+<div><p><strong>A:</strong> Here are some common errors and solutions.</p>
+<ul>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">/home/linuxbrew/.linuxbrew/Cellar/openssl&#64;1.1/1.1.1t/lib/libcrypto.so:</span> <span class="pre">undefined</span> <span class="pre">reference</span> <span class="pre">to</span> <span class="pre">`dlsym&#64;GLIBC_2.34'</span></code> error:</p>
+<blockquote>
+<div><p>Follow the steps below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Unlink the brew openssl (https://github.com/Homebrew/homebrew-core/issues/118825)</span>
+<span class="n">brew</span> <span class="n">unlink</span> <span class="n">openssl</span><span class="o">@</span><span class="mf">1.1</span>
+
+<span class="c1"># 2. build the Polymetis again.</span>
+<span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">fairo</span><span class="o">&gt;/</span><span class="n">polymetis</span><span class="o">/</span><span class="n">polymetis</span><span class="o">/</span>
+
+<span class="c1"># Remove the build directory if it exists.</span>
+<span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">build</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="c1"># Rebuild.</span>
+<span class="n">cmake</span> <span class="o">..</span> <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Release</span> <span class="o">-</span><span class="n">DBUILD_FRANKA</span><span class="o">=</span><span class="n">OFF</span> <span class="o">-</span><span class="n">DBUILD_TESTS</span><span class="o">=</span><span class="n">OFF</span> <span class="o">-</span><span class="n">DBUILD_DOCS</span><span class="o">=</span><span class="n">OFF</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j</span>
 </pre></div>
 </div>
+</div></blockquote>
+</li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">Failed</span> <span class="pre">to</span> <span class="pre">detect</span> <span class="pre">a</span> <span class="pre">default</span> <span class="pre">CUDA</span> <span class="pre">architecture.</span></code> error:</p>
+<blockquote>
+<div><p>Make sure the CUDA path is set correctly.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># E.g.,
+export PATH=/usr/local/cuda-11.7/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-11.7/lib64:$LD_LIBRARY_PATH
+</pre></div>
+</div>
+<p>Ensure you can run the following command.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvcc</span> <span class="o">-</span><span class="n">V</span>
+</pre></div>
+</div>
+<p>You should see something like this.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvcc</span><span class="p">:</span> <span class="n">NVIDIA</span> <span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="n">Cuda</span> <span class="n">compiler</span> <span class="n">driver</span>
+<span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2005</span><span class="o">-</span><span class="mi">2022</span> <span class="n">NVIDIA</span> <span class="n">Corporation</span>
+<span class="n">Built</span> <span class="n">on</span> <span class="n">Wed_Jun__8_16</span><span class="p">:</span><span class="mi">49</span><span class="p">:</span><span class="mi">14</span><span class="n">_PDT_2022</span>
+<span class="n">Cuda</span> <span class="n">compilation</span> <span class="n">tools</span><span class="p">,</span> <span class="n">release</span> <span class="mf">11.7</span><span class="p">,</span> <span class="n">V11</span><span class="mf">.7.99</span>
+<span class="n">Build</span> <span class="n">cuda_11</span><span class="mf">.7</span><span class="o">.</span><span class="n">r11</span><span class="mf">.7</span><span class="o">/</span><span class="n">compiler</span><span class="mf">.31442593_0</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">/home/user/fairo/polymetis/polymetis/torch_isolation/include/torch_server_ops.hpp:56:39:</span> <span class="pre">error:</span> <span class="pre">‘size_t’</span> <span class="pre">has</span> <span class="pre">not</span> <span class="pre">been</span> <span class="pre">declared</span></code> error,</p>
+<blockquote>
+<div><p>Add <code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&lt;stddef.h&gt;</span></code> on top of the <code class="docutils literal notranslate"><span class="pre">torch_server_ops.hpp</span></code> file, and build again.</p>
+<ol class="arabic simple">
+<li><p>Open the file.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vim</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">fairo</span><span class="o">&gt;/</span><span class="n">polymetis</span><span class="o">/</span><span class="n">polymetis</span><span class="o">/</span><span class="n">torch_isolation</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">torch_server_ops</span><span class="o">.</span><span class="n">hpp</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>And add the following line on top of the file.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;stddef.h&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
 </div></blockquote>
 <p><strong>Q:</strong> What should I do with warnings like
 <code class="docutils literal notranslate"><span class="pre">Warning:</span> <span class="pre">Failed</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">'libtorchrot.so'</span> <span class="pre">from</span> <span class="pre">CONDA_PREFIX</span></code> or
@@ -504,14 +559,14 @@ $<span class="w"> </span>lsusb<span class="w"> </span>-t
 <div class="line"><strong>Q:</strong> The robot does not follow Oculus Quest 2 even after the connection is established. What should I do?</div>
 </div>
 <blockquote>
-<div><dl class="simple">
-<dt><strong>A:</strong></dt><dd><ul class="simple">
+<div><p><strong>A:</strong> Please check the following:</p>
+<blockquote>
+<div><ul class="simple">
 <li><p>Make sure you find Oculus device when running <cite>adb devices</cite> commands in Client.</p></li>
 <li><p>Please double-check if you follow the instructions in the <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html#setup-oculus-quest-2"><span class="std std-ref">Setup Oculus Quest 2</span></a> section.</p></li>
 <li><p>If the problem persist, restart the Oculus.</p></li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 </div></blockquote>
 </section>
 <section id="training-and-evaluation">
@@ -547,7 +602,7 @@ $<span class="w"> </span>lsusb<span class="w"> </span>-t
 <div class="line"><strong>Q:</strong> What if the robot is not moving when I use Oculus?</div>
 </div>
 <blockquote>
-<div><p><strong>A:</strong> Make sure to control the robot in the guidance area of Oculus, allow the access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also check the the Oculus is turned on (white light is on in the front).</p>
+<div><p><strong>A:</strong> Make sure to control the robot in the guidance area of Oculus, allow the access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also check the Oculus is turned on (white light is on in the front).</p>
 </div></blockquote>
 </section>
 <section id="camera">
@@ -559,7 +614,7 @@ $<span class="w"> </span>lsusb<span class="w"> </span>-t
 <div><p><strong>A:</strong> Consider
 installing <a class="reference external" href="https://robots.uc3m.es/installation-guides/install-realsense2.html">realsense
 viewer</a>
-and test whether the camera is connected stably. Also there are other
+and test whether the camera is connected stably. Also, there are other
 features in the viewer that can be used to check the camera status.</p>
 </div></blockquote>
 <div class="line-block">
@@ -590,14 +645,29 @@ camera and close it before running the desired program.</p>
 <section id="simulator">
 <h2>Simulator<a class="headerlink" href="#simulator" title="Permalink to this headline">#</a></h2>
 <div class="line-block">
-<div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">isaacgymenvs</span> <span class="pre">setup</span> <span class="pre">command:</span> <span class="pre">'python_requires'</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">string</span> <span class="pre">containing</span> <span class="pre">valid</span> <span class="pre">version</span> <span class="pre">specifiers;</span> <span class="pre">Invalid</span> <span class="pre">specifier:</span> <span class="pre">'&gt;=3.6.*</span></code>?</div>
+<div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">isaacgymenvs</span> <span class="pre">setup</span> <span class="pre">command:</span> <span class="pre">'python_requires'</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">string</span> <span class="pre">containing</span> <span class="pre">valid</span> <span class="pre">version</span> <span class="pre">specifiers;</span> <span class="pre">Invalid</span> <span class="pre">specifier:</span> <span class="pre">'&gt;=3.6.*</span></code> during local installation?</div>
 </div>
 <blockquote>
-<div><p><strong>A:</strong> execute the following commands</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip<span class="w"> </span>setuptools
+<div><p><strong>A:</strong> execute the following commands, and then rerun the installation.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span>wheel
 pip<span class="w"> </span>install<span class="w"> </span><span class="nv">setuptools</span><span class="o">==</span><span class="m">58</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span><span class="nv">pip</span><span class="o">==</span><span class="m">22</span>.2.2
 </pre></div>
 </div>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> I am encountering <code class="docutils literal notranslate"><span class="pre">ImportError:</span> <span class="pre">libpython3.8m.so.1.0:</span> <span class="pre">cannot</span> <span class="pre">open</span> <span class="pre">shared</span> <span class="pre">object</span> <span class="pre">file:</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></code> error.</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> Run following commands.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="n">ppa</span><span class="p">:</span><span class="n">deadsnakes</span><span class="o">/</span><span class="n">ppa</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">python3</span><span class="mf">.8</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+</div></blockquote>
 </div></blockquote>
 <div class="line-block">
 <div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">[Error]</span> <span class="pre">[carb.windowing-glfw.plugin]</span> <span class="pre">GLFW</span> <span class="pre">initialization</span> <span class="pre">failed.</span></code> or <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">protocol</span> <span class="pre">specified</span></code>?</div>
@@ -609,7 +679,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="nv">setup
 <div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">[Error]</span> <span class="pre">[carb.gym.plugin]</span> <span class="pre">cudaExternamMemoryGetMappedBuffer</span> <span class="pre">failed</span> <span class="pre">on</span> <span class="pre">rgbImage</span> <span class="pre">buffer</span> <span class="pre">wit</span> <span class="pre">h</span> <span class="pre">error</span> <span class="pre">101</span></code>?</div>
 </div>
 <blockquote>
-<div><p><strong>A:</strong> You should specify vulkan explicitely.</p>
+<div><p><strong>A:</strong> You should specify vulkan explicitly.</p>
 <p>Shut down the current Docker container, and then run the following commands</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt<span class="w"> </span>install<span class="w"> </span>vulkan-tools
 <span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span>list<span class="w"> </span>vulkaninfo
@@ -625,7 +695,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="nv">setup
 <div class="line"><strong>Q:</strong> Simulator does not terminate even after I press Ctrl+C. What should I do?</div>
 </div>
 <blockquote>
-<div><p><strong>A:</strong> It could happen when the input streams are blocked. The work around is to press Ctrl+Z and then <code class="docutils literal notranslate"><span class="pre">kill</span> <span class="pre">%1</span></code> to terminate the first job.</p>
+<div><p><strong>A:</strong> It could happen when the input streams are blocked. The workaround is to press Ctrl+Z and then <code class="docutils literal notranslate"><span class="pre">kill</span> <span class="pre">%1</span></code> to terminate the first job.</p>
 </div></blockquote>
 </section>
 <section id="gym">
@@ -636,6 +706,17 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="nv">setup
 <blockquote>
 <div><p><strong>A:</strong> Install Gym version 0.21.0 by running
 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gym==0.21.0</span></code>.</p>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> I am getting the error while running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gym==0.21.0</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code></div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> Run the following commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span> <span class="n">wheel</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">setuptools</span><span class="o">==</span><span class="mi">58</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span><span class="o">==</span><span class="mf">22.2.2</span>
+</pre></div>
+</div>
 </div></blockquote>
 </section>
 <section id="display">

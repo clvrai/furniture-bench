@@ -204,7 +204,7 @@ Install Front and Rear Cameras
 ..     :alt: camera_serial
 
 .. |camera_serial| image:: ../_static/instruction/camera_serial.jpg
-    :scale: 15
+    :scale: 50
 .. |camera_serial_realsense_viewer| image:: ../_static/instruction/serial_realsense_viewer.jpg
     :scale: 15
 
@@ -385,7 +385,7 @@ Run Client
     # Set absolute path to the furniture-bench repo
     export FURNITURE_BENCH=</path/to/furniture-bench>
 
-    # (Optional) IsaacGym absolute path if you want to use the simulator
+    # (Optional) Isaac Gym absolute path if you want to use the simulator
     export ISAAC_GYM_PATH=</path/to/isaacgym> # path to isaacgym downloaded from https://developer.nvidia.com/isaac-gym
 
 2. Run client image. ``launch_client.sh`` will read the environment variables and run the Docker image.

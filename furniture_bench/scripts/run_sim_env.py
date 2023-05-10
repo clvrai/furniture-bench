@@ -3,7 +3,6 @@ import argparse
 import pickle
 
 from furniture_bench.envs.furniture_sim_env import FurnitureSimEnv
-from furniture_bench.device import make_device_interface
 
 import gym
 import cv2
@@ -92,6 +91,7 @@ def main():
     env.reset()
 
     if args.input_device is not None:
+        from furniture_bench.device import make_device_interface
         device_interface = make_device_interface(args.input_device)
 
         while True:

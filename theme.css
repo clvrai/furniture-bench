@@ -149,6 +149,12 @@ body, html {
     .timeline {
         width:100%;
     }
+
+    body::after {
+        position:absolute; width:0; height:0; overflow:hidden; z-index:-1;
+        content:url("./website_img/real_world_squaregrid.jpg");
+    }
+
     .hd-container {
         min-height:60%;
         background-size:cover;
@@ -226,6 +232,12 @@ body, html {
     .timeline {
         width:80%;
     }
+
+    body::after {
+        position:absolute; width:0; height:0; overflow:hidden; z-index:-1;
+        content:url("./website_img/real_world_grid.jpg");
+    }
+
     .hd-container {
         min-height: 60%;
         background-size:cover;
@@ -300,6 +312,11 @@ body, html {
     }
     .timeline {
         width:60%;
+    }
+
+    body::after {
+        position:absolute; width:0; height:0; overflow:hidden; z-index:-1;
+        content:url("./website_img/real_world_grid.jpg");
     }
 
     .hd-container {

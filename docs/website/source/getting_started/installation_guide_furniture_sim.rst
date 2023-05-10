@@ -1,7 +1,7 @@
 Installation Guide (FurnitureSim)
 =========================================================
 
-FurnitureSim is a high-speed and realistic simulation of FurnitureBench, built using IsaacGym and Factory.
+FurnitureSim is a high-speed and realistic simulation of FurnitureBench, built using Isaac Gym and Factory.
 It is designed to be a seamless substitution of the real-world environment, and enables rapid prototyping of new algorithms.
 
 
@@ -12,11 +12,11 @@ It is designed to be a seamless substitution of the real-world environment, and 
 .. table::
     :widths: 30 30 30
 
-    +-----------------------------+------------------+------------------------+
-    |         |real|              | |simulator|      |    |rendering|         |
-    +=============================+==================+========================+
-    | \(a) Real-world environment |  \(b) Simluator  | \(c) Offline rendering |
-    +-----------------------------+------------------+------------------------+
+    +------------------+------------------------+-----------------------------+
+    | |simulator|      |    |rendering|         |          |real|             |
+    +==================+========================+=============================+
+    |  \(a) Simluator  | \(b) Offline rendering | \(c) Real-world environment |
+    +------------------+------------------------+-----------------------------+
 
 Now we will take a look how to install FurnitureSim.
 You can install FurnitureSim using Docker or from source.
@@ -29,67 +29,119 @@ You can install FurnitureSim using Docker or from source.
     -  📖 Download `Isaac Gym <https://developer.nvidia.com/isaac-gym>`__
     -  📖 `Anaconda <https://www.anaconda.com/>`__
 
+Downloading Isaac Gym
+~~~~~~~~~~~~~~~~~~~~
+Our simulator is built on top of Isaac Gym and Factory for, which enable fast and complex physics simulation.
+Here we provide installation instructions for Isaac Gym.
+
+- Go to the `website <https://developer.nvidia.com/isaac-gym>`__.
+- Start by creating an NVIDIA account, and then click "Member area".
+- Kindly review and accept the "Terms of the NVIDIA Isaac Gym License Agreement".
+- Download `Isaac Gym - Ubuntu Linux 18.04 / 20.04 Preview 4 release`.
+- Unzip the downloaded file and move the folder to the desired location.
 
 Installation using Docker (Option 1)
 ~~~~~~~~~~~~~~~~~~~
 
 We provide a docker image that includes everything needed for FurnitureSim. To use FurnitureSim, you only need to run our docker image.
 
-1. Download IsaacGym from `NVIDIA Developer <https://developer.nvidia.com/isaac-gym>`__. Start by creating an NVIDIA account, agree to the terms and conditions, and then download `Isaac Gym - Ubuntu Linux 18.04 / 20.04 Preview 4 release`. Unzip the downloaded file and move the folder to the desired location.
+1. 📖 Download `nvidia-docker2 <https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html>`__.
 
-2. 📖 Download `nvidia-docker2 <https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html>`__
+2. Set the environment variables by following :ref:`Run Client`.
 
-3. In case you initiate, execute the GPU-supported client Docker by following :ref:`Run Client`.
+3. Launch the Docker image with:
+
+  .. code::
+
+    ./launch_client --sim-gpu <--pulled or --built>
 
 
 Local Installation (Option 2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you need FurnitureSim in your own environment, you can install FurnitureSim by manually installing dependencies as follows:
+You can also install FurnitureSim by manually installing dependencies as follows:
+
+0. Install CUDA (Skip if you already have CUDA installed):
+
+    You can follow the instructions `here <https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html>`__, or follow this `gist <https://gist.github.com/primus852/b6bac167509e6f352efb8a462dcf1854#file-cuda_11-7_installation_on_ubuntu_22-04>`__
 
 
-1. (Optional) Create and activate a conda environment:
+1. Install requirements:
+
+    .. code::
+
+        sudo apt install build-essential cmake libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libboost-filesystem-dev libssl-dev
+
+
+
+2. Clone Polymetis:
+
+    .. code::
+
+        git clone https://github.com/facebookresearch/fairo.git
+
+
+3. Create a conda environment:
 
   .. code::
 
-        conda create -n furniture-bench python=3.8
-        conda activate furniture-bench
+        cd fairo/polymetis
+        conda env create -f ./polymetis/environment.yml -n furniture-bench
+        pip install -e ./polymetis/
 
-2. Download IsaacGym from https://developer.nvidia.com/isaac-gym and install it:
 
-  .. code::
+4. Install PyTorch:
+
+    .. code::
+
+        # Your specific version.
+        # E.g.,
+        pip3 install torch torchvision torchaudio
+        # Or,
+        conda install pytorch torchvision torchaudio cudatoolkit=11.7 -c pytorch -c conda-forge
+
+5. Build Polymetis:
+
+    # In fairo/polymetis directory,
+
+    .. code::
+
+        mkdir -p ./polymetis/build
+        cd ./polymetis/build
+
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_FRANKA=OFF -DBUILD_TESTS=OFF -DBUILD_DOCS=OFF
+        make -j
+
+6. Install Isaac Gym:
+
+    .. code::
 
         cd </path/to/isaacgym>
         cd python
-        pip install -e isaacgym
+        pip install -e .
 
-3. Clone and install IsaacGymEnvs:
+7. Install FurnitureBench:
 
-  .. code::
-
-        git clone https://github.com/NVIDIA-Omniverse/IsaacGymEnvs
-        pip install -e IsaacGymEnvs
-
-4. Clone and install FurnitureBench:
-
-  .. code::
+    .. code::
 
         git clone https://github.com/clvrai/furniture-bench.git
-        pip install -e furniture-bench
+        cd furniture-bench
+        pip install -e .
 
-5. Install other dependencies:
+        # Match the version of setuptools with the packages in the requirements.txt
+        pip install --upgrade pip wheel
+        pip install setuptools==58
+        pip install --upgrade pip==22.2.2
 
-  .. code::
-
-        conda install mamba -c conda-forge
-        mamba install -c pytorch -c fair-robotics -c aihabitat -c conda-forge polymetis
         pip install -r requirements.txt
 
-6. Install PyTorch again if you want another PyTorch version (Polymetis overrides PyTorch). As an example, we install PyTorch 1.10 with CUDA 11.3:
 
-  .. code::
+8. Test the installation:
 
-        conda install pytorch==1.10 torchvision cudatoolkit=11.3 -c pytorch
+    .. code::
+
+        python furniture_bench/scripts/run_sim_env.py --furniture one_leg --scripted
+
 
 Running FurnitureSim
 ~~~~~~~~~~~~~~~~~~~~

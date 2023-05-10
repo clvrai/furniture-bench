@@ -14,19 +14,89 @@ Troubleshooting
 
 **Q:** What should I do if I encounter ``OSError: libtorch_cuda.so: cannot open shared object file: No such file or directory`` error?
 
-  **A:** If you encounter a Segmentation fault (core dumped) error in the client PC while using a robot, you should rebuild fairo by running the command below in the Docker image. This might be cause by the linking error because of the reinstall of PyTorch.
+  **A:** If you encounter a Segmentation fault (core dumped) error in the client PC while using a robot, you should rebuild fairo by running the command below in the Docker image. This might be caused by the linking error because of the reinstall of PyTorch.
 
   .. code:: bash
 
      $ cd /fairo/polymetis/polymetis/build/
      $ make -j
 
-**Q:** I faced ``grpc.RpcError: POLYMETIS SERVER ERROR --
-Failed to load new controller: isTuple()INTERNAL ASSERT FAILED at... please report a bug to PyTorch.`` error. What should I do?
+**Q:** I'm encountering issues while building Polymetis from source. How can I resolve this?
 
-  **A:** This might be due to the version of PyTorch. Please try to use PyTorch 1.10 by running the following command.
-  .. code::
-    conda install pytorch==1.10 torchvision cudatoolkit=11.3 -c pytorch
+
+    **A:** Here are some common errors and solutions.
+
+    - For ``/home/linuxbrew/.linuxbrew/Cellar/openssl@1.1/1.1.1t/lib/libcrypto.so: undefined reference to `dlsym@GLIBC_2.34'`` error:
+
+        Follow the steps below.
+
+        .. code::
+
+            # 1. Unlink the brew openssl (https://github.com/Homebrew/homebrew-core/issues/118825)
+            brew unlink openssl@1.1
+
+            # 2. build the Polymetis again.
+            cd <path/to/fairo>/polymetis/polymetis/
+
+            # Remove the build directory if it exists.
+            rm -rf build
+            mkdir build && cd build
+            # Rebuild.
+            cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_FRANKA=OFF -DBUILD_TESTS=OFF -DBUILD_DOCS=OFF
+            make -j
+
+    - For ``Failed to detect a default CUDA architecture.`` error:
+
+        Make sure the CUDA path is set correctly.
+
+        .. code::
+
+            # E.g.,
+            export PATH=/usr/local/cuda-11.7/bin:$PATH
+            export LD_LIBRARY_PATH=/usr/local/cuda-11.7/lib64:$LD_LIBRARY_PATH
+
+
+        Ensure you can run the following command.
+
+        .. code::
+
+            nvcc -V
+
+        You should see something like this.
+
+        .. code::
+
+            nvcc: NVIDIA (R) Cuda compiler driver
+            Copyright (c) 2005-2022 NVIDIA Corporation
+            Built on Wed_Jun__8_16:49:14_PDT_2022
+            Cuda compilation tools, release 11.7, V11.7.99
+            Build cuda_11.7.r11.7/compiler.31442593_0
+
+    - For ``/home/user/fairo/polymetis/polymetis/torch_isolation/include/torch_server_ops.hpp:56:39: error: ‘size_t’ has not been declared`` error,
+
+        Add ``#include <stddef.h>`` on top of the ``torch_server_ops.hpp`` file, and build again.
+
+        1) Open the file.
+
+        .. code::
+
+            vim <path/to/fairo>/polymetis/polymetis/torch_isolation/include/torch_server_ops.hpp
+
+        2) And add the following line on top of the file.
+
+        .. code::
+
+            #include <stddef.h>
+
+
+.. **Q:** I faced ``grpc.RpcError: POLYMETIS SERVER ERROR --
+.. Failed to load new controller: isTuple()INTERNAL ASSERT FAILED at... please report a bug to PyTorch.`` error. What should I do?
+
+..   **A:** This might be due to the version of PyTorch. Please try to use PyTorch 1.10 by running the following command.
+
+..   .. code::
+
+..         conda install pytorch==1.10 torchvision cudatoolkit=11.3 -c pytorch
 
 **Q:** What should I do with warnings like
 ``Warning: Failed to load 'libtorchrot.so' from CONDA_PREFIX`` or
@@ -80,7 +150,8 @@ Device Connections
 
 | **Q:** The robot does not follow Oculus Quest 2 even after the connection is established. What should I do?
 
-  **A:**
+  **A:** Please check the following:
+
     - Make sure you find Oculus device when running `adb devices` commands in Client.
     - Please double-check if you follow the instructions in the :ref:`Setup Oculus Quest 2` section.
     - If the problem persist, restart the Oculus.
@@ -111,7 +182,7 @@ Oculus
 
 | **Q:** What if the robot is not moving when I use Oculus?
 
-  **A:** Make sure to control the robot in the guidance area of Oculus, allow the access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also check the the Oculus is turned on (white light is on in the front).
+  **A:** Make sure to control the robot in the guidance area of Oculus, allow the access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also check the Oculus is turned on (white light is on in the front).
 
 Camera
 ~~~~~~
@@ -121,7 +192,7 @@ Camera
   **A:** Consider
   installing `realsense
   viewer <https://robots.uc3m.es/installation-guides/install-realsense2.html>`__
-  and test whether the camera is connected stably. Also there are other
+  and test whether the camera is connected stably. Also, there are other
   features in the viewer that can be used to check the camera status.
 
 | **Q:** What should I do if I encounter a RuntimeError: Frame didn't arrive within 5000 error when using a camera?
@@ -145,14 +216,26 @@ Camera
 Simulator
 ~~~~~~~~~
 
-| **Q:** What should I do if I encounter an error ``isaacgymenvs setup command: 'python_requires' must be a string containing valid version specifiers; Invalid specifier: '>=3.6.*``?
+| **Q:** What should I do if I encounter an error ``isaacgymenvs setup command: 'python_requires' must be a string containing valid version specifiers; Invalid specifier: '>=3.6.*`` during local installation?
 
-  **A:** execute the following commands
+  **A:** execute the following commands, and then rerun the installation.
 
   .. code:: bash
 
-      pip install -U pip setuptools
-      pip install setuptools==58
+    pip install --upgrade pip wheel
+    pip install setuptools==58
+    pip install --upgrade pip==22.2.2
+
+| **Q:** I am encountering ``ImportError: libpython3.8m.so.1.0: cannot open shared object file: No such file or directory`` error.
+
+  **A:** Run following commands.
+
+    .. code::
+
+        sudo apt update
+        sudo add-apt-repository ppa:deadsnakes/ppa -y
+        sudo apt update
+        sudo apt install python3.8-dev
 
 | **Q:** What should I do if I encounter an error ``[Error] [carb.windowing-glfw.plugin] GLFW initialization failed.`` or ``No protocol specified``?
 
@@ -161,7 +244,7 @@ Simulator
 
 | **Q:** What should I do if I encounter an error ``[Error] [carb.gym.plugin] cudaExternamMemoryGetMappedBuffer failed on rgbImage buffer wit h error 101``?
 
-  **A:** You should specify vulkan explicitely.
+  **A:** You should specify vulkan explicitly.
 
   Shut down the current Docker container, and then run the following commands
 
@@ -180,7 +263,7 @@ Simulator
 
 | **Q:** Simulator does not terminate even after I press Ctrl+C. What should I do?
 
-  **A:** It could happen when the input streams are blocked. The work around is to press Ctrl+Z and then ``kill %1`` to terminate the first job.
+  **A:** It could happen when the input streams are blocked. The workaround is to press Ctrl+Z and then ``kill %1`` to terminate the first job.
 
 Gym
 ~~~
@@ -189,6 +272,16 @@ Gym
 
   **A:** Install Gym version 0.21.0 by running
   ``pip install gym==0.21.0``.
+
+| **Q:** I am getting the error while running ``pip install gym==0.21.0`` or ``pip install -r requirements.txt``
+
+  **A:** Run the following commands
+
+  .. code::
+
+    pip install --upgrade pip wheel
+    pip install setuptools==58
+    pip install --upgrade pip==22.2.2
 
 Display
 ~~~~~~~

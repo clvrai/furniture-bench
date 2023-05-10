@@ -1,7 +1,7 @@
 Dataset
 =========================================================
 
-Furniture assembly is a complex, long-horizon manipulation task, which is very challenging to solve using reinforcement learning. To make our benchmark tractable, we provide **219.6 hours** of **5100** successful demonstrations collected using an Oculus Quest 2 controller and a keyboard. We collected 2-24 hours of demonstration data for each furniture model and each initialization randomness level. The length of each demonstration is around 300-3000 steps.
+Furniture assembly is a complex, long-horizon manipulation task, which is very challenging to solve using reinforcement learning. To make our benchmark tractable, we provide **219.6 hours** of **5100** successful demonstrations collected using an Oculus Quest 2 controller and a keyboard. We collected 2-24 hours of demonstration data for each furniture model and each initialization randomness level. The length of each demonstration is around 600-2300 steps.
 
 
 Downloading Dataset
