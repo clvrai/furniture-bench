@@ -16,7 +16,7 @@ Troubleshooting
 
   **A:** If you encounter a Segmentation fault (core dumped) error in the client PC while using a robot, you should rebuild fairo by running the command below in the Docker image. This might be caused by the linking error because of the reinstall of PyTorch.
 
-  .. code:: bash
+  .. code::
 
      $ cd /fairo/polymetis/polymetis/build/
      $ make -j
@@ -72,7 +72,7 @@ Troubleshooting
             Cuda compilation tools, release 11.7, V11.7.99
             Build cuda_11.7.r11.7/compiler.31442593_0
 
-    - For ``/home/user/fairo/polymetis/polymetis/torch_isolation/include/torch_server_ops.hpp:56:39: error: ‘size_t’ has not been declared`` error,
+    - For ``/home/user/fairo/polymetis/polymetis/torch_isolation/include/torch_server_ops.hpp:56:39: error: ‘size_t’ has not been declared`` error:
 
         Add ``#include <stddef.h>`` on top of the ``torch_server_ops.hpp`` file, and build again.
 
@@ -87,16 +87,6 @@ Troubleshooting
         .. code::
 
             #include <stddef.h>
-
-
-.. **Q:** I faced ``grpc.RpcError: POLYMETIS SERVER ERROR --
-.. Failed to load new controller: isTuple()INTERNAL ASSERT FAILED at... please report a bug to PyTorch.`` error. What should I do?
-
-..   **A:** This might be due to the version of PyTorch. Please try to use PyTorch 1.10 by running the following command.
-
-..   .. code::
-
-..         conda install pytorch==1.10 torchvision cudatoolkit=11.3 -c pytorch
 
 **Q:** What should I do with warnings like
 ``Warning: Failed to load 'libtorchrot.so' from CONDA_PREFIX`` or
@@ -237,10 +227,9 @@ Simulator
         sudo apt update
         sudo apt install python3.8-dev
 
-| **Q:** What should I do if I encounter an error ``[Error] [carb.windowing-glfw.plugin] GLFW initialization failed.`` or ``No protocol specified``?
+| **Q:** What should I do if I encounter an error ``[Error] [carb.windowing-glfw.plugin] GLFW initialization failed.`` or ``No protocol specified`` while running in Docker image?
 
   **A:** Shut down the current Docker container, run ``xhost +``, and then restart the Docker container.
-
 
 | **Q:** What should I do if I encounter an error ``[Error] [carb.gym.plugin] cudaExternamMemoryGetMappedBuffer failed on rgbImage buffer wit h error 101``?
 

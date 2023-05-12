@@ -1,6 +1,25 @@
 FurnitureSim
 ===================
 
+Environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Here we show how to initialize the simulation environment with different arguments.
+
+.. code::
+
+    env = gym.make(
+        "Furniture-Sim-Env-v0",  # string, environment name.
+        furniture=...,           # string, <'lamp' | 'square_table' | 'desk' | 'drawer' | 'cabinet' | 'round_table' | 'stool' | 'chair' | 'one_leg'>.
+        num_envs=...,            # integer, number of parallel environment.
+        init_assembled=...,      # boolean, initialize the environment with assembled furniture.
+        resize_img=...,          # boolean, resize images to 224 x 224.
+        headless=..,             # boolean, run the simulation without GUI.
+        save_camera_input=...,   # boolean, save camera input images in the beginning of the episode.
+        randomness=...,          # string, <'low' | 'med' | 'high'>.
+        high_random_idx=...      # integer, index of the high randomness environment.
+    )
+
+
 Assembly Scripts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Here we show how to run automated assembly scripts that is based on the finite state machine (FSM).
@@ -31,7 +50,7 @@ This is useful to check whether the simulator can correctly simulate contacts of
 
    python furniture_bench/scripts/run_sim_env.py --furniture drawer --init-assembled
 
-   # args: --furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg]
+   # args: --furniture <'lamp' | 'square_table' | 'desk' | 'drawer' | 'cabinet' | 'round_table' | 'stool' | 'chair' | 'one_leg'>
 
 Data Collection Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,18 +111,6 @@ The front, wrist, and rear images will be saved to the ``sim_camera/`` directory
 +==============+==============+=============+
 | |image1|     | |image2|     |  |image3|   |
 +--------------+--------------+-------------+
-
-.. Policy Training and Evaluation
-.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. .. code::
-
-..     # BC conversion
-..     python furniture_bench/scripts/convert_data.py --in-data-path /data/minho/hdd/IL_data/one_leg/ --out-data-path /data/minho/converted_one_leg_mixed_2000/
-
-..     # IQL conversion
-..     python implicit_q_learning/convert_furniture_data.py --furniture one_leg --demo_dir /hdd/converted_stool_full_100 --out_file_path one_leg_sim.pkl --use_r3m
-.. TODO
 
 Additional Information
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

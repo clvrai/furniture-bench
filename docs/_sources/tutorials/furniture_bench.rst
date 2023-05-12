@@ -1,11 +1,27 @@
-Tools and Scripts
+FurnitureBench
 =================
 
+Environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Here we show how to initialize the real-world environment with different arguments.
 
-.. prerequisites::
-    Prerequisites
+.. code::
 
-    - :ref:`Installation Guide`
+        env = gym.make(
+            'Furniture-Env-v0',      # string, environment name.
+            furniture=...,           # string, <'lamp' | 'square_table' | 'desk' | 'drawer' | 'cabinet' | 'round_table' | 'stool' | 'chair' | 'one_leg'>.
+            manual_done=...,         # boolean, if True, the episode ends only when the user presses the 'done' button.
+            with_display=...,        # boolean, if True, the environment renders the camera images.
+            draw_marker=...,         # boolean, if True, the environment renders the AprilTag marker.
+            manual_label=...,        # boolean, if True, allow manual labeling of the reward.
+            from_skill=...,          # integer, [0-5) skill index to start from.
+            to_skill=...,            # integer, [1-5] skill index to end at. Should be larger than `from_skill`.
+            randomness=...,          # string, <'low' | 'med' | 'high'>, randomness level of the environment.
+            high_random_idx=...,     # integer, 0-2, index of the high randomness level.
+            visualize_init_pose=..., # boolean, if True, visualize the initial pose of furniture parts.
+            record_video=...,        # boolean, if True, record the video of agent's observation
+            manual_reset=...,        # boolean, if True, allow manual reset of the environment.
+        )
 
 Visualize Camera Inputs
 ~~~~~~~~~~~~~~~~~~~~~~~

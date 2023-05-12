@@ -65,32 +65,13 @@ You can also install FurnitureSim by manually installing dependencies as follows
 
     You can follow the instructions `here <https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html>`__, or follow this `gist <https://gist.github.com/primus852/b6bac167509e6f352efb8a462dcf1854#file-cuda_11-7_installation_on_ubuntu_22-04>`__
 
-
-1. Install requirements:
-
-    .. code::
-
-        sudo apt install build-essential cmake libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libboost-filesystem-dev libssl-dev
-
-
-
-2. Clone Polymetis:
+1. (Optional) Create a conda environment:
 
     .. code::
 
-        git clone https://github.com/facebookresearch/fairo.git
+        conda create -n furniture-bench python=3.8
 
-
-3. Create a conda environment:
-
-  .. code::
-
-        cd fairo/polymetis
-        conda env create -f ./polymetis/environment.yml -n furniture-bench
-        pip install -e ./polymetis/
-
-
-4. Install PyTorch:
+2. Install PyTorch:
 
     .. code::
 
@@ -100,19 +81,7 @@ You can also install FurnitureSim by manually installing dependencies as follows
         # Or,
         conda install pytorch torchvision torchaudio cudatoolkit=11.7 -c pytorch -c conda-forge
 
-5. Build Polymetis:
-
-    # In fairo/polymetis directory,
-
-    .. code::
-
-        mkdir -p ./polymetis/build
-        cd ./polymetis/build
-
-        cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_FRANKA=OFF -DBUILD_TESTS=OFF -DBUILD_DOCS=OFF
-        make -j
-
-6. Install Isaac Gym:
+3. Install Isaac Gym:
 
     .. code::
 
@@ -120,7 +89,7 @@ You can also install FurnitureSim by manually installing dependencies as follows
         cd python
         pip install -e .
 
-7. Install FurnitureBench:
+4. Install FurnitureBench:
 
     .. code::
 
@@ -135,8 +104,7 @@ You can also install FurnitureSim by manually installing dependencies as follows
 
         pip install -r requirements.txt
 
-
-8. Test the installation:
+5. Test the installation:
 
     .. code::
 

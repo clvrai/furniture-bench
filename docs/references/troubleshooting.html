@@ -32,6 +32,7 @@
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -43,7 +44,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
     <script src="../_static/scripts/custom_toc_highlight.js"></script>
     <script src="../_static/scripts/add_br_to_sections.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -97,7 +98,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
+        <p class="caption">
  <span class="caption-text">
   Getting Started
  </span>
@@ -124,7 +125,7 @@
   </a>
  </li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
+<p class="caption">
  <span class="caption-text">
   Tutorials
  </span>
@@ -132,7 +133,12 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
-   Teleoperation using Oculus/Keyboard
+   Data Collection using Oculus/Keyboard
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/furniture_bench.html">
+   FurnitureBench
   </a>
  </li>
  <li class="toctree-l1">
@@ -141,12 +147,12 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../tutorials/tools_and_scripts.html">
-   Tools and Scripts
+  <a class="reference internal" href="../tutorials/training_and_testing.html">
+   Training and Testing
   </a>
  </li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
+<p class="caption">
  <span class="caption-text">
   References
  </span>
@@ -437,8 +443,8 @@ title="Print to PDF"
 <p><strong>Q:</strong> What should I do if I encounter <code class="docutils literal notranslate"><span class="pre">OSError:</span> <span class="pre">libtorch_cuda.so:</span> <span class="pre">cannot</span> <span class="pre">open</span> <span class="pre">shared</span> <span class="pre">object</span> <span class="pre">file:</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></code> error?</p>
 <blockquote>
 <div><p><strong>A:</strong> If you encounter a Segmentation fault (core dumped) error in the client PC while using a robot, you should rebuild fairo by running the command below in the Docker image. This might be caused by the linking error because of the reinstall of PyTorch.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/fairo/polymetis/polymetis/build/
-$<span class="w"> </span>make<span class="w"> </span>-j
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd /fairo/polymetis/polymetis/build/
+$ make -j
 </pre></div>
 </div>
 </div></blockquote>
@@ -487,7 +493,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda-11.7/lib64:$LD_LIBRARY_PATH
 </div>
 </div></blockquote>
 </li>
-<li><p>For <code class="docutils literal notranslate"><span class="pre">/home/user/fairo/polymetis/polymetis/torch_isolation/include/torch_server_ops.hpp:56:39:</span> <span class="pre">error:</span> <span class="pre">‘size_t’</span> <span class="pre">has</span> <span class="pre">not</span> <span class="pre">been</span> <span class="pre">declared</span></code> error,</p>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">/home/user/fairo/polymetis/polymetis/torch_isolation/include/torch_server_ops.hpp:56:39:</span> <span class="pre">error:</span> <span class="pre">‘size_t’</span> <span class="pre">has</span> <span class="pre">not</span> <span class="pre">been</span> <span class="pre">declared</span></code> error:</p>
 <blockquote>
 <div><p>Add <code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&lt;stddef.h&gt;</span></code> on top of the <code class="docutils literal notranslate"><span class="pre">torch_server_ops.hpp</span></code> file, and build again.</p>
 <ol class="arabic simple">
@@ -670,7 +676,7 @@ pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="
 </div></blockquote>
 </div></blockquote>
 <div class="line-block">
-<div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">[Error]</span> <span class="pre">[carb.windowing-glfw.plugin]</span> <span class="pre">GLFW</span> <span class="pre">initialization</span> <span class="pre">failed.</span></code> or <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">protocol</span> <span class="pre">specified</span></code>?</div>
+<div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">[Error]</span> <span class="pre">[carb.windowing-glfw.plugin]</span> <span class="pre">GLFW</span> <span class="pre">initialization</span> <span class="pre">failed.</span></code> or <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">protocol</span> <span class="pre">specified</span></code> while running in Docker image?</div>
 </div>
 <blockquote>
 <div><p><strong>A:</strong> Shut down the current Docker container, run <code class="docutils literal notranslate"><span class="pre">xhost</span> <span class="pre">+</span></code>, and then restart the Docker container.</p>

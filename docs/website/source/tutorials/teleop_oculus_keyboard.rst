@@ -1,4 +1,4 @@
-Teleoperation using Oculus/Keyboard
+Data Collection using Oculus/Keyboard
 =========================================
 
 Our system supports Oculus Quest 2 controller and keyboard for demonstration collections.

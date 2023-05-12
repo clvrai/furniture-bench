@@ -45,8 +45,9 @@ If you use FurnitureBench in your research, please cite this work as follows:
    :hidden:
 
    tutorials/teleop_oculus_keyboard
+   tutorials/furniture_bench.rst
    tutorials/furniture_sim
-   tutorials/tools_and_scripts.rst
+   tutorials/training_and_testing.rst
 
 .. toctree::
    :maxdepth: 1
