@@ -36,6 +36,21 @@ Rollouts with Pre-trained Policies
     python implicit_q_learning/test_offline.py --env_name=Furniture-IQL-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --ckpt_step=1000000 --run_name one_leg_full_r3m_1000 --randomness low
 
 
+BC
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+First, convert the data to the format for training:
+
+.. code::
+
+    python furniture_bench/scripts/convert_data.py --in-data-path <path/to/demos> --out-data-path <path/to/processed/demo>
+
+
+
+
+
+
+IQL
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Policy Training and Evaluation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,4 +66,3 @@ Training the policy with IQL:
 
     # IQL conversion
     python implicit_q_learning/convert_furniture_data.py --furniture one_leg --demo_dir /hdd/converted_stool_full_100 --out_file_path one_leg_sim.pkl --use_r3m
-TODO
