@@ -1,10 +1,10 @@
 # FurnitureBench: Reproducible Real-World Furniture Assembly Benchmark
 
 [**Paper**](#)
-| [**Website**](https://clvrai.github.io/furniture-bench/)
+| [**Website**](https://clvrai.com/furniture-bench/)
 | [**Documentation**](https://clvrai.github.io/furniture-bench/docs/index.html)
 
-![FurnitureBench](docs/readme_img/banner.jpg)
+![FurnitureBench](readme_img/banner.jpg)
 
 FurnitureBench is the real-world furniture assembly benchmark, which aims at providing a reproducible and easy-to-use platform for long-horizon complex robotic manipulation.
 
@@ -15,7 +15,18 @@ It features
 - FurnitureSim: a simulated environment
 - Large-scale teleoperation dataset (200+ hours)
 
-Please check out our [website](https://clvrai.github.io/furniture-bench/) for more details.
+Please check out our [website](https://clvrai.com/furniture-bench/) for more details.
+
+
+## Documentation generation
+
+The source files of our online documentation are under `docs_source/`.
+If you want to build the online documentation, try following steps:
+```
+pip install -r requirements.txt
+./build_and_move.sh
+```
+`build_and_move.sh` builds the documentation and moves the outputs to `docs/` directory.
 
 
 ## Citation

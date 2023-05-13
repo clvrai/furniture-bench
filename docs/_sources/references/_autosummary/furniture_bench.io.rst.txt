@@ -1,6 +1,0 @@
-furniture\_bench.io
-===================
-
-.. currentmodule:: furniture_bench
-
-.. automodule:: io

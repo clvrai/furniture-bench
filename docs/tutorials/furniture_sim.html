@@ -324,8 +324,8 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#environment">
-   Environment
+  <a class="reference internal nav-link" href="#furnituresim-initialization">
+   FurnitureSim Initialization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -351,11 +351,6 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#save-initial-camera-images">
    Save Initial Camera Images
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#additional-information">
-   Additional Information
   </a>
  </li>
 </ul>
@@ -378,8 +373,8 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#environment">
-   Environment
+  <a class="reference internal nav-link" href="#furnituresim-initialization">
+   FurnitureSim Initialization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -407,11 +402,6 @@ title="Print to PDF"
    Save Initial Camera Images
   </a>
  </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#additional-information">
-   Additional Information
-  </a>
- </li>
 </ul>
 
                         </nav>
@@ -424,10 +414,12 @@ title="Print to PDF"
                 
   <section id="furnituresim">
 <h1>FurnitureSim<a class="headerlink" href="#furnituresim" title="Permalink to this headline">#</a></h1>
-<section id="environment">
-<h2>Environment<a class="headerlink" href="#environment" title="Permalink to this headline">#</a></h2>
-<p>Here we show how to initialize the simulation environment with different arguments.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
+<section id="furnituresim-initialization">
+<h2>FurnitureSim Initialization<a class="headerlink" href="#furnituresim-initialization" title="Permalink to this headline">#</a></h2>
+<p>Here we show how to initialize the simulation environment with different arguments:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
     <span class="s2">&quot;Furniture-Sim-Env-v0&quot;</span><span class="p">,</span>  <span class="c1"># string, environment name.</span>
     <span class="n">furniture</span><span class="o">=...</span><span class="p">,</span>           <span class="c1"># string, &lt;&#39;lamp&#39; | &#39;square_table&#39; | &#39;desk&#39; | &#39;drawer&#39; | &#39;cabinet&#39; | &#39;round_table&#39; | &#39;stool&#39; | &#39;chair&#39; | &#39;one_leg&#39;&gt;.</span>
     <span class="n">num_envs</span><span class="o">=...</span><span class="p">,</span>            <span class="c1"># integer, number of parallel environment.</span>
@@ -447,15 +439,14 @@ title="Print to PDF"
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted<span class="w"> </span><span class="c1"># Note: only one_leg is supported for now.</span>
 </pre></div>
 </div>
+<figure class="align-left">
+<a class="reference internal image-reference" href="../_images/assembly_script.gif"><img alt="Assembly script" src="../_images/assembly_script.gif" style="width: 50%;" /></a>
+</figure>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>On your initial run, starting up the simulator will take some time because it needs to construct SDF meshes.
 However, following runs will be much quicker as the simulator will load the cached SDF meshes.</p>
 </div>
-<p>You will see something like this:</p>
-<figure class="align-left">
-<a class="reference internal image-reference" href="../_static/images/assembly_script.gif"><img alt="Assembly script" src="../_static/images/assembly_script.gif" style="width: 50%;" /></a>
-</figure>
 </section>
 <section id="environment-with-assembled-furniture">
 <h2>Environment with Assembled Furniture<a class="headerlink" href="#environment-with-assembled-furniture" title="Permalink to this headline">#</a></h2>
@@ -485,7 +476,7 @@ python<span class="w"> </span>furniture_bench/scripts/show_trajectory.py<span cl
 <section id="teleoperation">
 <h2>Teleoperation<a class="headerlink" href="#teleoperation" title="Permalink to this headline">#</a></h2>
 <p>Simulation also supports teleoperation using keyboard and Oculus Quest 2.
-The basic setup and commands are the same as the real robot <span class="xref std std-ref">Teleoperation using Oculus/Keyboard</span></p>
+The basic setup and commands are the same as the real robot <a class="reference internal" href="teleop_oculus_keyboard.html#data-collection-using-oculus-keyboard"><span class="std std-ref">Data Collection using Oculus/Keyboard</span></a></p>
 <div class="admonition-prerequisites prerequisites admonition" id="prerequisites-0">
 <p class="admonition-title">Prerequisites</p>
 <ul class="simple">
@@ -517,21 +508,12 @@ The front, wrist, and rear images will be saved to the <code class="docutils lit
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="../_static/images/wrist_sim.png"><img alt="image1" src="../_static/images/wrist_sim.png" style="width: 215px; height: 120px;" /></a></p></td>
-<td><p><a class="reference internal" href="../_static/images/front_sim.png"><img alt="image2" src="../_static/images/front_sim.png" style="width: 215px; height: 120px;" /></a></p></td>
-<td><p><a class="reference internal" href="../_static/images/rear_sim.png"><img alt="image3" src="../_static/images/rear_sim.png" style="width: 215px; height: 120px;" /></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../_images/wrist_sim.png"><img alt="image1" src="../_images/wrist_sim.png" style="width: 215px; height: 120px;" /></a></p></td>
+<td><p><a class="reference internal" href="../_images/front_sim.png"><img alt="image2" src="../_images/front_sim.png" style="width: 215px; height: 120px;" /></a></p></td>
+<td><p><a class="reference internal" href="../_images/rear_sim.png"><img alt="image3" src="../_images/rear_sim.png" style="width: 215px; height: 120px;" /></a></p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="additional-information">
-<h2>Additional Information<a class="headerlink" href="#additional-information" title="Permalink to this headline">#</a></h2>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Isaac Gym provides a documentation along with the source code.
-Thus, run <code class="docutils literal notranslate"><span class="pre">xdg-open</span> <span class="pre">$ISAAC_GYM_PATH/docs/index.html</span></code>.
-It will open the documentation on your browser that contains more information about concepts, API, and examples.</p>
-</div>
 </section>
 </section>
 

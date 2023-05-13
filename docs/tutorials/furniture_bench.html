@@ -324,8 +324,8 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#environment">
-   Environment
+  <a class="reference internal nav-link" href="#furniturebench-initialization">
+   FurnitureBench Initialization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -363,8 +363,8 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#environment">
-   Environment
+  <a class="reference internal nav-link" href="#furniturebench-initialization">
+   FurnitureBench Initialization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -394,10 +394,12 @@ title="Print to PDF"
                 
   <section id="furniturebench">
 <h1>FurnitureBench<a class="headerlink" href="#furniturebench" title="Permalink to this headline">#</a></h1>
-<section id="environment">
-<h2>Environment<a class="headerlink" href="#environment" title="Permalink to this headline">#</a></h2>
+<section id="furniturebench-initialization">
+<h2>FurnitureBench Initialization<a class="headerlink" href="#furniturebench-initialization" title="Permalink to this headline">#</a></h2>
 <p>Here we show how to initialize the real-world environment with different arguments.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
     <span class="s1">&#39;Furniture-Env-v0&#39;</span><span class="p">,</span>      <span class="c1"># string, environment name.</span>
     <span class="n">furniture</span><span class="o">=...</span><span class="p">,</span>           <span class="c1"># string, &lt;&#39;lamp&#39; | &#39;square_table&#39; | &#39;desk&#39; | &#39;drawer&#39; | &#39;cabinet&#39; | &#39;round_table&#39; | &#39;stool&#39; | &#39;chair&#39; | &#39;one_leg&#39;&gt;.</span>
     <span class="n">manual_done</span><span class="o">=...</span><span class="p">,</span>         <span class="c1"># boolean, if True, the episode ends only when the user presses the &#39;done&#39; button.</span>
@@ -417,7 +419,7 @@ title="Print to PDF"
 </section>
 <section id="visualize-camera-inputs">
 <h2>Visualize Camera Inputs<a class="headerlink" href="#visualize-camera-inputs" title="Permalink to this headline">#</a></h2>
-<p>This script allows you to visualize AprilTag detection and the camera from three different views (front, wrist, and rear)</p>
+<p>This script allows you to visualize AprilTag detection and the camera from three different views (front, wrist, and rear):</p>
 <a class="reference internal image-reference" href="../_images/run_cam_april.png"><img alt="../_images/run_cam_april.png" src="../_images/run_cam_april.png" style="width: 600px;" /></a>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">run_cam_april</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
@@ -427,13 +429,13 @@ title="Print to PDF"
 <h2>Visualize Robot Trajectory<a class="headerlink" href="#visualize-robot-trajectory" title="Permalink to this headline">#</a></h2>
 <p>This script will show robot’s trajectory saved in a .pkl file.
 The wrist and front camera views are shown in the left and right panels, respectively.</p>
-<p>If you want to try out with the pre-recorded trajectories, you can download the .pkl files from <a class="reference internal" href="../getting_started/dataset.html#downloading-dataset"><span class="std std-ref">Downloading Dataset</span></a>.
+<p>If you want to try out with the pre-recorded trajectories, you can download the .pkl files from <a class="reference internal" href="../getting_started/dataset.html#download-dataset"><span class="std std-ref">Download Dataset</span></a>.
 We run the following commands with cabinet <a class="reference external" href="https://drive.google.com/file/d/1PSh0uvhf7nqFw4KYLf4gn4E7GKferUvD/view?usp=share_link">trajectory</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">show_trajectory</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="mf">00149.</span><span class="n">pkl</span>
 </pre></div>
 </div>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../_static/images/trajectory_example.gif"><img alt="trajectory_example" src="../_static/images/trajectory_example.gif" style="width: 80%;" /></a>
+<a class="reference internal image-reference" href="../_images/trajectory_example.gif"><img alt="trajectory_example" src="../_images/trajectory_example.gif" style="width: 80%;" /></a>
 </figure>
 </section>
 <section id="camera-calibration">
@@ -448,7 +450,7 @@ To determine camera pose from the front-view image, we calculate average camera 
 </pre></div>
 </div>
 <figure class="align-left" id="id1">
-<a class="reference internal image-reference" href="../_static/images/calibration.png"><img alt="calibration" src="../_static/images/calibration.png" style="width: 60%;" /></a>
+<a class="reference internal image-reference" href="../_images/calibration.png"><img alt="calibration" src="../_images/calibration.png" style="width: 60%;" /></a>
 <figcaption>
 <p><span class="caption-text">The image displays the deviation of the camera pose from the target pose.
 The green/red text shows if the camera pose is within the the threshold or not.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>

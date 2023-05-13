@@ -1,8 +1,8 @@
 FurnitureBench
-=================
+==============
 
 Environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
 Here we show how to initialize the real-world environment with different arguments.
 
 .. code::
@@ -37,7 +37,7 @@ This script allows you to visualize AprilTag detection and the camera from three
 
 
 Visualize Robot Trajectory
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This script will show robot's trajectory saved in a .pkl file.
 The wrist and front camera views are shown in the left and right panels, respectively.
@@ -50,7 +50,7 @@ We run the following commands with cabinet `trajectory <https://drive.google.com
     python furniture_bench/scripts/show_trajectory.py --data-path 00149.pkl
 
 
-.. figure:: ../../_static/images/trajectory_example.gif
+.. figure:: ../_static/images/trajectory_example.gif
     :align: center
     :width: 80%
     :alt: trajectory_example
@@ -71,7 +71,7 @@ Run the following commands to calibrate front camera pose for each furniture typ
     # e.g. one_leg
     python furniture_bench/scripts/calibration.py --target chair
 
-.. figure:: ../../_static/images/calibration.png
+.. figure:: ../_static/images/calibration.png
     :width: 60%
     :align: left
     :alt: calibration

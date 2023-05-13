@@ -1,8 +1,8 @@
 FurnitureSim
-===================
+============
 
 Environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
 Here we show how to initialize the simulation environment with different arguments.
 
 .. code::
@@ -21,7 +21,7 @@ Here we show how to initialize the simulation environment with different argumen
 
 
 Assembly Scripts
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 Here we show how to run automated assembly scripts that is based on the finite state machine (FSM).
 
 .. code:: bash
@@ -35,14 +35,14 @@ Here we show how to run automated assembly scripts that is based on the finite s
 
 You will see something like this:
 
-.. figure:: ../../_static/images/assembly_script.gif
+.. figure:: ../_static/images/assembly_script.gif
     :width: 50%
     :align: left
     :alt: Assembly script
 
 
 Environment with Assembled Furniture
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Here we show how to initialize the simulation environment with already assembled furniture.
 This is useful to check whether the simulator can correctly simulate contacts of the assembled furniture.
 
@@ -53,7 +53,7 @@ This is useful to check whether the simulator can correctly simulate contacts of
    # args: --furniture <'lamp' | 'square_table' | 'desk' | 'drawer' | 'cabinet' | 'round_table' | 'stool' | 'chair' | 'one_leg'>
 
 Data Collection Script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 In this section, we demonstrate the process of data collection using the automated assembly scripts discussed earlier.
 
 .. code:: bash
@@ -69,10 +69,10 @@ In this section, we demonstrate the process of data collection using the automat
    python furniture_bench/scripts/show_trajectory.py --data-dir /hdd/IL_data_sim/one_leg/2022-12-22-03:19:48
 
 Teleoperation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 Simulation also supports teleoperation using keyboard and Oculus Quest 2.
-The basic setup and commands are the same as the real robot :ref:`Teleoperation using Oculus/Keyboard`
+The basic setup and commands are the same as the real robot :ref:`Data Collection using Oculus/Keyboard`
 
 .. prerequisites::
     Prerequisites
@@ -87,7 +87,7 @@ Run the following command to start the simulation environment with teleoperation
 
 
 Save Initial Camera Images
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 This will save the camera input images in the beginning of the episode, which is useful for debugging the visual input.
 The front, wrist, and rear images will be saved to the ``sim_camera/`` directory.
 
@@ -96,13 +96,13 @@ The front, wrist, and rear images will be saved to the ``sim_camera/`` directory
    python furniture_bench/scripts/run_sim_env.py --furniture square_table --init-assembled --save-camera-input
 
 
-.. |image1| image:: ../../_static/images/wrist_sim.png
+.. |image1| image:: ../_static/images/wrist_sim.png
     :width: 215px
     :height: 120px
-.. |image2| image:: ../../_static/images/front_sim.png
+.. |image2| image:: ../_static/images/front_sim.png
     :width: 215px
     :height: 120px
-.. |image3| image:: ../../_static/images/rear_sim.png
+.. |image3| image:: ../_static/images/rear_sim.png
     :width: 215px
     :height: 120px
 
@@ -113,7 +113,7 @@ The front, wrist, and rear images will be saved to the ``sim_camera/`` directory
 +--------------+--------------+-------------+
 
 Additional Information
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 .. seealso::
 
     Isaac Gym provides a documentation along with the source code.

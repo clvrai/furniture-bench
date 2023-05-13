@@ -1,6 +1,0 @@
-furniture\_bench.envs
-=====================
-
-.. currentmodule:: furniture_bench
-
-.. automodule:: envs

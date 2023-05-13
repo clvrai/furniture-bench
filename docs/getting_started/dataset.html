@@ -324,8 +324,8 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#downloading-dataset">
-   Downloading Dataset
+  <a class="reference internal nav-link" href="#download-dataset">
+   Download Dataset
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -368,8 +368,8 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#downloading-dataset">
-   Downloading Dataset
+  <a class="reference internal nav-link" href="#download-dataset">
+   Download Dataset
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -405,10 +405,10 @@ title="Print to PDF"
   <section id="dataset">
 <h1>Dataset<a class="headerlink" href="#dataset" title="Permalink to this headline">#</a></h1>
 <p>Furniture assembly is a complex, long-horizon manipulation task, which is very challenging to solve using reinforcement learning. To make our benchmark tractable, we provide <strong>219.6 hours</strong> of <strong>5100</strong> successful demonstrations collected using an Oculus Quest 2 controller and a keyboard. We collected 2-24 hours of demonstration data for each furniture model and each initialization randomness level. The length of each demonstration is around 600-2300 steps.</p>
-<section id="downloading-dataset">
-<h2>Downloading Dataset<a class="headerlink" href="#downloading-dataset" title="Permalink to this headline">#</a></h2>
-<p>Dataset can be downloaded from <a class="reference external" href="https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing">Google Drive</a>
-Downloading dataset via browser might take a while. Consider using <a class="reference external" href="https://rclone.org/">rclone</a> for faster download.
+<section id="download-dataset">
+<h2>Download Dataset<a class="headerlink" href="#download-dataset" title="Permalink to this headline">#</a></h2>
+<p>Dataset can be downloaded from <a class="reference external" href="https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing">Google Drive</a>.
+Downloading dataset via browser is slow, so consider using <a class="reference external" href="https://rclone.org/">rclone</a> for faster download.
 Take a look at <a class="reference external" href="#download-with-rclone">Download with rclone</a> section for more details.</p>
 </section>
 <section id="dataset-size">
@@ -540,9 +540,10 @@ Thus, we provide three different datasets for each level.</p>
 </section>
 <section id="download-with-rclone">
 <h2>Download with rclone<a class="headerlink" href="#download-with-rclone" title="Permalink to this headline">#</a></h2>
-<p>1. Install <a class="reference external" href="https://rclone.org/install/">rclone</a></p>
-<p>2. Run <code class="docutils literal notranslate"><span class="pre">rclone</span> <span class="pre">config</span></code> to setup Google Drive remote
-Follow the selections below:</p>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://rclone.org/install/">rclone</a>.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">rclone</span> <span class="pre">config</span></code> to setup Google Drive remote:</p></li>
+</ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>No remotes found, make a new one?
 n) New remote
 s) Set configuration password
@@ -635,19 +636,19 @@ e/n/d/r/c/s/q&gt; q
 --------------------
 </pre></div>
 </div>
-<p>3. Connect to Google Drive remote</p>
-<blockquote>
-<div><p>Open <a class="reference external" href="https://drive.google.com/drive/u/1/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt">dataset</a> link and click “Add a shortcut to Drive”.
-Click “My Drive” and “Add”.</p>
-</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Connect to Google Drive remote by opening the <a class="reference external" href="https://drive.google.com/drive/u/1/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt">dataset Google Drive</a> and clicking “Add a shortcut to Drive”, “My Drive”, and “Add”.</p></li>
+</ol>
 <a class="reference internal image-reference" href="../_images/add_shortcut.png"><img alt="../_images/add_shortcut.png" src="../_images/add_shortcut.png" style="width: 400px;" /></a>
-<p>4. Run Python script to download dataset</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_dataset</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="o">&lt;</span><span class="n">low</span><span class="o">/</span><span class="n">med</span><span class="o">/</span><span class="n">high</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">name_of_furniture</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">save</span><span class="o">/</span><span class="n">data</span><span class="o">&gt;</span>
+<ol class="arabic simple" start="4">
+<li><p>Run the Python script to download our dataset:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_dataset</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="p">[</span><span class="n">low</span><span class="o">/</span><span class="n">med</span><span class="o">/</span><span class="n">high</span><span class="p">]</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">name</span> <span class="n">of</span> <span class="n">furniture</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">&gt;</span>
 
-<span class="c1"># e.g.,</span>
+<span class="c1"># E.g., download lamp data with low randomness</span>
 <span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">lamp</span> <span class="o">--</span><span class="n">out_dir</span> <span class="n">furniture_dataset</span>
 
-<span class="c1"># Download all furniture data with low randomness</span>
+<span class="c1"># E.g., download all furniture data with low randomness</span>
 <span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span> <span class="o">--</span><span class="n">furniture</span> <span class="nb">all</span> <span class="o">--</span><span class="n">out_dir</span> <span class="n">furniture_dataset</span>
 </pre></div>
 </div>

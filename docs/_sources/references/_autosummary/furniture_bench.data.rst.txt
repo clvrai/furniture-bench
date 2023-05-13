@@ -1,6 +1,0 @@
-furniture\_bench.data
-=====================
-
-.. currentmodule:: furniture_bench
-
-.. automodule:: data
