@@ -334,6 +334,16 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#bc">
+   BC
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#iql">
+   IQL
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#policy-training-and-evaluation">
    Policy Training and Evaluation
   </a>
@@ -365,6 +375,16 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#rollouts-with-pre-trained-policies">
    Rollouts with Pre-trained Policies
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#bc">
+   BC
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#iql">
+   IQL
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -415,6 +435,16 @@ title="Print to PDF"
 </pre></div>
 </div>
 </section>
+<section id="bc">
+<h2>BC<a class="headerlink" href="#bc" title="Permalink to this headline">#</a></h2>
+<p>First, convert the data to the format for training:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">convert_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">demos</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">processed</span><span class="o">/</span><span class="n">demo</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="iql">
+<h2>IQL<a class="headerlink" href="#iql" title="Permalink to this headline">#</a></h2>
+</section>
 <section id="policy-training-and-evaluation">
 <h2>Policy Training and Evaluation<a class="headerlink" href="#policy-training-and-evaluation" title="Permalink to this headline">#</a></h2>
 <p>Evaluate trained policy:</p>
@@ -426,7 +456,6 @@ title="Print to PDF"
 <span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">convert_furniture_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">one_leg</span> <span class="o">--</span><span class="n">demo_dir</span> <span class="o">/</span><span class="n">hdd</span><span class="o">/</span><span class="n">converted_stool_full_100</span> <span class="o">--</span><span class="n">out_file_path</span> <span class="n">one_leg_sim</span><span class="o">.</span><span class="n">pkl</span> <span class="o">--</span><span class="n">use_r3m</span>
 </pre></div>
 </div>
-<p>TODO</p>
 </section>
 </section>
 

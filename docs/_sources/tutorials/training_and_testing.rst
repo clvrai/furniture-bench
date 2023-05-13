@@ -27,14 +27,13 @@ Install the following packages:
     cd ../vip
     pip install -e .
 
-Rollouts with Pre-trained Policies
+Rollout with Pre-trained Policies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code::
 
     cd <path/to/furniture-bench>
-    python implicit_q_learning/test_offline.py --env_name=Furniture-IQL-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --ckpt_step=1000000 --run_name one_leg_full_r3m_1000 --randomness low
-
+    python implicit_q_learning/test_offline.py --env_name=Furniture-Image-Feature-Sim-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --ckpt_step=1000000 --run_name one_leg_full_r3m_1000 --randomness low
 
 
 Policy Training and Evaluation
