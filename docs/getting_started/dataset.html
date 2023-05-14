@@ -32,7 +32,6 @@
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -44,7 +43,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script src="../_static/scripts/custom_toc_highlight.js"></script>
     <script src="../_static/scripts/add_br_to_sections.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -98,7 +97,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p class="caption">
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Getting Started
  </span>
@@ -125,7 +124,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Tutorials
  </span>
@@ -152,7 +151,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   References
  </span>
@@ -641,7 +640,7 @@ e/n/d/r/c/s/q&gt; q
 </ol>
 <a class="reference internal image-reference" href="../_images/add_shortcut.png"><img alt="../_images/add_shortcut.png" src="../_images/add_shortcut.png" style="width: 400px;" /></a>
 <ol class="arabic simple" start="4">
-<li><p>Run the Python script to download our dataset:</p></li>
+<li><p>Run the following Python script to download our dataset:</p></li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_dataset</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="p">[</span><span class="n">low</span><span class="o">/</span><span class="n">med</span><span class="o">/</span><span class="n">high</span><span class="p">]</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">name</span> <span class="n">of</span> <span class="n">furniture</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">&gt;</span>
 

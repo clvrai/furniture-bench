@@ -32,7 +32,6 @@
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -44,7 +43,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script src="../_static/scripts/custom_toc_highlight.js"></script>
     <script src="../_static/scripts/add_br_to_sections.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -98,7 +97,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p class="caption">
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Getting Started
  </span>
@@ -125,7 +124,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Tutorials
  </span>
@@ -152,7 +151,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   References
  </span>
@@ -329,8 +328,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#rollouts-with-pre-trained-policies">
-   Rollouts with Pre-trained Policies
+  <a class="reference internal nav-link" href="#rollout-with-pre-trained-policies">
+   Rollout with Pre-trained Policies
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -341,11 +340,6 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#iql">
    IQL
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#policy-training-and-evaluation">
-   Policy Training and Evaluation
   </a>
  </li>
 </ul>
@@ -373,8 +367,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#rollouts-with-pre-trained-policies">
-   Rollouts with Pre-trained Policies
+  <a class="reference internal nav-link" href="#rollout-with-pre-trained-policies">
+   Rollout with Pre-trained Policies
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -385,11 +379,6 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#iql">
    IQL
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#policy-training-and-evaluation">
-   Policy Training and Evaluation
   </a>
  </li>
 </ul>
@@ -404,7 +393,8 @@ title="Print to PDF"
                 
   <section id="training-and-testing">
 <h1>Training and Testing<a class="headerlink" href="#training-and-testing" title="Permalink to this headline">#</a></h1>
-<p>This tutorial</p>
+<p>This tutorial shows the process for training and evaluating a policy for furniture assembly tasks.
+It is presumed that you have already prepared your dataset, whether it was downloaded from Google Drive, collected by yourself, or generated with scripted agent in simulation.</p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">#</a></h2>
 <p>Install the following packages:</p>
@@ -428,32 +418,48 @@ title="Print to PDF"
 </pre></div>
 </div>
 </section>
-<section id="rollouts-with-pre-trained-policies">
-<h2>Rollouts with Pre-trained Policies<a class="headerlink" href="#rollouts-with-pre-trained-policies" title="Permalink to this headline">#</a></h2>
+<section id="rollout-with-pre-trained-policies">
+<h2>Rollout with Pre-trained Policies<a class="headerlink" href="#rollout-with-pre-trained-policies" title="Permalink to this headline">#</a></h2>
+<p>We demonstrate a policy rollouts using pre-trained policies in simulation.
+You can run the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
-<span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">test_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">IQL</span><span class="o">-</span><span class="n">v0</span><span class="o">/</span><span class="n">one_leg</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">ckpt_step</span><span class="o">=</span><span class="mi">1000000</span> <span class="o">--</span><span class="n">run_name</span> <span class="n">one_leg_full_r3m_1000</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span>
+
+<span class="c1"># Policy trained with 1000 scripted demonstrations.</span>
+<span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">test_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Sim</span><span class="o">-</span><span class="n">v0</span><span class="o">/</span><span class="n">one_leg</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">ckpt_step</span><span class="o">=</span><span class="mi">1000000</span> <span class="o">--</span><span class="n">run_name</span> <span class="n">one_leg_full_iql_r3m_low_sim_1000</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span>
 </pre></div>
 </div>
+<p>The real-world rollout is similar to the above command, but you need to change the <code class="docutils literal notranslate"><span class="pre">--env_name</span></code> corresponding to the real-world environment.</p>
 </section>
 <section id="bc">
 <h2>BC<a class="headerlink" href="#bc" title="Permalink to this headline">#</a></h2>
 <p>First, convert the data to the format for training:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">convert_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">demos</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">processed</span><span class="o">/</span><span class="n">demo</span><span class="o">&gt;</span>
+
+<span class="c1"># E.g.,</span>
+<span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">convert_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_1000</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_processed_1000</span>
 </pre></div>
 </div>
 </section>
 <section id="iql">
 <h2>IQL<a class="headerlink" href="#iql" title="Permalink to this headline">#</a></h2>
-</section>
-<section id="policy-training-and-evaluation">
-<h2>Policy Training and Evaluation<a class="headerlink" href="#policy-training-and-evaluation" title="Permalink to this headline">#</a></h2>
-<p>Evaluate trained policy:</p>
-<p>Training the policy with IQL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># BC conversion</span>
-<span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">convert_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">minho</span><span class="o">/</span><span class="n">hdd</span><span class="o">/</span><span class="n">IL_data</span><span class="o">/</span><span class="n">one_leg</span><span class="o">/</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">minho</span><span class="o">/</span><span class="n">converted_one_leg_mixed_2000</span><span class="o">/</span>
+<ol class="arabic simple">
+<li><p>Extract R3M or VIP features from the demonstrations:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">extract_feature</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">demo_dir</span>  <span class="o">--</span><span class="n">out_file_path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">the</span><span class="o">/</span><span class="n">pkl</span><span class="o">&gt;</span> <span class="o">--&lt;</span><span class="n">use_r3m</span> <span class="ow">or</span> <span class="n">use_vip</span><span class="o">&gt;</span>
+<span class="c1"># E.g.</span>
+<span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">extract_feature</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">one_leg</span> <span class="o">--</span><span class="n">demo_dir</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_processed</span><span class="o">/</span> <span class="o">--</span><span class="n">out_file_path</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_sim_1000</span><span class="o">.</span><span class="n">pkl</span> <span class="o">--</span><span class="n">use_r3m</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">demo_dir</span></code> should be the directory where the <code class="docutils literal notranslate"><span class="pre">converted</span></code> demonstrations with <code class="docutils literal notranslate"><span class="pre">convert_data.py</span></code></p>
+<ol class="arabic simple" start="2">
+<li><p>Train a IQL policy</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="o">&lt;</span><span class="n">run_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pkl</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=&lt;</span><span class="n">vip</span> <span class="ow">or</span> <span class="n">r3m</span><span class="o">&gt;</span>
+<span class="c1"># E.g.,</span>
+<span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/</span><span class="n">one_leg</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="n">one_leg_sim</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=</span><span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_sim_1000</span><span class="o">.</span><span class="n">pkl</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=</span><span class="n">r3m</span>
 
-<span class="c1"># IQL conversion</span>
-<span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">convert_furniture_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">one_leg</span> <span class="o">--</span><span class="n">demo_dir</span> <span class="o">/</span><span class="n">hdd</span><span class="o">/</span><span class="n">converted_stool_full_100</span> <span class="o">--</span><span class="n">out_file_path</span> <span class="n">one_leg_sim</span><span class="o">.</span><span class="n">pkl</span> <span class="o">--</span><span class="n">use_r3m</span>
+<span class="c1"># To use wandb</span>
+<span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="o">&lt;</span><span class="n">run_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pkl</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=&lt;</span><span class="n">vip</span> <span class="ow">or</span> <span class="n">r3m</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">wandb</span> <span class="o">--</span><span class="n">wandb_entity</span> <span class="o">&lt;</span><span class="n">entity_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">wandb_project</span> <span class="o">&lt;</span><span class="n">project_name</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </section>
