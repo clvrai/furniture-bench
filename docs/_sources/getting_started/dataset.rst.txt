@@ -211,7 +211,7 @@ Download with rclone
 .. image:: ../_static/images/add_shortcut.png
         :width: 400
 
-4. Run the Python script to download our dataset:
+4. Run the following Python script to download our dataset:
 
 .. code::
 
