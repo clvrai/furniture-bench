@@ -51,7 +51,7 @@ Requirements
         -  📖 `Docker <https://docs.docker.com/engine/install/ubuntu/>`__
 
 Print 3D Furniture Model 🪑
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Printing 3D furniture models, obstacles, and a camera mount of our FurnitureBench will take a long time (10-23 hours).
 We recommend to 3D print the models before start installing the robot environment
@@ -62,7 +62,7 @@ We recommend to 3D print the models before start installing the robot environmen
 - Refer to :ref:`3D Printing 🖨️` to learn more about 3D printing.
 
 Attach AprilTag to the Furniture
-~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  Print AprilTags in `A4 <https://drive.google.com/file/d/11wwA3IrXjIVSwVy1sp0hLcB8-J_9rAxJ/view?usp=sharing>`__ or `letter <https://drive.google.com/file/d/1eIG3YspcSumtT-o9NvtCvUtRDWPW5hhU/view?usp=sharing>`__ size. Do **NOT** change the aspect ratio and scale.
 -  Attach AprilTags to the furniture parts. A furniture part has a placeholder with an ID of its corresponding AprilTag.
@@ -285,7 +285,6 @@ Now, we install the wrist camera as follows:
 .. |camera_mount_screw| image:: ../_static/instruction/camera_nuts.jpg
 .. |wrist_camera| image:: ../_static/instruction/camera_down_view.jpg
 .. |wrist_camera2| image:: ../_static/instruction/wrist_position.jpg
-.. |wrist_camera_cable| image::
 
 .. table::
     :widths: 25 25 25
@@ -414,9 +413,9 @@ Run Client
     - If you'd like to use a Docker image other than \--pulled or \--built, you can specify the image name using ``CLIENT_DOCKER`` environment variable. For example, ``export CLIENT_DOCKER=custom-built``. Once set, you execute launch_client.sh with a single argument, such as ``./launch_client.sh --gpu``. This command will internally read the environment variable and run the ``custom-built`` Docker image.
 
 Set Up Connection
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
-.. image:: ../../_static/instruction/example_network_setup.jpg
+.. image:: ../_static/instruction/example_network_setup.jpg
     :width: 50%
     :align: right
     :alt: example_network_setup
@@ -499,6 +498,7 @@ And then launch a server-side daemon.
     export ROBOT_IP=<ip.of.the.robot.controller> # e.g., 192.168.0.10
 
 3. Launch the server daemon.
+
   .. code:: bash
 
     # Launch the arm and gripper daemon together.
@@ -554,9 +554,9 @@ In visualization tool, the image from the current view is displayed as a solid l
     - Iterative adjust position and rotation to match the alignment and numbers. Based on our experience, it was simpler first to align the position and then adjust the rotation minutely for best alignment
 
 
-.. |setup_fromt_calibrated| image:: ../../_static/instruction/setup_front_calibrated.jpg
-.. |setup_fromt_number_match_image_mismatch| image:: ../../_static/instruction/setup_front_number_match_image_mismatch.jpg
-.. |setup_front_number_mismatch_image_match| image:: ../../_static/instruction/setup_front_number_mismatch_image_match.jpg
+.. |setup_fromt_calibrated| image:: ../_static/instruction/setup_front_calibrated.jpg
+.. |setup_fromt_number_match_image_mismatch| image:: ../_static/instruction/setup_front_number_match_image_mismatch.jpg
+.. |setup_front_number_mismatch_image_match| image:: ../_static/instruction/setup_front_number_mismatch_image_match.jpg
 
 .. table::
     :widths: 30 30 30
@@ -608,7 +608,7 @@ The 3D printed obstacle can be attached to the table using double-sided rubber t
     - Firmly attach the obstacle using double-sided rubber tape to prevent it from moving when pushed. |obstacle_uncheck_2|
 
 Set Up Light
-~~~~~~~~~~~
+~~~~~~~~~~~~
 
 During the data collection process, we randomize the light temperature between 4600 K-6000 K as well as the intensity,
 position, and direction of the light. On the other hand, during the evaluation process, it is essential to maintain lighting conditions
@@ -638,6 +638,7 @@ Before evaluation, make sure the following requirements are met:
       .. code::
 
         python furniture_bench/scripts/calibration.py --target one_leg
+
     - Green backdrop cloth has minimum wrinkles. |test_uncheck_2|
     - Wipe three camera lenses using a lens cloth, as they may be blurry from fingerprint smudges. |test_uncheck_3|
 
@@ -669,8 +670,8 @@ Evaluate the pre-trained policy using the following script:
 
 The command above will first show visualization and prompt to indicate where furniture parts should be positioned. Initialize the furniture parts, as shown in (a). The screen will prompt “initialization done” when everything is correctly aligned, as shown in (b).
 
-.. |init_GUI_prompt| image:: ../../_static/instruction/initialization_GUI_prompt.jpg
-.. |init_done| image:: ../../_static/instruction/initialization_done.jpg
+.. |init_GUI_prompt| image:: ../_static/instruction/initialization_GUI_prompt.jpg
+.. |init_done| image:: ../_static/instruction/initialization_done.jpg
 
 .. table::
     :widths: 30 30

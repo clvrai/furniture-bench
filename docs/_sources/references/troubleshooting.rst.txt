@@ -5,8 +5,8 @@ Troubleshooting
 
   <br/>
 
-`Polymetis <https://facebookresearch.github.io/fairo/polymetis/>`__
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Polymetis
+~~~~~~~~~
 
 **Q:** What should I do if I get the ``communication_constraints_violation`` error on the server while using Polymetis (Library for Franka robot interface)?
 
@@ -147,7 +147,7 @@ Device Connections
     - If the problem persist, restart the Oculus.
 
 Training and Evaluation
-~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 | **Q:** What should I do if I face a CUDA Out of memory (OOM) issue while trying to learn implicit_q_learning (IQL)?
 

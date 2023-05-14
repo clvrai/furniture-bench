@@ -1,13 +1,13 @@
 Installation Guide (FurnitureSim)
-=========================================================
+=================================
 
 FurnitureSim is a high-speed and realistic simulation of FurnitureBench, built using Isaac Gym and Factory.
 It is designed to be a seamless substitution of the real-world environment, and enables rapid prototyping of new algorithms.
 
 
-.. |real| image:: ../../_static/images/real.jpg
-.. |simulator| image:: ../../_static/images/simulator.jpg
-.. |rendering| image:: ../../_static/images/rendering.jpg
+.. |real| image:: ../_static/images/real.jpg
+.. |simulator| image:: ../_static/images/simulator.jpg
+.. |rendering| image:: ../_static/images/rendering.jpg
 
 .. table::
     :widths: 30 30 30
@@ -30,7 +30,7 @@ You can install FurnitureSim using Docker or from source.
     -  📖 `Anaconda <https://www.anaconda.com/>`__
 
 Downloading Isaac Gym
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 Our simulator is built on top of Isaac Gym and Factory for, which enable fast and complex physics simulation.
 Here we provide installation instructions for Isaac Gym.
 
@@ -41,7 +41,7 @@ Here we provide installation instructions for Isaac Gym.
 - Unzip the downloaded file and move the folder to the desired location.
 
 Installation using Docker (Option 1)
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We provide a docker image that includes everything needed for FurnitureSim. To use FurnitureSim, you only need to run our docker image.
 
@@ -57,7 +57,7 @@ We provide a docker image that includes everything needed for FurnitureSim. To u
 
 
 Local Installation (Option 2)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can also install FurnitureSim by manually installing dependencies as follows:
 
@@ -158,11 +158,11 @@ Test Run for Simulator
     The first time the simulator is run, it will take some time (~ few minutes) to generate the SDF meshes, but subsequent runs will be faster as the simulator can load the pre-cached SDF meshes.
 
 FurnitureSim Parameters
-~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 Simulation parameters including mass, inertia, dt, etc. can be found in ``furniture_bench/sim_config.py``.
 
 Supported Furniture Models
-~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The simulator currently supports automatic assembly scripts for the following furniture models.
 The script for all furniture models will be available soon.

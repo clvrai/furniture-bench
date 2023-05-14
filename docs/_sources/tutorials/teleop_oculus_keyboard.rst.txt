@@ -1,5 +1,5 @@
 Data Collection using Oculus/Keyboard
-=========================================
+=====================================
 
 Our system supports Oculus Quest 2 controller and keyboard for demonstration collections.
 After setting up the environment (workspace, cameras, Client, Server), you are ready to collect the data.
@@ -57,6 +57,7 @@ For the run client and run server, please refer to :ref:`Run Client` and :ref:`R
 .. tip::
     - The data will be saved at {path/to/save/data/<furniture_name>/<current_timestamp>} directory.
     - The data directory contains pkl-serialized Python dictionary, mp4, and png.
+
     For example,
 
     .. code::
