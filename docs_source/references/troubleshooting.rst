@@ -21,7 +21,7 @@ Polymetis
      $ cd /fairo/polymetis/polymetis/build/
      $ make -j
 
-**Q:** I'm encountering issues while building Polymetis from source. How can I resolve this?
+**Q:** I'm encountering issues while building Polymetis from the source. How can I resolve this?
 
 
     **A:** Here are some common errors and solutions.
@@ -172,7 +172,7 @@ Oculus
 
 | **Q:** What if the robot is not moving when I use Oculus?
 
-  **A:** Make sure to control the robot in the guidance area of Oculus, allow the access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also check the Oculus is turned on (white light is on in the front).
+  **A:** Make sure to control the robot in the guidance area of Oculus, allow access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also, check the Oculus is turned on (white light is on in the front).
 
 Camera
 ~~~~~~
@@ -218,14 +218,14 @@ Simulator
 
 | **Q:** I am encountering ``ImportError: libpython3.8m.so.1.0: cannot open shared object file: No such file or directory`` error.
 
-  **A:** Run following commands.
+  **A:** Run the following commands.
 
-    .. code::
+  .. code::
 
-        sudo apt update
-        sudo add-apt-repository ppa:deadsnakes/ppa -y
-        sudo apt update
-        sudo apt install python3.8-dev
+    sudo apt update
+    sudo add-apt-repository ppa:deadsnakes/ppa -y
+    sudo apt update
+    sudo apt install python3.8-dev
 
 | **Q:** What should I do if I encounter an error ``[Error] [carb.windowing-glfw.plugin] GLFW initialization failed.`` or ``No protocol specified`` while running in Docker image?
 
@@ -242,11 +242,11 @@ Simulator
     apt install vulkan-tools
     MESA_VK_DEVICE_SELECT=list vulkaninfo
 
-  Rerun the Docker container, and then specify device
+  Rerun the Docker container, and then specify the device
 
   .. code:: bash
 
-    # e.g.,
+    # e.g.
     MESA_VK_DEVICE_SELECT='10de:2204' python furniture_bench/scripts/run_sim_env.py --furniture square_table --no-action
 
 

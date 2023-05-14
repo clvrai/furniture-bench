@@ -448,7 +448,7 @@ $ make -j
 </pre></div>
 </div>
 </div></blockquote>
-<p><strong>Q:</strong> I’m encountering issues while building Polymetis from source. How can I resolve this?</p>
+<p><strong>Q:</strong> I’m encountering issues while building Polymetis from the source. How can I resolve this?</p>
 <blockquote>
 <div><p><strong>A:</strong> Here are some common errors and solutions.</p>
 <ul>
@@ -608,7 +608,7 @@ $<span class="w"> </span>lsusb<span class="w"> </span>-t
 <div class="line"><strong>Q:</strong> What if the robot is not moving when I use Oculus?</div>
 </div>
 <blockquote>
-<div><p><strong>A:</strong> Make sure to control the robot in the guidance area of Oculus, allow the access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also check the Oculus is turned on (white light is on in the front).</p>
+<div><p><strong>A:</strong> Make sure to control the robot in the guidance area of Oculus, allow access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also, check the Oculus is turned on (white light is on in the front).</p>
 </div></blockquote>
 </section>
 <section id="camera">
@@ -665,15 +665,13 @@ pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="
 <div class="line"><strong>Q:</strong> I am encountering <code class="docutils literal notranslate"><span class="pre">ImportError:</span> <span class="pre">libpython3.8m.so.1.0:</span> <span class="pre">cannot</span> <span class="pre">open</span> <span class="pre">shared</span> <span class="pre">object</span> <span class="pre">file:</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></code> error.</div>
 </div>
 <blockquote>
-<div><p><strong>A:</strong> Run following commands.</p>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
+<div><p><strong>A:</strong> Run the following commands.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
 <span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="n">ppa</span><span class="p">:</span><span class="n">deadsnakes</span><span class="o">/</span><span class="n">ppa</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
 <span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">python3</span><span class="mf">.8</span><span class="o">-</span><span class="n">dev</span>
 </pre></div>
 </div>
-</div></blockquote>
 </div></blockquote>
 <div class="line-block">
 <div class="line"><strong>Q:</strong> What should I do if I encounter an error <code class="docutils literal notranslate"><span class="pre">[Error]</span> <span class="pre">[carb.windowing-glfw.plugin]</span> <span class="pre">GLFW</span> <span class="pre">initialization</span> <span class="pre">failed.</span></code> or <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">protocol</span> <span class="pre">specified</span></code> while running in Docker image?</div>
@@ -691,8 +689,8 @@ pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="
 <span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span>list<span class="w"> </span>vulkaninfo
 </pre></div>
 </div>
-<p>Rerun the Docker container, and then specify device</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># e.g.,</span>
+<p>Rerun the Docker container, and then specify the device</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># e.g.</span>
 <span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span><span class="s1">&#39;10de:2204&#39;</span><span class="w"> </span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--no-action
 </pre></div>
 </div>
