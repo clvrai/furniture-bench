@@ -36,7 +36,9 @@ You can run the following command:
 .. code::
 
     cd <path/to/furniture-bench>
-    python implicit_q_learning/test_offline.py --env_name=Furniture-Image-Feature-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --ckpt_step=1000000 --run_name one_leg_full_r3m_1000 --randomness low
+
+    # Policy trained with 1000 scripted demonstrations.
+    python implicit_q_learning/test_offline.py --env_name=Furniture-Image-Feature-Sim-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --ckpt_step=1000000 --run_name one_leg_full_iql_r3m_low_sim_1000 --randomness low
 
 The real-world rollout is similar to the above command, but you need to change the ``--env_name`` corresponding to the real-world environment.
 
