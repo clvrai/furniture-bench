@@ -50,7 +50,7 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Dataset" href="dataset.html" />
+    <link rel="next" title="How to Use FurnitureBench" href="../tutorials/furniture_bench.html" />
     <link rel="prev" title="Installation Guide" href="installation_guide.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -119,11 +119,6 @@
    Installation Guide (FurnitureSim)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dataset.html">
-   Dataset
-  </a>
- </li>
 </ul>
 <p class="caption">
  <span class="caption-text">
@@ -131,11 +126,6 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
-   Teleoperation
-  </a>
- </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/furniture_bench.html">
    How to Use FurnitureBench
@@ -149,6 +139,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/training_and_testing.html">
    Benchmarking FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/dataset.html">
+   Dataset
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
+   Teleoperation
   </a>
  </li>
 </ul>
@@ -339,13 +339,13 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#furnituresim-parameters">
-   FurnitureSim Parameters
+  <a class="reference internal nav-link" href="#test-furnituresim-installation">
+   Test FurnitureSim Installation
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#furniture-assembly-scripts">
-   Furniture Assembly Scripts
+  <a class="reference internal nav-link" href="#furnituresim-parameters">
+   FurnitureSim Parameters
   </a>
  </li>
 </ul>
@@ -383,13 +383,13 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#furnituresim-parameters">
-   FurnitureSim Parameters
+  <a class="reference internal nav-link" href="#test-furnituresim-installation">
+   Test FurnitureSim Installation
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#furniture-assembly-scripts">
-   Furniture Assembly Scripts
+  <a class="reference internal nav-link" href="#furnituresim-parameters">
+   FurnitureSim Parameters
   </a>
  </li>
 </ul>
@@ -404,8 +404,8 @@ title="Print to PDF"
                 
   <section id="installation-guide-furnituresim">
 <h1>Installation Guide (FurnitureSim)<a class="headerlink" href="#installation-guide-furnituresim" title="Permalink to this headline">#</a></h1>
-<p>FurnitureSim is a high-speed and realistic simulation of FurnitureBench based on Isaac Gym and Factory.
-It is designed to be a seamless substitution of the real-world environment, which enables easy and fast evaluation of new algorithms.
+<p><strong>FurnitureSim</strong> is a realistic simulation of FurnitureBench based on <a class="reference external" href="https://developer.nvidia.com/isaac-gym">Isaac Gym</a> and <a class="reference external" href="https://sites.google.com/nvidia.com/factory">Factory</a>.
+FurnitureSim enables easy and fast evaluation of new algorithms.
 You can install FurnitureSim using Docker or build it from source.</p>
 <table class="colwidths-given table">
 <colgroup>
@@ -431,61 +431,52 @@ You can install FurnitureSim using Docker or build it from source.</p>
 <ul class="simple">
 <li><p>🛠️ Ubuntu 20.04 LTS</p></li>
 <li><p>NVIDIA RTX GPU</p></li>
-<li><p>📖 Download <a class="reference external" href="https://developer.nvidia.com/isaac-gym">Isaac Gym</a></p></li>
 <li><p>📖 <a class="reference external" href="https://www.anaconda.com/">Anaconda</a></p></li>
 </ul>
 </div>
 <section id="download-isaac-gym">
 <h2>Download Isaac Gym<a class="headerlink" href="#download-isaac-gym" title="Permalink to this headline">#</a></h2>
-<p>FurnitureSim is built on top of Isaac Gym and Factory; thus, you need to download Isaac Gym:</p>
 <ol class="arabic simple">
-<li><p>Go to the <a class="reference external" href="https://developer.nvidia.com/isaac-gym">website</a>.</p></li>
-<li><p>Start by creating an NVIDIA account, and then click “Member area”.</p></li>
-<li><p>Kindly review and accept the “Terms of the NVIDIA Isaac Gym License Agreement”.</p></li>
-<li><p>Download <code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Gym</span> <span class="pre">-</span> <span class="pre">Ubuntu</span> <span class="pre">Linux</span> <span class="pre">18.04</span> <span class="pre">/</span> <span class="pre">20.04</span> <span class="pre">Preview</span> <span class="pre">4</span> <span class="pre">release</span></code>.</p></li>
-<li><p>Unzip the downloaded file and move the folder to the desired location.</p></li>
+<li><p>Go to the <a class="reference external" href="https://developer.nvidia.com/isaac-gym">Isaac Gym website</a>.</p></li>
+<li><p>Click “Join now” and log into your NVIDIA account.</p></li>
+<li><p>Click “Member area”.</p></li>
+<li><p>Read and check the box for the license agreement.</p></li>
+<li><p>Download and unzip <code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Gym</span> <span class="pre">-</span> <span class="pre">Ubuntu</span> <span class="pre">Linux</span> <span class="pre">18.04</span> <span class="pre">/</span> <span class="pre">20.04</span> <span class="pre">Preview</span> <span class="pre">4</span> <span class="pre">release</span></code>.</p></li>
 </ol>
 </section>
 <section id="install-furnituresim-using-docker-option-1">
 <h2>Install FurnitureSim using Docker (Option 1)<a class="headerlink" href="#install-furnituresim-using-docker-option-1" title="Permalink to this headline">#</a></h2>
-<p>We provide a docker image that includes everything needed for FurnitureSim. To use FurnitureSim, you only need to run our docker image.</p>
+<p>Our client Docker image includes FurnitureSim:</p>
 <ol class="arabic simple">
-<li><p>📖 Download <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">nvidia-docker2</a>.</p></li>
-<li><p>Set the environment variables by following <a class="reference internal" href="installation_guide.html#run-client"><span class="std std-ref">Run Client</span></a>.</p></li>
+<li><p>Install <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">nvidia-docker2</a>.</p></li>
+<li><p>Specify whether to pull the Docker image from Docker Hub or build it locally:</p></li>
 </ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># With display</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Case 1: pull from Docker Hub</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_DOCKER</span><span class="o">=</span>furniturebench/client-gpu:latest
+
+<span class="c1"># Case 2: build locally</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_DOCKER</span><span class="o">=</span>client-gpu
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Set the environment variables following <a class="reference internal" href="installation_guide.html#run-client"><span class="std std-ref">Run Client</span></a>.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># With display</span>
 xhost<span class="w"> </span>+
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_DOCKER</span><span class="o">=</span>client-gpu<span class="w">                        </span><span class="c1"># (Case1: local build)</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_DOCKER</span><span class="o">=</span>furniturebench/client-gpu:latest<span class="w">  </span><span class="c1"># (Case2: docker pull)</span>
-
 <span class="c1"># Set the absolute path to the furniture-bench repo</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;/path/to/furniture-bench&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
 
 <span class="c1"># Set the absolute path to Isaac Gym</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;/path/to/isaacgym&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;path/to/isaacgym&gt;
 </pre></div>
 </div>
-</div></blockquote>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple" start="4">
 <li><p>Launch the Docker image:</p></li>
 </ol>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">launch_client</span> <span class="o">--</span><span class="n">sim</span><span class="o">-</span><span class="n">gpu</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">launch_client</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">sim</span><span class="o">-</span><span class="n">gpu</span>
 </pre></div>
 </div>
-</div></blockquote>
-<ol class="arabic simple" start="4">
-<li><p>Test FurnitureSim:</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># --furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg]</span>
-
-python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--no-action<span class="w"> </span><span class="o">[</span>--headless<span class="o">]</span>
-</pre></div>
-</div>
-</div></blockquote>
 </section>
 <section id="install-furnituresim-from-source-option-2">
 <h2>Install FurnitureSim from Source (Option 2)<a class="headerlink" href="#install-furnituresim-from-source-option-2" title="Permalink to this headline">#</a></h2>
@@ -494,34 +485,27 @@ python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class=
 <li><p>Install CUDA following the instructions <a class="reference external" href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html">here</a> or this <a class="reference external" href="https://gist.github.com/primus852/b6bac167509e6f352efb8a462dcf1854#file-cuda_11-7_installation_on_ubuntu_22-04">gist</a>. You can skip this step if you already have CUDA installed on your machine.</p></li>
 <li><p>Create a conda environment:</p></li>
 </ol>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">furniture</span><span class="o">-</span><span class="n">bench</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">furniture</span><span class="o">-</span><span class="n">bench</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span>
 </pre></div>
 </div>
-</div></blockquote>
 <ol class="arabic simple" start="3">
 <li><p>Install the PyTorch version you want to use:</p></li>
 </ol>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">pytorch</span> <span class="n">torchvision</span> <span class="n">torchaudio</span> <span class="n">cudatoolkit</span><span class="o">=</span><span class="mf">11.7</span> <span class="o">-</span><span class="n">c</span> <span class="n">pytorch</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">pytorch</span> <span class="n">torchvision</span> <span class="n">torchaudio</span> <span class="n">cudatoolkit</span><span class="o">=</span><span class="mf">11.7</span> <span class="o">-</span><span class="n">c</span> <span class="n">pytorch</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
 </pre></div>
 </div>
-</div></blockquote>
 <ol class="arabic simple" start="4">
 <li><p>Install Isaac Gym:</p></li>
 </ol>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">isaacgym</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">isaacgym</span><span class="o">&gt;</span>
 <span class="n">cd</span> <span class="n">python</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
 </pre></div>
 </div>
-</div></blockquote>
 <ol class="arabic simple" start="5">
-<li><p>Install FurnitureBench:</p></li>
+<li><p>Install FurnitureBench, which includes FurnitureSim:</p></li>
 </ol>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">clvrai</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">.</span><span class="n">git</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">clvrai</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">.</span><span class="n">git</span>
 <span class="n">cd</span> <span class="n">furniture</span><span class="o">-</span><span class="n">bench</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
 
@@ -533,15 +517,21 @@ python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class=
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
-</div></blockquote>
-<ol class="arabic simple" start="6">
-<li><p>Test FurnitureSim:</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">run_sim_env</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">one_leg</span> <span class="o">--</span><span class="n">scripted</span>
+</section>
+<section id="test-furnituresim-installation">
+<h2>Test FurnitureSim Installation<a class="headerlink" href="#test-furnituresim-installation" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Test FurnitureSim using the following command with a furniture name <code class="docutils literal notranslate"><span class="pre">&lt;furniture&gt;=[lamp|square_table|desk|drawer|cabinet|round_table|stool|chair|one_leg]</span></code>.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--no-action
 </pre></div>
 </div>
-</div></blockquote>
+<ul class="simple">
+<li><p>You can also run our scripted agent for <code class="docutils literal notranslate"><span class="pre">one_leg</span></code> by adding <code class="docutils literal notranslate"><span class="pre">--scripted</span></code> to the arguments:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>FurnitureSim needs to convert 3D furniture meshes into Signed Distance Functions (SDF), which takes several minutes. The converted SDF models are cached for fast execution.</p>
@@ -549,53 +539,7 @@ python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class=
 </section>
 <section id="furnituresim-parameters">
 <h2>FurnitureSim Parameters<a class="headerlink" href="#furnituresim-parameters" title="Permalink to this headline">#</a></h2>
-<p>Simulation parameters (e.g., mass, inertia, and dt) can be found in <code class="docutils literal notranslate"><span class="pre">furniture_bench/sim_config.py</span></code>.</p>
-</section>
-<section id="furniture-assembly-scripts">
-<h2>Furniture Assembly Scripts<a class="headerlink" href="#furniture-assembly-scripts" title="Permalink to this headline">#</a></h2>
-<p>We are planning to provide hard-coded furniture assembly scrips for expert data collection. Currently, FurnitureSim includes a script only for <code class="docutils literal notranslate"><span class="pre">one_leg</span></code>.</p>
-<blockquote>
-<div><table class="table">
-<colgroup>
-<col style="width: 45%" />
-<col style="width: 55%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Furniture</p></th>
-<th class="head"><p>Assembly script</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>lamp</p></td>
-<td><p>⏳</p></td>
-</tr>
-<tr class="row-odd"><td><p>square_table</p></td>
-<td><p>⏳</p></td>
-</tr>
-<tr class="row-even"><td><p>desk</p></td>
-<td><p>⏳</p></td>
-</tr>
-<tr class="row-odd"><td><p>round_table</p></td>
-<td><p>⏳</p></td>
-</tr>
-<tr class="row-even"><td><p>stool</p></td>
-<td><p>⏳</p></td>
-</tr>
-<tr class="row-odd"><td><p>chair</p></td>
-<td><p>⏳</p></td>
-</tr>
-<tr class="row-even"><td><p>drawer</p></td>
-<td><p>⏳</p></td>
-</tr>
-<tr class="row-odd"><td><p>cabinet</p></td>
-<td><p>⏳</p></td>
-</tr>
-<tr class="row-even"><td><p>one_leg</p></td>
-<td><p>✔️</p></td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
+<p>The simulation parameters (e.g., mass, inertia, and dt) can be found in <code class="docutils literal notranslate"><span class="pre">furniture_bench/sim_config.py</span></code>.</p>
 </section>
 </section>
 
@@ -614,10 +558,10 @@ python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class=
             <p class="prev-next-title">Installation Guide</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="dataset.html" title="next page">
+    <a class='right-next' id="next-link" href="../tutorials/furniture_bench.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Dataset</p>
+        <p class="prev-next-title">How to Use FurnitureBench</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -35,19 +35,3 @@ The actual duration may differ based on the type of printer and settings.
 +--------------------+--------------------------+
 | cabinet            | 18h 47m                  |
 +--------------------+--------------------------+
-
-
-Install Client (CPU-only)
------------------------------
-Here we explain how to install a light-weighted client Docker image, primarily intended for data collection purposes. The image is built upon the ``ubuntu:20.04`` base image.
-
-.. code:: bash
-
-    # Clone the repository and cd into it
-    git clone https://github.com/clvrai/furniture-bench.git
-
-    # Pull a pre-built docker image from Docker Hub
-    docker pull furniturebench/client:latest
-
-    # Or build the Docker image yourself
-    DOCKER_BUILDKIT=1 docker build -t client . -f docker/client.Dockerfile

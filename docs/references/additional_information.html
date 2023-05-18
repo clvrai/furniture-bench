@@ -118,11 +118,6 @@
    Installation Guide (FurnitureSim)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started/dataset.html">
-   Dataset
-  </a>
- </li>
 </ul>
 <p class="caption">
  <span class="caption-text">
@@ -130,11 +125,6 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
-   Teleoperation
-  </a>
- </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/furniture_bench.html">
    How to Use FurnitureBench
@@ -148,6 +138,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/training_and_testing.html">
    Benchmarking FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/dataset.html">
+   Dataset
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
+   Teleoperation
   </a>
  </li>
 </ul>
@@ -332,11 +332,6 @@ title="Print to PDF"
      Estimated Time to Print
     </a>
    </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#install-client-cpu-only">
-     Install Client (CPU-only)
-    </a>
-   </li>
   </ul>
  </li>
 </ul>
@@ -366,11 +361,6 @@ title="Print to PDF"
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#estimated-time-to-print">
      Estimated Time to Print
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#install-client-cpu-only">
-     Install Client (CPU-only)
     </a>
    </li>
   </ul>
@@ -432,20 +422,6 @@ The actual duration may differ based on the type of printer and settings.</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="install-client-cpu-only">
-<h3>Install Client (CPU-only)<a class="headerlink" href="#install-client-cpu-only" title="Permalink to this headline">#</a></h3>
-<p>Here we explain how to install a light-weighted client Docker image, primarily intended for data collection purposes. The image is built upon the <code class="docutils literal notranslate"><span class="pre">ubuntu:20.04</span></code> base image.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository and cd into it</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/clvrai/furniture-bench.git
-
-<span class="c1"># Pull a pre-built docker image from Docker Hub</span>
-docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client:latest
-
-<span class="c1"># Or build the Docker image yourself</span>
-<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>client<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/client.Dockerfile
-</pre></div>
-</div>
 </section>
 </section>
 </section>

@@ -27,11 +27,25 @@ FurnitureSim can be configured with the following arguments:
 Automated Assembly Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We provide an automated assembly script:
+We provide automated furniture assembly scrips. It currently supports only ``one_leg``.
+
+..  ============== =================
+..    Furniture     Assembly script
+..  ============== =================
+..       lamp              ⏳
+..   square_table          ⏳
+..       desk              ⏳
+..   round_table           ⏳
+..      stool              ⏳
+..      chair              ⏳
+..      drawer             ⏳
+..     cabinet             ⏳
+..     one_leg             ✔️
+..  ============== =================
 
 .. code:: bash
 
-   python furniture_bench/scripts/run_sim_env.py --furniture one_leg --scripted # Note: only one_leg is supported for now.
+   python furniture_bench/scripts/run_sim_env.py --furniture one_leg --scripted
 
 .. figure:: ../_static/images/assembly_script.gif
     :width: 50%

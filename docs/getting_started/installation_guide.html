@@ -119,11 +119,6 @@
    Installation Guide (FurnitureSim)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dataset.html">
-   Dataset
-  </a>
- </li>
 </ul>
 <p class="caption">
  <span class="caption-text">
@@ -131,11 +126,6 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
-   Teleoperation
-  </a>
- </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/furniture_bench.html">
    How to Use FurnitureBench
@@ -149,6 +139,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/training_and_testing.html">
    Benchmarking FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/dataset.html">
+   Dataset
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
+   Teleoperation
   </a>
  </li>
 </ul>
@@ -944,38 +944,39 @@ although you have the flexibility to adjust it during fine-grained calibration i
 <p>We install our software stack using Docker due to complex dependencies and customized packages for our setup (e.g., custom <a class="reference external" href="https://github.com/facebookresearch/fairo/tree/main/polymetis">Polymetis</a>).</p>
 <section id="install-client-software">
 <h3>Install Client Software<a class="headerlink" href="#install-client-software" title="Permalink to this headline">#</a></h3>
-<p>The Docker image is used for data collection, training, inference, and simulation. The GPU-enabled image is built upon <code class="docutils literal notranslate"><span class="pre">nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04</span></code>.
-To use the GPU Docker image, your machine needs a CUDA driver installed (we used 515.105.01). Please refer to the provided link for details about the <a class="reference external" href="https://docs.nvidia.com/deploy/cuda-compatibility/index.html#deployment-consideration-forward">compatibility of CUDA with different driver versions</a>. The CPU-only version is also available at <a class="reference internal" href="../references/additional_information.html#install-client-cpu-only"><span class="std std-ref">Install Client (CPU-only)</span></a>.</p>
+<p>We provide a Docker image for data collection, training, and evaluation. We provide both CPU and GPU versions. The GPU-enabled image is built upon <code class="docutils literal notranslate"><span class="pre">nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04</span></code> and requires a machine to have a proper CUDA driver (515.105.01 in our case). Please refer to <a class="reference external" href="https://docs.nvidia.com/deploy/cuda-compatibility/index.html#deployment-consideration-forward">“compatibility of CUDA with different driver versions”</a> for details.</p>
 <ol class="arabic simple">
-<li><p>Clone the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repository on the client computer.</p></li>
+<li><p>Clone the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repository on the client computer. We mount it into the Docker image to enable editing the code on the host machine.</p></li>
 </ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/clvrai/furniture-bench.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/clvrai/furniture-bench.git
 <span class="nb">cd</span><span class="w"> </span>furniture-bench
 </pre></div>
 </div>
-</div></blockquote>
 <ol class="arabic simple" start="2">
 <li><p>There are two ways to build the client Docker image:</p></li>
 </ol>
 <blockquote>
 <div><ul>
 <li><p>Pull the pre-built Docker image from Docker Hub.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client-gpu:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU version</span>
+docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client-gpu:latest
+
+<span class="c1"># CPU-only version</span>
+docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client:latest
 </pre></div>
 </div>
 </li>
 <li><p>Or build the Docker image.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>client-gpu<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/client_gpu.Dockerfile
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU version</span>
+<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>client-gpu<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/client_gpu.Dockerfile
+
+<span class="c1"># CPU-only version</span>
+<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>client<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/client.Dockerfile
 </pre></div>
 </div>
 </li>
 </ul>
 </div></blockquote>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>We clone the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repository to mount it into the Docker image. This allows us to edit the code on the host machine and the changes are applied to the Docker image as well.</p>
-</div>
 </section>
 <section id="install-server-software">
 <h3>Install Server Software<a class="headerlink" href="#install-server-software" title="Permalink to this headline">#</a></h3>
@@ -983,12 +984,10 @@ To use the GPU Docker image, your machine needs a CUDA driver installed (we used
 <ol class="arabic simple">
 <li><p>Clone the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repository on the server computer.</p></li>
 </ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/clvrai/furniture-bench.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/clvrai/furniture-bench.git
 <span class="nb">cd</span><span class="w"> </span>furniture-bench
 </pre></div>
 </div>
-</div></blockquote>
 <ol class="arabic simple" start="2">
 <li><p>There are two ways to build the server Docker image:</p></li>
 </ol>
@@ -1016,12 +1015,12 @@ To use the GPU Docker image, your machine needs a CUDA driver installed (we used
 <blockquote>
 <div><ul>
 <li><p>Set the absolute path to the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repo.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;/path/to/furniture-bench&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
 </pre></div>
 </div>
 </li>
 <li><p>(Optional) If you want to use FurnitureSim, specify the absolute path to IsaacGym downloaded from <a class="reference external" href="https://developer.nvidia.com/isaac-gym">https://developer.nvidia.com/isaac-gym</a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;/path/to/isaacgym&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;path/to/isaacgym&gt;
 </pre></div>
 </div>
 </li>
@@ -1036,11 +1035,10 @@ To use the GPU Docker image, your machine needs a CUDA driver installed (we used
 <ol class="arabic simple" start="2">
 <li><p>Run the client image. <code class="docutils literal notranslate"><span class="pre">launch_client.sh</span></code> will read the environment variables and run the Docker image. You need to specify the option (<code class="docutils literal notranslate"><span class="pre">--gpu</span></code>, <code class="docutils literal notranslate"><span class="pre">--cpu</span></code>, <code class="docutils literal notranslate"><span class="pre">--sim-gpu</span></code>) and the image type (<code class="docutils literal notranslate"><span class="pre">--built</span></code> or <code class="docutils literal notranslate"><span class="pre">--pulled</span></code>).</p></li>
 </ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># To show display in Docker container</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># To show display in Docker container</span>
 xhost<span class="w"> </span>+
 
-<span class="c1"># make launch_client.sh executable.</span>
+<span class="c1"># make launch_client.sh executable</span>
 chmod<span class="w"> </span>+x<span class="w"> </span>launch_client.sh
 
 <span class="c1"># GPU image + locally built</span>
@@ -1053,7 +1051,6 @@ chmod<span class="w"> </span>+x<span class="w"> </span>launch_client.sh
 ./launch_client.sh<span class="w"> </span>--sim-gpu<span class="w"> </span>--pulled
 </pre></div>
 </div>
-</div></blockquote>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <ul class="simple">
@@ -1126,7 +1123,7 @@ python<span class="w"> </span>furniture_bench/scripts/run_cam_april.py
 <li><p>Set the absolute path to the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repo in the server computer.</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;/path/to/furniture-bench&gt;
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
 </pre></div>
 </div>
 </div></blockquote>
