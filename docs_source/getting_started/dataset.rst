@@ -1,15 +1,17 @@
 Dataset
 =======
 
-Furniture assembly is a complex, long-horizon manipulation task, which is very challenging to solve using reinforcement learning. To make our benchmark tractable, we provide **219.6 hours** of **5100** successful demonstrations collected using an Oculus Quest 2 controller and a keyboard. We collected 2-24 hours of demonstration data for each furniture model and each initialization randomness level. The length of each demonstration is around 600-2300 steps.
+Furniture assembly is a complex, long-horizon manipulation task, which is very challenging to solve using reinforcement learning. To make our benchmark tractable, we provide **219.6 hours** of **5100** successful demonstrations collected using an Oculus Quest 2 controller and a keyboard.
+
+Each furniture assembly task has three different levels with respect to the randomness in task initialization: `low`, `medium`, and `high`.
 
 
 Download Dataset
 ~~~~~~~~~~~~~~~~
 
-Dataset can be downloaded from `Google Drive <https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing>`__.
-Downloading dataset via browser is slow, so consider using `rclone <https://rclone.org/>`__ for faster download.
-Take a look at `Download with rclone <#download-with-rclone>`__ section for more details.
+FurnitureBench dataset can be downloaded from `our Google Drive <https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing>`__.
+
+* Use `rclone <https://rclone.org/>`__ for fast download following `Download with rclone <#download-with-rclone>`__.
 
 
 Dataset Size
@@ -45,17 +47,14 @@ The size (in GB) of demonstrations for each furniture in each level is summarize
 Dataset Directory Structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Furniture assembly tasks consist of three different levels with respect to the randomness in task initialization: low, medium, and high.
-Thus, we provide three different datasets for each level.
-
-The Drive directory is structured as follows:
+FurnitureBench dataset is structured as follows:
 ::
 
    furniture
      |- dataset
        |- furniture_low  # Low randomness
          |- lamp
-           |- 0.pkl
+           |- 0.pkl      # Demonstration 0
            |- 1.pkl
            |- ...
          |- square_table
@@ -67,43 +66,37 @@ The Drive directory is structured as follows:
          |- chair
          |- one_leg
        |- furniture_med  # Medium randomness
-         |- ...          # Same structure as low randomness
+         |- ...
        |- furniture_high # High randomness
-         |- ...          # Same structure as low randomness
+         |- ...
 
 
-Demonstration Data Format
+Demonstration File Format
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Each demonstration is stored in a `.pkl` file, containing a sequence of sensory inputs, actions, rewards, and other metadata used for benchmarking experiments.
+Each demonstration is stored in a ``.pkl`` file, containing a sequence of sensory inputs, actions, rewards, and other metadata:
 
 ::
 
-   {
-       'furniture': <name of the furniture (e.g., 'lamp')>,
-       'observations': [{
-           'color_image1': <color image of the robot's wrist camera, shape of (224, 224, 3)>,
-           'color_image2': <color image of the front camera, shape of (224, 224, 3)>
-           'robot_state': {
-               'ee_pos': <end-effector position, shape of (3,)>,
-               'ee_quat': <end-effector orientation in quaternion, shape of (4,)>,
-               'ee_pos_vel': <end-effector linear velocity, shape of (3,)>,
-               'ee_ori_vel': <end-effector angular velocity, shape of (3,)>,
-               'joint_positions': <joint positions, shape of (7,)>,
-               'joint_velocities': <joint velocities, shape of (7,)>,
-               'joint_torques': <joint torques, shape of (7,)>,
-               'gripper_width': <gripper width, shape of (1,)>,
-           }
-       }],
-       'actions': [<8 dimensional array: (3,) for end-effector position, (4,) for end-effector orientation in quaternion, and (1,) for binary gripper action>
-       ],
-       'rewards': [
-           <scalar reward for each action> # Sparse reward where 1 is given when each furniture part is done, and 0 otherwise.
-       ],
-       'skills': [
-           <scalar skill marker> # 1 is given when each skill is done, and 0 otherwise.
-       ]
-   }
+   'furniture': Furniture name, e.g., 'lamp'
+   'observations': List of observation dicts
+     {
+       'color_image1': Wrist camera image (224, 224, 3)
+       'color_image2': Front camera image (224, 224, 3)
+       'robot_state': {
+         'ee_pos': EEF position (3,)
+         'ee_quat': EEF orientation (4,)
+         'ee_pos_vel': EEF linear velocity (3,)
+         'ee_ori_vel': EEF angular velocity (3,)
+         'joint_positions': Joint positions (7,)
+         'joint_velocities': Joint velocities (7,)
+         'joint_torques': Joint torques (7,)
+         'gripper_width': Gripper width (1,)
+       }
+     }
+   'actions': List of 8-D actions
+   'rewards': List of rewards (1 if a furniture part is assembled; otherwise, 0)
+   'skills': List of skill completion flags (1 if a skill is completed; otherwise, 0)
 
 
 Download with rclone
