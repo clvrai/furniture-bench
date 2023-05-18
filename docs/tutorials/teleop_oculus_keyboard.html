@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Data Collection using Oculus/Keyboard &#8212; FurnitureBench</title>
+    <title>Teleoperation &#8212; FurnitureBench</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -50,7 +50,7 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="FurnitureBench" href="furniture_bench.html" />
+    <link rel="next" title="How to Use FurnitureBench" href="furniture_bench.html" />
     <link rel="prev" title="Dataset" href="../getting_started/dataset.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -133,22 +133,22 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Data Collection using Oculus/Keyboard
+   Teleoperation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="furniture_bench.html">
-   FurnitureBench
+   How to Use FurnitureBench
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="furniture_sim.html">
-   FurnitureSim
+   How to Use FurnitureSim
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="training_and_testing.html">
-   Training and Testing
+   Benchmarking FurnitureSim
   </a>
  </li>
 </ul>
@@ -329,8 +329,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#run-client-with-docker-volume">
-   Run Client with Docker Volume
+  <a class="reference internal nav-link" href="#start-teleoperation">
+   Start Teleoperation
   </a>
  </li>
 </ul>
@@ -342,7 +342,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Data Collection using Oculus/Keyboard</h1>
+                <h1>Teleoperation</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -358,8 +358,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#run-client-with-docker-volume">
-   Run Client with Docker Volume
+  <a class="reference internal nav-link" href="#start-teleoperation">
+   Start Teleoperation
   </a>
  </li>
 </ul>
@@ -372,60 +372,57 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="data-collection-using-oculus-keyboard">
-<h1>Data Collection using Oculus/Keyboard<a class="headerlink" href="#data-collection-using-oculus-keyboard" title="Permalink to this headline">#</a></h1>
-<p>Our system supports Oculus Quest 2 controller and keyboard for demonstration collections.
-After setting up the environment (workspace, cameras, Client, Server), you are ready to collect the data.</p>
+  <section id="teleoperation">
+<h1>Teleoperation<a class="headerlink" href="#teleoperation" title="Permalink to this headline">#</a></h1>
+<p>Our system supports Oculus Quest 2 controller and keyboard for teleoperation.</p>
 <a class="reference internal image-reference" href="../_images/teleoperation.jpg"><img alt="Teleoperation" class="align-center" src="../_images/teleoperation.jpg" style="width: 70%;" /></a>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>When you use Docker, make sure to mount a storage to save your data (<a class="reference internal" href="../getting_started/installation_guide.html#run-client"><span class="std std-ref">Run Client</span></a>). Otherwise, the collected data will be deleted once you close the docker container.</p>
+<p>When you use Docker, make sure to mount the storage to save your data (<a class="reference internal" href="../getting_started/installation_guide.html#run-client"><span class="std std-ref">Run Client</span></a>). Otherwise, the collected data will be deleted once you close the docker container.</p>
 </div>
 <section id="setup-oculus-quest-2">
 <h2>Setup Oculus Quest 2<a class="headerlink" href="#setup-oculus-quest-2" title="Permalink to this headline">#</a></h2>
-<p>Setup the Oculus Quest 2 when you run it for the first time.</p>
+<p>You need to set up Oculus Quest 2 on its first use.</p>
 <ol class="arabic simple">
-<li><p>Turn on the Oculus Quest 2.</p></li>
+<li><p>Turn on Oculus Quest 2.</p></li>
 <li><p>Download the Oculus app (Meta Quest) on your phone.</p></li>
 <li><p>Create an Oculus account.</p></li>
-<li><p>Pair Your Headset</p></li>
-<li><p>Go to headset settings and select “Developer Mode”.</p></li>
-<li><p>Wear the headset and go to “Settings &gt; System &gt; Power” and set “Auto Sleep Headset to 4 hours”</p></li>
-<li><p>Go to “settings &gt; System &gt; Developer” and disable “Guardian”</p></li>
-<li><p>Connect the Oculus Quest 2 to your computer with USB-A to USB-C cable.</p></li>
+<li><p>Pair Your Headset.</p></li>
+<li><p>Go to headset settings and select “Developer Mode.”</p></li>
+<li><p>Wear the headset and go to “Settings &gt; System &gt; Power” and set “Auto Sleep Headset to 4 hours”.</p></li>
+<li><p>Go to “Settings &gt; System &gt; Developer” and disable “Guardian.”</p></li>
+<li><p>Connect your Oculus Quest 2 to the client computer with USB-A to USB-C cable.</p></li>
 </ol>
 </section>
-<section id="run-client-with-docker-volume">
-<h2>Run Client with Docker Volume<a class="headerlink" href="#run-client-with-docker-volume" title="Permalink to this headline">#</a></h2>
-<p>For the run client and run server, please refer to <a class="reference internal" href="../getting_started/installation_guide.html#run-client"><span class="std std-ref">Run Client</span></a> and <a class="reference internal" href="../getting_started/installation_guide.html#run-server"><span class="std std-ref">Run Server</span></a>.</p>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># The default control device is Oculus + keyboard.</span>
-python<span class="w"> </span>furniture_bench/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span><span class="o">{</span>furniture<span class="o">}</span><span class="w"> </span>--out-data-path<span class="w"> </span><span class="o">{</span>/path/to/save/data<span class="o">}</span>
-
-<span class="c1"># only use keyboard</span>
-python<span class="w"> </span>furniture_env/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span><span class="o">{</span>furniture<span class="o">}</span><span class="w"> </span>--device<span class="w"> </span>keyboard
+<section id="start-teleoperation">
+<h2>Start Teleoperation<a class="headerlink" href="#start-teleoperation" title="Permalink to this headline">#</a></h2>
+<ol class="arabic simple">
+<li><p>Before starting teleoperation, check whether the server daemon is running (see <a class="reference internal" href="../getting_started/installation_guide.html#run-server"><span class="std std-ref">Run Server</span></a>).</p></li>
+<li><p>In the client computer, execute the following script:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--out-data-path<span class="w"> </span>&lt;/path/to/save/data&gt;
 </pre></div>
 </div>
-</div></blockquote>
+<p>2.1. If you want to use only a keyboard, add an argument <code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">keyboard</span></code>:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>When you first run the scripts, prompt in Oculus Quest 2 will ask you to allow the connection.
-Wear the headset and press the “Allow” button.</p>
+<p>Oculus Quest 2 sometimes asks permission for connection. So, if the controller does not work, wear the headset and press the “Allow” button.</p>
 </div>
-<ol class="arabic simple" start="4">
-<li><p>The command above will launch GUI initialization tool. Place furniture parts in reset positions as guided by GUI tool.</p></li>
+<ol class="arabic simple" start="3">
+<li><p>The command above will launch a GUI, as shown below. To start data collection, place furniture parts in their reset positions shown in the tool.</p></li>
 </ol>
-<a class="reference internal image-reference" href="../_images/initialization_tool.gif"><img alt="GUI Tool" class="align-center" src="../_images/initialization_tool.gif" style="width: 70%;" /></a>
-<ol class="arabic simple" start="5">
-<li><p>After completing the trajectory, press “A” to save it as successful. If the trajectory fails to achieve the task, press “B.” Both “A” and “B” save the trajectory, but if “B” is pressed, the metadata will be marked as “failed.”</p></li>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/initialization_tool.gif"><img alt="GUI Tool" src="../_images/initialization_tool.gif" style="width: 70%;" /></a>
+</figure>
+<ol class="arabic simple" start="4">
+<li><p>After completing an episode, press “A” (“B”) to save the trajectory labeled as “success” (“fail”).</p></li>
 </ol>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <ul class="simple">
-<li><p>The data will be saved at {path/to/save/data/&lt;furniture_name&gt;/&lt;current_timestamp&gt;} directory.</p></li>
-<li><p>The data directory contains pkl-serialized Python dictionary, mp4, and png.</p></li>
+<li><p>The data will be saved at <code class="docutils literal notranslate"><span class="pre">&lt;out-data-path&gt;/&lt;furniture_name&gt;/&lt;current_timestamp&gt;/</span></code>.</p></li>
+<li><p>Each episode is stored as follows:</p></li>
 </ul>
-<p>For example,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">51</span>
   <span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mf">51.</span><span class="n">pkl</span>                  <span class="c1"># Demonstration data         (224x224 images, actions, rewards, etc.)</span>
   <span class="o">|-</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">51</span><span class="n">_color_image1</span><span class="o">.</span><span class="n">mp4</span>     <span class="c1"># Wrist camera RGB images    (1280x720)</span>
@@ -437,8 +434,7 @@ Wear the headset and press the “Allow” button.</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>mp4 files contains original resolution RGB images, and png files contains depth images from all three cameras.</p></li>
-<li><p>The structure of the .pkl files is described in <a class="reference internal" href="../getting_started/dataset.html#demonstration-data-format"><span class="std std-ref">Demonstration Data Format</span></a></p></li>
+<li><p>The contents of a <code class="docutils literal notranslate"><span class="pre">.pkl</span></code> file are described in <a class="reference internal" href="../getting_started/dataset.html#demonstration-file-format"><span class="std std-ref">Demonstration File Format</span></a>.</p></li>
 </ul>
 </div>
 </section>
@@ -462,7 +458,7 @@ Wear the headset and press the “Allow” button.</p>
     <a class='right-next' id="next-link" href="furniture_bench.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">FurnitureBench</p>
+        <p class="prev-next-title">How to Use FurnitureBench</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Training and Testing &#8212; FurnitureBench</title>
+    <title>Benchmarking FurnitureSim &#8212; FurnitureBench</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Code Organization" href="../references/code_organization.html" />
-    <link rel="prev" title="FurnitureSim" href="furniture_sim.html" />
+    <link rel="prev" title="How to Use FurnitureSim" href="furniture_sim.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -133,22 +133,22 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="teleop_oculus_keyboard.html">
-   Data Collection using Oculus/Keyboard
+   Teleoperation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="furniture_bench.html">
-   FurnitureBench
+   How to Use FurnitureBench
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="furniture_sim.html">
-   FurnitureSim
+   How to Use FurnitureSim
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Training and Testing
+   Benchmarking FurnitureSim
   </a>
  </li>
 </ul>
@@ -334,13 +334,18 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bc">
-   BC
+  <a class="reference internal nav-link" href="#convert-data-for-training">
+   Convert Data for Training
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#iql">
-   IQL
+  <a class="reference internal nav-link" href="#train-bc">
+   Train BC
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#train-iql">
+   Train IQL
   </a>
  </li>
 </ul>
@@ -352,7 +357,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Training and Testing</h1>
+                <h1>Benchmarking FurnitureSim</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -373,13 +378,18 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bc">
-   BC
+  <a class="reference internal nav-link" href="#convert-data-for-training">
+   Convert Data for Training
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#iql">
-   IQL
+  <a class="reference internal nav-link" href="#train-bc">
+   Train BC
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#train-iql">
+   Train IQL
   </a>
  </li>
 </ul>
@@ -392,13 +402,14 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="training-and-testing">
-<h1>Training and Testing<a class="headerlink" href="#training-and-testing" title="Permalink to this headline">#</a></h1>
-<p>This tutorial shows the process for training and evaluating a policy for furniture assembly tasks.
-It is presumed that you have already prepared your dataset, whether it was downloaded from Google Drive, collected by yourself, or generated with the scripted agent in simulation.</p>
+  <section id="benchmarking-furnituresim">
+<h1>Benchmarking FurnitureSim<a class="headerlink" href="#benchmarking-furnituresim" title="Permalink to this headline">#</a></h1>
+<p>This tutorial shows how to train and evaluate a policy on FurnitureSim.</p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">#</a></h2>
-<p>Install the following packages:</p>
+<ul class="simple">
+<li><p>Install the following packages:</p></li>
+</ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
 
 <span class="c1"># Install robot learning library</span>
@@ -418,11 +429,13 @@ It is presumed that you have already prepared your dataset, whether it was downl
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
 </pre></div>
 </div>
+<ul class="simple">
+<li><p>Prepare training data. You can download a dataset (<a class="reference internal" href="../getting_started/dataset.html#dataset"><span class="std std-ref">Dataset</span></a>) or generate it (<a class="reference internal" href="furniture_sim.html#automated-assembly-script"><span class="std std-ref">Automated Assembly Script</span></a>).</p></li>
+</ul>
 </section>
 <section id="rollout-with-pre-trained-policies">
 <h2>Rollout with Pre-trained Policies<a class="headerlink" href="#rollout-with-pre-trained-policies" title="Permalink to this headline">#</a></h2>
-<p>Here, we show how to roll out pre-trained policies in simulation.
-You can run the following command:</p>
+<p>You can run our pre-trained policies in FurnitureSim:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
 
 <span class="c1"># Policy trained with 1000 scripted demonstrations.</span>
@@ -431,6 +444,7 @@ You can run the following command:</p>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">test_offline.py</span></code> will read a checkpoint in <code class="docutils literal notranslate"><span class="pre">checkpoint/ckpt</span></code> directory from the root of the project.
 The directory name of the checkpoint is the same as the <code class="docutils literal notranslate"><span class="pre">run_name.seed</span></code> that is used during training (e.g., <code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_low_sim_1000.42</span></code> where one_leg_full_iql_r3m_low_sim_1000 is run name and 42 is the seed).</p>
+<p>The real-world rollout is similar to the above command, but you must change the <code class="docutils literal notranslate"><span class="pre">--env_name</span></code> corresponding to the real-world environment.</p>
 <p>If your <code class="docutils literal notranslate"><span class="pre">run_name</span></code> is one of the pre-trained <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and currently does not exist under <code class="docutils literal notranslate"><span class="pre">checkpoint/ckpt</span></code>, the script will download it from Google Drive.</p>
 <p>Here is the list of <code class="docutils literal notranslate"><span class="pre">run_name</span></code> for the pre-trained policies:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># IQL</span>
@@ -440,10 +454,10 @@ The directory name of the checkpoint is the same as the <code class="docutils li
 <span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_mixed_2000&quot;</span>   <span class="c1"># IQL algorithm trained with 2000 teleoperated demonstrations in the real world, combination of low and medium randomness.</span>
 </pre></div>
 </div>
-<p>The real-world rollout is similar to the above command, but you must change the <code class="docutils literal notranslate"><span class="pre">--env_name</span></code> corresponding to the real-world environment.</p>
 </section>
-<section id="bc">
-<h2>BC<a class="headerlink" href="#bc" title="Permalink to this headline">#</a></h2>
+<section id="convert-data-for-training">
+<h2>Convert Data for Training<a class="headerlink" href="#convert-data-for-training" title="Permalink to this headline">#</a></h2>
+<p>Both for BC and IQL training, you need to convert a raw dataset as follows:</p>
 <p>First, convert the data to the format for training:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">convert_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">demos</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">processed</span><span class="o">/</span><span class="n">demo</span><span class="o">&gt;</span>
 
@@ -452,26 +466,27 @@ The directory name of the checkpoint is the same as the <code class="docutils li
 </pre></div>
 </div>
 </section>
-<section id="iql">
-<h2>IQL<a class="headerlink" href="#iql" title="Permalink to this headline">#</a></h2>
+<section id="train-bc">
+<h2>Train BC<a class="headerlink" href="#train-bc" title="Permalink to this headline">#</a></h2>
+</section>
+<section id="train-iql">
+<h2>Train IQL<a class="headerlink" href="#train-iql" title="Permalink to this headline">#</a></h2>
 <ol class="arabic simple">
 <li><p>Extract R3M or VIP features from the demonstrations:</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">extract_feature</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">demo_dir</span>  <span class="o">--</span><span class="n">out_file_path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">the</span><span class="o">/</span><span class="n">pkl</span><span class="o">&gt;</span> <span class="o">--&lt;</span><span class="n">use_r3m</span> <span class="ow">or</span> <span class="n">use_vip</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">extract_feature</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">demo_dir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">&gt;</span>  <span class="o">--</span><span class="n">out_file_path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">converted_data</span><span class="o">&gt;</span> <span class="p">[</span><span class="o">--</span><span class="n">use_r3m</span> <span class="o">|</span> <span class="o">--</span><span class="n">use_vip</span><span class="p">]</span>
+
 <span class="c1"># E.g.</span>
 <span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">extract_feature</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">one_leg</span> <span class="o">--</span><span class="n">demo_dir</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_processed</span><span class="o">/</span> <span class="o">--</span><span class="n">out_file_path</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_sim_1000</span><span class="o">.</span><span class="n">pkl</span> <span class="o">--</span><span class="n">use_r3m</span>
 </pre></div>
 </div>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">demo_dir</span></code> should be the directory where the <code class="docutils literal notranslate"><span class="pre">converted</span></code> demonstrations with <code class="docutils literal notranslate"><span class="pre">convert_data.py</span></code></p>
 <ol class="arabic simple" start="2">
-<li><p>Train an IQL policy</p></li>
+<li><p>You can train an IQL policy using the following script. If you want to log using <code class="docutils literal notranslate"><span class="pre">wandb</span></code>, use these arguments <code class="docutils literal notranslate"><span class="pre">--wandb</span> <span class="pre">--wandb_entity</span> <span class="pre">&lt;entity_name&gt;</span> <span class="pre">--wandb_project</span> <span class="pre">&lt;project_name&gt;</span></code>:</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="o">&lt;</span><span class="n">run_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pkl</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=&lt;</span><span class="n">vip</span> <span class="ow">or</span> <span class="n">r3m</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="o">&lt;</span><span class="n">run_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pkl</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=</span><span class="p">[</span><span class="n">vip</span> <span class="o">|</span> <span class="n">r3m</span><span class="p">]</span>
+
 <span class="c1"># E.g.</span>
 <span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/</span><span class="n">one_leg</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="n">one_leg_sim</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=</span><span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_sim_1000</span><span class="o">.</span><span class="n">pkl</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=</span><span class="n">r3m</span>
-
-<span class="c1"># To use wandb</span>
-<span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="o">&lt;</span><span class="n">run_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pkl</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=&lt;</span><span class="n">vip</span> <span class="ow">or</span> <span class="n">r3m</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">wandb</span> <span class="o">--</span><span class="n">wandb_entity</span> <span class="o">&lt;</span><span class="n">entity_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">wandb_project</span> <span class="o">&lt;</span><span class="n">project_name</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </section>
@@ -489,7 +504,7 @@ The directory name of the checkpoint is the same as the <code class="docutils li
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">FurnitureSim</p>
+            <p class="prev-next-title">How to Use FurnitureSim</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="../references/code_organization.html" title="next page">
