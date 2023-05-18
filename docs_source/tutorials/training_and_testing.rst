@@ -58,12 +58,12 @@ Here is the list of ``run_name`` for the pre-trained policies:
     - "one_leg_full_iql_r3m_low_sim_1000" # IQL algorithm trained with 1000 scripted demonstrations in simulation, initialized with low randomness.
     - "one_leg_full_iql_r3m_low_1000"     # IQL algorithm trained with 1000 teleoperated demonstrations in the real world, initialized with low randomness.
     - "one_leg_full_iql_r3m_med_1000"     # IQL algorithm trained with 1000 teleoperated demonstrations in the real world, initialized with medium randomness.
-    - "one_leg_full_iql_r3m_mixed_2000"   # IQL algorithm trained with 2000 teleoperated demonstrations in the real world, combination of low and medium randomness.
+    - "one_leg_full_iql_r3m_mixed_2000"   # IQL algorithm trained with 2000 teleoperated demonstrations in the real world, a combination of low and medium randomness.
 
 
 Convert Data for Training
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-
+We provide a tutorial on how to train a policy from scratch using our codebase.
 Both for BC and IQL training, you need to convert a raw dataset as follows:
 
 First, convert the data to the format for training:

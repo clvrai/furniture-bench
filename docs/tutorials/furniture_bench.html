@@ -329,19 +329,26 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#visualize-camera-inputs">
-   Visualize Camera Inputs
+  <a class="reference internal nav-link" href="#utilities">
+   Utilities
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#visualize-robot-trajectory">
-   Visualize Robot Trajectory
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#camera-calibration">
-   Camera Calibration
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#visualize-camera-inputs">
+     Visualize Camera Inputs
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#visualize-robot-trajectory">
+     Visualize Robot Trajectory
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#camera-calibration">
+     Camera Calibration
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -368,19 +375,26 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#visualize-camera-inputs">
-   Visualize Camera Inputs
+  <a class="reference internal nav-link" href="#utilities">
+   Utilities
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#visualize-robot-trajectory">
-   Visualize Robot Trajectory
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#camera-calibration">
-   Camera Calibration
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#visualize-camera-inputs">
+     Visualize Camera Inputs
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#visualize-robot-trajectory">
+     Visualize Robot Trajectory
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#camera-calibration">
+     Camera Calibration
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -407,19 +421,62 @@ title="Print to PDF"
     <span class="n">with_display</span><span class="o">=...</span><span class="p">,</span>        <span class="c1"># boolean, if True, the environment renders the camera images.</span>
     <span class="n">draw_marker</span><span class="o">=...</span><span class="p">,</span>         <span class="c1"># boolean, if True, the environment renders the AprilTag marker.</span>
     <span class="n">manual_label</span><span class="o">=...</span><span class="p">,</span>        <span class="c1"># boolean, if True, allow manual labeling of the reward.</span>
-    <span class="n">from_skill</span><span class="o">=...</span><span class="p">,</span>          <span class="c1"># integer, [0-5) skill index to start from.</span>
-    <span class="n">to_skill</span><span class="o">=...</span><span class="p">,</span>            <span class="c1"># integer, [1-5] skill index to end at. Should be larger than `from_skill`.</span>
+    <span class="n">from_skill</span><span class="o">=...</span><span class="p">,</span>          <span class="c1"># integer, [0-5) skill index to start from. Note that index `i` denotes the completion of ith skill and commencement of the (i + 1)th skill. For instance, to evaluate the performance of the 5th skill, the index should be set at 4.</span>
+    <span class="n">to_skill</span><span class="o">=...</span><span class="p">,</span>            <span class="c1"># integer, [1-5] skill index to end at. Should be larger than `from_skill`. Expected to perform the full task from `from_skill` onwards, if not specified.</span>
     <span class="n">randomness</span><span class="o">=...</span><span class="p">,</span>          <span class="c1"># string, [low | med | high], randomness level of the environment.</span>
-    <span class="n">high_random_idx</span><span class="o">=...</span><span class="p">,</span>     <span class="c1"># integer, 0-2, index of the high randomness level.</span>
+    <span class="n">high_random_idx</span><span class="o">=...</span><span class="p">,</span>     <span class="c1"># integer, [0-2], index of the high randomness level. Randomly selected if not specified.</span>
     <span class="n">visualize_init_pose</span><span class="o">=...</span><span class="p">,</span> <span class="c1"># boolean, if True, visualize the initial pose of furniture parts.</span>
     <span class="n">record_video</span><span class="o">=...</span><span class="p">,</span>        <span class="c1"># boolean, if True, record the video of the agent&#39;s observation</span>
     <span class="n">manual_reset</span><span class="o">=...</span><span class="p">,</span>        <span class="c1"># boolean, if True, allow a manual reset of the environment.</span>
 <span class="p">)</span>
 </pre></div>
 </div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">randomness</span></code> controls the randomness level of the environment.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: The initial pose of each furniture piece is fixed; however, there can be a small human noise during resetting.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">med</span></code>: Based on the pre-defined poses in <cite>low</cite>, each part can have translation noise between [-5 cm, 5 cm] and rotational noise between [-45◦, 45◦].</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: Furniture parts are randomly initialized on the workspace.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Below is an example of the initialization of the chair, depicted with low, med, and high randomness levels, arranged from left to right.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/initialization_example.jpg"><img alt="../_images/initialization_example.jpg" src="../_images/initialization_example.jpg" style="width: 600px;" /></a>
+</figure>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">from_skill</span></code> and <code class="docutils literal notranslate"><span class="pre">to_skill</span></code> control the skill range of the environment. During initialization, you should match the initial pose of the furniture with the pre-defined pose using GUI tool (see <a class="reference internal" href="teleop_oculus_keyboard.html#start-teleoperation"><span class="std std-ref">Start Teleoperation</span></a> list item 3). And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill. Below are the initialization processes of the script when <code class="docutils literal notranslate"><span class="pre">from_skill</span></code> is set at 1 to 4, from left to right.</p></li>
+</ul>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="skill1" src="../_images/skill1.gif" /></p></th>
+<th class="head"><p><img alt="skill2" src="../_images/skill2.gif" /></p></th>
+<th class="head"><p><img alt="skill3" src="../_images/skill3.gif" /></p></th>
+<th class="head"><p><img alt="skill4" src="../_images/skill4.gif" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 </section>
+<section id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">#</a></h2>
+<p>The following sections explain the utilities of FurnitureBench.</p>
 <section id="visualize-camera-inputs">
-<h2>Visualize Camera Inputs<a class="headerlink" href="#visualize-camera-inputs" title="Permalink to this headline">#</a></h2>
+<h3>Visualize Camera Inputs<a class="headerlink" href="#visualize-camera-inputs" title="Permalink to this headline">#</a></h3>
 <p>This script allows you to visualize AprilTag detection and the camera from three different views (front, wrist, and rear):</p>
 <a class="reference internal image-reference" href="../_images/run_cam_april.png"><img alt="../_images/run_cam_april.png" src="../_images/run_cam_april.png" style="width: 600px;" /></a>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">run_cam_april</span><span class="o">.</span><span class="n">py</span>
@@ -427,7 +484,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="visualize-robot-trajectory">
-<h2>Visualize Robot Trajectory<a class="headerlink" href="#visualize-robot-trajectory" title="Permalink to this headline">#</a></h2>
+<h3>Visualize Robot Trajectory<a class="headerlink" href="#visualize-robot-trajectory" title="Permalink to this headline">#</a></h3>
 <p>This script will show robot’s trajectory saved in a <code class="docutils literal notranslate"><span class="pre">.pkl</span></code> file.
 The wrist and front camera views are shown in the left and right panels, respectively.</p>
 <p>If you want to try out with the pre-recorded trajectories, you can download the <code class="docutils literal notranslate"><span class="pre">.pkl</span></code> files from <a class="reference internal" href="dataset.html#download-dataset"><span class="std std-ref">Download Dataset</span></a>.
@@ -440,7 +497,7 @@ We run the following commands with cabinet <a class="reference external" href="h
 </figure>
 </section>
 <section id="camera-calibration">
-<h2>Camera Calibration<a class="headerlink" href="#camera-calibration" title="Permalink to this headline">#</a></h2>
+<h3>Camera Calibration<a class="headerlink" href="#camera-calibration" title="Permalink to this headline">#</a></h3>
 <p>Our demonstration consists of randomly perturbed front camera pose in each episode.
 To determine the camera pose from the front-view image, we calculate the average camera pose for each type of furniture.</p>
 <p>Run the following commands to calibrate the front camera pose for each furniture type.</p>
@@ -454,6 +511,7 @@ To determine the camera pose from the front-view image, we calculate the average
 The green/red text shows if the camera pose is within the threshold or not.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
+</section>
 </section>
 </section>
 

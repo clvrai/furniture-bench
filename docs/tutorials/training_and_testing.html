@@ -451,13 +451,14 @@ The directory name of the checkpoint is the same as the <code class="docutils li
 <span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_low_sim_1000&quot;</span> <span class="c1"># IQL algorithm trained with 1000 scripted demonstrations in simulation, initialized with low randomness.</span>
 <span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_low_1000&quot;</span>     <span class="c1"># IQL algorithm trained with 1000 teleoperated demonstrations in the real world, initialized with low randomness.</span>
 <span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_med_1000&quot;</span>     <span class="c1"># IQL algorithm trained with 1000 teleoperated demonstrations in the real world, initialized with medium randomness.</span>
-<span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_mixed_2000&quot;</span>   <span class="c1"># IQL algorithm trained with 2000 teleoperated demonstrations in the real world, combination of low and medium randomness.</span>
+<span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_mixed_2000&quot;</span>   <span class="c1"># IQL algorithm trained with 2000 teleoperated demonstrations in the real world, a combination of low and medium randomness.</span>
 </pre></div>
 </div>
 </section>
 <section id="convert-data-for-training">
 <h2>Convert Data for Training<a class="headerlink" href="#convert-data-for-training" title="Permalink to this headline">#</a></h2>
-<p>Both for BC and IQL training, you need to convert a raw dataset as follows:</p>
+<p>We provide a tutorial on how to train a policy from scratch using our codebase.
+Both for BC and IQL training, you need to convert a raw dataset as follows:</p>
 <p>First, convert the data to the format for training:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">convert_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">demos</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">processed</span><span class="o">/</span><span class="n">demo</span><span class="o">&gt;</span>
 
