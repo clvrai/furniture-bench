@@ -19,10 +19,9 @@ FurnitureSim can be configured with the following arguments:
       resize_img=...,          # boolean, resize images to 224 x 224.
       headless=..,             # boolean, run the simulation without GUI.
       save_camera_input=...,   # boolean, save camera input images at the beginning of the episode.
-      randomness=...,          # string, [low | med | high].
-      high_random_idx=...      # integer, index of the high randomness environment.
+      randomness=...,          # string, [low | med | high], randomness level of the environment.
+      high_random_idx=...      # integer, [0-2], index of the high randomness level. Randomly selected if not specified.
     )
-
 
 Automated Assembly Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~
