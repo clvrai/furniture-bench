@@ -57,7 +57,7 @@ If you use FurnitureBench in your research, please cite our paper:
    references/code_organization
    references/troubleshooting
    references/development_roadmap
-   references/additional_information
+   references/3d_printing
 
 .. Indices and tables
 .. ==================

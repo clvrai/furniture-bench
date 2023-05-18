@@ -1,5 +1,5 @@
 Development Roadmap
-======================
+===================
 
 We describe our roadmap for FurnitureBench below:
 
@@ -20,7 +20,8 @@ We describe our roadmap for FurnitureBench below:
     <input disabled="" type="checkbox">
 
 
--  |uncheck_| Support all furniture models in FurnitureSim (i.e., assembly scripts, 3D models).
+-  |uncheck_| Assembly scripts for all furniture models in FurnitureSim.
 -  |uncheck_| RL benchmark on FurnitureSim.
--  |uncheck_| Shaped reward function in FurnitureSim.
--  |uncheck_| Custom furniture models for FurnitureSim and FurnitureBench.
+-  |uncheck_| Support for custom furniture models.
+-  |uncheck_| Optimization for parallel FurnitureSim environments.
+
