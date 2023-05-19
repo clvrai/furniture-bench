@@ -1,10 +1,7 @@
-Additional Information
-======================
-
 3D Printing 🖨️
-~~~~~~~~~~~~~~
+================
 
-Here we show an example of sliced the model using FlashPrint:
+This is an example of sliced 3D models using FlashPrint:
 
 .. image:: ../_static/images/slice_example.png
     :width: 300px
@@ -13,8 +10,8 @@ Here we show an example of sliced the model using FlashPrint:
 
 Estimated Time to Print
 -----------------------
-We provide an estimated time for each furniture model in our configuration.
-The actual duration may differ based on the type of printer and settings.
+
+The table below summarizes an estimated time for 3D printing each furniture model. The actual time may vary based on the type of printer and setting.
 
 +--------------------+--------------------------+
 | Furniture Model    | Estimated time to print  |

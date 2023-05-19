@@ -306,20 +306,21 @@ Install Wrist Camera
 
 Install Software
 ~~~~~~~~~~~~~~~~
+
 We install our software stack using Docker due to complex dependencies and customized packages for our setup (e.g., custom `Polymetis <https://github.com/facebookresearch/fairo/tree/main/polymetis>`__).
 
 
 Install Client Software
 -----------------------
-The Docker image is used for data collection, training, inference, and simulation. The GPU-enabled image is built upon ``nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04``.
-To use the GPU Docker image, your machine needs a CUDA driver installed (we used 515.105.01). Please refer to the provided link for details about the `compatibility of CUDA with different driver versions <https://docs.nvidia.com/deploy/cuda-compatibility/index.html#deployment-consideration-forward>`__. The CPU-only version is also available at :ref:`Install Client (CPU-only)`.
 
-1. Clone the ``furniture-bench`` repository on the client computer.
+We provide a Docker image for data collection, training, and evaluation. We provide both CPU and GPU versions. The GPU-enabled image is built upon ``nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04`` and requires a machine to have a proper CUDA driver (515.105.01 in our case). Please refer to `"compatibility of CUDA with different driver versions" <https://docs.nvidia.com/deploy/cuda-compatibility/index.html#deployment-consideration-forward>`__ for details.
 
-  .. code:: bash
+1. Clone the ``furniture-bench`` repository on the client computer. We mount it into the Docker image to enable editing the code on the host machine.
 
-    git clone https://github.com/clvrai/furniture-bench.git
-    cd furniture-bench
+.. code:: bash
+
+  git clone https://github.com/clvrai/furniture-bench.git
+  cd furniture-bench
 
 2. There are two ways to build the client Docker image:
 
@@ -327,17 +328,21 @@ To use the GPU Docker image, your machine needs a CUDA driver installed (we used
 
     .. code:: bash
 
+      # GPU version
       docker pull furniturebench/client-gpu:latest
+
+      # CPU-only version
+      docker pull furniturebench/client:latest
 
   - Or build the Docker image.
 
     .. code:: bash
 
+      # GPU version
       DOCKER_BUILDKIT=1 docker build -t client-gpu . -f docker/client_gpu.Dockerfile
 
-.. tip::
-    We clone the ``furniture-bench`` repository to mount it into the Docker image. This allows us to edit the code on the host machine and the changes are applied to the Docker image as well.
-
+      # CPU-only version
+      DOCKER_BUILDKIT=1 docker build -t client . -f docker/client.Dockerfile
 
 
 Install Server Software
@@ -347,10 +352,10 @@ The server computer needs a real-time kernel and high-speed CPU (e.g., at least 
 
 1. Clone the ``furniture-bench`` repository on the server computer.
 
-  .. code:: bash
+.. code:: bash
 
-    git clone https://github.com/clvrai/furniture-bench.git
-    cd furniture-bench
+  git clone https://github.com/clvrai/furniture-bench.git
+  cd furniture-bench
 
 2. There are two ways to build the server Docker image:
 
@@ -376,13 +381,13 @@ Run Client
 
     .. code:: bash
 
-      export FURNITURE_BENCH=</path/to/furniture-bench>
+      export FURNITURE_BENCH=<path/to/furniture-bench>
 
   - (Optional) If you want to use FurnitureSim, specify the absolute path to IsaacGym downloaded from https://developer.nvidia.com/isaac-gym.
 
     .. code:: bash
 
-      export ISAAC_GYM_PATH=</path/to/isaacgym>
+      export ISAAC_GYM_PATH=<path/to/isaacgym>
 
   - (Optional) Environment variable for extra mounting (e.g., for data collection). This will set Docker Volume flag ``-v $HOST_DATA_MOUNT:$CONTAINER_DATA_MOUNT``.
 
@@ -393,22 +398,22 @@ Run Client
 
 2. Run the client image. ``launch_client.sh`` will read the environment variables and run the Docker image. You need to specify the option (``--gpu``, ``--cpu``, ``--sim-gpu``) and the image type (``--built`` or ``--pulled``).
 
-  .. code:: bash
+.. code:: bash
 
-    # To show display in Docker container
-    xhost +
+  # To show display in Docker container
+  xhost +
 
-    # make launch_client.sh executable.
-    chmod +x launch_client.sh
+  # make launch_client.sh executable
+  chmod +x launch_client.sh
 
-    # GPU image + locally built
-    ./launch_client.sh --gpu --built
+  # GPU image + locally built
+  ./launch_client.sh --gpu --built
 
-    # CPU image + pulled from Docker Hub
-    ./launch_client.sh --cpu --pulled
+  # CPU image + pulled from Docker Hub
+  ./launch_client.sh --cpu --pulled
 
-    # GPU image with FurnitureSim + pulled from Docker Hub
-    ./launch_client.sh --sim-gpu --pulled
+  # GPU image with FurnitureSim + pulled from Docker Hub
+  ./launch_client.sh --sim-gpu --pulled
 
 .. tip::
 
@@ -485,7 +490,7 @@ Then, launch a server-side daemon:
 
   .. code:: bash
 
-    export FURNITURE_BENCH=</path/to/furniture-bench>
+    export FURNITURE_BENCH=<path/to/furniture-bench>
 
 2. Launch the server Docker container.
 

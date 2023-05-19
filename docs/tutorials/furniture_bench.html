@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="How to Use FurnitureSim" href="furniture_sim.html" />
-    <link rel="prev" title="Teleoperation" href="teleop_oculus_keyboard.html" />
+    <link rel="prev" title="Installation Guide (FurnitureSim)" href="../getting_started/installation_guide_furniture_sim.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -119,11 +119,6 @@
    Installation Guide (FurnitureSim)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started/dataset.html">
-   Dataset
-  </a>
- </li>
 </ul>
 <p class="caption">
  <span class="caption-text">
@@ -131,11 +126,6 @@
  </span>
 </p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="teleop_oculus_keyboard.html">
-   Teleoperation
-  </a>
- </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    How to Use FurnitureBench
@@ -149,6 +139,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="training_and_testing.html">
    Benchmarking FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="dataset.html">
+   Dataset
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="teleop_oculus_keyboard.html">
+   Teleoperation
   </a>
  </li>
 </ul>
@@ -174,8 +174,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../references/additional_information.html">
-   Additional Information
+  <a class="reference internal" href="../references/3d_printing.html">
+   3D Printing 🖨️
   </a>
  </li>
 </ul>
@@ -327,6 +327,7 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furniturebench-configuration">
    FurnitureBench Configuration
   </a>
+<<<<<<< HEAD
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#parameters">
@@ -334,6 +335,8 @@ title="Print to PDF"
     </a>
    </li>
   </ul>
+=======
+>>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#utilities">
@@ -380,6 +383,7 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furniturebench-configuration">
    FurnitureBench Configuration
   </a>
+<<<<<<< HEAD
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#parameters">
@@ -387,6 +391,8 @@ title="Print to PDF"
     </a>
    </li>
   </ul>
+=======
+>>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#utilities">
@@ -446,10 +452,20 @@ title="Print to PDF"
 <span class="p">)</span>
 </pre></div>
 </div>
+<<<<<<< HEAD
 <section id="parameters">
 <h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">randomness</span></code> controls the randomness level of the environment.</p></li>
+=======
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">randomness</span></code> controls the randomness level of the environment.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: The initial pose of each furniture piece is fixed; however, there can be a small human noise during resetting.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">med</span></code>: Based on the pre-defined poses in <cite>low</cite>, each part can have translation noise between [-5 cm, 5 cm] and rotational noise between [-45◦, 45◦].</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: Furniture parts are randomly initialized on the workspace.</p></li>
+>>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
 </ul>
 <dl class="simple">
 <dt></dt><dd><p>The end-effector pose is also perturbed depending on the randomness level.</p>
@@ -458,17 +474,27 @@ title="Print to PDF"
 <li><p>For the <code class="docutils literal notranslate"><span class="pre">low</span></code> of the full assembly task, the end-effector pose is fixed to the pre-defined target pose.</p></li>
 <li><p>For the <code class="docutils literal notranslate"><span class="pre">low</span></code> of the skill benchmark, the noise is applied to the pre-defined target pose (±0.5 cm positional, ±5◦ rotational).</p></li>
 </ul>
+<<<<<<< HEAD
 </dd>
 </dl>
+=======
+<p>Below is an example of the initialization of the chair, depicted with low, med, and high randomness levels, arranged from left to right.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/initialization_example.jpg"><img alt="../_images/initialization_example.jpg" src="../_images/initialization_example.jpg" style="width: 600px;" /></a>
+</figure>
+>>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">from_skill</span></code> and <code class="docutils literal notranslate"><span class="pre">to_skill</span></code> control the skill range of the environment.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from_skill</span></code> and <code class="docutils literal notranslate"><span class="pre">to_skill</span></code> control the skill range of the environment. During initialization, you should match the initial pose of the furniture with the pre-defined pose using GUI tool (see <a class="reference internal" href="teleop_oculus_keyboard.html#start-teleoperation"><span class="std std-ref">Start Teleoperation</span></a> list item 3). And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill. Below are the initialization processes of the script when <code class="docutils literal notranslate"><span class="pre">from_skill</span></code> is set at 1 to 4, from left to right.</p></li>
 </ul>
+<<<<<<< HEAD
 <dl class="simple">
 <dt></dt><dd><p>During initialization, you should match the initial pose of the furniture with the pre-defined pose using a GUI tool (see <a class="reference internal" href="teleop_oculus_keyboard.html#start-teleoperation"><span class="std std-ref">Start Teleoperation</span></a> list item 3).
 And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill.
 Below are the initialization processes of the script when <code class="docutils literal notranslate"><span class="pre">from_skill</span></code> is set at 1 to 4, from left to right.</p>
 </dd>
 </dl>
+=======
+>>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
 <table class="colwidths-given table">
 <colgroup>
 <col style="width: 25%" />
@@ -492,7 +518,6 @@ Below are the initialization processes of the script when <code class="docutils 
 </tbody>
 </table>
 </section>
-</section>
 <section id="utilities">
 <h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">#</a></h2>
 <p>The following sections explain the utilities of FurnitureBench.</p>
@@ -508,7 +533,7 @@ Below are the initialization processes of the script when <code class="docutils 
 <h3>Visualize Robot Trajectory<a class="headerlink" href="#visualize-robot-trajectory" title="Permalink to this headline">#</a></h3>
 <p>This script will show robot’s trajectory saved in a <code class="docutils literal notranslate"><span class="pre">.pkl</span></code> file.
 The wrist and front camera views are shown in the left and right panels, respectively.</p>
-<p>If you want to try out with the pre-recorded trajectories, you can download the <code class="docutils literal notranslate"><span class="pre">.pkl</span></code> files from <a class="reference internal" href="../getting_started/dataset.html#download-dataset"><span class="std std-ref">Download Dataset</span></a>.
+<p>If you want to try out with the pre-recorded trajectories, you can download the <code class="docutils literal notranslate"><span class="pre">.pkl</span></code> files from <a class="reference internal" href="dataset.html#download-dataset"><span class="std std-ref">Download Dataset</span></a>.
 We run the following commands with cabinet <a class="reference external" href="https://drive.google.com/file/d/1PSh0uvhf7nqFw4KYLf4gn4E7GKferUvD/view?usp=share_link">trajectory</a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">show_trajectory</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="mf">00149.</span><span class="n">pkl</span>
 </pre></div>
@@ -544,11 +569,11 @@ The green/red text shows if the camera pose is within the threshold or not.</spa
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="teleop_oculus_keyboard.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="../getting_started/installation_guide_furniture_sim.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Teleoperation</p>
+            <p class="prev-next-title">Installation Guide (FurnitureSim)</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="furniture_sim.html" title="next page">

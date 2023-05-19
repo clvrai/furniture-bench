@@ -28,8 +28,6 @@ FurnitureBench can be configured with the following arguments:
         manual_reset=True         # If true, a manual reset of the environment is allowed.
     )
 
-Parameters
-~~~~~~~~~~~~~~
 - ``randomness`` controls the randomness level of the environment.
 
 \
@@ -39,12 +37,11 @@ Parameters
   - For the ``low`` of the full assembly task, the end-effector pose is fixed to the pre-defined target pose.
   - For the ``low`` of the skill benchmark, the noise is applied to the pre-defined target pose (±0.5 cm positional, ±5◦ rotational).
 
+.. figure:: ../_static/images/initialization_example.jpg
+    :align: center
+    :width: 600px
 
-- ``from_skill`` and ``to_skill`` control the skill range of the environment.
-\
-  During initialization, you should match the initial pose of the furniture with the pre-defined pose using a GUI tool (see :ref:`Start Teleoperation` list item 3).
-  And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill.
-  Below are the initialization processes of the script when ``from_skill`` is set at 1 to 4, from left to right.
+- ``from_skill`` and ``to_skill`` control the skill range of the environment. During initialization, you should match the initial pose of the furniture with the pre-defined pose using GUI tool (see :ref:`Start Teleoperation` list item 3). And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill. Below are the initialization processes of the script when ``from_skill`` is set at 1 to 4, from left to right.
 
 .. |skill1| image:: ../_static/images/skill1.gif
 .. |skill2| image:: ../_static/images/skill2.gif
@@ -60,9 +57,11 @@ Parameters
     |          |          |          |          |
     +----------+----------+----------+----------+
 
+
 Utilities
 ---------
 The following sections explain the utilities of FurnitureBench.
+
 
 Visualize Camera Inputs
 ~~~~~~~~~~~~~~~~~~~~~~~

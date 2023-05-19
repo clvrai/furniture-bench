@@ -119,11 +119,6 @@
    Installation Guide (FurnitureSim)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started/dataset.html">
-   Dataset
-  </a>
- </li>
 </ul>
 <p class="caption">
  <span class="caption-text">
@@ -131,11 +126,6 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
-   Teleoperation
-  </a>
- </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/furniture_bench.html">
    How to Use FurnitureBench
@@ -149,6 +139,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/training_and_testing.html">
    Benchmarking FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/dataset.html">
+   Dataset
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
+   Teleoperation
   </a>
  </li>
 </ul>
@@ -174,8 +174,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="additional_information.html">
-   Additional Information
+  <a class="reference internal" href="3d_printing.html">
+   3D Printing 🖨️
   </a>
  </li>
 </ul>
@@ -694,6 +694,12 @@ pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="
 <span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span><span class="s1">&#39;10de:2204&#39;</span><span class="w"> </span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--no-action
 </pre></div>
 </div>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><strong>Q:</strong> FurnitureSim crashes with segmentation fault.</div>
+</div>
+<blockquote>
+<div><p><strong>A:</strong> It is likely to be an issue with NVIDIA driver and Vulkan. Install an NVIDIA driver again, reboot, and try it.</p>
 </div></blockquote>
 <div class="line-block">
 <div class="line"><strong>Q:</strong> Simulator does not terminate even after I press Ctrl+C. What should I do?</div>

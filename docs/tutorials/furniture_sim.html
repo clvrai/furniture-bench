@@ -119,11 +119,6 @@
    Installation Guide (FurnitureSim)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started/dataset.html">
-   Dataset
-  </a>
- </li>
 </ul>
 <p class="caption">
  <span class="caption-text">
@@ -131,11 +126,6 @@
  </span>
 </p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="teleop_oculus_keyboard.html">
-   Teleoperation
-  </a>
- </li>
  <li class="toctree-l1">
   <a class="reference internal" href="furniture_bench.html">
    How to Use FurnitureBench
@@ -149,6 +139,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="training_and_testing.html">
    Benchmarking FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="dataset.html">
+   Dataset
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="teleop_oculus_keyboard.html">
+   Teleoperation
   </a>
  </li>
 </ul>
@@ -174,8 +174,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../references/additional_information.html">
-   Additional Information
+  <a class="reference internal" href="../references/3d_printing.html">
+   3D Printing 🖨️
   </a>
  </li>
 </ul>
@@ -481,9 +481,15 @@ python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class=
 </ul>
 </section>
 <section id="automated-assembly-script">
+<<<<<<< HEAD
 <h3>Automated Assembly Script<a class="headerlink" href="#automated-assembly-script" title="Permalink to this headline">#</a></h3>
 <p>We provide an automated assembly script:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted<span class="w"> </span><span class="c1"># Note: only one_leg is supported for now.</span>
+=======
+<h2>Automated Assembly Script<a class="headerlink" href="#automated-assembly-script" title="Permalink to this headline">#</a></h2>
+<p>We provide automated furniture assembly scrips. It currently supports only <code class="docutils literal notranslate"><span class="pre">one_leg</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted
+>>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
 </pre></div>
 </div>
 <figure class="align-left">

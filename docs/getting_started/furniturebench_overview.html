@@ -119,11 +119,6 @@
    Installation Guide (FurnitureSim)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dataset.html">
-   Dataset
-  </a>
- </li>
 </ul>
 <p class="caption">
  <span class="caption-text">
@@ -131,11 +126,6 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
-   Teleoperation
-  </a>
- </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/furniture_bench.html">
    How to Use FurnitureBench
@@ -149,6 +139,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorials/training_and_testing.html">
    Benchmarking FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/dataset.html">
+   Dataset
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/teleop_oculus_keyboard.html">
+   Teleoperation
   </a>
  </li>
 </ul>
@@ -174,8 +174,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../references/additional_information.html">
-   Additional Information
+  <a class="reference internal" href="../references/3d_printing.html">
+   3D Printing 🖨️
   </a>
  </li>
 </ul>
@@ -324,8 +324,13 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#environment-overview">
+   Environment Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#system-overview">
-   System overview
+   System Overview
   </a>
  </li>
 </ul>
@@ -348,8 +353,13 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#environment-overview">
+   Environment Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#system-overview">
-   System overview
+   System Overview
   </a>
  </li>
 </ul>
@@ -365,17 +375,18 @@ title="Print to PDF"
   <section id="furniturebench-overview">
 <h1>FurnitureBench Overview<a class="headerlink" href="#furniturebench-overview" title="Permalink to this headline">#</a></h1>
 <p>FurnitureBench is a reproducible real-world furniture assembly benchmark for long-horizon and complex robotic manipulation.
-To make FurnitureBench <strong>easy to reproduce</strong>, we opt for 3D printing objects when possible and products widely accessible across the world.</p>
-<p>Our real-world system mainly consists of one 7-DoF Franka Emika Panda robot arm with a default parallel gripper and three Intel RealSense D435 RGB-D cameras. For the workspace, we propose to use the black IKEA TOMMARYD table and attach 3D-printed obstacles on the table. The green photography backdrop is used to provide a consistent background and a single light is used to vary lighting conditions.</p>
-<figure class="align-default" id="id1">
+To make FurnitureBench <strong>easy to reproduce</strong>, we opt for 3D printing objects when possible and products widely accessible across the world.
+We provide detailed instructions and software tools for the system setup in <a class="reference internal" href="installation_guide.html#installation-guide"><span class="std std-ref">Installation Guide</span></a>, which allows a user to build a new environment with nearly the same configuration.</p>
+<section id="environment-overview">
+<h2>Environment Overview<a class="headerlink" href="#environment-overview" title="Permalink to this headline">#</a></h2>
+<p>Our physical robot environment mainly consists of one 7-DoF Franka Emika Panda robot arm with a default parallel gripper and three Intel RealSense D435 RGB-D cameras. For the workspace, we use a black IKEA TOMMARYD table and attach 3D-printed obstacles on the table. The green photography backdrop is used for a consistent background and a LED light is used to vary lighting conditions.</p>
+<p>The robot system is controlled via server and client computers. The client handles I/O operations, motion planning, and policy inference while the server manages real-time robot control.</p>
+<figure class="align-default">
 <img alt="setup_overview" src="../_images/setup_overview.jpg" />
-<figcaption>
-<p><span class="caption-text"><strong>FurnitureBench environment overview.</strong> We illustrate our environment setup (left) and their connections to server and client computers (right). The client handles I/O operations, motion planning, and policy inference while the server manages real-time robot control.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
-</figcaption>
 </figure>
-<p>We provide detailed instructions and software tools for the system setup in the <a class="reference internal" href="installation_guide.html#installation-guide"><span class="std std-ref">Installation Guide</span></a>, which allows a user to build a new environment with nearly the same configuration.</p>
+</section>
 <section id="system-overview">
-<h2>System overview<a class="headerlink" href="#system-overview" title="Permalink to this headline">#</a></h2>
+<h2>System Overview<a class="headerlink" href="#system-overview" title="Permalink to this headline">#</a></h2>
 <p>In FurnitureBench, an agent receives an observation (the proprioceptive robot state and images from front and wrist cameras) and takes an action (delta end-effector pose and a gripper action) at a frequency of 10 Hz. For the reward function and initialization tool, we estimate furniture poses using AprilTag from the front-view and rear-view images.</p>
 <img alt="system_overview" src="../_images/system_overview.jpg" />
 </section>

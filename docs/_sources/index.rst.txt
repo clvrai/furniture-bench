@@ -4,13 +4,13 @@
    contain the root `toctree` directive.
 
 FurnitureBench
-==========================================
+==============
 
-FurnitureBench is a reproducible real-world furniture assembly benchmark for long-horizon and complex robotic manipulation.
-It includes a standardized environment setup and a large teleoperation dataset, consisting of over 200 hours of data.
-Furthermore, we provide a simulator that enables easy and fast evaluation of algorithms.
+**FurnitureBench** is a reproducible real-world furniture assembly benchmark for long-horizon and complex robotic manipulation.
+It includes a standardized environment setup and a large dataset of over 200 hours of teleoperation demonstrations.
+Furthermore, we provide a simulator, **FurnitureSim**, that enables easy and fast evaluation of algorithms.
 
-This document includes benchmark setup instructions, links to resources (e.g. datasets, 3D models), and basic tutorials for FurnitureBench and FurnitureSim.
+This document includes FurnitureBench setup instructions, links to datasets and 3D models, and basic tutorials for FurnitureBench and FurnitureSim.
 A general overview of FurnitureBench is available in our `project website <../index.html>`_.
 
 .. figure:: _static/images/furniture_teaser.jpg
@@ -34,30 +34,30 @@ If you use FurnitureBench in your research, please cite our paper:
    :caption: Getting Started
    :hidden:
 
-   getting_started/furniturebench_overview.rst
-   getting_started/installation_guide.rst
-   getting_started/installation_guide_furniture_sim.rst
-   getting_started/dataset.rst
+   getting_started/furniturebench_overview
+   getting_started/installation_guide
+   getting_started/installation_guide_furniture_sim
 
 .. toctree::
    :maxdepth: 1
    :caption: Tutorials
    :hidden:
 
-   tutorials/teleop_oculus_keyboard
-   tutorials/furniture_bench.rst
+   tutorials/furniture_bench
    tutorials/furniture_sim
-   tutorials/training_and_testing.rst
+   tutorials/training_and_testing
+   tutorials/dataset
+   tutorials/teleop_oculus_keyboard
 
 .. toctree::
    :maxdepth: 1
    :caption: References
    :hidden:
 
-   references/code_organization.rst
-   references/troubleshooting.rst
-   references/development_roadmap.rst
-   references/additional_information.rst
+   references/code_organization
+   references/troubleshooting
+   references/development_roadmap
+   references/3d_printing
 
 .. Indices and tables
 .. ==================
