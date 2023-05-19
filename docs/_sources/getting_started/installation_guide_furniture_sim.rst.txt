@@ -109,13 +109,6 @@ You can manually install FurnitureSim and its dependencies as follows:
   cd furniture-bench
   pip install -e .
 
-  # Match the version of setuptools with the packages in the requirements.txt
-  pip install --upgrade pip wheel
-  pip install setuptools==58
-  pip install --upgrade pip==22.2.2
-
-  pip install -r requirements.txt
-
 
 Test FurnitureSim Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

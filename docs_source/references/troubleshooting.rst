@@ -249,6 +249,10 @@ Simulator
     # e.g.
     MESA_VK_DEVICE_SELECT='10de:2204' python furniture_bench/scripts/run_sim_env.py --furniture square_table --no-action
 
+| **Q:** FurnitureSim crashes with segmentation fault.
+
+  **A:** It is likely to be an issue with NVIDIA driver and Vulkan. Install an NVIDIA driver again, reboot, and try it.
+
 
 | **Q:** Simulator does not terminate even after I press Ctrl+C. What should I do?
 
