@@ -40,7 +40,7 @@ The size (in GB) of demonstrations for each furniture in each level is summarize
 +--------------+-----+------+------+
 | one_leg      | 112 | 129  | 69   |
 +--------------+-----+------+------+
-| Total        |      1179         |
+| Total        | 457 | 499  | 223  |
 +--------------+-----+------+------+
 
 

@@ -327,16 +327,6 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furniturebench-configuration">
    FurnitureBench Configuration
   </a>
-<<<<<<< HEAD
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#parameters">
-     Parameters
-    </a>
-   </li>
-  </ul>
-=======
->>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#utilities">
@@ -383,16 +373,6 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furniturebench-configuration">
    FurnitureBench Configuration
   </a>
-<<<<<<< HEAD
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#parameters">
-     Parameters
-    </a>
-   </li>
-  </ul>
-=======
->>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#utilities">
@@ -452,20 +432,8 @@ title="Print to PDF"
 <span class="p">)</span>
 </pre></div>
 </div>
-<<<<<<< HEAD
-<section id="parameters">
-<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">randomness</span></code> controls the randomness level of the environment.</p></li>
-=======
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">randomness</span></code> controls the randomness level of the environment.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: The initial pose of each furniture piece is fixed; however, there can be a small human noise during resetting.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">med</span></code>: Based on the pre-defined poses in <cite>low</cite>, each part can have translation noise between [-5 cm, 5 cm] and rotational noise between [-45◦, 45◦].</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: Furniture parts are randomly initialized on the workspace.</p></li>
->>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
 </ul>
 <dl class="simple">
 <dt></dt><dd><p>The end-effector pose is also perturbed depending on the randomness level.</p>
@@ -474,27 +442,14 @@ title="Print to PDF"
 <li><p>For the <code class="docutils literal notranslate"><span class="pre">low</span></code> of the full assembly task, the end-effector pose is fixed to the pre-defined target pose.</p></li>
 <li><p>For the <code class="docutils literal notranslate"><span class="pre">low</span></code> of the skill benchmark, the noise is applied to the pre-defined target pose (±0.5 cm positional, ±5◦ rotational).</p></li>
 </ul>
-<<<<<<< HEAD
 </dd>
 </dl>
-=======
-<p>Below is an example of the initialization of the chair, depicted with low, med, and high randomness levels, arranged from left to right.</p>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../_images/initialization_example.jpg"><img alt="../_images/initialization_example.jpg" src="../_images/initialization_example.jpg" style="width: 600px;" /></a>
 </figure>
->>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">from_skill</span></code> and <code class="docutils literal notranslate"><span class="pre">to_skill</span></code> control the skill range of the environment. During initialization, you should match the initial pose of the furniture with the pre-defined pose using GUI tool (see <a class="reference internal" href="teleop_oculus_keyboard.html#start-teleoperation"><span class="std std-ref">Start Teleoperation</span></a> list item 3). And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill. Below are the initialization processes of the script when <code class="docutils literal notranslate"><span class="pre">from_skill</span></code> is set at 1 to 4, from left to right.</p></li>
 </ul>
-<<<<<<< HEAD
-<dl class="simple">
-<dt></dt><dd><p>During initialization, you should match the initial pose of the furniture with the pre-defined pose using a GUI tool (see <a class="reference internal" href="teleop_oculus_keyboard.html#start-teleoperation"><span class="std std-ref">Start Teleoperation</span></a> list item 3).
-And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill.
-Below are the initialization processes of the script when <code class="docutils literal notranslate"><span class="pre">from_skill</span></code> is set at 1 to 4, from left to right.</p>
-</dd>
-</dl>
-=======
->>>>>>> d3a9e2c5408f23890d23086abdda1eb9555a0186
 <table class="colwidths-given table">
 <colgroup>
 <col style="width: 25%" />
