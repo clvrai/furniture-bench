@@ -329,8 +329,8 @@ title="Print to PDF"
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#key-parameters">
-     Key Parameters
+    <a class="reference internal nav-link" href="#parameters">
+     Parameters
     </a>
    </li>
   </ul>
@@ -382,8 +382,8 @@ title="Print to PDF"
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#key-parameters">
-     Key Parameters
+    <a class="reference internal nav-link" href="#parameters">
+     Parameters
     </a>
    </li>
   </ul>
@@ -430,44 +430,45 @@ title="Print to PDF"
 
 <span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
     <span class="s1">&#39;Furniture-Env-v0&#39;</span><span class="p">,</span>
-    <span class="n">furniture</span><span class="o">=...</span><span class="p">,</span>           <span class="c1"># string, [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].</span>
-    <span class="n">manual_done</span><span class="o">=...</span><span class="p">,</span>         <span class="c1"># boolean, if True, the episode ends only when the user presses the &#39;done&#39; button.</span>
-    <span class="n">with_display</span><span class="o">=...</span><span class="p">,</span>        <span class="c1"># boolean, if True, the environment renders the camera images.</span>
-    <span class="n">draw_marker</span><span class="o">=...</span><span class="p">,</span>         <span class="c1"># boolean, if True, the environment renders the AprilTag marker.</span>
-    <span class="n">manual_label</span><span class="o">=...</span><span class="p">,</span>        <span class="c1"># boolean, if True, allow manual labeling of the reward.</span>
-    <span class="n">from_skill</span><span class="o">=...</span><span class="p">,</span>          <span class="c1"># integer, [0-5) skill index to start from. Note that index `i` denotes the completion of ith skill and commencement of the (i + 1)th skill. For instance, to evaluate the performance of the 5th skill, the index should be set at 4.</span>
-    <span class="n">to_skill</span><span class="o">=...</span><span class="p">,</span>            <span class="c1"># integer, [1-5] skill index to end at. Should be larger than `from_skill`. Expected to perform the full task from `from_skill` onwards, if not specified.</span>
-    <span class="n">randomness</span><span class="o">=...</span><span class="p">,</span>          <span class="c1"># string, [low | med | high], randomness level of the environment.</span>
-    <span class="n">high_random_idx</span><span class="o">=...</span><span class="p">,</span>     <span class="c1"># integer, [0-2], index of the high randomness level. Randomly selected if not specified.</span>
-    <span class="n">visualize_init_pose</span><span class="o">=...</span><span class="p">,</span> <span class="c1"># boolean, if True, visualize the initial pose of furniture parts.</span>
-    <span class="n">record_video</span><span class="o">=...</span><span class="p">,</span>        <span class="c1"># boolean, if True, record the video of the agent&#39;s observation</span>
-    <span class="n">manual_reset</span><span class="o">=...</span><span class="p">,</span>        <span class="c1"># boolean, if True, allow a manual reset of the environment.</span>
+    <span class="n">furniture</span><span class="o">=...</span><span class="p">,</span>            <span class="c1"># Specifies the name of furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].</span>
+    <span class="n">resize_img</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>          <span class="c1"># If true, images are resized to 224 x 224.</span>
+    <span class="n">manual_done</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>        <span class="c1"># If true, the episode ends only when the user presses the &#39;done&#39; button.</span>
+    <span class="n">with_display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>        <span class="c1"># If true, camera inputs are rendered on environment steps.</span>
+    <span class="n">draw_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>        <span class="c1"># If true and with_display is also true, the AprilTag marker is rendered on display.</span>
+    <span class="n">manual_label</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>       <span class="c1"># If true, manual labeling of the reward is allowed.</span>
+    <span class="n">from_skill</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>             <span class="c1"># Skill index to start from (range: [0-5)). Index `i` denotes the completion of ith skill and commencement of the (i + 1)th skill.</span>
+    <span class="n">to_skill</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>              <span class="c1"># Skill index to end at (range: [1-5]). Should be larger than `from_skill`. Default -1 expects the full task from `from_skill` onwards.</span>
+    <span class="n">randomness</span><span class="o">=</span><span class="s1">&#39;low&#39;</span><span class="p">,</span>         <span class="c1"># Level of randomness in the environment [low | med | high].</span>
+    <span class="n">high_random_idx</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>       <span class="c1"># Index of the high randomness level (range: [0-2]). Default -1 will randomly select the index within the range.</span>
+    <span class="n">visualize_init_pose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># If true, the initial pose of furniture parts is visualized.</span>
+    <span class="n">record</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>             <span class="c1"># If true, the video of the agent&#39;s observation is recorded.</span>
+    <span class="n">manual_reset</span><span class="o">=</span><span class="kc">True</span>         <span class="c1"># If true, a manual reset of the environment is allowed.</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<section id="key-parameters">
-<h3>Key Parameters<a class="headerlink" href="#key-parameters" title="Permalink to this headline">#</a></h3>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">randomness</span></code> controls the randomness level of the environment.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code>: The initial pose of each furniture piece is fixed; however, there can be a small human noise during resetting.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">med</span></code>: Based on the pre-defined poses in <cite>low</cite>, each part can have translation noise between [-5 cm, 5 cm] and rotational noise between [-45◦, 45◦].</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code>: Furniture parts are randomly initialized on the workspace.</p></li>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">randomness</span></code> controls the randomness level of the environment.</p></li>
 </ul>
-</div></blockquote>
-</li>
+<dl class="simple">
+<dt></dt><dd><p>The end-effector pose is also perturbed depending on the randomness level.</p>
+<ul class="simple">
+<li><p>For the <code class="docutils literal notranslate"><span class="pre">med</span></code> and <code class="docutils literal notranslate"><span class="pre">high</span></code>, the end-effector pose is perturbed from the pre-defined target pose with noise (±5 cm positional, ±15◦ rotational).</p></li>
+<li><p>For the <code class="docutils literal notranslate"><span class="pre">low</span></code> of the full assembly task, the end-effector pose is fixed to the pre-defined target pose.</p></li>
+<li><p>For the <code class="docutils literal notranslate"><span class="pre">low</span></code> of the skill benchmark, the noise is applied to the pre-defined target pose (±0.5 cm positional, ±5◦ rotational).</p></li>
 </ul>
-<p>Below is an example of the initialization of the chair, depicted with low, med, and high randomness levels, arranged from left to right.</p>
-<figure class="align-default">
-<img alt="../_images/initialization_example.jpg" src="../_images/initialization_example.jpg" />
-</figure>
+</dd>
+</dl>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">from_skill</span></code> and <code class="docutils literal notranslate"><span class="pre">to_skill</span></code> control the skill range of the environment.</p></li>
 </ul>
-<p>During initialization, you should match the initial pose of the furniture with the pre-defined pose using GUI tool (see <a class="reference internal" href="teleop_oculus_keyboard.html#start-teleoperation"><span class="std std-ref">Start Teleoperation</span></a> list item 3).
+<dl class="simple">
+<dt></dt><dd><p>During initialization, you should match the initial pose of the furniture with the pre-defined pose using a GUI tool (see <a class="reference internal" href="teleop_oculus_keyboard.html#start-teleoperation"><span class="std std-ref">Start Teleoperation</span></a> list item 3).
 And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill.
 Below are the initialization processes of the script when <code class="docutils literal notranslate"><span class="pre">from_skill</span></code> is set at 1 to 4, from left to right.</p>
+</dd>
+</dl>
 <table class="colwidths-given table">
 <colgroup>
 <col style="width: 25%" />
@@ -518,7 +519,7 @@ We run the following commands with cabinet <a class="reference external" href="h
 </section>
 <section id="camera-calibration">
 <h3>Camera Calibration<a class="headerlink" href="#camera-calibration" title="Permalink to this headline">#</a></h3>
-<p>Our demonstration consists of randomly perturbed front camera pose in each episode.
+<p>Our demonstration consists of randomly perturbed front camera poses in each episode.
 To determine the camera pose from the front-view image, we calculate the average camera pose for each type of furniture.</p>
 <p>Run the following commands to calibrate the front camera pose for each furniture type.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">calibration</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">target</span> <span class="o">&lt;</span><span class="n">furniture</span><span class="o">&gt;</span>

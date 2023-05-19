@@ -327,26 +327,23 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furnituresim-configuration">
    FurnitureSim Configuration
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#automated-assembly-script">
-   Automated Assembly Script
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#teleoperation-in-furnituresim">
-   Teleoperation in FurnitureSim
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#assembled-furniture">
-   Assembled Furniture
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#save-initial-camera-images">
-   Save Initial Camera Images
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parameters">
+     Parameters
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#automated-assembly-script">
+     Automated Assembly Script
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#teleoperation-in-furnituresim">
+     Teleoperation in FurnitureSim
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -371,26 +368,23 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furnituresim-configuration">
    FurnitureSim Configuration
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#automated-assembly-script">
-   Automated Assembly Script
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#teleoperation-in-furnituresim">
-   Teleoperation in FurnitureSim
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#assembled-furniture">
-   Assembled Furniture
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#save-initial-camera-images">
-   Save Initial Camera Images
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parameters">
+     Parameters
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#automated-assembly-script">
+     Automated Assembly Script
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#teleoperation-in-furnituresim">
+     Teleoperation in FurnitureSim
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -412,20 +406,82 @@ title="Print to PDF"
 
 <span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
   <span class="s2">&quot;Furniture-Sim-Env-v0&quot;</span><span class="p">,</span>
-  <span class="n">furniture</span><span class="o">=...</span><span class="p">,</span>           <span class="c1"># string, [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].</span>
-  <span class="n">num_envs</span><span class="o">=...</span><span class="p">,</span>            <span class="c1"># integer, number of parallel environments.</span>
-  <span class="n">init_assembled</span><span class="o">=...</span><span class="p">,</span>      <span class="c1"># boolean, initialize the environment with assembled furniture.</span>
-  <span class="n">resize_img</span><span class="o">=...</span><span class="p">,</span>          <span class="c1"># boolean, resize images to 224 x 224.</span>
-  <span class="n">headless</span><span class="o">=..</span><span class="p">,</span>             <span class="c1"># boolean, run the simulation without GUI.</span>
-  <span class="n">save_camera_input</span><span class="o">=...</span><span class="p">,</span>   <span class="c1"># boolean, save camera input images at the beginning of the episode.</span>
-  <span class="n">randomness</span><span class="o">=...</span><span class="p">,</span>          <span class="c1"># string, [low | med | high], randomness level of the environment.</span>
-  <span class="n">high_random_idx</span><span class="o">=...</span>      <span class="c1"># integer, [0-2], index of the high randomness level. Randomly selected if not specified.</span>
+  <span class="n">furniture</span><span class="o">=...</span><span class="p">,</span>           <span class="c1"># Specifies the type of furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].</span>
+  <span class="n">num_envs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>              <span class="c1"># Number of parallel environments.</span>
+  <span class="n">resize_img</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>         <span class="c1"># If true, images are resized to 224 x 224.</span>
+  <span class="n">headless</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>          <span class="c1"># If true, simulation runs without GUI.</span>
+  <span class="n">compute_device_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>     <span class="c1"># GPU device ID for simulation.</span>
+  <span class="n">graphics_device_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>    <span class="c1"># GPU device ID for rendering.</span>
+  <span class="n">init_assembled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>    <span class="c1"># If true, the environment is initialized with assembled furniture.</span>
+  <span class="n">np_step_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>       <span class="c1"># If true, env.step() returns Numpy arrays.</span>
+  <span class="n">channel_first</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>     <span class="c1"># If true, images are returned in channel first format.</span>
+  <span class="n">randomness</span><span class="o">=</span><span class="s1">&#39;low&#39;</span><span class="p">,</span>        <span class="c1"># Level of randomness in the environment [low | med | high].</span>
+  <span class="n">high_random_idx</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>      <span class="c1"># Index of the high randomness level (range: [0-2]). Default -1 will randomly select the index within the range.</span>
+  <span class="n">save_camera_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># If true, the initial camera inputs are saved.</span>
+  <span class="n">record</span><span class="o">=</span><span class="kc">False</span>             <span class="c1"># If true, videos of the wrist and front cameras&#39; RGB inputs are recorded.</span>
 <span class="p">)</span>
 </pre></div>
 </div>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">randomness</span></code> controls the randomness level of the environment. This argument operates identically as FurnitureBench (See “Key Parameters” section in <a class="reference internal" href="furniture_bench.html#how-to-use-furniturebench"><span class="std std-ref">How to Use FurnitureBench</span></a>).</p></li>
+</ul>
+<div class="line-block">
+<div class="line">We show how parameters affect the environment with example codes below:</div>
+</div>
+<ul>
+<li><p>To check meshes and physics parameters of a furniture model, you can initialize FurnitureSim with the fully assembled furniture using <code class="docutils literal notranslate"><span class="pre">--init-assembled</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--init-assembled
+<span class="c1"># E.g.</span>
+python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>chair<span class="w"> </span>--init-assembled
+</pre></div>
+</div>
+</li>
+</ul>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/chair_assembled.jpg"><img alt="../_images/chair_assembled.jpg" src="../_images/chair_assembled.jpg" style="width: 450px;" /></a>
+<figcaption>
+<p><span class="caption-text">Initialization with an assembled chair.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<ul>
+<li><p>You can save camera input images at the beginning of the episode using <code class="docutils literal notranslate"><span class="pre">--save-camera-input</span></code>. The output images will be saved in <code class="docutils literal notranslate"><span class="pre">sim_camera/</span></code> directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--init-assembled<span class="w"> </span>--save-camera-input
+<span class="c1"># E.g.</span>
+python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--init-assembled<span class="w"> </span>--save-camera-input
+</pre></div>
+</div>
+<table class="table">
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 34%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><a class="reference internal" href="../_images/wrist_sim.png"><img alt="image1" src="../_images/wrist_sim.png" style="width: 215px; height: 120px;" /></a></p></th>
+<th class="head"><p><a class="reference internal" href="../_images/front_sim.png"><img alt="image2" src="../_images/front_sim.png" style="width: 215px; height: 120px;" /></a></p></th>
+<th class="head"><p><a class="reference internal" href="../_images/rear_sim.png"><img alt="image3" src="../_images/rear_sim.png" style="width: 215px; height: 120px;" /></a></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Wrist camera</p></td>
+<td><p>Front camera</p></td>
+<td><p>Rear camera</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--record</span></code> flag can be used to capture the wrist and front camera during the entire episode. The resulting videos will be saved in <code class="docutils literal notranslate"><span class="pre">sim_record/</span></code> directory.</p>
+<p>Here’s an instance of an episode recording for an automated script:</p>
+<figure class="align-default">
+<img alt="../_images/wrist_and_front.gif" src="../_images/wrist_and_front.gif" />
+</figure>
+</li>
+</ul>
 </section>
 <section id="automated-assembly-script">
-<h2>Automated Assembly Script<a class="headerlink" href="#automated-assembly-script" title="Permalink to this headline">#</a></h2>
+<h3>Automated Assembly Script<a class="headerlink" href="#automated-assembly-script" title="Permalink to this headline">#</a></h3>
 <p>We provide an automated assembly script:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted<span class="w"> </span><span class="c1"># Note: only one_leg is supported for now.</span>
 </pre></div>
@@ -440,21 +496,22 @@ However, following runs will be much quicker as the simulator will load the cach
 </div>
 <p>Using this assembly script, you can collect demonstration data:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--scripted<span class="w"> </span>--is-sim<span class="w"> </span>--out-data-path<span class="w"> </span>&lt;path/to/output&gt;<span class="w"> </span>--gpu-id<span class="w"> </span>&lt;gpu_id&gt;<span class="w"> </span>--headless<span class="w">  </span><span class="c1"># Make sure you mount the output data path to the docker container.</span>
-
 <span class="c1"># E.g.</span>
 python<span class="w"> </span>furniture_bench/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted<span class="w"> </span>--is-sim<span class="w"> </span>--out-data-path<span class="w"> </span>/hdd/scripted_sim_demo<span class="w">  </span>--gpu-id<span class="w"> </span><span class="m">0</span><span class="w"> </span>--headless
+<span class="c1"># You can specify the number of trajectories to collect in the run with --num-demos argument.</span>
+<span class="c1"># E.g.</span>
+python<span class="w"> </span>furniture_bench/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted<span class="w"> </span>--is-sim<span class="w"> </span>--out-data-path<span class="w"> </span>/hdd/scripted_sim_demo<span class="w">  </span>--gpu-id<span class="w"> </span><span class="m">0</span><span class="w"> </span>--headless<span class="w"> </span>--num-demos<span class="w"> </span><span class="m">300</span>
 </pre></div>
 </div>
 <p>To visualize a collected demonstration, use the following script with a demonstration path:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/show_trajectory.py<span class="w"> </span>--data-dir<span class="w"> </span>&lt;path/to/saved/data/dir&gt;
-
 <span class="c1"># E.g.</span>
 python<span class="w"> </span>furniture_bench/scripts/show_trajectory.py<span class="w"> </span>--data-dir<span class="w"> </span>/hdd/scripted_sim_demo/one_leg/2022-12-22-03:19:48
 </pre></div>
 </div>
 </section>
 <section id="teleoperation-in-furnituresim">
-<h2>Teleoperation in FurnitureSim<a class="headerlink" href="#teleoperation-in-furnituresim" title="Permalink to this headline">#</a></h2>
+<h3>Teleoperation in FurnitureSim<a class="headerlink" href="#teleoperation-in-furnituresim" title="Permalink to this headline">#</a></h3>
 <p>FurnitureSim supports teleoperation using a keyboard and Oculus Quest 2.
 You first need to set up Oculus Quest 2 by following <a class="reference internal" href="teleop_oculus_keyboard.html#teleoperation"><span class="std std-ref">Teleoperation</span></a>.</p>
 <p>To start FurnitureSim with teleoperation, execute the following command:</p>
@@ -462,38 +519,6 @@ You first need to set up Oculus Quest 2 by following <a class="reference interna
 </pre></div>
 </div>
 </section>
-<section id="assembled-furniture">
-<h2>Assembled Furniture<a class="headerlink" href="#assembled-furniture" title="Permalink to this headline">#</a></h2>
-<p>To check meshes and physics parameters of a furniture model, you can initialize FurnitureSim with the fully assembled furniture using <code class="docutils literal notranslate"><span class="pre">--init-assembled</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--init-assembled
-</pre></div>
-</div>
-</section>
-<section id="save-initial-camera-images">
-<h2>Save Initial Camera Images<a class="headerlink" href="#save-initial-camera-images" title="Permalink to this headline">#</a></h2>
-<p>For debugging, you can save the initial camera inputs in <code class="docutils literal notranslate"><span class="pre">sim_camera/</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--init-assembled<span class="w"> </span>--save-camera-input
-</pre></div>
-</div>
-<table class="table">
-<colgroup>
-<col style="width: 34%" />
-<col style="width: 34%" />
-<col style="width: 32%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Wrist camera</p></th>
-<th class="head"><p>Front camera</p></th>
-<th class="head"><p>Rear camera</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="../_images/wrist_sim.png"><img alt="image1" src="../_images/wrist_sim.png" style="width: 215px; height: 120px;" /></a></p></td>
-<td><p><a class="reference internal" href="../_images/front_sim.png"><img alt="image2" src="../_images/front_sim.png" style="width: 215px; height: 120px;" /></a></p></td>
-<td><p><a class="reference internal" href="../_images/rear_sim.png"><img alt="image3" src="../_images/rear_sim.png" style="width: 215px; height: 120px;" /></a></p></td>
-</tr>
-</tbody>
-</table>
 </section>
 </section>
 

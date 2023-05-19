@@ -39,6 +39,14 @@ ul ul, ol ol, ul ol, ol ul {
     margin-left: 0.3em;
   }
 
+ul, ol {
+    margin-bottom: 4px;
+}
+
+blockquote {
+    margin: 0px;
+}
+
 .wrap-image-right {
     float: right;
     clear: right;

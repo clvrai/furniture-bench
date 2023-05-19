@@ -34,7 +34,7 @@ Prerequisites
 Rollout with Pre-trained Policies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can run our pre-trained policies in FurnitureSim:
+You can run our pre-trained Implicit Q-Learning (IQL) policies in FurnitureSim:
 
 .. code::
 
@@ -71,13 +71,18 @@ First, convert the data to the format for training:
 .. code::
 
     python furniture_bench/scripts/convert_data.py --in-data-path <path/to/demos> --out-data-path <path/to/processed/demo>
-
     # E.g.
     python furniture_bench/scripts/convert_data.py --in-data-path scripted_sim_demo/one_leg_1000 --out-data-path scripted_sim_demo/one_leg_processed_1000
 
 Train BC
 ~~~~~~~~
 
+.. code::
+
+    python -m run run_prefix=<run_prefix> algo@rolf=bc env.id=Furniture-Image-Dummy-v0 rolf.demo_path=<path/to/processed/demo> env.furniture=<furniture_name> rolf.encoder_type=<encoder_type> rolf.resnet=<resnet_type> rolf.finetune_encoder=True gpu=<gpu_id> wandb=[True | False]  wandb_entity=<wandb_entity> wandb_project=<wandb_project>
+
+    # E.g., train BC with ResNet18 encoder.
+    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim_1000 algo@rolf=bc env.id=Furniture-Image-Dummy-v0 rolf.demo_path=one_leg_processed_1000/ env.furniture=one_leg rolf.encoder_type=resnet18 rolf.resnet=resnet18 rolf.finetune_encoder=True wandb=True gpu=0 wandb_entity=clvr wandb_project=furniture-bench
 
 
 Train IQL
@@ -88,7 +93,6 @@ Train IQL
 .. code::
 
     python implicit_q_learning/extract_feature.py --furniture <furniture_name> --demo_dir <path/to/data>  --out_file_path <path/to/converted_data> [--use_r3m | --use_vip]
-
     # E.g.
     python implicit_q_learning/extract_feature.py --furniture one_leg --demo_dir scripted_sim_demo/one_leg_processed/ --out_file_path scripted_sim_demo/one_leg_sim_1000.pkl --use_r3m
 
@@ -97,6 +101,5 @@ Train IQL
 .. code::
 
     python implicit_q_learning/train_offline.py --env_name=Furniture-Image-Feature-Dummy-v0/<furniture_name> --config=implicit_q_learning/configs/furniture_config.py --run_name <run_name> --data_path=<path/to/pkl> --encoder_type=[vip | r3m]
-
     # E.g.
     python implicit_q_learning/train_offline.py --env_name=Furniture-Image-Feature-Dummy-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --run_name one_leg_sim --data_path=scripted_sim_demo/one_leg_sim_1000.pkl --encoder_type=r3m

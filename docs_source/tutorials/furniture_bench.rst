@@ -13,39 +13,38 @@ FurnitureBench can be configured with the following arguments:
 
     env = gym.make(
         'Furniture-Env-v0',
-        furniture=...,           # string, [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].
-        manual_done=...,         # boolean, if True, the episode ends only when the user presses the 'done' button.
-        with_display=...,        # boolean, if True, the environment renders the camera images.
-        draw_marker=...,         # boolean, if True, the environment renders the AprilTag marker.
-        manual_label=...,        # boolean, if True, allow manual labeling of the reward.
-        from_skill=...,          # integer, [0-5) skill index to start from. Note that index `i` denotes the completion of ith skill and commencement of the (i + 1)th skill. For instance, to evaluate the performance of the 5th skill, the index should be set at 4.
-        to_skill=...,            # integer, [1-5] skill index to end at. Should be larger than `from_skill`. Expected to perform the full task from `from_skill` onwards, if not specified.
-        randomness=...,          # string, [low | med | high], randomness level of the environment.
-        high_random_idx=...,     # integer, [0-2], index of the high randomness level. Randomly selected if not specified.
-        visualize_init_pose=..., # boolean, if True, visualize the initial pose of furniture parts.
-        record_video=...,        # boolean, if True, record the video of the agent's observation
-        manual_reset=...,        # boolean, if True, allow a manual reset of the environment.
+        furniture=...,            # Specifies the name of furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].
+        resize_img=True,          # If true, images are resized to 224 x 224.
+        manual_done=False,        # If true, the episode ends only when the user presses the 'done' button.
+        with_display=True,        # If true, camera inputs are rendered on environment steps.
+        draw_marker=False,        # If true and with_display is also true, the AprilTag marker is rendered on display.
+        manual_label=False,       # If true, manual labeling of the reward is allowed.
+        from_skill=0,             # Skill index to start from (range: [0-5)). Index `i` denotes the completion of ith skill and commencement of the (i + 1)th skill.
+        to_skill=-1,              # Skill index to end at (range: [1-5]). Should be larger than `from_skill`. Default -1 expects the full task from `from_skill` onwards.
+        randomness='low',         # Level of randomness in the environment [low | med | high].
+        high_random_idx=-1,       # Index of the high randomness level (range: [0-2]). Default -1 will randomly select the index within the range.
+        visualize_init_pose=True, # If true, the initial pose of furniture parts is visualized.
+        record=False,             # If true, the video of the agent's observation is recorded.
+        manual_reset=True         # If true, a manual reset of the environment is allowed.
     )
 
-Key Parameters
+Parameters
 ~~~~~~~~~~~~~~
 - ``randomness`` controls the randomness level of the environment.
 
-   - ``low``: The initial pose of each furniture piece is fixed; however, there can be a small human noise during resetting.
-   - ``med``: Based on the pre-defined poses in `low`, each part can have translation noise between [-5 cm, 5 cm] and rotational noise between [-45◦, 45◦].
-   - ``high``: Furniture parts are randomly initialized on the workspace.
+\
+  The end-effector pose is also perturbed depending on the randomness level.
 
-Below is an example of the initialization of the chair, depicted with low, med, and high randomness levels, arranged from left to right.
+  - For the ``med`` and ``high``, the end-effector pose is perturbed from the pre-defined target pose with noise (±5 cm positional, ±15◦ rotational).
+  - For the ``low`` of the full assembly task, the end-effector pose is fixed to the pre-defined target pose.
+  - For the ``low`` of the skill benchmark, the noise is applied to the pre-defined target pose (±0.5 cm positional, ±5◦ rotational).
 
-.. figure:: ../_static/images/initialization_example.jpg
-
-    :align: center
-    :width: 600px
 
 - ``from_skill`` and ``to_skill`` control the skill range of the environment.
-During initialization, you should match the initial pose of the furniture with the pre-defined pose using GUI tool (see :ref:`Start Teleoperation` list item 3).
-And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill.
-Below are the initialization processes of the script when ``from_skill`` is set at 1 to 4, from left to right.
+\
+  During initialization, you should match the initial pose of the furniture with the pre-defined pose using a GUI tool (see :ref:`Start Teleoperation` list item 3).
+  And then, the script will move the end-effector to the pre-defined pose (plus with noise depending on randomness level) for each skill.
+  Below are the initialization processes of the script when ``from_skill`` is set at 1 to 4, from left to right.
 
 .. |skill1| image:: ../_static/images/skill1.gif
 .. |skill2| image:: ../_static/images/skill2.gif
@@ -101,7 +100,7 @@ We run the following commands with cabinet `trajectory <https://drive.google.com
 Camera Calibration
 ~~~~~~~~~~~~~~~~~~
 
-Our demonstration consists of randomly perturbed front camera pose in each episode.
+Our demonstration consists of randomly perturbed front camera poses in each episode.
 To determine the camera pose from the front-view image, we calculate the average camera pose for each type of furniture.
 
 Run the following commands to calibrate the front camera pose for each furniture type.
