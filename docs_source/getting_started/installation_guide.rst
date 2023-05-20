@@ -1,5 +1,5 @@
-Installation Guide
-==================
+Installing FurnitureBench
+=========================
 
 This page provides a step-by-step installation guide of our real-world environment, including hardware and software setups.
 
@@ -402,9 +402,6 @@ Run Client
 
   # To show display in Docker container
   xhost +
-
-  # make launch_client.sh executable
-  chmod +x launch_client.sh
 
   # GPU image + locally built
   ./launch_client.sh --gpu --built

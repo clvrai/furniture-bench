@@ -3,7 +3,7 @@ FurnitureBench Overview
 
 FurnitureBench is a reproducible real-world furniture assembly benchmark for long-horizon and complex robotic manipulation.
 To make FurnitureBench **easy to reproduce**, we opt for 3D printing objects when possible and products widely accessible across the world.
-We provide detailed instructions and software tools for the system setup in :ref:`Installation Guide`, which allows a user to build a new environment with nearly the same configuration.
+We provide detailed instructions and software tools for the system setup in :ref:`Installing FurnitureBench`, which allows a user to build a new environment with nearly the same configuration.
 
 
 Environment Overview

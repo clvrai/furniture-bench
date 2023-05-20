@@ -2,7 +2,7 @@ How to Use FurnitureSim
 =======================
 
 FurnitureSim Configuration
-----------------------------
+--------------------------
 
 FurnitureSim can be configured with the following arguments:
 
@@ -22,65 +22,62 @@ FurnitureSim can be configured with the following arguments:
       init_assembled=False,    # If true, the environment is initialized with assembled furniture.
       np_step_out=False,       # If true, env.step() returns Numpy arrays.
       channel_first=False,     # If true, images are returned in channel first format.
-      randomness='low',        # Level of randomness in the environment [low | med | high].
+      randomness="low",        # Level of randomness in the environment [low | med | high].
       high_random_idx=-1,      # Index of the high randomness level (range: [0-2]). Default -1 will randomly select the index within the range.
       save_camera_input=False, # If true, the initial camera inputs are saved.
       record=False             # If true, videos of the wrist and front cameras' RGB inputs are recorded.
     )
 
-Parameters
-~~~~~~~~~~~~~~
-- ``randomness`` controls the randomness level of the environment. This argument operates identically as FurnitureBench (See "Key Parameters" section in :ref:`How to use FurnitureBench`).
 
-|
-  We show how parameters affect the environment with example codes below:
+FurnitureSim Arguments
+~~~~~~~~~~~~~~~~~~~~~~
 
-- To check meshes and physics parameters of a furniture model, you can initialize FurnitureSim with the fully assembled furniture using ``--init-assembled``:
+- ``furniture`` can be one of ``[lamp|square_table|desk|drawer|cabinet|round_table|stool|chair|one_leg]``.
 
-  .. code:: bash
+- ``randomness`` controls the randomness level of the initial states, identically to FurnitureBench (see :ref:`How to use FurnitureBench`).
 
-    python furniture_bench/scripts/run_sim_env.py --furniture <furniture> --init-assembled
-    # E.g.
-    python furniture_bench/scripts/run_sim_env.py --furniture chair --init-assembled
+- ``init_assembled`` initializes FurnitureSim with fully assembled furniture models:
+
+.. code:: bash
+
+  python -m furniture_bench.scripts.run_sim_env --furniture <furniture> --init-assembled
 
 .. figure:: ../_static/images/chair_assembled.jpg
     :width: 450px
 
-    Initialization with an assembled chair.
+    FurnitureSim initialized with an assembled chair.
 
-- You can save camera input images at the beginning of the episode using ``--save-camera-input``. The output images will be saved in ``sim_camera/`` directory.
+- ``save-camera-input`` saves camera inputs of the first frame of an episode to ``sim_camera/``.
 
-  .. code:: bash
+.. code:: bash
 
-     python furniture_bench/scripts/run_sim_env.py --furniture <furniture> --init-assembled --save-camera-input
-     # E.g.
-     python furniture_bench/scripts/run_sim_env.py --furniture square_table --init-assembled --save-camera-input
+   python -m furniture_bench.scripts.run_sim_env --furniture <furniture> --init-assembled --save-camera-input
 
+.. |image1| image:: ../_static/images/wrist_sim.png
+    :width: 215px
+    :height: 120px
+.. |image2| image:: ../_static/images/front_sim.png
+    :width: 215px
+    :height: 120px
+.. |image3| image:: ../_static/images/rear_sim.png
+    :width: 215px
+    :height: 120px
 
-  .. |image1| image:: ../_static/images/wrist_sim.png
-      :width: 215px
-      :height: 120px
-  .. |image2| image:: ../_static/images/front_sim.png
-      :width: 215px
-      :height: 120px
-  .. |image3| image:: ../_static/images/rear_sim.png
-      :width: 215px
-      :height: 120px
++--------------+--------------+-------------+
+| |image1|     | |image2|     |  |image3|   |
++==============+==============+=============+
+| Wrist camera | Front camera | Rear camera |
++--------------+--------------+-------------+
 
-  +--------------+--------------+-------------+
-  | |image1|     | |image2|     |  |image3|   |
-  +==============+==============+=============+
-  | Wrist camera | Front camera | Rear camera |
-  +--------------+--------------+-------------+
-
-- The ``--record`` flag can be used to capture the wrist and front camera during the entire episode. The resulting videos will be saved in ``sim_record/`` directory.
-
-  Here's an instance of an episode recording for an automated script:
+- ``record`` records the wrist and front camera inputs and saves each episode in ``mp4`` to ``sim_record/``.
 
   .. figure:: ../_static/images/wrist_and_front.gif
 
+     Example video.
+
+
 Automated Assembly Script
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 We provide automated furniture assembly scrips. It currently supports only ``one_leg``.
 
@@ -100,41 +97,39 @@ We provide automated furniture assembly scrips. It currently supports only ``one
 
 .. code:: bash
 
-   python furniture_bench/scripts/run_sim_env.py --furniture one_leg --scripted
+   python -m furniture_bench.scripts.run_sim_env --furniture one_leg --scripted
 
 .. figure:: ../_static/images/assembly_script.gif
     :width: 50%
-    :align: left
     :alt: Assembly script
+
+Using this assembly script, you can collect ``num-demos`` demonstrations. Before you collect data, make sure you mount the output data path to the docker container.
+
+.. code:: bash
+
+   python -m furniture_bench.scripts.collect_data --furniture <furniture> --scripted --is-sim --out-data-path <path/to/output> --gpu-id <gpu_id> --num-demos <num_demos> --headless
+
+   # E.g.,
+   python -m furniture_bench.scripts.collect_data --furniture one_leg --scripted --is-sim --out-data-path /hdd/scripted_sim_demo --gpu-id 0 --num-demos 100 --headless
+
+To visualize a collected demonstration, use the following script with a demonstration path (a directory contains `pkl` and `mp4` files of one trajectory):
+
+.. code:: bash
+
+   python -m furniture_bench.scripts.show_trajectory --data-dir <path/to/data>
+
+   # E.g.,
+   python -m furniture_bench.scripts.show_trajectory --data-dir /hdd/scripted_sim_demo/one_leg/2022-12-22-03:19:48
+
 
 .. tip::
 
-    On your initial run, starting up the simulator will take some time because it needs to construct SDF meshes.
-    However, following runs will be much quicker as the simulator will load the cached SDF meshes.
-
-
-Using this assembly script, you can collect demonstration data:
-
-.. code:: bash
-
-   python furniture_bench/scripts/collect_data.py --furniture <furniture> --scripted --is-sim --out-data-path <path/to/output> --gpu-id <gpu_id> --headless  # Make sure you mount the output data path to the docker container.
-   # E.g.
-   python furniture_bench/scripts/collect_data.py --furniture one_leg --scripted --is-sim --out-data-path /hdd/scripted_sim_demo  --gpu-id 0 --headless
-   # You can specify the number of trajectories to collect in the run with --num-demos argument.
-   # E.g.
-   python furniture_bench/scripts/collect_data.py --furniture one_leg --scripted --is-sim --out-data-path /hdd/scripted_sim_demo  --gpu-id 0 --headless --num-demos 300
-
-To visualize a collected demonstration, use the following script with a demonstration path:
-
-.. code:: bash
-
-   python furniture_bench/scripts/show_trajectory.py --data-dir <path/to/saved/data/dir>
-   # E.g.
-   python furniture_bench/scripts/show_trajectory.py --data-dir /hdd/scripted_sim_demo/one_leg/2022-12-22-03:19:48
+    On your initial run, starting up FurnitureSim will take some time to construct SDF meshes.
+    However, following runs will be launched much faster with the cached SDF meshes.
 
 
 Teleoperation in FurnitureSim
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------
 
 FurnitureSim supports teleoperation using a keyboard and Oculus Quest 2.
 You first need to set up Oculus Quest 2 by following :ref:`Teleoperation`.
@@ -143,4 +138,4 @@ To start FurnitureSim with teleoperation, execute the following command:
 
 .. code::
 
-    python furniture_bench/scripts/collect_data.py --furniture <furniture> --out-data-path <path/to/save/data> --input-device oculus --is-sim
+    python -m furniture_bench.scripts.collect_data --furniture <furniture> --out-data-path <path/to/output> --input-device oculus --is-sim
