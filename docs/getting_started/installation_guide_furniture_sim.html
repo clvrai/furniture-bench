@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation Guide (FurnitureSim) &#8212; FurnitureBench</title>
+    <title>Installing FurnitureSim &#8212; FurnitureBench</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="How to Use FurnitureBench" href="../tutorials/furniture_bench.html" />
-    <link rel="prev" title="Installation Guide" href="installation_guide.html" />
+    <link rel="prev" title="Installing FurnitureBench" href="installation_guide.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -111,12 +111,12 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="installation_guide.html">
-   Installation Guide
+   Installing FurnitureBench
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Installation Guide (FurnitureSim)
+   Installing FurnitureSim
   </a>
  </li>
 </ul>
@@ -329,13 +329,13 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#install-furnituresim-using-docker-option-1">
-   Install FurnitureSim using Docker (Option 1)
+  <a class="reference internal nav-link" href="#install-furnituresim-using-pypi-option-1">
+   Install FurnitureSim using PyPI (Option 1)
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#install-furnituresim-from-source-option-2">
-   Install FurnitureSim from Source (Option 2)
+  <a class="reference internal nav-link" href="#install-furnituresim-using-docker-option-2">
+   Install FurnitureSim using Docker (Option 2)
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -357,7 +357,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Installation Guide (FurnitureSim)</h1>
+                <h1>Installing FurnitureSim</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -373,13 +373,13 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#install-furnituresim-using-docker-option-1">
-   Install FurnitureSim using Docker (Option 1)
+  <a class="reference internal nav-link" href="#install-furnituresim-using-pypi-option-1">
+   Install FurnitureSim using PyPI (Option 1)
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#install-furnituresim-from-source-option-2">
-   Install FurnitureSim from Source (Option 2)
+  <a class="reference internal nav-link" href="#install-furnituresim-using-docker-option-2">
+   Install FurnitureSim using Docker (Option 2)
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -402,8 +402,8 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="installation-guide-furnituresim">
-<h1>Installation Guide (FurnitureSim)<a class="headerlink" href="#installation-guide-furnituresim" title="Permalink to this headline">#</a></h1>
+  <section id="installing-furnituresim">
+<h1>Installing FurnitureSim<a class="headerlink" href="#installing-furnituresim" title="Permalink to this headline">#</a></h1>
 <p><strong>FurnitureSim</strong> is a realistic simulation of FurnitureBench based on <a class="reference external" href="https://developer.nvidia.com/isaac-gym">Isaac Gym</a> and <a class="reference external" href="https://sites.google.com/nvidia.com/factory">Factory</a>.
 FurnitureSim enables easy and fast evaluation of new algorithms.
 You can install FurnitureSim using Docker or build it from source.</p>
@@ -429,9 +429,8 @@ You can install FurnitureSim using Docker or build it from source.</p>
 <div class="admonition-prerequisites prerequisites admonition" id="prerequisites-0">
 <p class="admonition-title">Prerequisites</p>
 <ul class="simple">
-<li><p>🛠️ Ubuntu 20.04 LTS</p></li>
+<li><p>Ubuntu 20.04 LTS</p></li>
 <li><p>NVIDIA RTX GPU</p></li>
-<li><p>📖 <a class="reference external" href="https://www.anaconda.com/">Anaconda</a></p></li>
 </ul>
 </div>
 <section id="download-isaac-gym">
@@ -444,12 +443,28 @@ You can install FurnitureSim using Docker or build it from source.</p>
 <li><p>Download and unzip <code class="docutils literal notranslate"><span class="pre">Isaac</span> <span class="pre">Gym</span> <span class="pre">-</span> <span class="pre">Ubuntu</span> <span class="pre">Linux</span> <span class="pre">18.04</span> <span class="pre">/</span> <span class="pre">20.04</span> <span class="pre">Preview</span> <span class="pre">4</span> <span class="pre">release</span></code>.</p></li>
 </ol>
 </section>
-<section id="install-furnituresim-using-docker-option-1">
-<h2>Install FurnitureSim using Docker (Option 1)<a class="headerlink" href="#install-furnituresim-using-docker-option-1" title="Permalink to this headline">#</a></h2>
-<p>Our client Docker image includes FurnitureSim:</p>
+<section id="install-furnituresim-using-pypi-option-1">
+<h2>Install FurnitureSim using PyPI (Option 1)<a class="headerlink" href="#install-furnituresim-using-pypi-option-1" title="Permalink to this headline">#</a></h2>
+<p>FurnitureSim is available to install via PyPI. You need an NVIDIA driver and CUDA. Please refer to <a class="reference external" href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html">NVIDIA CUDA Installation Guide</a>.</p>
 <ol class="arabic simple">
-<li><p>Install <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">nvidia-docker2</a>.</p></li>
-<li><p>Specify whether to pull the Docker image from Docker Hub or build it locally:</p></li>
+<li><p>Install Isaac Gym:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">isaacgym</span><span class="o">&gt;</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">python</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Install FurnitureBench, which includes FurnitureSim:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">furniture</span><span class="o">-</span><span class="n">bench</span>
+</pre></div>
+</div>
+</section>
+<section id="install-furnituresim-using-docker-option-2">
+<h2>Install FurnitureSim using Docker (Option 2)<a class="headerlink" href="#install-furnituresim-using-docker-option-2" title="Permalink to this headline">#</a></h2>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">nvidia-docker2</a> and <a class="reference external" href="https://www.anaconda.com/">Anaconda</a>.</p></li>
+<li><p>Specify whether to pull the client Docker image from Docker Hub or build it locally:</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Case 1: pull from Docker Hub</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_DOCKER</span><span class="o">=</span>furniturebench/client-gpu:latest
@@ -478,56 +493,23 @@ xhost<span class="w"> </span>+
 </pre></div>
 </div>
 </section>
-<section id="install-furnituresim-from-source-option-2">
-<h2>Install FurnitureSim from Source (Option 2)<a class="headerlink" href="#install-furnituresim-from-source-option-2" title="Permalink to this headline">#</a></h2>
-<p>You can manually install FurnitureSim and its dependencies as follows:</p>
-<ol class="arabic simple">
-<li><p>Install CUDA following the instructions <a class="reference external" href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html">here</a> or this <a class="reference external" href="https://gist.github.com/primus852/b6bac167509e6f352efb8a462dcf1854#file-cuda_11-7_installation_on_ubuntu_22-04">gist</a>. You can skip this step if you already have CUDA installed on your machine.</p></li>
-<li><p>Create a conda environment:</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">furniture</span><span class="o">-</span><span class="n">bench</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="3">
-<li><p>Install the PyTorch version you want to use:</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">pytorch</span> <span class="n">torchvision</span> <span class="n">torchaudio</span> <span class="n">cudatoolkit</span><span class="o">=</span><span class="mf">11.7</span> <span class="o">-</span><span class="n">c</span> <span class="n">pytorch</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="4">
-<li><p>Install Isaac Gym:</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">isaacgym</span><span class="o">&gt;</span>
-<span class="n">cd</span> <span class="n">python</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="5">
-<li><p>Install FurnitureBench, which includes FurnitureSim:</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">clvrai</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">furniture</span><span class="o">-</span><span class="n">bench</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
-</pre></div>
-</div>
-</section>
 <section id="test-furnituresim-installation">
 <h2>Test FurnitureSim Installation<a class="headerlink" href="#test-furnituresim-installation" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p>Test FurnitureSim using the following command with a furniture name <code class="docutils literal notranslate"><span class="pre">&lt;furniture&gt;=[lamp|square_table|desk|drawer|cabinet|round_table|stool|chair|one_leg]</span></code>.</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--no-action
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.run_sim_env<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--no-action
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>You can also run our scripted agent for <code class="docutils literal notranslate"><span class="pre">one_leg</span></code> by adding <code class="docutils literal notranslate"><span class="pre">--scripted</span></code> to the arguments:</p></li>
+<li><p>You can run our scripted agent for <code class="docutils literal notranslate"><span class="pre">one_leg</span></code> by adding <code class="docutils literal notranslate"><span class="pre">--scripted</span></code> to the arguments:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.run_sim_env<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>FurnitureSim needs to convert 3D furniture meshes into Signed Distance Functions (SDF), which takes several minutes. The converted SDF models are cached for fast execution.</p>
+<p>FurnitureSim may take several minutes to convert 3D furniture meshes into Signed Distance Functions (SDF) on your first run. The converted SDF models will then be cached for fast execution.</p>
 </div>
 </section>
 <section id="furnituresim-parameters">
@@ -548,7 +530,7 @@ xhost<span class="w"> </span>+
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Installation Guide</p>
+            <p class="prev-next-title">Installing FurnitureBench</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="../tutorials/furniture_bench.html" title="next page">

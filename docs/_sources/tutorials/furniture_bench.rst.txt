@@ -12,26 +12,29 @@ FurnitureBench can be configured with the following arguments:
     import furniture_bench
 
     env = gym.make(
-        'Furniture-Env-v0',
-        furniture=...,            # Specifies the name of furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].
-        resize_img=True,          # If true, images are resized to 224 x 224.
-        manual_done=False,        # If true, the episode ends only when the user presses the 'done' button.
-        with_display=True,        # If true, camera inputs are rendered on environment steps.
-        draw_marker=False,        # If true and with_display is also true, the AprilTag marker is rendered on display.
-        manual_label=False,       # If true, manual labeling of the reward is allowed.
-        from_skill=0,             # Skill index to start from (range: [0-5)). Index `i` denotes the completion of ith skill and commencement of the (i + 1)th skill.
-        to_skill=-1,              # Skill index to end at (range: [1-5]). Should be larger than `from_skill`. Default -1 expects the full task from `from_skill` onwards.
-        randomness='low',         # Level of randomness in the environment [low | med | high].
-        high_random_idx=-1,       # Index of the high randomness level (range: [0-2]). Default -1 will randomly select the index within the range.
-        visualize_init_pose=True, # If true, the initial pose of furniture parts is visualized.
-        record=False,             # If true, the video of the agent's observation is recorded.
-        manual_reset=True         # If true, a manual reset of the environment is allowed.
+      "Furniture-Env-v0",
+      furniture=...,            # Specifies the name of furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].
+      resize_img=True,          # If true, images are resized to 224 x 224.
+      manual_done=False,        # If true, the episode ends only when the user presses the 'done' button.
+      with_display=True,        # If true, camera inputs are rendered on environment steps.
+      draw_marker=False,        # If true and with_display is also true, the AprilTag marker is rendered on display.
+      manual_label=False,       # If true, manual labeling of the reward is allowed.
+      from_skill=0,             # Skill index to start from (range: [0-5)). Index `i` denotes the completion of ith skill and commencement of the (i + 1)th skill.
+      to_skill=-1,              # Skill index to end at (range: [1-5]). Should be larger than `from_skill`. Default -1 expects the full task from `from_skill` onwards.
+      randomness="low",         # Level of randomness in the environment [low | med | high].
+      high_random_idx=-1,       # Index of the high randomness level (range: [0-2]). Default -1 will randomly select the index within the range.
+      visualize_init_pose=True, # If true, the initial pose of furniture parts is visualized.
+      record=False,             # If true, the video of the agent's observation is recorded.
+      manual_reset=True         # If true, a manual reset of the environment is allowed.
     )
 
-- ``randomness`` controls the randomness level of the environment.
 
-\
-  The end-effector pose is also perturbed depending on the randomness level.
+FurnitureBench Arguments
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- ``furniture`` can be one of ``[lamp|square_table|desk|drawer|cabinet|round_table|stool|chair|one_leg]``.
+
+- ``randomness`` controls the randomness level of the initial furniture and robot configurations.
 
   - For the ``med`` and ``high``, the end-effector pose is perturbed from the pre-defined target pose with noise (±5 cm positional, ±15◦ rotational).
   - For the ``low`` of the full assembly task, the end-effector pose is fixed to the pre-defined target pose.

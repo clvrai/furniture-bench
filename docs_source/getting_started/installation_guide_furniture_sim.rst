@@ -1,5 +1,5 @@
-Installation Guide (FurnitureSim)
-=================================
+Installing FurnitureSim
+=======================
 
 **FurnitureSim** is a realistic simulation of FurnitureBench based on `Isaac Gym <https://developer.nvidia.com/isaac-gym>`__ and `Factory <https://sites.google.com/nvidia.com/factory>`__.
 FurnitureSim enables easy and fast evaluation of new algorithms.
@@ -22,9 +22,8 @@ You can install FurnitureSim using Docker or build it from source.
 .. prerequisites::
     Prerequisites
 
-    -  🛠️ Ubuntu 20.04 LTS
+    - Ubuntu 20.04 LTS
     - NVIDIA RTX GPU
-    -  📖 `Anaconda <https://www.anaconda.com/>`__
 
 
 Download Isaac Gym
@@ -37,14 +36,31 @@ Download Isaac Gym
 5. Download and unzip ``Isaac Gym - Ubuntu Linux 18.04 / 20.04 Preview 4 release``.
 
 
-Install FurnitureSim using Docker (Option 1)
+Install FurnitureSim using PyPI (Option 1)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FurnitureSim is available to install via PyPI. You need an NVIDIA driver and CUDA. Please refer to `NVIDIA CUDA Installation Guide <https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html>`__.
+
+1. Install Isaac Gym:
+
+.. code::
+
+  cd <path/to/isaacgym>
+  pip install -e python
+
+2. Install FurnitureBench, which includes FurnitureSim:
+
+.. code::
+
+  pip install furniture-bench
+
+
+Install FurnitureSim using Docker (Option 2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Our client Docker image includes FurnitureSim:
+1. Install `nvidia-docker2 <https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html>`__ and `Anaconda <https://www.anaconda.com/>`__.
 
-1. Install `nvidia-docker2 <https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html>`__.
-
-2. Specify whether to pull the Docker image from Docker Hub or build it locally:
+2. Specify whether to pull the client Docker image from Docker Hub or build it locally:
 
 .. code:: bash
 
@@ -74,42 +90,6 @@ Our client Docker image includes FurnitureSim:
   ./launch_client.sh --sim-gpu
 
 
-Install FurnitureSim from Source (Option 2)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-You can manually install FurnitureSim and its dependencies as follows:
-
-1. Install CUDA following the instructions `here <https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html>`__ or this `gist <https://gist.github.com/primus852/b6bac167509e6f352efb8a462dcf1854#file-cuda_11-7_installation_on_ubuntu_22-04>`__. You can skip this step if you already have CUDA installed on your machine.
-
-2. Create a conda environment:
-
-.. code::
-
-  conda create -n furniture-bench python=3.8
-
-3. Install the PyTorch version you want to use:
-
-.. code::
-
-  conda install pytorch torchvision torchaudio cudatoolkit=11.7 -c pytorch -c conda-forge
-
-4. Install Isaac Gym:
-
-.. code::
-
-  cd <path/to/isaacgym>
-  cd python
-  pip install -e .
-
-5. Install FurnitureBench, which includes FurnitureSim:
-
-.. code::
-
-  git clone https://github.com/clvrai/furniture-bench.git
-  cd furniture-bench
-  pip install -e .
-
-
 Test FurnitureSim Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -117,18 +97,18 @@ Test FurnitureSim Installation
 
 .. code:: bash
 
-  python furniture_bench/scripts/run_sim_env.py --furniture <furniture> --no-action
+  python -m furniture_bench.scripts.run_sim_env --furniture <furniture> --no-action
 
-- You can also run our scripted agent for ``one_leg`` by adding ``--scripted`` to the arguments:
+- You can run our scripted agent for ``one_leg`` by adding ``--scripted`` to the arguments:
 
 .. code:: bash
 
-  python furniture_bench/scripts/run_sim_env.py --furniture one_leg --scripted
+  python -m furniture_bench.scripts.run_sim_env --furniture one_leg --scripted
 
 
 .. note::
 
-    FurnitureSim needs to convert 3D furniture meshes into Signed Distance Functions (SDF), which takes several minutes. The converted SDF models are cached for fast execution.
+    FurnitureSim may take several minutes to convert 3D furniture meshes into Signed Distance Functions (SDF) on your first run. The converted SDF models will then be cached for fast execution.
 
 
 FurnitureSim Parameters

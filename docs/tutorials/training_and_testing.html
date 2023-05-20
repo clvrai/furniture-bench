@@ -111,12 +111,12 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started/installation_guide.html">
-   Installation Guide
+   Installing FurnitureBench
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started/installation_guide_furniture_sim.html">
-   Installation Guide (FurnitureSim)
+   Installing FurnitureSim
   </a>
  </li>
 </ul>
@@ -329,24 +329,31 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#rollout-with-pre-trained-policies">
-   Rollout with Pre-trained Policies
+  <a class="reference internal nav-link" href="#evaluating-pre-trained-iql-policies">
+   Evaluating Pre-trained IQL Policies
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#convert-data-for-training">
-   Convert Data for Training
+  <a class="reference internal nav-link" href="#training-a-policy-from-scratch">
+   Training a Policy from Scratch
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#train-bc">
-   Train BC
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#train-iql">
-   Train IQL
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#convert-data-for-training">
+     Convert Data for Training
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#train-bc">
+     Train BC
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#train-iql">
+     Train IQL
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -373,24 +380,31 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#rollout-with-pre-trained-policies">
-   Rollout with Pre-trained Policies
+  <a class="reference internal nav-link" href="#evaluating-pre-trained-iql-policies">
+   Evaluating Pre-trained IQL Policies
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#convert-data-for-training">
-   Convert Data for Training
+  <a class="reference internal nav-link" href="#training-a-policy-from-scratch">
+   Training a Policy from Scratch
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#train-bc">
-   Train BC
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#train-iql">
-   Train IQL
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#convert-data-for-training">
+     Convert Data for Training
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#train-bc">
+     Train BC
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#train-iql">
+     Train IQL
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -408,67 +422,76 @@ title="Print to PDF"
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
-<li><p>Install the following packages:</p></li>
+<li><p>Install the packages for benchmarking:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
-
-<span class="c1"># Install robot learning library</span>
-<span class="n">cd</span> <span class="n">rolf</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
-
-<span class="c1"># Install implicit Q learning.</span>
-<span class="n">cd</span> <span class="n">implicit_q_learning</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
-
-<span class="c1"># Install R3M.</span>
-<span class="n">cd</span> <span class="o">../</span><span class="n">r3m</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
-
-<span class="c1"># Install VIP</span>
-<span class="n">cd</span> <span class="o">../</span><span class="n">vip</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">rolf</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">r3m</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">vip</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Prepare training data. You can download a dataset (<a class="reference internal" href="dataset.html#dataset"><span class="std std-ref">Dataset</span></a>) or generate it (<a class="reference internal" href="furniture_sim.html#automated-assembly-script"><span class="std std-ref">Automated Assembly Script</span></a>).</p></li>
 </ul>
 </section>
-<section id="rollout-with-pre-trained-policies">
-<h2>Rollout with Pre-trained Policies<a class="headerlink" href="#rollout-with-pre-trained-policies" title="Permalink to this headline">#</a></h2>
-<p>You can run our pre-trained Implicit Q-Learning (IQL) policies in FurnitureSim:</p>
+<section id="evaluating-pre-trained-iql-policies">
+<h2>Evaluating Pre-trained IQL Policies<a class="headerlink" href="#evaluating-pre-trained-iql-policies" title="Permalink to this headline">#</a></h2>
+<p>You can run our pre-trained Implicit Q-Learning (IQL) policies in FurnitureSim using <code class="docutils literal notranslate"><span class="pre">implicit_q_learning/test_offline.py</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
 
-<span class="c1"># Policy trained with 1000 scripted demonstrations.</span>
 <span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">test_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Sim</span><span class="o">-</span><span class="n">v0</span><span class="o">/</span><span class="n">one_leg</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">ckpt_step</span><span class="o">=</span><span class="mi">1000000</span> <span class="o">--</span><span class="n">run_name</span> <span class="n">one_leg_full_iql_r3m_low_sim_1000</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">test_offline.py</span></code> will read a checkpoint in <code class="docutils literal notranslate"><span class="pre">checkpoint/ckpt</span></code> directory from the root of the project.
-The directory name of the checkpoint is the same as the <code class="docutils literal notranslate"><span class="pre">run_name.seed</span></code> that is used during training (e.g., <code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_low_sim_1000.42</span></code> where one_leg_full_iql_r3m_low_sim_1000 is run name and 42 is the seed).</p>
-<p>The real-world rollout is similar to the above command, but you must change the <code class="docutils literal notranslate"><span class="pre">--env_name</span></code> corresponding to the real-world environment.</p>
-<p>If your <code class="docutils literal notranslate"><span class="pre">run_name</span></code> is one of the pre-trained <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and currently does not exist under <code class="docutils literal notranslate"><span class="pre">checkpoint/ckpt</span></code>, the script will download it from Google Drive.</p>
-<p>Here is the list of <code class="docutils literal notranslate"><span class="pre">run_name</span></code> for the pre-trained policies:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># IQL</span>
-<span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_low_sim_1000&quot;</span> <span class="c1"># IQL algorithm trained with 1000 scripted demonstrations in simulation, initialized with low randomness.</span>
-<span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_low_1000&quot;</span>     <span class="c1"># IQL algorithm trained with 1000 teleoperated demonstrations in the real world, initialized with low randomness.</span>
-<span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_med_1000&quot;</span>     <span class="c1"># IQL algorithm trained with 1000 teleoperated demonstrations in the real world, initialized with medium randomness.</span>
-<span class="o">-</span> <span class="s2">&quot;one_leg_full_iql_r3m_mixed_2000&quot;</span>   <span class="c1"># IQL algorithm trained with 2000 teleoperated demonstrations in the real world, a combination of low and medium randomness.</span>
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>If you use one of the pre-trained <code class="docutils literal notranslate"><span class="pre">run_name</span></code>, the pre-trained checkpoint will be automatically downloaded from Google Drive. The checkpoint will be saved in <code class="docutils literal notranslate"><span class="pre">checkpoint/ckpt/&lt;run_name&gt;.&lt;seed&gt;</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_low_sim_1000.42</span></code> for run name <code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_low_sim_1000</span></code> and seed <code class="docutils literal notranslate"><span class="pre">42</span></code>).</p></li>
+<li><p>The below table shows the list of pre-trained <code class="docutils literal notranslate"><span class="pre">run_name</span></code>:</p></li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Run name</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_low_sim_1000</span></code></p></td>
+<td><p>IQL trained with 1000 scripted demos in simulation, low randomness.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_low_1000</span></code></p></td>
+<td><p>IQL trained with 1000 real-world demos, low randomness.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_med_1000</span></code></p></td>
+<td><p>IQL trained with 1000 real-world demos, medium randomness.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_mixed_2000</span></code></p></td>
+<td><p>IQL trained with 2000 real-world demos, a combination of low and medium randomness.</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>To evaluate the real-world policies, you must change <code class="docutils literal notranslate"><span class="pre">--env_name</span></code> with the real-world environment.</p></li>
+</ul>
 </section>
+<section id="training-a-policy-from-scratch">
+<h2>Training a Policy from Scratch<a class="headerlink" href="#training-a-policy-from-scratch" title="Permalink to this headline">#</a></h2>
+<p>We provide a tutorial on how to train a policy from scratch using our codebase.</p>
 <section id="convert-data-for-training">
-<h2>Convert Data for Training<a class="headerlink" href="#convert-data-for-training" title="Permalink to this headline">#</a></h2>
-<p>We provide a tutorial on how to train a policy from scratch using our codebase.
-Both for BC and IQL training, you need to convert a raw dataset as follows:</p>
-<p>First, convert the data to the format for training:</p>
+<h3>Convert Data for Training<a class="headerlink" href="#convert-data-for-training" title="Permalink to this headline">#</a></h3>
+<p>Both for BC and IQL training, you need to convert a raw dataset as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">convert_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">demos</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">processed</span><span class="o">/</span><span class="n">demo</span><span class="o">&gt;</span>
-<span class="c1"># E.g.</span>
+
+<span class="c1"># E.g.,</span>
 <span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">convert_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="ow">in</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_1000</span> <span class="o">--</span><span class="n">out</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">path</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_processed_1000</span>
 </pre></div>
 </div>
 </section>
 <section id="train-bc">
-<h2>Train BC<a class="headerlink" href="#train-bc" title="Permalink to this headline">#</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">run</span> <span class="n">run_prefix</span><span class="o">=&lt;</span><span class="n">run_prefix</span><span class="o">&gt;</span> <span class="n">algo</span><span class="nd">@rolf</span><span class="o">=</span><span class="n">bc</span> <span class="n">env</span><span class="o">.</span><span class="n">id</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span> <span class="n">rolf</span><span class="o">.</span><span class="n">demo_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">processed</span><span class="o">/</span><span class="n">demo</span><span class="o">&gt;</span> <span class="n">env</span><span class="o">.</span><span class="n">furniture</span><span class="o">=&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">encoder_type</span><span class="o">=&lt;</span><span class="n">encoder_type</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">resnet</span><span class="o">=&lt;</span><span class="n">resnet_type</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">finetune_encoder</span><span class="o">=</span><span class="kc">True</span> <span class="n">gpu</span><span class="o">=&lt;</span><span class="n">gpu_id</span><span class="o">&gt;</span> <span class="n">wandb</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span> <span class="o">|</span> <span class="kc">False</span><span class="p">]</span>  <span class="n">wandb_entity</span><span class="o">=&lt;</span><span class="n">wandb_entity</span><span class="o">&gt;</span> <span class="n">wandb_project</span><span class="o">=&lt;</span><span class="n">wandb_project</span><span class="o">&gt;</span>
+<h3>Train BC<a class="headerlink" href="#train-bc" title="Permalink to this headline">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">run</span> <span class="n">run_prefix</span><span class="o">=&lt;</span><span class="n">run_prefix</span><span class="o">&gt;</span> <span class="n">algo</span><span class="nd">@rolf</span><span class="o">=</span><span class="n">bc</span> <span class="n">env</span><span class="o">.</span><span class="n">id</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span> <span class="n">rolf</span><span class="o">.</span><span class="n">demo_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">processed</span><span class="o">/</span><span class="n">demo</span><span class="o">&gt;</span> <span class="n">env</span><span class="o">.</span><span class="n">furniture</span><span class="o">=&lt;</span><span class="n">furniture</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">encoder_type</span><span class="o">=&lt;</span><span class="n">encoder_type</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">resnet</span><span class="o">=&lt;</span><span class="n">resnet_type</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">finetune_encoder</span><span class="o">=</span><span class="kc">True</span> <span class="n">gpu</span><span class="o">=&lt;</span><span class="n">gpu_id</span><span class="o">&gt;</span> <span class="n">wandb</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span> <span class="o">|</span> <span class="kc">False</span><span class="p">]</span>  <span class="n">wandb_entity</span><span class="o">=&lt;</span><span class="n">wandb_entity</span><span class="o">&gt;</span> <span class="n">wandb_project</span><span class="o">=&lt;</span><span class="n">wandb_project</span><span class="o">&gt;</span>
 
 <span class="c1"># E.g., train BC with ResNet18 encoder.</span>
 <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">run</span> <span class="n">run_prefix</span><span class="o">=</span><span class="n">one_leg_full_bc_resnet18_low_sim_1000</span> <span class="n">algo</span><span class="nd">@rolf</span><span class="o">=</span><span class="n">bc</span> <span class="n">env</span><span class="o">.</span><span class="n">id</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span> <span class="n">rolf</span><span class="o">.</span><span class="n">demo_path</span><span class="o">=</span><span class="n">one_leg_processed_1000</span><span class="o">/</span> <span class="n">env</span><span class="o">.</span><span class="n">furniture</span><span class="o">=</span><span class="n">one_leg</span> <span class="n">rolf</span><span class="o">.</span><span class="n">encoder_type</span><span class="o">=</span><span class="n">resnet18</span> <span class="n">rolf</span><span class="o">.</span><span class="n">resnet</span><span class="o">=</span><span class="n">resnet18</span> <span class="n">rolf</span><span class="o">.</span><span class="n">finetune_encoder</span><span class="o">=</span><span class="kc">True</span> <span class="n">wandb</span><span class="o">=</span><span class="kc">True</span> <span class="n">gpu</span><span class="o">=</span><span class="mi">0</span> <span class="n">wandb_entity</span><span class="o">=</span><span class="n">clvr</span> <span class="n">wandb_project</span><span class="o">=</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span>
@@ -476,23 +499,26 @@ Both for BC and IQL training, you need to convert a raw dataset as follows:</p>
 </div>
 </section>
 <section id="train-iql">
-<h2>Train IQL<a class="headerlink" href="#train-iql" title="Permalink to this headline">#</a></h2>
+<h3>Train IQL<a class="headerlink" href="#train-iql" title="Permalink to this headline">#</a></h3>
 <ol class="arabic simple">
 <li><p>Extract R3M or VIP features from the demonstrations:</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">extract_feature</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">demo_dir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">&gt;</span>  <span class="o">--</span><span class="n">out_file_path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">converted_data</span><span class="o">&gt;</span> <span class="p">[</span><span class="o">--</span><span class="n">use_r3m</span> <span class="o">|</span> <span class="o">--</span><span class="n">use_vip</span><span class="p">]</span>
-<span class="c1"># E.g.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">extract_feature</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">furniture</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">demo_dir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">&gt;</span>  <span class="o">--</span><span class="n">out_file_path</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">converted_data</span><span class="o">&gt;</span> <span class="p">[</span><span class="o">--</span><span class="n">use_r3m</span> <span class="o">|</span> <span class="o">--</span><span class="n">use_vip</span><span class="p">]</span>
+
+<span class="c1"># E.g.,</span>
 <span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">extract_feature</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">one_leg</span> <span class="o">--</span><span class="n">demo_dir</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_processed</span><span class="o">/</span> <span class="o">--</span><span class="n">out_file_path</span> <span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_sim_1000</span><span class="o">.</span><span class="n">pkl</span> <span class="o">--</span><span class="n">use_r3m</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>You can train an IQL policy using the following script. If you want to log using <code class="docutils literal notranslate"><span class="pre">wandb</span></code>, use these arguments <code class="docutils literal notranslate"><span class="pre">--wandb</span> <span class="pre">--wandb_entity</span> <span class="pre">&lt;entity_name&gt;</span> <span class="pre">--wandb_project</span> <span class="pre">&lt;project_name&gt;</span></code>:</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/&lt;</span><span class="n">furniture_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="o">&lt;</span><span class="n">run_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pkl</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=</span><span class="p">[</span><span class="n">vip</span> <span class="o">|</span> <span class="n">r3m</span><span class="p">]</span>
-<span class="c1"># E.g.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/&lt;</span><span class="n">furniture</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="o">&lt;</span><span class="n">run_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pkl</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=</span><span class="p">[</span><span class="n">vip</span> <span class="o">|</span> <span class="n">r3m</span><span class="p">]</span>
+
+<span class="c1"># E.g.,</span>
 <span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">train_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span><span class="o">/</span><span class="n">one_leg</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="n">one_leg_sim</span> <span class="o">--</span><span class="n">data_path</span><span class="o">=</span><span class="n">scripted_sim_demo</span><span class="o">/</span><span class="n">one_leg_sim_1000</span><span class="o">.</span><span class="n">pkl</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=</span><span class="n">r3m</span>
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 
