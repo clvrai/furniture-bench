@@ -329,9 +329,21 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#evaluating-pre-trained-iql-policies">
-   Evaluating Pre-trained IQL Policies
+  <a class="reference internal nav-link" href="#evaluating-pre-trained-policies">
+   Evaluating Pre-trained Policies
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#evaluating-pre-trained-iql">
+     Evaluating Pre-trained IQL
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#evaluating-pre-trained-bc">
+     Evaluating Pre-trained BC
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#training-a-policy-from-scratch">
@@ -344,13 +356,13 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#train-bc">
-     Train BC
+    <a class="reference internal nav-link" href="#training-bc">
+     Training BC
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#train-iql">
-     Train IQL
+    <a class="reference internal nav-link" href="#training-iql">
+     Training IQL
     </a>
    </li>
   </ul>
@@ -380,9 +392,21 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#evaluating-pre-trained-iql-policies">
-   Evaluating Pre-trained IQL Policies
+  <a class="reference internal nav-link" href="#evaluating-pre-trained-policies">
+   Evaluating Pre-trained Policies
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#evaluating-pre-trained-iql">
+     Evaluating Pre-trained IQL
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#evaluating-pre-trained-bc">
+     Evaluating Pre-trained BC
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#training-a-policy-from-scratch">
@@ -395,13 +419,13 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#train-bc">
-     Train BC
+    <a class="reference internal nav-link" href="#training-bc">
+     Training BC
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#train-iql">
-     Train IQL
+    <a class="reference internal nav-link" href="#training-iql">
+     Training IQL
     </a>
    </li>
   </ul>
@@ -421,9 +445,8 @@ title="Print to PDF"
 <p>This tutorial shows how to train and evaluate a policy on FurnitureSim.</p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Install the packages for benchmarking:</p></li>
-</ul>
+<ul>
+<li><p>Install the packages for benchmarking:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">rolf</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">r3m</span>
@@ -431,13 +454,17 @@ title="Print to PDF"
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
-<ul class="simple">
+</li>
 <li><p>Prepare training data. You can download a dataset (<a class="reference internal" href="dataset.html#dataset"><span class="std std-ref">Dataset</span></a>) or generate it (<a class="reference internal" href="furniture_sim.html#automated-assembly-script"><span class="std std-ref">Automated Assembly Script</span></a>).</p></li>
 </ul>
 </section>
-<section id="evaluating-pre-trained-iql-policies">
-<h2>Evaluating Pre-trained IQL Policies<a class="headerlink" href="#evaluating-pre-trained-iql-policies" title="Permalink to this headline">#</a></h2>
-<p>You can run our pre-trained Implicit Q-Learning (IQL) policies in FurnitureSim using <code class="docutils literal notranslate"><span class="pre">implicit_q_learning/test_offline.py</span></code>.</p>
+<section id="evaluating-pre-trained-policies">
+<h2>Evaluating Pre-trained Policies<a class="headerlink" href="#evaluating-pre-trained-policies" title="Permalink to this headline">#</a></h2>
+<p>This section shows how to evaluate pre-trained policies of BC and Implicit Q-Learning (IQL) algorithms.
+The examples provided below utilize our previously trained checkpoints, but it will be straightforward to modify certain parameters and adapt them to your own policies.</p>
+<section id="evaluating-pre-trained-iql">
+<h3>Evaluating Pre-trained IQL<a class="headerlink" href="#evaluating-pre-trained-iql" title="Permalink to this headline">#</a></h3>
+<p>You can run our pre-trained IQL policies in FurnitureSim using <code class="docutils literal notranslate"><span class="pre">implicit_q_learning/test_offline.py</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
 
 <span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">test_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Feature</span><span class="o">-</span><span class="n">Sim</span><span class="o">-</span><span class="n">v0</span><span class="o">/</span><span class="n">one_leg</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">ckpt_step</span><span class="o">=</span><span class="mi">1000000</span> <span class="o">--</span><span class="n">run_name</span> <span class="n">one_leg_full_iql_r3m_low_sim_1000</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span>
@@ -476,6 +503,17 @@ title="Print to PDF"
 <li><p>To evaluate the real-world policies, you must change <code class="docutils literal notranslate"><span class="pre">--env_name</span></code> with the real-world environment.</p></li>
 </ul>
 </section>
+<section id="evaluating-pre-trained-bc">
+<h3>Evaluating Pre-trained BC<a class="headerlink" href="#evaluating-pre-trained-bc" title="Permalink to this headline">#</a></h3>
+<p>BC policies are evaluated using <code class="docutils literal notranslate"><span class="pre">run.py</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the following command to evaluate a BC policy.</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">run</span> <span class="n">algo</span><span class="nd">@rolf</span><span class="o">=</span><span class="n">bc</span> <span class="n">env</span><span class="o">.</span><span class="n">id</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Sim</span><span class="o">-</span><span class="n">Env</span><span class="o">-</span><span class="n">v0</span> <span class="n">env</span><span class="o">.</span><span class="n">furniture</span><span class="o">=</span><span class="n">one_leg</span> <span class="n">init_ckpt_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">checkpoint</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">encoder_type</span><span class="o">=&lt;</span><span class="n">encoder_type</span><span class="o">&gt;</span> <span class="n">is_train</span><span class="o">=</span><span class="kc">False</span> <span class="n">gpu</span><span class="o">=&lt;</span><span class="n">gpu_id</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">resnet</span><span class="o">=&lt;</span><span class="n">resnet_type</span><span class="o">&gt;</span> <span class="n">env</span><span class="o">.</span><span class="n">randomness</span><span class="o">=&lt;</span><span class="n">randomness</span><span class="o">&gt;</span>
+<span class="c1"># E.g., pre-train BC with ResNet18 encoder.</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">run</span> <span class="n">algo</span><span class="nd">@rolf</span><span class="o">=</span><span class="n">bc</span> <span class="n">env</span><span class="o">.</span><span class="n">id</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Sim</span><span class="o">-</span><span class="n">Env</span><span class="o">-</span><span class="n">v0</span> <span class="n">env</span><span class="o">.</span><span class="n">furniture</span><span class="o">=</span><span class="n">one_leg</span> <span class="n">init_ckpt_path</span><span class="o">=</span><span class="n">checkpoints</span><span class="o">/</span><span class="n">ckpt</span><span class="o">/</span><span class="n">one_leg_full_bc_resnet18_low_sim_1000</span><span class="o">/</span><span class="n">ckpt_00000000050</span><span class="o">.</span><span class="n">pt</span> <span class="n">rolf</span><span class="o">.</span><span class="n">encoder_type</span><span class="o">=</span><span class="n">resnet18</span> <span class="n">is_train</span><span class="o">=</span><span class="kc">False</span> <span class="n">gpu</span><span class="o">=</span><span class="mi">0</span> <span class="n">rolf</span><span class="o">.</span><span class="n">resnet</span><span class="o">=</span><span class="n">resnet18</span> <span class="n">env</span><span class="o">.</span><span class="n">randomness</span><span class="o">=</span><span class="n">low</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="training-a-policy-from-scratch">
 <h2>Training a Policy from Scratch<a class="headerlink" href="#training-a-policy-from-scratch" title="Permalink to this headline">#</a></h2>
 <p>We provide a tutorial on how to train a policy from scratch using our codebase.</p>
@@ -489,8 +527,9 @@ title="Print to PDF"
 </pre></div>
 </div>
 </section>
-<section id="train-bc">
-<h3>Train BC<a class="headerlink" href="#train-bc" title="Permalink to this headline">#</a></h3>
+<section id="training-bc">
+<h3>Training BC<a class="headerlink" href="#training-bc" title="Permalink to this headline">#</a></h3>
+<p>The following command trains a BC policy. You can change <code class="docutils literal notranslate"><span class="pre">rolf.encoder_type</span></code> to <code class="docutils literal notranslate"><span class="pre">resnet18</span></code>, <code class="docutils literal notranslate"><span class="pre">r3m</span></code>, or <code class="docutils literal notranslate"><span class="pre">vip</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">run</span> <span class="n">run_prefix</span><span class="o">=&lt;</span><span class="n">run_prefix</span><span class="o">&gt;</span> <span class="n">algo</span><span class="nd">@rolf</span><span class="o">=</span><span class="n">bc</span> <span class="n">env</span><span class="o">.</span><span class="n">id</span><span class="o">=</span><span class="n">Furniture</span><span class="o">-</span><span class="n">Image</span><span class="o">-</span><span class="n">Dummy</span><span class="o">-</span><span class="n">v0</span> <span class="n">rolf</span><span class="o">.</span><span class="n">demo_path</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">processed</span><span class="o">/</span><span class="n">demo</span><span class="o">&gt;</span> <span class="n">env</span><span class="o">.</span><span class="n">furniture</span><span class="o">=&lt;</span><span class="n">furniture</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">encoder_type</span><span class="o">=&lt;</span><span class="n">encoder_type</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">resnet</span><span class="o">=&lt;</span><span class="n">resnet_type</span><span class="o">&gt;</span> <span class="n">rolf</span><span class="o">.</span><span class="n">finetune_encoder</span><span class="o">=</span><span class="kc">True</span> <span class="n">gpu</span><span class="o">=&lt;</span><span class="n">gpu_id</span><span class="o">&gt;</span> <span class="n">wandb</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span> <span class="o">|</span> <span class="kc">False</span><span class="p">]</span>  <span class="n">wandb_entity</span><span class="o">=&lt;</span><span class="n">wandb_entity</span><span class="o">&gt;</span> <span class="n">wandb_project</span><span class="o">=&lt;</span><span class="n">wandb_project</span><span class="o">&gt;</span>
 
 <span class="c1"># E.g., train BC with ResNet18 encoder.</span>
@@ -498,8 +537,8 @@ title="Print to PDF"
 </pre></div>
 </div>
 </section>
-<section id="train-iql">
-<h3>Train IQL<a class="headerlink" href="#train-iql" title="Permalink to this headline">#</a></h3>
+<section id="training-iql">
+<h3>Training IQL<a class="headerlink" href="#training-iql" title="Permalink to this headline">#</a></h3>
 <ol class="arabic simple">
 <li><p>Extract R3M or VIP features from the demonstrations:</p></li>
 </ol>

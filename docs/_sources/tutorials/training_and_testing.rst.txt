@@ -9,7 +9,7 @@ Prerequisites
 
 * Install the packages for benchmarking:
 
-.. code::
+  .. code::
 
     cd <path/to/furniture-bench>
     pip install -e rolf
@@ -21,10 +21,15 @@ Prerequisites
 * Prepare training data. You can download a dataset (:ref:`Dataset`) or generate it (:ref:`Automated Assembly Script`).
 
 
-Evaluating Pre-trained IQL Policies
+Evaluating Pre-trained Policies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This section shows how to evaluate pre-trained policies of BC and Implicit Q-Learning (IQL) algorithms.
+The examples provided below utilize our previously trained checkpoints, but it will be straightforward to modify certain parameters and adapt them to your own policies.
 
-You can run our pre-trained Implicit Q-Learning (IQL) policies in FurnitureSim using ``implicit_q_learning/test_offline.py``.
+Evaluating Pre-trained IQL
+----------------------------------
+
+You can run our pre-trained IQL policies in FurnitureSim using ``implicit_q_learning/test_offline.py``.
 
 .. code::
 
@@ -33,7 +38,7 @@ You can run our pre-trained Implicit Q-Learning (IQL) policies in FurnitureSim u
     python implicit_q_learning/test_offline.py --env_name=Furniture-Image-Feature-Sim-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --ckpt_step=1000000 --run_name one_leg_full_iql_r3m_low_sim_1000 --randomness low
 
 
-- If you use one of the pre-trained ``run_name``, the pre-trained checkpoint will be automatically downloaded from Google Drive. The checkpoint will be saved in ``checkpoint/ckpt/<run_name>.<seed>`` (e.g., ``one_leg_full_iql_r3m_low_sim_1000.42`` for run name ``one_leg_full_iql_r3m_low_sim_1000`` and seed ``42``). 
+- If you use one of the pre-trained ``run_name``, the pre-trained checkpoint will be automatically downloaded from Google Drive. The checkpoint will be saved in ``checkpoint/ckpt/<run_name>.<seed>`` (e.g., ``one_leg_full_iql_r3m_low_sim_1000.42`` for run name ``one_leg_full_iql_r3m_low_sim_1000`` and seed ``42``).
 
 - The below table shows the list of pre-trained ``run_name``:
 
@@ -47,6 +52,17 @@ You can run our pre-trained Implicit Q-Learning (IQL) policies in FurnitureSim u
 ===================================== ====================================================================================
 
 - To evaluate the real-world policies, you must change ``--env_name`` with the real-world environment.
+
+Evaluating Pre-trained BC
+----------------------------------
+BC policies are evaluated using ``run.py``.
+
+.. code::
+
+    # Run the following command to evaluate a BC policy.
+    python -m run algo@rolf=bc env.id=Furniture-Image-Sim-Env-v0 env.furniture=one_leg init_ckpt_path=<path/to/checkpoint> rolf.encoder_type=<encoder_type> is_train=False gpu=<gpu_id> rolf.resnet=<resnet_type> env.randomness=<randomness>
+    # E.g., pre-train BC with ResNet18 encoder.
+    python -m run algo@rolf=bc env.id=Furniture-Image-Sim-Env-v0 env.furniture=one_leg init_ckpt_path=checkpoints/ckpt/one_leg_full_bc_resnet18_low_sim_1000/ckpt_00000000050.pt rolf.encoder_type=resnet18 is_train=False gpu=0 rolf.resnet=resnet18 env.randomness=low
 
 
 Training a Policy from Scratch
@@ -68,8 +84,9 @@ Both for BC and IQL training, you need to convert a raw dataset as follows:
     python furniture_bench/scripts/convert_data.py --in-data-path scripted_sim_demo/one_leg_1000 --out-data-path scripted_sim_demo/one_leg_processed_1000
 
 
-Train BC
+Training BC
 --------
+The following command trains a BC policy. You can change ``rolf.encoder_type`` to ``resnet18``, ``r3m``, or ``vip``.
 
 .. code::
 
@@ -79,7 +96,7 @@ Train BC
     python -m run run_prefix=one_leg_full_bc_resnet18_low_sim_1000 algo@rolf=bc env.id=Furniture-Image-Dummy-v0 rolf.demo_path=one_leg_processed_1000/ env.furniture=one_leg rolf.encoder_type=resnet18 rolf.resnet=resnet18 rolf.finetune_encoder=True wandb=True gpu=0 wandb_entity=clvr wandb_project=furniture-bench
 
 
-Train IQL
+Training IQL
 ---------
 
 1) Extract R3M or VIP features from the demonstrations:
