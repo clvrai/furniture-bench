@@ -227,10 +227,6 @@ Simulator
     sudo apt update
     sudo apt install python3.8-dev
 
-| **Q:** What should I do if I encounter an error ``[Error] [carb.windowing-glfw.plugin] GLFW initialization failed.`` or ``No protocol specified`` while running in Docker image?
-
-  **A:** Shut down the current Docker container, run ``xhost +``, and then restart the Docker container.
-
 | **Q:** What should I do if I encounter an error ``[Error] [carb.gym.plugin] cudaExternamMemoryGetMappedBuffer failed on rgbImage buffer wit h error 101``?
 
   **A:** You should specify vulkan explicitly.
@@ -275,10 +271,3 @@ Gym
     pip install --upgrade pip wheel
     pip install setuptools==58
     pip install --upgrade pip==22.2.2
-
-Display
-~~~~~~~
-
-| **Q:** What should I do if I encounter an error ``: cannot connect to X server :1``?
-
-  **A:** Shut down the current Docker container, run ``xhost +``, and then restart the Docker container.

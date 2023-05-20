@@ -400,9 +400,6 @@ Run Client
 
 .. code:: bash
 
-  # To show display in Docker container
-  xhost +
-
   # GPU image + locally built
   ./launch_client.sh --gpu --built
 

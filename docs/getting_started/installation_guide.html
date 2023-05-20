@@ -1035,10 +1035,7 @@ docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client:
 <ol class="arabic simple" start="2">
 <li><p>Run the client image. <code class="docutils literal notranslate"><span class="pre">launch_client.sh</span></code> will read the environment variables and run the Docker image. You need to specify the option (<code class="docutils literal notranslate"><span class="pre">--gpu</span></code>, <code class="docutils literal notranslate"><span class="pre">--cpu</span></code>, <code class="docutils literal notranslate"><span class="pre">--sim-gpu</span></code>) and the image type (<code class="docutils literal notranslate"><span class="pre">--built</span></code> or <code class="docutils literal notranslate"><span class="pre">--pulled</span></code>).</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># To show display in Docker container</span>
-xhost<span class="w"> </span>+
-
-<span class="c1"># GPU image + locally built</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU image + locally built</span>
 ./launch_client.sh<span class="w"> </span>--gpu<span class="w"> </span>--built
 
 <span class="c1"># CPU image + pulled from Docker Hub</span>

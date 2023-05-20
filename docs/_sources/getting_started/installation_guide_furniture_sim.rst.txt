@@ -74,9 +74,6 @@ Install FurnitureSim using Docker (Option 2)
 
 .. code:: bash
 
-  # With display
-  xhost +
-
   # Set the absolute path to the furniture-bench repo
   export FURNITURE_BENCH=<path/to/furniture-bench>
 

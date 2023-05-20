@@ -62,7 +62,7 @@ BC policies are evaluated using ``run.py``.
     # Run the following command to evaluate a BC policy.
     python -m run algo@rolf=bc env.id=Furniture-Image-Sim-Env-v0 env.furniture=one_leg init_ckpt_path=<path/to/checkpoint> rolf.encoder_type=<encoder_type> is_train=False gpu=<gpu_id> rolf.resnet=<resnet_type> env.randomness=<randomness>
     # E.g., pre-train BC with ResNet18 encoder.
-    python -m run algo@rolf=bc env.id=Furniture-Image-Sim-Env-v0 env.furniture=one_leg init_ckpt_path=checkpoints/ckpt/one_leg_full_bc_resnet18_low_sim_1000/ckpt_00000000050.pt rolf.encoder_type=resnet18 is_train=False gpu=0 rolf.resnet=resnet18 env.randomness=low
+    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim_1000 algo@rolf=bc env.id=Furniture-Image-Sim-Env-v0 env.furniture=one_leg init_ckpt_path=checkpoints/ckpt/one_leg_full_bc_resnet18_low_sim_1000/ckpt_00000000050.pt rolf.encoder_type=resnet18 is_train=False gpu=0 rolf.resnet=resnet18 env.randomness=low
 
 
 Training a Policy from Scratch
