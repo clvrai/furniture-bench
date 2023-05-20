@@ -330,6 +330,9 @@ title="Print to PDF"
 <p>Here we list the core files and folders in the codebase. The codebase is organized as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">furniture_bench</span>
   <span class="o">|-</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>                       <span class="c1"># Register gym environments</span>
+  <span class="o">|-</span> <span class="n">assets</span>
+    <span class="o">|-</span> <span class="n">franka_description_ros</span>            <span class="c1"># Franka Panda URDF, mesh for simulation</span>
+    <span class="o">|-</span> <span class="n">furniture</span>                         <span class="c1"># Furniture URDF, mesh for simulation</span>
   <span class="o">|-</span> <span class="n">config</span><span class="o">.</span><span class="n">py</span>                         <span class="c1"># The most important configuration file for the interface. It contains the configuration for the robot, camera, and the device interface.</span>
   <span class="o">|-</span> <span class="n">sim_config</span><span class="o">.</span><span class="n">py</span>                     <span class="c1"># Configuration file for the simulation environment</span>
   <span class="o">|-</span> <span class="n">controllers</span>
@@ -386,9 +389,6 @@ title="Print to PDF"
       <span class="o">|-</span> <span class="n">utils</span>                         <span class="c1"># Utility functions for the geometry, camera, robot control etc. (e.g., rotation matrix, quaternion, etc.)</span>
         <span class="o">|-</span> <span class="n">detection</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># Related to camera reading and AprilTag pose estimation</span>
         <span class="o">|-</span> <span class="n">pose</span><span class="o">.</span><span class="n">py</span>                     <span class="c1"># Utility for pose (e.g., rotation matrix, quaternion, etc.)</span>
-<span class="n">assets</span>
-  <span class="o">|-</span> <span class="n">franka_description_ros</span>            <span class="c1"># Franka Panda URDF, mesh for simulation</span>
-  <span class="o">|-</span> <span class="n">furniture</span>                         <span class="c1"># Furniture URDF, mesh for simulation</span>
 </pre></div>
 </div>
 </section>

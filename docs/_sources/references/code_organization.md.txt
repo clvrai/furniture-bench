@@ -6,6 +6,9 @@ Here we list the core files and folders in the codebase. The codebase is organiz
 ```
 furniture_bench
   |- __init__.py                       # Register gym environments
+  |- assets
+    |- franka_description_ros            # Franka Panda URDF, mesh for simulation
+    |- furniture                         # Furniture URDF, mesh for simulation
   |- config.py                         # The most important configuration file for the interface. It contains the configuration for the robot, camera, and the device interface.
   |- sim_config.py                     # Configuration file for the simulation environment
   |- controllers
@@ -62,7 +65,4 @@ furniture_bench
       |- utils                         # Utility functions for the geometry, camera, robot control etc. (e.g., rotation matrix, quaternion, etc.)
         |- detection.py                # Related to camera reading and AprilTag pose estimation
         |- pose.py                     # Utility for pose (e.g., rotation matrix, quaternion, etc.)
-assets
-  |- franka_description_ros            # Franka Panda URDF, mesh for simulation
-  |- furniture                         # Furniture URDF, mesh for simulation
 ```

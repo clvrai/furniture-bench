@@ -147,7 +147,6 @@
                         manipulation task that requires addressing many current robotic
                         manipulation challenges to solve.
                         </p>
-
                     </div>
                     <div id="myCarousel" class="carousel slide responsivevideo" data-ride="carousel" data-interval="false" style="margin: auto;">
                         <ol class="carousel-indicators" style=" height: 15px;">
@@ -162,9 +161,10 @@
                         </ol>
 
                         <div class="carousel-inner">
+
                             <div class="carousel-item active">
                                 <video class="lazyload-video" autoplay loop muted playsinline  width="100%" preload="none">
-                                    <source data-src="website_img/assembly/chair_assembly_3x.mp4" type="video/mp4" />
+                                    <source data-src="website_img/assembly/lamp_assembly_3x.mp4" type="video/mp4" />
                                 </video>
                             </div>
 
@@ -182,13 +182,19 @@
 
                             <div class="carousel-item">
                                 <video class="lazyload-video" autoplay loop muted playsinline  width="100%" preload="none">
+                                    <source data-src="website_img/assembly/cabinet_assembly_3x.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            <div class="carousel-item">
+                                <video class="lazyload-video" autoplay loop muted playsinline  width="100%" preload="none">
                                     <source data-src="website_img/assembly/round_table_assembly_3x.mp4" type="video/mp4" />
                                 </video>
                             </div>
 
                             <div class="carousel-item">
                                 <video class="lazyload-video" autoplay loop muted playsinline  width="100%" preload="none">
-                                    <source data-src="website_img/assembly/cabinet_assembly_3x.mp4" type="video/mp4" />
+                                    <source data-src="website_img/assembly/desk_assembly_3x.mp4" type="video/mp4" />
                                 </video>
                             </div>
 
@@ -198,15 +204,9 @@
                                 </video>
                             </div>
 
-                            <div class="carousel-item">
+                            <div class="carousel-item ">
                                 <video class="lazyload-video" autoplay loop muted playsinline  width="100%" preload="none">
-                                    <source data-src="website_img/assembly/lamp_assembly_3x.mp4" type="video/mp4" />
-                                </video>
-                            </div>
-
-                            <div class="carousel-item">
-                                <video class="lazyload-video" autoplay loop muted playsinline  width="100%" preload="none">
-                                    <source data-src="website_img/assembly/desk_assembly_3x.mp4" type="video/mp4" />
+                                    <source data-src="website_img/assembly/chair_assembly_3x.mp4" type="video/mp4" />
                                 </video>
                             </div>
                         </div>
@@ -232,13 +232,20 @@
                         <p>
                             <b>FurnitureBench</b> is a
                             reproducible real-world furniture assembly benchmark aimed at
-                            providing a low barrier for entry and being easily reproducible, so
-                            that researchers across the world can reliably test their algorithms
-                            and compare them against prior work.
+                            providing a low barrier for entry and being easily reproducible.
+                            Our benchmark consists of 8 furniture models; each introduces unique interactions and challenges.
+                            The designs of these models draw inspiration from IKEA's furniture design, but they have been thoughtfully modified to enable a single robotic arm to carry out the assembly.
                         </p>
 
+                        <p></p>
+                        <div class="responsiveimg" id="all-furniture" style="margin:auto; text-align:center">
+                            <img width="100%" src="website_img/all_furniture.jpg">
+                        </div>
+
+                        <br>
+
                         <p>
-                            The robot takes as an observation the images from front and wrist cameras and proprioceptive robot state, and operates with delta end-effector pose and gripper action commands at 10Hz. Then, Operational Space Control (OSC) converts an action into joint torques.
+                            Our system runs with vision-based control for assembly tasks. The robot takes as an observation the images from front and wrist cameras and proprioceptive robot state, and operates with delta end-effector pose and gripper action commands at 10Hz. Then, Operational Space Control (OSC) converts an action into joint torques.
                         </p>
 
                     </div>

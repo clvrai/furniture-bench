@@ -203,6 +203,10 @@ body, html {
     #single_skill_benchmark {
         width: 80%;
     }
+
+    #all-furniture {
+        width: 90%;
+    }
 }
 
 /* medium screen */
@@ -280,6 +284,10 @@ body, html {
         margin: auto;
         overflow:auto;
         display: block;
+    }
+
+    #all-furniture {
+        width: 100%;
     }
 }
 
@@ -363,6 +371,9 @@ body, html {
         margin: auto;
         overflow:auto;
         display: block;
+    }
+    #all-furniture {
+        width: 80%;
     }
 }
 
