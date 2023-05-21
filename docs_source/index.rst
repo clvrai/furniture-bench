@@ -35,8 +35,8 @@ If you use FurnitureBench in your research, please cite our paper:
    :hidden:
 
    getting_started/furniturebench_overview
-   getting_started/installation_guide
-   getting_started/installation_guide_furniture_sim
+   getting_started/installing_furniture_bench
+   getting_started/installing_furniture_sim
 
 .. toctree::
    :maxdepth: 1
@@ -47,7 +47,7 @@ If you use FurnitureBench in your research, please cite our paper:
    tutorials/furniture_sim
    tutorials/training_and_testing
    tutorials/dataset
-   tutorials/teleop_oculus_keyboard
+   tutorials/teleoperation
 
 .. toctree::
    :maxdepth: 1

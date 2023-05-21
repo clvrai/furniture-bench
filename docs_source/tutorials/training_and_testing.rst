@@ -1,4 +1,4 @@
-Benchmarking FurnitureSim
+Training and Testing
 =========================
 
 This tutorial shows how to train and evaluate a policy on FurnitureSim.

@@ -1,0 +1,1402 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Installing FurnitureBench &#8212; FurnitureBench</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/minipres.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script src="../_static/scripts/custom_toc_highlight.js"></script>
+    <script src="../_static/scripts/add_br_to_sections.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Installing FurnitureSim" href="installing_furniture_sim.html" />
+    <link rel="prev" title="FurnitureBench Overview" href="furniturebench_overview.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">FurnitureBench</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p class="caption">
+ <span class="caption-text">
+  Getting Started
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="furniturebench_overview.html">
+   FurnitureBench Overview
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Installing FurnitureBench
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="installing_furniture_sim.html">
+   Installing FurnitureSim
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tutorials
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/furniture_bench.html">
+   How to Use FurnitureBench
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/furniture_sim.html">
+   How to Use FurnitureSim
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/training_and_testing.html">
+   Training and Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/dataset.html">
+   Dataset
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tutorials/teleoperation.html">
+   Teleoperation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  References
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/code_organization.html">
+   Code Organization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/development_roadmap.html">
+   Development Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../references/3d_printing.html">
+   3D Printing 🖨️
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/clvrai/furniture-bench"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/getting_started/installing_furniture_bench.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#shopping-list">
+   Shopping List 🛒
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furniturebench-prerequisites">
+   FurnitureBench Prerequisites
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#print-3d-furniture-models">
+   Print 3D Furniture Models 🪑
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#attach-apriltag-to-furniture">
+   Attach AprilTag to Furniture
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mount-robot-on-table">
+   Mount Robot on Table
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-background">
+   Install Background
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-base-apriltag">
+   Install Base AprilTag
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-front-and-rear-cameras">
+   Install Front and Rear Cameras
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-wrist-camera">
+   Install Wrist Camera
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-software">
+   Install Software
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-client-software">
+     Install Client Software
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-server-software">
+     Install Server Software
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#run-client">
+   Run Client
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#set-up-connection">
+   Set Up Connection
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#run-server">
+   Run Server
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#test-software-setup">
+   Test Software Setup
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#fine-tune-front-camera-pose">
+   Fine-tune Front Camera Pose
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-obstacle">
+   Install Obstacle
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#set-up-light">
+   Set Up Light
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#test-environment">
+   Test Environment
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Installing FurnitureBench</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#shopping-list">
+   Shopping List 🛒
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furniturebench-prerequisites">
+   FurnitureBench Prerequisites
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#print-3d-furniture-models">
+   Print 3D Furniture Models 🪑
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#attach-apriltag-to-furniture">
+   Attach AprilTag to Furniture
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mount-robot-on-table">
+   Mount Robot on Table
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-background">
+   Install Background
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-base-apriltag">
+   Install Base AprilTag
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-front-and-rear-cameras">
+   Install Front and Rear Cameras
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-wrist-camera">
+   Install Wrist Camera
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-software">
+   Install Software
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-client-software">
+     Install Client Software
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-server-software">
+     Install Server Software
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#run-client">
+   Run Client
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#set-up-connection">
+   Set Up Connection
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#run-server">
+   Run Server
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#test-software-setup">
+   Test Software Setup
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#fine-tune-front-camera-pose">
+   Fine-tune Front Camera Pose
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install-obstacle">
+   Install Obstacle
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#set-up-light">
+   Set Up Light
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#test-environment">
+   Test Environment
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section id="installing-furniturebench">
+<h1>Installing FurnitureBench<a class="headerlink" href="#installing-furniturebench" title="Permalink to this headline">#</a></h1>
+<p>This page provides a step-by-step installation guide of our real-world environment, including hardware and software setups.</p>
+<section id="shopping-list">
+<h2>Shopping List 🛒<a class="headerlink" href="#shopping-list" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>🤖 Franka Emika Panda <a class="reference external" href="https://www.franka.de/">(link)</a> and bench clamp <a class="reference external" href="https://download.franka.de/Bench_Clamp.pdf">(link)</a></p></li>
+<li><p>3x Intel RealSense D435 <a class="reference external" href="https://store.intelrealsense.com/buy-intel-realsense-depth-camera-d435.html">(link)</a></p></li>
+<li><dl class="simple">
+<dt>Rear camera arm and mount:</dt><dd><ul>
+<li><p>Manfrotto Variable Friction Arm with Camera Bracket <a class="reference external" href="https://www.manfrotto.com/us-en/photo-variable-friction-arm-with-bracket-244/">(link)</a></p></li>
+<li><p>Manfrotto Super Clamp <a class="reference external" href="https://www.manfrotto.com/global/super-clamp-w-lt-stud-1-4-2900-035rl/">(link)</a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Front camera arm and mount:</dt><dd><ul>
+<li><dl class="simple">
+<dt>Option 1 <a class="footnote-reference brackets" href="#f1" id="id1">1</a>:</dt><dd><ul>
+<li><p>Ulanzi ULS01 camera mount <a class="reference external" href="https://www.amazon.com/Flexible-Adjustable-Articulated-Rotatable-Aluminum/dp/B08LV7GZVB?th=1">(link)</a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Option 2:</dt><dd><ul>
+<li><p>Manfrotto Variable Friction Arm with Camera Bracket <a class="reference external" href="https://www.manfrotto.com/us-en/photo-variable-friction-arm-with-bracket-244/">(link)</a></p></li>
+<li><p>Manfrotto Super Clamp <a class="reference external" href="https://www.manfrotto.com/global/super-clamp-w-lt-stud-1-4-2900-035rl/">(link)</a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Black IKEA TOMMARYD table <a class="reference external" href="https://www.ikea.com/us/en/p/tommaryd-table-anthracite-s99304804/">(link)</a></p></li>
+<li><p>Background frame (larger than w x h: 190 cm x 150 cm)</p></li>
+<li><p>2x tripod (extends longer than 1.2 m in height)</p></li>
+<li><p>Green photography backdrop (comparable to w x h: 280 cm x 400 cm for wide-angle coverage)</p></li>
+<li><p>1x LED light panel supporting color temperature (4600 K-6000 K) and brightness (4000 lm)</p></li>
+<li><p>4x 10 feet USB Type-C to Type-A 3.1 cables <a class="reference external" href="https://www.amazon.com/AmazonBasics-Double-Braided-Nylon-Type-C/dp/B07D7NNJ61">(link)</a></p></li>
+<li><p>🖥️ Server computer (an 8th gen i7 or AMD Ryzen 5 5600X processors, or better)</p></li>
+<li><p>🖥️ Client computer (an Intel 8th generation i7 or AMD Ryzen 5 5600X processor, four USB 3 Type-A ports with high bandwidth, and a NVIDIA RTX 3070 GPU, or better)</p></li>
+<li><p>(Optional) Oculus Quest 2 <a class="reference external" href="https://store.facebook.com/quest/products/quest-2/">(link)</a></p></li>
+<li><p>3D printer</p></li>
+<li><p>White PLA 3D printer filament (density of 1.27 g/cm^3)</p></li>
+<li><p>Double-sided rubber tape</p></li>
+<li><p>Any keyboard and mouse</p></li>
+<li><p>1x plastic ruler and 1x tape ruler</p></li>
+<li><p>2x M3x10mm hex socket screw for the wrist camera</p></li>
+<li><p>1x M6x25mm hex socket screw for the wrist camera</p></li>
+</ul>
+</section>
+<section id="furniturebench-prerequisites">
+<h2>FurnitureBench Prerequisites<a class="headerlink" href="#furniturebench-prerequisites" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Franka Panda system</dt><dd><ul>
+<li><p>📖 <a class="reference external" href="https://frankaemika.github.io/docs/libfranka_changelog.html#id1">Franka Control Interface (FCI) 4.2.2</a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Client computer</dt><dd><ul>
+<li><p>🛠️ Ubuntu 20.04 LTS PC, with CUDA driver available</p></li>
+<li><p>📖 <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Docker</a></p></li>
+<li><p>📖 <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#installing-on-ubuntu-and-debian">nvidia-docker2</a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Server computer</dt><dd><ul>
+<li><p>🛠️ Ubuntu 20.04 LTS PC, <a class="reference external" href="https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel">real-time kernel</a> installed.</p></li>
+<li><p>📖 <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Docker</a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="print-3d-furniture-models">
+<h2>Print 3D Furniture Models 🪑<a class="headerlink" href="#print-3d-furniture-models" title="Permalink to this headline">#</a></h2>
+<p>Printing 3D furniture models, obstacles, and a camera mount of our FurnitureBench may take a long time (10-23 hours).
+Thus, we recommend to 3D print the models before you start installing the real-robot environment. Please refer to <a class="reference internal" href="../references/3d_printing.html#d-printing"><span class="std std-ref">3D Printing 🖨️</span></a> to learn more about 3D printing.</p>
+<ol class="arabic simple">
+<li><p>Download STL files you want to experiment with from <a class="reference external" href="https://drive.google.com/drive/folders/1Boj7pyNWklOUVA0ByO0d-J7DM7xfFfRg?usp=sharing">3D model Google Drive</a>.</p></li>
+<li><p>Slice the STL files and add support structures using a 3D printer software. In our experiments, we used <a class="reference external" href="https://www.flashforge.com/product-detail/FlashPrint-slicer-for-flashforge-fdm-3d-printers">FlashPrint</a> with the PLA filament and <em>fast</em> option.</p></li>
+</ol>
+</section>
+<section id="attach-apriltag-to-furniture">
+<h2>Attach AprilTag to Furniture<a class="headerlink" href="#attach-apriltag-to-furniture" title="Permalink to this headline">#</a></h2>
+<ol class="arabic simple">
+<li><p>Print AprilTags in <a class="reference external" href="https://drive.google.com/file/d/11wwA3IrXjIVSwVy1sp0hLcB8-J_9rAxJ/view?usp=sharing">A4</a> or <a class="reference external" href="https://drive.google.com/file/d/1eIG3YspcSumtT-o9NvtCvUtRDWPW5hhU/view?usp=sharing">US Letter</a> size. Do <strong>NOT</strong> change the aspect ratio and scale.</p></li>
+<li><p>Attach AprilTags to the furniture parts. A furniture part has a placeholder with an ID of its corresponding AprilTag.</p></li>
+</ol>
+<div class="admonition-checklist checklist admonition" id="checklist-0">
+<p class="admonition-title">Checklist</p>
+<p>Attach AprilTags such that they are oriented correctly:</p>
+<ul class="simple">
+<li><p>When cutting the tags from the printed paper, make sure that the printed paper is correctly oriented, allowing you to read the words and numbers from left to right and top to bottom. <div class="check_wrap"> <input type="checkbox" id="check_btn_apriltag_1"/> <label for="check_btn_apriltag_1"><span></span></label> </div></p></li>
+<li><p>Before attaching the tag to the furniture piece, do NOT alter the orientation of the AprilTag from how it was when you cut it out. <div class="check_wrap"> <input type="checkbox" id="check_btn_apriltag_2"/> <label for="check_btn_apriltag_2"><span></span></label> </div></p></li>
+<li><p>While attaching the tag, ensure that the number on the corresponding furniture piece is also properly oriented, allowing for left-to-right readability. <div class="check_wrap"> <input type="checkbox" id="check_btn_apriltag_3"/> <label for="check_btn_apriltag_3"><span></span></label> </div></p></li>
+</ul>
+<p>Use the below example for a sanity check:</p>
+<table class="table">
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 25%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><a class="reference internal" href="../_images/tag10.jpg"><img alt="image1" src="../_images/tag10.jpg" style="width: 130px; height: 130px;" /></a></p></th>
+<th class="head"><p><a class="reference internal" href="../_images/correct_attach.jpg"><img alt="image2" src="../_images/correct_attach.jpg" style="width: 130px; height: 180px;" /></a></p></th>
+<th class="head"><p><a class="reference internal" href="../_images/wrong_attach.jpg"><img alt="image3" src="../_images/wrong_attach.jpg" style="width: 130px; height: 180px;" /></a></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) square_table leg1 (10)</p></td>
+<td><p>(b) Correct</p></td>
+<td><p>(c) Wrong</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="mount-robot-on-table">
+<h2>Mount Robot on Table<a class="headerlink" href="#mount-robot-on-table" title="Permalink to this headline">#</a></h2>
+<p>The first step of our robot environment setup is to mount the robot on the table. To ensure the precise placement of the robot, follow the step-by-step
+instructions:</p>
+<ol class="arabic simple">
+<li><p>As shown in (a), attach marking tapes to the robot body to specify its center. Make sure that the tape’s left edge is in the center of the triangle sticker and the tape is attached straight by looking at it from the front view.</p></li>
+<li><p>Align one ruler so that 0 cm is at the left edge of the table and extend it straight, as shown in (b).</p></li>
+<li><p>Place the robot strictly at point 34.5 cm of the ruler. Especially, match the center of the robot indicated by the left edge of the tape, as shown in (c).</p></li>
+<li><p>Make sure the robot is tightly attached to the side of the table, with no room left between it and the table. To double-check, make sure that both rear support pads are closely pressed against the edge of the table and that there is no space left in between, as shown in (d).</p></li>
+<li><p>Firmly attach the robot to the table by tightly screwing the robot mount, as shown in (e).</p></li>
+<li><p>Remove the affixed tape from the robot once this step is completed.</p></li>
+</ol>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="table_image1" src="../_images/center_of_robot_base.jpg" /></p></th>
+<th class="head"><p><img alt="table_image2" src="../_images/robot_placement_ruler.jpg" /></p></th>
+<th class="head"><p><img alt="table_image3" src="../_images/robot_base.jpg" /></p></th>
+<th class="head"><p><img alt="table_image4" src="../_images/robot_mount.jpg" /></p></th>
+<th class="head"><p><img alt="table_image5" src="../_images/firm_screw.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) Center of the robot</p></td>
+<td><p>(b) Ruler on table</p></td>
+<td><p>(c) Robot position on table</p></td>
+<td><p>(d) Bottom-up view. Two rear supports are indicated by blue circles</p></td>
+<td><p>(e) Screwing the mount</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-checklist checklist admonition" id="checklist-1">
+<p class="admonition-title">Checklist</p>
+<ul class="simple">
+<li><p>Make sure the robot is installed at 34.5 cm off from the left edge of the table. <div class="check_wrap"> <input type="checkbox" id="check_btn_mount_1"/> <label for="check_btn_mount_1"><span></span></label> </div></p></li>
+<li><p>The robot should be tightly attached to the table without margin. <div class="check_wrap"> <input type="checkbox" id="check_btn_mount_2"/> <label for="check_btn_mount_2"><span></span></label> </div></p></li>
+<li><p>The robot mount is tightly screwed. <div class="check_wrap"> <input type="checkbox" id="check_btn_mount_3"/> <label for="check_btn_mount_3"><span></span></label> </div></p></li>
+</ul>
+</div>
+</section>
+<section id="install-background">
+<h2>Install Background<a class="headerlink" href="#install-background" title="Permalink to this headline">#</a></h2>
+<a class="reference internal image-reference" href="../_images/background.jpg"><img alt="background" class="align-right" src="../_images/background.jpg" style="width: 40%;" /></a>
+<p>For consistent background across different lab environments, cover the background
+with a green backdrop.</p>
+<ol class="arabic simple">
+<li><p>Clamp the left side of the backdrop, as shown in (a). Be sure to leave some extra cloth to ensure coverage of the left side as well.</p></li>
+<li><p>Similarly, clamp the right side of the backdrop, as shown in (b).</p></li>
+<li><p>Place a tripod next to the table, and hang the left side of the backdrop to the tripod, as shown in (c) and (d).</p></li>
+<li><p>Repeat this process for the right side.</p></li>
+<li><p>Eventually, The background should look like figure on the right.</p></li>
+</ol>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="background_image1" src="../_images/background_left_clamp.jpg" /></p></th>
+<th class="head"><p><img alt="background_image2" src="../_images/background_right_clamp.jpg" /></p></th>
+<th class="head"><p><img alt="background_image3" src="../_images/background_left_pole.jpg" /></p></th>
+<th class="head"><p><img alt="background_image4" src="../_images/background_left_pole_covered.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) Background left clamp</p></td>
+<td><p>(b) Background right clamp</p></td>
+<td><p>(c) Left pole</p></td>
+<td><p>(d) Left pole covered</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-checklist checklist admonition" id="checklist-2">
+<p class="admonition-title">Checklist</p>
+<ul class="simple">
+<li><p>Make sure there are minimum wrinkles and shadows on the cloth. <div class="check_wrap"> <input type="checkbox" id="check_btn_background_1"/> <label for="check_btn_background_1"><span></span></label> </div></p></li>
+<li><p>Green cloth fully covers the narrow side of the table. <div class="check_wrap"> <input type="checkbox" id="check_btn_background_2"/> <label for="check_btn_background_2"><span></span></label> </div></p></li>
+<li><p>Green cloth covers the left and right edge of the table (at least 1/3 of length) so that the cameras are not disturbed by background noise. <div class="check_wrap"> <input type="checkbox" id="check_btn_background_3"/> <label for="check_btn_background_3"><span></span></label> </div></p></li>
+</ul>
+</div>
+</section>
+<section id="install-base-apriltag">
+<h2>Install Base AprilTag<a class="headerlink" href="#install-base-apriltag" title="Permalink to this headline">#</a></h2>
+<p>The base AprilTag defines the world coordinate system; therefore, the camera will be set relative to this base tag. The position and angle of the base tag are critical for reproducibility; thus the placement of the base tag on the table should be precise.
+Be cautious when attaching the AprilTag, as it can easily be attached with tilted angles. Ensure that both the rulers and AprilTag are properly aligned and straight.</p>
+<ol class="arabic simple">
+<li><p>Align tape ruler so that 0 cm is at the left of the table and plastic ruler so that 0 cm is at the top edge of the table, as illustrated in (a).</p></li>
+<li><p>Place the center of the base tag at 24.5 cm horizontally and 37.5 cm vertically, as shown in (b). Make sure the two rulers are perpendicular.</p></li>
+<li><p>Check the direction of the base tag by observing its pattern: correct direction in (c).</p></li>
+<li><p>Use double-sided tape to affix the base tag. Note that wrinkled paper causes unreliable detection. Ensure the paper remains flat by attaching it with double-sided tape in all four corners.</p></li>
+</ol>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="base_apriltag_ruler" src="../_images/base_apriltag_bird.jpg" /></p></th>
+<th class="head"><p><img alt="base_apriltag_coordinate" src="../_images/base_apriltag.jpg" /></p></th>
+<th class="head"><p><img alt="base_apriltag_placement" src="../_images/correct_base_dir.jpg" /></p></th>
+<th class="head"><p><img alt="base_apriltag_example" src="../_images/wrong_base_dir.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) Rulers on table</p></td>
+<td><p>(b) Base tag position on table</p></td>
+<td><p>(c) Correct base tag direction</p></td>
+<td><p>(d) Wrong base tag diretion</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-checklist checklist admonition" id="checklist-3">
+<p class="admonition-title">Checklist</p>
+<ul class="simple">
+<li><p>Double-check the base AprilTag in the exact position (like, less than 2 mm error). <div class="check_wrap"> <input type="checkbox" id="check_btn_base_1"/> <label for="check_btn_base_1"><span></span></label> </div></p></li>
+<li><p>The base AprilTag is firmly attached flat without wrinkles. <div class="check_wrap"> <input type="checkbox" id="check_btn_base_2"/> <label for="check_btn_base_2"><span></span></label> </div></p></li>
+<li><p>Check the pattern of the base tag to ensure its correct direction. <div class="check_wrap"> <input type="checkbox" id="check_btn_base_3"/> <label for="check_btn_base_3"><span></span></label> </div></p></li>
+</ul>
+</div>
+</section>
+<section id="install-front-and-rear-cameras">
+<h2>Install Front and Rear Cameras<a class="headerlink" href="#install-front-and-rear-cameras" title="Permalink to this headline">#</a></h2>
+<p>Our system requires three cameras: front, rear, and wrist cameras. Prior to installation, determine
+the specific camera to be used for each view, and write down the serial numbers of the wrist, front, and rear cameras, as they will be required for subsequent connections.
+A camera serial number can be found in (a) a label on the camera bottom, and (b) <a class="reference external" href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md">realsense-viewer</a> software.</p>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><a class="reference internal" href="../_images/camera_serial.jpg"><img alt="camera_serial" src="../_images/camera_serial.jpg" style="width: 215.5px; height: 161.5px;" /></a></p></th>
+<th class="head"><p><a class="reference internal" href="../_images/serial_realsense_viewer.jpg"><img alt="camera_serial_realsense_viewer" src="../_images/serial_realsense_viewer.jpg" style="width: 134.7px; height: 250.5px;" /></a></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) Serial number written on the bottom of the camera</p></td>
+<td><p>(b) Serial number in realsense-viewer</p></td>
+</tr>
+</tbody>
+</table>
+<p>Then, install the front and rear cameras. You can utilize any camera mount for the <strong>front
+camera</strong> if they follow the instructions and match the camera views. We, however, highly
+recommend users opt for a camera mount from either Ulanzi or Manfrotto, both of which we have
+confirmed to be reliable. In this context, we provide a guide on how to install these specific mounts,
+although you have the flexibility to adjust it during fine-grained calibration in a later section.</p>
+<ul>
+<li><p><strong>Option 1, Ulanzi:</strong> Clamp the front camera mount to the right side of the table, as shown in (1-a). Position the camera mount 8 cm away from the table edge, as shown in (1-b). While measuring the distance, ensure the camera mount’s base is firmly attached, as illustrated in (1-c).</p>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="front_camera_position" src="../_images/front_camera_position.jpg" /></p></th>
+<th class="head"><p><img alt="front_camera_distance" src="../_images/front_camera_distance.jpg" /></p></th>
+<th class="head"><p><img alt="front_camera_firmly_attached" src="../_images/front_camera_firmly_attached.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(1-a) Front camera position</p></td>
+<td><p>(1-b) Front camera distance</p></td>
+<td><p>(1-c) Attachment</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p><strong>Option 2, Manfrotto:</strong> Clamp the front camera mount to the right side of the table. The camera bracket needs to be affixed using the left hole and the locking wheel should be oriented outward, as shown in (2-a). Position the camera mount 7 cm away from the table edge, as shown in (2-b).  Arrange the deeper section to face the inside to provide better flexibility in camera movement. During the distance measurement, make sure that the camera mount’s base is firmly attached and valves are securely fastened, as shown in (2-c).</p>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="manfrotto_front_camera_position" src="../_images/manfrotto_front_camera_position.jpg" /></p></th>
+<th class="head"><p><img alt="manfrotto_front_camera_distance" src="../_images/manfrotto_front_camera_distance.jpg" /></p></th>
+<th class="head"><p><img alt="manfrotto_front_camera_firmly_attached" src="../_images/manfrotto_front_camera_firmly_attached.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(2-a) Front camera position</p></td>
+<td><p>(2-b) Front camera distance</p></td>
+<td><p>(2-c) Attachment</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<ol class="arabic simple">
+<li><p>Place the camera approximately in the center (horizontally) of the table and orient it to face the base AprilTag. You will fine-tune its pose in a later section.</p></li>
+<li><p>Connect the front camera to client computer using a USB 3.1 cable.</p></li>
+<li><p>Clamp the rear camera mount next to the robot base, as shown in (d). Plug USB 3.1 cable. Utilize a cable tie to fasten the pair of cables from the robot and the single cable from the camera. Ensure a sufficient gap between the camera mount and the robot to avoid any collision.</p></li>
+</ol>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/rear_camera_installation.jpg"><img alt="rear_camera" src="../_images/rear_camera_installation.jpg" style="width: 60%;" /></a>
+<figcaption>
+<p><span class="caption-text">(d) Rear camera installation.</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="install-wrist-camera">
+<h2>Install Wrist Camera<a class="headerlink" href="#install-wrist-camera" title="Permalink to this headline">#</a></h2>
+<ol class="arabic simple">
+<li><p>Install the wrist camera on the robot wrist using the 3D printed camera mount. Take note of the direction in which the RGB camera (represented with the yellow circles) should face: it should be aimed toward the gripper’s tip, as shown in (b). The camera should be positioned on the rear side of the end-effector. Take a look at (c) and (d) to gain a clear understanding of its placement.</p></li>
+<li><p>Connect the wrist camera to client computer using a USB 3.1 cable.</p></li>
+<li><p>Fasten the cable to the robot arm with three cable ties, as shown in (d). Ensure to provide additional slack in the cable, allowing the robot to move without any tension from the cable. Trim the surplus length from the cable ties to ensure no extra material remains.</p></li>
+</ol>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="camera_mount_screw" src="../_images/camera_nuts.jpg" /></p></th>
+<th class="head"><p><img alt="wrist_camera" src="../_images/camera_down_view.jpg" /></p></th>
+<th class="head"><p><img alt="wrist_camera2" src="../_images/wrist_position.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) Camera, mount, and screws</p></td>
+<td><p>(b) Wrist camera</p></td>
+<td><p>(c) Wrist camera</p></td>
+</tr>
+</tbody>
+</table>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/cable_tie.jpg"><img alt="cable_organization" src="../_images/cable_tie.jpg" style="width: 60%;" /></a>
+<figcaption>
+<p><span class="caption-text">(d) Cable organization</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition-checklist checklist admonition" id="checklist-4">
+<p class="admonition-title">Checklist</p>
+<ul class="simple">
+<li><p>Ensure the direction of the wrist camera is correctly set. The camera is positioned on end-effector’s back side, and the cable is plugged to the left when viewed from the back. Firmly attach the camera and camera mount to the robot by tightening the screws. <div class="check_wrap"> <input type="checkbox" id="check_btn_wrist_1"/> <label for="check_btn_wrist_1"><span></span></label> </div></p></li>
+<li><p>Three cable ties are fastened as shown in (d). <div class="check_wrap"> <input type="checkbox" id="check_btn_wrist_2"/> <label for="check_btn_wrist_2"><span></span></label> </div></p></li>
+<li><p>The cable has additional slack. <div class="check_wrap"> <input type="checkbox" id="check_btn_wrist_3"/> <label for="check_btn_wrist_3"><span></span></label> </div></p></li>
+<li><p>The surplus length from the cable ties is trimmed. <div class="check_wrap"> <input type="checkbox" id="check_btn_wrist_4"/> <label for="check_btn_wrist_4"><span></span></label> </div></p></li>
+</ul>
+</div>
+</section>
+<section id="install-software">
+<h2>Install Software<a class="headerlink" href="#install-software" title="Permalink to this headline">#</a></h2>
+<p>We install our software stack using Docker due to complex dependencies and customized packages for our setup (e.g., custom <a class="reference external" href="https://github.com/facebookresearch/fairo/tree/main/polymetis">Polymetis</a>).</p>
+<section id="install-client-software">
+<h3>Install Client Software<a class="headerlink" href="#install-client-software" title="Permalink to this headline">#</a></h3>
+<p>We provide a Docker image for data collection, training, and evaluation. We provide both CPU and GPU versions. The GPU-enabled image is built upon <code class="docutils literal notranslate"><span class="pre">nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04</span></code> and requires a machine to have a proper CUDA driver (515.105.01 in our case). Please refer to <a class="reference external" href="https://docs.nvidia.com/deploy/cuda-compatibility/index.html#deployment-consideration-forward">“compatibility of CUDA with different driver versions”</a> for details.</p>
+<ol class="arabic simple">
+<li><p>Clone the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repository on the client computer. We mount it into the Docker image to enable editing the code on the host machine.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/clvrai/furniture-bench.git
+<span class="nb">cd</span><span class="w"> </span>furniture-bench
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>There are two ways to build the client Docker image:</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>Pull the pre-built Docker image from Docker Hub.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU version</span>
+docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client-gpu:latest
+
+<span class="c1"># CPU-only version</span>
+docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client:latest
+</pre></div>
+</div>
+</li>
+<li><p>Or build the Docker image.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU version</span>
+<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>client-gpu<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/client_gpu.Dockerfile
+
+<span class="c1"># CPU-only version</span>
+<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>client<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/client.Dockerfile
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="install-server-software">
+<h3>Install Server Software<a class="headerlink" href="#install-server-software" title="Permalink to this headline">#</a></h3>
+<p>The server computer needs a real-time kernel and high-speed CPU (e.g., at least Intel i7 8th generation or AMD Ryzen 5 5600X CPU) for high frequency robot control of a Franka Panda arm. Similar to the client computer, we install the server software using Docker:</p>
+<ol class="arabic simple">
+<li><p>Clone the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repository on the server computer.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/clvrai/furniture-bench.git
+<span class="nb">cd</span><span class="w"> </span>furniture-bench
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>There are two ways to build the server Docker image:</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>Pull the pre-built Docker image from Docker Hub.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/server:latest
+</pre></div>
+</div>
+</li>
+<li><p>Or build the Docker image.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>server<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/server.Dockerfile
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="run-client">
+<h2>Run Client<a class="headerlink" href="#run-client" title="Permalink to this headline">#</a></h2>
+<ol class="arabic simple">
+<li><p>Set up the environment variables. Consider storing variables in <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> or <code class="docutils literal notranslate"><span class="pre">.zshrc</span></code> so that you don’t have to set them every time.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>Set the absolute path to the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repo.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
+</pre></div>
+</div>
+</li>
+<li><p>(Optional) If you want to use FurnitureSim, specify the absolute path to IsaacGym downloaded from <a class="reference external" href="https://developer.nvidia.com/isaac-gym">https://developer.nvidia.com/isaac-gym</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;path/to/isaacgym&gt;
+</pre></div>
+</div>
+</li>
+<li><p>(Optional) Environment variable for extra mounting (e.g., for data collection). This will set Docker Volume flag <code class="docutils literal notranslate"><span class="pre">-v</span> <span class="pre">$HOST_DATA_MOUNT:$CONTAINER_DATA_MOUNT</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HOST_DATA_MOUNT</span><span class="o">=</span>&lt;path/to/host_dir&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">CONTAINER_DATA_MOUNT</span><span class="o">=</span>&lt;path/to/container_dir&gt;
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Run the client image. <code class="docutils literal notranslate"><span class="pre">launch_client.sh</span></code> will read the environment variables and run the Docker image. You need to specify the option (<code class="docutils literal notranslate"><span class="pre">--gpu</span></code>, <code class="docutils literal notranslate"><span class="pre">--cpu</span></code>, <code class="docutils literal notranslate"><span class="pre">--sim-gpu</span></code>) and the image type (<code class="docutils literal notranslate"><span class="pre">--built</span></code> or <code class="docutils literal notranslate"><span class="pre">--pulled</span></code>).</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU image + locally built</span>
+./launch_client.sh<span class="w"> </span>--gpu<span class="w"> </span>--built
+
+<span class="c1"># CPU image + pulled from Docker Hub</span>
+./launch_client.sh<span class="w"> </span>--cpu<span class="w"> </span>--pulled
+
+<span class="c1"># GPU image with FurnitureSim + pulled from Docker Hub</span>
+./launch_client.sh<span class="w"> </span>--sim-gpu<span class="w"> </span>--pulled
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--gpu</span></code> and <code class="docutils literal notranslate"><span class="pre">--sim-gpu</span></code> options share the same underlying Docker image. The only difference between them is that the <code class="docutils literal notranslate"><span class="pre">--sim-gpu</span></code> option verifies whether the IsaacGym is properly installed and its path is correctly set. If not, an error message will be displayed and the program will be terminated.</p></li>
+<li><p>If you use a Docker image other than <code class="docutils literal notranslate"><span class="pre">--pulled</span></code> or <code class="docutils literal notranslate"><span class="pre">--built</span></code>, you can specify the image name using <code class="docutils literal notranslate"><span class="pre">CLIENT_DOCKER</span></code> environment variable. For example, <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">CLIENT_DOCKER=custom-built</span></code>. Once set, you can execute <code class="docutils literal notranslate"><span class="pre">launch_client.sh</span></code> with a single argument, such as <code class="docutils literal notranslate"><span class="pre">./launch_client.sh</span> <span class="pre">--gpu</span></code>. This command will internally read the environment variable and run the custom-built Docker image.</p></li>
+</ul>
+</div>
+</section>
+<section id="set-up-connection">
+<h2>Set Up Connection<a class="headerlink" href="#set-up-connection" title="Permalink to this headline">#</a></h2>
+<a class="reference internal image-reference" href="../_images/example_network_setup.jpg"><img alt="example_network_setup" class="align-right" src="../_images/example_network_setup.jpg" style="width: 50%;" /></a>
+<p>The server, client, and robot communicate through a local Ethernet network, as shown in the figure on the right.</p>
+<p>To establish connections to the server and cameras, the client Docker container needs the following environment variables to be set:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SERVER_IP</span><span class="o">=</span>&lt;IP<span class="w"> </span>of<span class="w"> </span>Server<span class="w"> </span>computer&gt;<span class="w">  </span><span class="c1"># e.g., 192.168.0.138</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CAM_WRIST_SERIAL</span><span class="o">=</span>&lt;serial<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>wrist<span class="w"> </span>camera&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">CAM_FRONT_SERIAL</span><span class="o">=</span>&lt;serial<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>front<span class="w"> </span>camera&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">CAM_REAR_SERIAL</span><span class="o">=</span>&lt;serial<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>rear<span class="w"> </span>camera&gt;
+</pre></div>
+</div>
+<p>To make sure that all the cameras are correctly installed and appropriately connected, execute the following command in the client Docker container and confirm the items in the checklist.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/furniture-bench
+python<span class="w"> </span>furniture_bench/scripts/run_cam_april.py
+</pre></div>
+</div>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/image_view.jpg"><img alt="image_view" src="../_images/image_view.jpg" style="width: 80%;" /></a>
+<figcaption>
+<p><span class="caption-text">Camera observations</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition-checklist checklist admonition" id="checklist-5">
+<p class="admonition-title">Checklist</p>
+<ul class="simple">
+<li><p>Ensure that the camera displays the wrist, front, and rear views in left-to-right order, as shown in the image above. <div class="check_wrap"> <input type="checkbox" id="check_btn_connection_1"/> <label for="check_btn_connection_1"><span></span></label> </div></p></li>
+<li><p>The wrist camera view must observe both gripper tips as shown in the left image. <div class="check_wrap"> <input type="checkbox" id="check_btn_connection_2"/> <label for="check_btn_connection_2"><span></span></label> </div></p></li>
+<li><p>The rear camera should be able to detect the two markers present on the base tag, as shown in the right image. <div class="check_wrap"> <input type="checkbox" id="check_btn_connection_3"/> <label for="check_btn_connection_3"><span></span></label> </div></p></li>
+</ul>
+</div>
+</section>
+<section id="run-server">
+<h2>Run Server<a class="headerlink" href="#run-server" title="Permalink to this headline">#</a></h2>
+<p>To operate the robot, you need to activate FCI (Franka Control Interface) and launch a server-side daemon as explained below:</p>
+<ol class="arabic simple">
+<li><p>Access the control interface website.</p></li>
+<li><p>Unlock the robot in the Franka Emika web interface, as shown in (a).</p></li>
+<li><p>Release the activation button, as shown in (b). The light on the robot base should turn blue after releasing the button.</p></li>
+<li><p>Activate FCI in the web interface, as shown in (c).</p></li>
+</ol>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="unlock" src="../_images/unlock.jpg" /></p></th>
+<th class="head"><p><img alt="release_activation" src="../_images/release_activation.png" /></p></th>
+<th class="head"><p><img alt="activate_FCI" src="../_images/activate_FCI.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) Unlock</p></td>
+<td><p>(b) release activation</p></td>
+<td><p>(c) activate FCI</p></td>
+</tr>
+</tbody>
+</table>
+<p>Then, launch a server-side daemon:</p>
+<ol class="arabic simple">
+<li><p>Set the absolute path to the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repo in the server computer.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Launch the server Docker container.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./launch_server.sh<span class="w"> </span>--pulled<span class="w">  </span><span class="c1"># (case 1) Docker pull.</span>
+./launch_server.sh<span class="w"> </span>--built<span class="w">   </span><span class="c1"># (case 2) Local build.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Specify IP of Franka Control (shop floor network), not IP of the Robot arm, in the server Docker container.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ROBOT_IP</span><span class="o">=</span>&lt;IP<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>robot<span class="w"> </span>controller&gt;<span class="w">  </span><span class="c1"># e.g., 192.168.0.10</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Launch the server daemon in the server Docker container.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/furniture-bench/launch_daemon.sh
+</pre></div>
+</div>
+</div></blockquote>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Note that the only program that needs to be run on the server side is the <em>daemon</em>.
+Other programs, such as the camera setup, policy training, and data collection, are all run on the client side.</p>
+</div>
+</section>
+<section id="test-software-setup">
+<h2>Test Software Setup<a class="headerlink" href="#test-software-setup" title="Permalink to this headline">#</a></h2>
+<p>Execute the following script in a client Docker container and see whether the robot moves to the reset pose.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">reset</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</section>
+<section id="fine-tune-front-camera-pose">
+<h2>Fine-tune Front Camera Pose<a class="headerlink" href="#fine-tune-front-camera-pose" title="Permalink to this headline">#</a></h2>
+<p>We provide a visualization tool to help calibrate the front camera pose with the pre-recorded view overlaid on top of the current camera view. The calibration can be achieved by matching the numbers and images shown in our calibration tool.</p>
+<a class="reference internal image-reference" href="../_images/coordinate.jpg"><img alt="coordinate" class="align-right" src="../_images/coordinate.jpg" style="width: 40%;" /></a>
+<p>In our visualization tool, the image from the current view is displayed as a solid layer, while the reference image you need to match appears transparent. The number indicates the deviation of the current camera poses from the desired pose. The red texts indicate that the deviation exceeds the threshold (±0.004 for the position (pos), ±0.8 for the rotation (rot)), whereas green texts represent that it is within acceptable the boundary. Refer to the figure on the right for a better understanding of the coordinate system to adjust the camera pose</p>
+<ol class="arabic simple">
+<li><p>First, run the following command to move the robot up to prevent it from blocking the camera’s view.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">move_up</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Run the camera calibration tool:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">calibration</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">target</span> <span class="n">setup_front</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Adjust the camera to <strong>match both images and numbers</strong>.</p></li>
+<li><dl class="simple">
+<dt>Here is the list of <em>tips</em> for matching the camera pose:</dt><dd><ul class="simple">
+<li><p>For the Ulanzi camera mount, first adjust the height of the camera mount to match the z position, and then fasten it in place.</p></li>
+<li><p>When dealing with the Manfrotto camera mount, prioritize matching all settings except for the x position, given that it can be independently modified using the camera bracket.</p></li>
+<li><p>In the beginning, ignore the numbers and focus on aligning the table outline and robot base (using the two holes in the robot base as reference points). Take a look at how the matched image looks like in (a).</p></li>
+<li><p>Iterative adjust position and rotation to match the alignment and numbers. Based on our experience, it was simpler first to align the position and then adjust the rotation minutely for best alignment.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="setup_fromt_calibrated" src="../_images/setup_front_calibrated.jpg" /></p></th>
+<th class="head"><p><img alt="setup_fromt_number_match_image_mismatch" src="../_images/setup_front_number_match_image_mismatch.jpg" /></p></th>
+<th class="head"><p><img alt="setup_front_number_mismatch_image_match" src="../_images/setup_front_number_mismatch_image_match.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) Numbers and image matched</p></td>
+<td><p>(b) Number matched, image mismatched</p></td>
+<td><p>(c) image matched, number mismatched</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-checklist checklist admonition" id="checklist-6">
+<p class="admonition-title">Checklist</p>
+<ul class="simple">
+<li><p>All numbers on the screen should turn green. <div class="check_wrap"> <input type="checkbox" id="check_btn_front_1"/> <label for="check_btn_front_1"><span></span></label> </div></p></li>
+<li><p>The boundary of the table and the base AprilTag must be aligned with the pre-recorded image. <div class="check_wrap"> <input type="checkbox" id="check_btn_front_2"/> <label for="check_btn_front_2"><span></span></label> </div></p></li>
+<li><p>The position of the robot base (i.e., two holes) should exactly match the pre-recorded image. <div class="check_wrap"> <input type="checkbox" id="check_btn_front_3"/> <label for="check_btn_front_3"><span></span></label> </div></p></li>
+</ul>
+</div>
+</section>
+<section id="install-obstacle">
+<h2>Install Obstacle<a class="headerlink" href="#install-obstacle" title="Permalink to this headline">#</a></h2>
+<p>The 3D printed obstacle can be attached to the table using double-sided rubber tape. The exact pose of the obstacle can be viewed using our calibration tool, as shown in the figure below.</p>
+<ol class="arabic simple">
+<li><p>Install the obstacle with the guidance of the provided visualization tool:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/calibration.py<span class="w"> </span>--target<span class="w"> </span>obstacle
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic" start="2">
+<li><p>Attach the obstacle to the table while aligning it with the pre-recorded obstacle pose.</p>
+<blockquote>
+<div><figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="../_images/obstacle.jpg"><img alt="obstacle" src="../_images/obstacle.jpg" style="width: 80%;" /></a>
+<figcaption>
+<p><span class="caption-text">(a) Obstacle installation.</span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</div></blockquote>
+</li>
+<li><p>Affix the obstacle with double-sided rubber tape, as shown in the figure below. Make sure the obstacle does not move when pushed.</p>
+<blockquote>
+<div><figure class="align-center" id="id6">
+<a class="reference internal image-reference" href="../_images/obstacle_affix.jpg"><img alt="obstacle" src="../_images/obstacle_affix.jpg" style="width: 80%;" /></a>
+<figcaption>
+<p><span class="caption-text">(b) Affix obstacle. The red circles represent where to attach the double-sided rubber tape.</span><a class="headerlink" href="#id6" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</div></blockquote>
+</li>
+</ol>
+<div class="admonition-checklist checklist admonition" id="checklist-7">
+<p class="admonition-title">Checklist</p>
+<ul class="simple">
+<li><p>Adjust the obstacle to identically match the transparent one in the visualization tool, as shown in the right figure of (a). There should be no discrepancy. <div class="check_wrap"> <input type="checkbox" id="check_btn_obstacle_1"/> <label for="check_btn_obstacle_1"><span></span></label> </div></p></li>
+<li><p>Firmly attach the obstacle using double-sided rubber tape to prevent it from moving when pushed. <div class="check_wrap"> <input type="checkbox" id="check_btn_obstacle_2"/> <label for="check_btn_obstacle_2"><span></span></label> </div></p></li>
+</ul>
+</div>
+</section>
+<section id="set-up-light">
+<h2>Set Up Light<a class="headerlink" href="#set-up-light" title="Permalink to this headline">#</a></h2>
+<p>During the data collection process, we randomize the light temperature between 4600 K-6000 K as well as the intensity,
+position, and direction of the light. On the other hand, during the evaluation process, it is essential to maintain lighting conditions
+as similar as possible. To accomplish this, the light should be placed on the left side of the table, as shown in <a class="reference internal" href="furniturebench_overview.html#furniturebench-overview"><span class="std std-ref">FurnitureBench Overview</span></a>.
+Furthermore, the temperature range of 4600 K to 6000 K and the brightness range of 500 lm to 1000 lm should be set for the
+lighting panel.</p>
+</section>
+<section id="test-environment">
+<h2>Test Environment<a class="headerlink" href="#test-environment" title="Permalink to this headline">#</a></h2>
+<a class="reference internal image-reference" href="../_images/reproducibility_performance.jpg"><img alt="reproducibility_performance" class="align-right" src="../_images/reproducibility_performance.jpg" style="width: 45%;" /></a>
+<p>To verify if the environment setup is correctly done, test runs can be performed using a pre-trained policy for one leg assembly task. The evaluation results can be compared with the original environment, shown in the figure on the right.</p>
+<p>The one-leg assembly consists of phases: (1) pick up the tabletop, (2) push to the corner, (3) pick up the leg, (4) insert the leg, and (5) screw the leg. The pre-trained policy should be able to achieve more than 3 phases on average with the 15-30% success rate on the full one-leg assembly task.</p>
+<ol class="arabic simple">
+<li><p>Before evaluation, make sure the following requirements are met:</p></li>
+</ol>
+<div class="admonition-checklist checklist admonition" id="checklist-8">
+<p class="admonition-title">Checklist</p>
+<ul class="simple">
+<li><p>Double-check the camera calibration using the following script. All the numbers should be green and the robot base, obstacle, and base tag should be aligned accurately: <div class="check_wrap"> <input type="checkbox" id="check_btn_test_1"/> <label for="check_btn_test_1"><span></span></label> </div></p></li>
+</ul>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">calibration</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">target</span> <span class="n">one_leg</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ul class="simple">
+<li><p>Green backdrop cloth has minimum wrinkles. <div class="check_wrap"> <input type="checkbox" id="check_btn_test_2"/> <label for="check_btn_test_2"><span></span></label> </div></p></li>
+<li><p>Wipe three camera lenses using a lens cloth, as they may be blurry from fingerprint smudges. <div class="check_wrap"> <input type="checkbox" id="check_btn_test_3"/> <label for="check_btn_test_3"><span></span></label> </div></p></li>
+</ul>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Install requirements for the evaluation:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">r3m</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">vip</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Place the furniture components randomly within the workspace, as shown in the figure below.</p></li>
+</ol>
+<figure class="align-default" id="id7">
+<a class="reference internal image-reference" href="../_images/furniture_placement.jpg"><img alt="initialization_GUI_prompt" src="../_images/furniture_placement.jpg" style="width: 60%;" /></a>
+<figcaption>
+<p><span class="caption-text">Furniture placement.</span><a class="headerlink" href="#id7" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple" start="4">
+<li><p>Evaluate the pre-trained policy using the following script:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">evaluate</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">low</span>
+</pre></div>
+</div>
+<p>The command above will first show visualization and prompt to indicate where furniture parts should be positioned. Initialize the furniture parts, as shown in (a). The screen will prompt “initialization done” when everything is correctly aligned, as shown in (b).</p>
+<table class="colwidths-given table">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="init_GUI_prompt" src="../_images/initialization_GUI_prompt.jpg" /></p></th>
+<th class="head"><p><img alt="init_done" src="../_images/initialization_done.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(a) Visualization tool and prompt indicates where to place each part</p></td>
+<td><p>(b) Initialization done. After this stage, press ”Enter” to execute the policy.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Once the initialization is done, press “Enter” to execute the policy. Make sure that there is nothing but furniture parts in the workspace.</p>
+</div></blockquote>
+<div class="admonition-checklist checklist admonition" id="checklist-9">
+<p class="admonition-title">Checklist</p>
+<ul class="simple">
+<li><p>The evaluation result should match the result in the paper. <div class="check_wrap"> <input type="checkbox" id="check_btn_result_1"/> <label for="check_btn_result_1"><span></span></label> </div></p></li>
+<li><p>During execution, ensure that robot does not collide itself or to other objects. <div class="check_wrap"> <input type="checkbox" id="check_btn_result_2"/> <label for="check_btn_result_2"><span></span></label> </div></p></li>
+</ul>
+</div>
+<p class="rubric">Footnotes</p>
+<dl class="footnote brackets">
+<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>We offer two distinct options for the camera mount, each depends on your choices for the front camera mount. Throughout our evaluations, we utilized Option 2. However, during subsequent user testing, we observed that some participants found Option 1 to be more intuitive to set up due to its ability to independently move the camera arm along different axes.  Both these options are detailed in our step-by-step setup guide.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="furniturebench_overview.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">FurnitureBench Overview</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="installing_furniture_sim.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Installing FurnitureSim</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By CLVR @ KAIST<br/>
+  
+      &copy; Copyright 2023.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
