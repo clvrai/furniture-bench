@@ -12,7 +12,7 @@ FurnitureBench can be configured with the following arguments:
     import furniture_bench
 
     env = gym.make(
-      "Furniture-Env-v0",
+      "FurnitureBench-v0",
       furniture=...,            # Specifies the name of furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].
       resize_img=True,          # If true, images are resized to 224 x 224.
       manual_done=False,        # If true, the episode ends only when the user presses the 'done' button.

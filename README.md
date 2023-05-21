@@ -21,7 +21,7 @@ Please check out our [website](https://clvrai.com/furniture-bench/) for more det
 ## Documentation generation
 
 The source files of our online documentation are under `docs_source/`.
-If you want to build the online documentation, try following steps:
+If you want to build the online documentation, try the following steps:
 ```
 pip install -r requirements.txt
 ./build_and_move.sh

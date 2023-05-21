@@ -12,7 +12,7 @@ FurnitureSim can be configured with the following arguments:
     import furniture_bench
 
     env = gym.make(
-      "Furniture-Sim-Env-v0",
+      "FurnitureSim-v0",
       furniture=...,           # Specifies the type of furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].
       num_envs=1,              # Number of parallel environments.
       resize_img=True,         # If true, images are resized to 224 x 224.
