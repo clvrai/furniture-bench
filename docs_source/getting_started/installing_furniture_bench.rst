@@ -434,12 +434,11 @@ To establish connections to the server and cameras, the client Docker container 
     export CAM_FRONT_SERIAL=<serial number of the front camera>
     export CAM_REAR_SERIAL=<serial number of the rear camera>
 
-To maintain the connection permanently, you can modify lines 12-15 of the ``furniture_bench/config.py`` file as follows:
+To maintain the connection permanently, you can modify lines 12-15 in ``furniture_bench/config.py``:
 
 .. code-block:: bash
 
-    # config.py
-    SERVER_IP="<IP of Server computer>"
+    SERVER_IP="<IP of the server computer>"
     CAM_WRIST_SERIAL="<serial number of the wrist camera>"
     CAM_FRONT_SERIAL="<serial number of the front camera>"
     CAM_REAR_SERIAL="<serial number of the rear camera>"
