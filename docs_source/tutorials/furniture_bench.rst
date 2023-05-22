@@ -5,22 +5,12 @@ How to Use FurnitureBench
 FurnitureBench Environments
 ---------------------------
 
-There are multiple environments available in FurnitureBench, which the main difference is the observation space.
-
 The following environments are available in FurnitureBench:
-
-- ``FurnitureBench-v0``: Full environment observation, including proprioceptive states and RGB-D images from three cameras (wrist, front, and rear).
-- ``FurnitureBenchImage-v0``: Wrist and front 224x224 RGB images as observations.
-- ``FurnitureBenchImageFeature-v0``: Image features (r3m or vip) and proprioceptive states as observations.
-- ``FurnitureImageDummy-v0``: Dummy environment for training image-based policies.
-- ``FurnitureImageFeatureDummy-v0``: Dummy environment for training image feature-based policies.
-
-
-The general properties of the environments:
-
-- The "Dummy" environments defines the observation space and action space, which are then utilized to determine the input and output shapes of policies.
-- The "Image" environments returns the image as observation.
-- The "ImageFeature" environments returns the image features (r3m or vip) as observation.
+  * ``FurnitureBench-v0``: is mainly used for data collection, providing all available observations, including robot states, high-resolution RGB images, and depth inputs from wrist, front, and rear cameras.
+  * ``FurnitureBenchImage-v0``: is used for pixel-based RL and IL by providing 224x224 wrist and front RGB images and robot states for observation.
+  * ``FurnitureBenchImageFeature-v0``: provides pre-trained image features (R3M or VIP) instead of visual observations.
+  * ``FurnitureImageDummy-v0``: Dummy environment for pixel-based policies.
+  * ``FurnitureImageFeatureDummy-v0``: Dummy environment for policies with pre-trained visual encoders.
 
 
 FurnitureBench Configuration

@@ -4,24 +4,13 @@ How to Use FurnitureSim
 
 FurnitureSim Environments
 -------------------------
-There are multiple environments available in FurnitureSim, which the main difference is the observation space.
-
 
 The following environments are available in FurnitureSim:
-
-- ``FurnitureSim-v0``: Full environment observation, including proprioceptive states and RGB-D images from three cameras (wrist, front, and rear).
-- ``FurnitureSimImage-v0``: Wrist and front 224x224 RGB images as observations.
-- ``FurnitureSimImageFeature-v0``: Image features (r3m or vip) and proprioceptive states as observations.
-- ``FurnitureImageDummy-v0``: Dummy environment for training image-based policies.
-- ``FurnitureImageFeatureDummy-v0``: Dummy environment for training image feature-based policies.
-
-|
-
-The general properties of the environments:
-
-- The "Dummy" environments defines the observation space and action space, which are then utilized to determine the input and output shapes of policies.
-- The "Image" environments returns the image as observation.
-- The "ImageFeature" environments returns the image features (r3m or vip) as observation.
+  * ``FurnitureSim-v0``: is mainly used for data collection, providing all available observations, including robot states, high-resolution RGB images, and depth inputs from wrist, front, and rear cameras.
+  * ``FurnitureSimImage-v0``: is used for pixel-based RL and IL by providing 224x224 wrist and front RGB images and robot states for observation.
+  * ``FurnitureSimImageFeature-v0``: provides pre-trained image features (R3M or VIP) instead of visual observations.
+  * ``FurnitureImageDummy-v0``: Dummy environment for pixel-based policies.
+  * ``FurnitureImageFeatureDummy-v0``: Dummy environment for policies with pre-trained visual encoders.
 
 
 FurnitureSim Configuration
@@ -132,16 +121,16 @@ Using this assembly script, you can collect ``num-demos`` demonstrations. Before
 
    python -m furniture_bench.scripts.collect_data --furniture <furniture> --scripted --is-sim --out-data-path <path/to/output> --gpu-id <gpu_id> --num-demos <num_demos> --headless
 
-   # E.g.,
+   # E.g., collect 100 demonstrations for one_leg assembly
    python -m furniture_bench.scripts.collect_data --furniture one_leg --scripted --is-sim --out-data-path /hdd/scripted_sim_demo --gpu-id 0 --num-demos 100 --headless
 
-To visualize a collected demonstration, use the following script with a demonstration path (a directory contains `pkl` and `mp4` files of one trajectory):
+To visualize a collected demonstration, use the following script with a demonstration path (i.e., a directory contains `pkl` and `mp4` files of one trajectory):
 
 .. code:: bash
 
    python -m furniture_bench.scripts.show_trajectory --data-dir <path/to/data>
 
-   # E.g.,
+   # E.g., show a sequence of three camera inputs with metadata
    python -m furniture_bench.scripts.show_trajectory --data-dir /hdd/scripted_sim_demo/one_leg/2022-12-22-03:19:48
 
 
