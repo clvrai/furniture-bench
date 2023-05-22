@@ -4,12 +4,24 @@ How to Use FurnitureSim
 
 FurnitureSim Environments
 -------------------------
+There are multiple environments available in FurnitureSim, which the main difference is the observation space.
 
-- ``FurnitureSim-v0``:
-- ``FurnitureSimImage-v0``:
-- ``FurnitureSimImageFeature-v0``:
-- ``FurnitureImageDummy-v0``:
-- ``FurnitureImageFeatureDummy-v0``:
+
+The following environments are available in FurnitureSim:
+
+- ``FurnitureSim-v0``: Full environment observation, including proprioceptive states and RGB-D images from three cameras (wrist, front, and rear).
+- ``FurnitureSimImage-v0``: Wrist and front 224x224 RGB images as observations.
+- ``FurnitureSimImageFeature-v0``: Image features (r3m or vip) and proprioceptive states as observations.
+- ``FurnitureImageDummy-v0``: Dummy environment for training image-based policies.
+- ``FurnitureImageFeatureDummy-v0``: Dummy environment for training image feature-based policies.
+
+|
+
+The general properties of the environments:
+
+- The "Dummy" environments defines the observation space and action space, which are then utilized to determine the input and output shapes of policies.
+- The "Image" environments returns the image as observation.
+- The "ImageFeature" environments returns the image features (r3m or vip) as observation.
 
 
 FurnitureSim Configuration

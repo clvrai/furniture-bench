@@ -410,12 +410,23 @@ title="Print to PDF"
 <h1>How to Use FurnitureSim<a class="headerlink" href="#how-to-use-furnituresim" title="Permalink to this headline">#</a></h1>
 <section id="furnituresim-environments">
 <h2>FurnitureSim Environments<a class="headerlink" href="#furnituresim-environments" title="Permalink to this headline">#</a></h2>
+<p>There are multiple environments available in FurnitureSim, which the main difference is the observation space.</p>
+<p>The following environments are available in FurnitureSim:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSim-v0</span></code>:</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImage-v0</span></code>:</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImageFeature-v0</span></code>:</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageDummy-v0</span></code>:</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageFeatureDummy-v0</span></code>:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSim-v0</span></code>: Full environment observation, including proprioceptive states and RGB-D images from three cameras (wrist, front, and rear).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImage-v0</span></code>: Wrist and front 224x224 RGB images as observations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImageFeature-v0</span></code>: Image features (r3m or vip) and proprioceptive states as observations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageDummy-v0</span></code>: Dummy environment for training image-based policies.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageFeatureDummy-v0</span></code>: Dummy environment for training image feature-based policies.</p></li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>The general properties of the environments:</p>
+<ul class="simple">
+<li><p>The “Dummy” environments defines the observation space and action space, which are then utilized to determine the input and output shapes of policies.</p></li>
+<li><p>The “Image” environments returns the image as observation.</p></li>
+<li><p>The “ImageFeature” environments returns the image features (r3m or vip) as observation.</p></li>
 </ul>
 </section>
 <section id="furnituresim-configuration">
