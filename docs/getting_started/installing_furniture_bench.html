@@ -1064,6 +1064,14 @@ docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client:
 <span class="nb">export</span><span class="w"> </span><span class="nv">CAM_REAR_SERIAL</span><span class="o">=</span>&lt;serial<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>rear<span class="w"> </span>camera&gt;
 </pre></div>
 </div>
+<p>To maintain the connection permanently, you can modify lines 12-15 of the <code class="docutils literal notranslate"><span class="pre">furniture_bench/config.py</span></code> file as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># config.py</span>
+<span class="nv">SERVER_IP</span><span class="o">=</span><span class="s2">&quot;&lt;IP of Server computer&gt;&quot;</span>
+<span class="nv">CAM_WRIST_SERIAL</span><span class="o">=</span><span class="s2">&quot;&lt;serial number of the wrist camera&gt;&quot;</span>
+<span class="nv">CAM_FRONT_SERIAL</span><span class="o">=</span><span class="s2">&quot;&lt;serial number of the front camera&gt;&quot;</span>
+<span class="nv">CAM_REAR_SERIAL</span><span class="o">=</span><span class="s2">&quot;&lt;serial number of the rear camera&gt;&quot;</span>
+</pre></div>
+</div>
 <p>To make sure that all the cameras are correctly installed and appropriately connected, execute the following command in the client Docker container and confirm the items in the checklist.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/furniture-bench
 python<span class="w"> </span>furniture_bench/scripts/run_cam_april.py

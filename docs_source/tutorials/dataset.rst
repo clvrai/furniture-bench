@@ -9,15 +9,22 @@ Each furniture assembly task has three different levels with respect to the rand
 Download Dataset
 ~~~~~~~~~~~~~~~~
 
-FurnitureBench dataset can be downloaded from `our Google Drive <https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing>`__.
+The FurnitureBench dataset is available on `our Google Drive <https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing>`__.
+It's organized into folders labeled as either ``<randomness>`` or ``<randomness>_compressed`` (e.g., ``low``, ``med_compressed``), containing raw and compressed .pkl files in tar.gz, respectively.
 
+There are three options to download the dataset:
+
+* Manually download the dataset from `our Google Drive <https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing>`__.
+* Use `gdown <https://github.com/wkentaro/gdown>`__ by following `Download with gdown <#download-with-gdown>`__.
 * Use `rclone <https://rclone.org/>`__ for fast download following `Download with rclone <#download-with-rclone>`__.
+
+The gdown and rclone methods will download compressed .pkl files in .tar.gz format.
 
 
 Dataset Size
 ~~~~~~~~~~~~
 
-The size (in GB) of demonstrations for each furniture in each level is summarized below:
+The size (in GB) of demonstrations of raw .pkl files for each furniture in each level is summarized below:
 
 +--------------+-----+------+------+
 | Furniture    | low | med  | high |
@@ -42,34 +49,6 @@ The size (in GB) of demonstrations for each furniture in each level is summarize
 +--------------+-----+------+------+
 | Total        | 457 | 499  | 223  |
 +--------------+-----+------+------+
-
-
-Dataset Directory Structure
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FurnitureBench dataset is structured as follows:
-::
-
-   furniture
-     |- dataset
-       |- furniture_low  # Low randomness
-         |- lamp
-           |- 0.pkl      # Demonstration 0
-           |- 1.pkl
-           |- ...
-         |- square_table
-         |- desk
-         |- drawer
-         |- cabinet
-         |- round_table
-         |- stool
-         |- chair
-         |- one_leg
-       |- furniture_med  # Medium randomness
-         |- ...
-       |- furniture_high # High randomness
-         |- ...
-
 
 Demonstration File Format
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,9 +77,22 @@ Each demonstration is stored in a ``.pkl`` file, containing a sequence of sensor
    'rewards': List of rewards (1 if a furniture part is assembled; otherwise, 0)
    'skills': List of skill completion flags (1 if a skill is completed; otherwise, 0)
 
+Download with gdown
+~~~~~~~~~~~~~~~~~~~
+
+Run the following command to download the dataset using `gdown <https://github.com/wkentaro/gdown>`__.
+Use ``--untar`` flag to decompress the downloaded .tar.gz files.
+
+.. code::
+
+    python furniture_bench/scripts/download_dataset.py --randomness [low/med/high] --furniture <name of furniture> --out_dir <path/to/data> <--untar>
+    E.g.,
+    python furniture_bench/scripts/download_dataset.py --randomness low --furniture lamp --out_dir furniture_dataset
+
 
 Download with rclone
 ~~~~~~~~~~~~~~~~~~~~
+Sometime gdown might operate slowly, or reject your download request due to access quota limitations. In this case, you can utilize `rclone <https://rclone.org/>`__ to download the dataset.
 
 1. Install `rclone <https://rclone.org/install/>`__.
 
@@ -204,14 +196,14 @@ Download with rclone
 .. image:: ../_static/images/add_shortcut.png
         :width: 400
 
-4. Run the following Python script to download our dataset:
+4. The following Python script to download our dataset. Use ``--untar`` flag to decompress the downloaded .tar.gz files.
 
 .. code::
 
-    python furniture_bench/scripts/download_dataset.py --randomness [low/med/high] --furniture <name of furniture> --out_dir <path/to/data>
+    python furniture_bench/scripts/download_dataset.py --randomness [low/med/high] --furniture <name of furniture> --out_dir <path/to/data> --use-rclone <--untar>
 
     # E.g., download lamp data with low randomness
-    python furniture_bench/scripts/download_data.py --randomness low --furniture lamp --out_dir furniture_dataset
+    python furniture_bench/scripts/download_data.py --randomness low --furniture lamp --out_dir furniture_dataset --use-rclone
 
     # E.g., download all furniture data with low randomness
-    python furniture_bench/scripts/download_data.py --randomness low --furniture all --out_dir furniture_dataset
+    python furniture_bench/scripts/download_data.py --randomness low --furniture all --out_dir furniture_dataset --use-rclone
