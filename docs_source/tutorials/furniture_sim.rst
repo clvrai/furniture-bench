@@ -1,6 +1,17 @@
 How to Use FurnitureSim
 =======================
 
+
+FurnitureSim Environments
+-------------------------
+
+- ``FurnitureSim-v0``:
+- ``FurnitureSimImage-v0``:
+- ``FurnitureSimImageFeature-v0``:
+- ``FurnitureImageDummy-v0``:
+- ``FurnitureImageFeatureDummy-v0``:
+
+
 FurnitureSim Configuration
 --------------------------
 
@@ -8,8 +19,8 @@ FurnitureSim can be configured with the following arguments:
 
 .. code::
 
-    import gym
     import furniture_bench
+    import gym
 
     env = gym.make(
       "FurnitureSim-v0",

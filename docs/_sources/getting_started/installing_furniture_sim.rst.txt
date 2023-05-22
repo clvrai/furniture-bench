@@ -3,7 +3,7 @@ Installing FurnitureSim
 
 **FurnitureSim** is a realistic simulation of FurnitureBench based on `Isaac Gym <https://developer.nvidia.com/isaac-gym>`__ and `Factory <https://sites.google.com/nvidia.com/factory>`__.
 FurnitureSim enables easy and fast evaluation of new algorithms.
-You can install FurnitureSim using Docker or build it from source.
+You can install FurnitureSim using PyPI or Docker.
 
 .. |real| image:: ../_static/images/real.jpg
 .. |simulator| image:: ../_static/images/simulator.jpg

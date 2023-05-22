@@ -324,6 +324,11 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furnituresim-environments">
+   FurnitureSim Environments
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#furnituresim-configuration">
    FurnitureSim Configuration
   </a>
@@ -365,6 +370,11 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furnituresim-environments">
+   FurnitureSim Environments
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#furnituresim-configuration">
    FurnitureSim Configuration
   </a>
@@ -398,11 +408,21 @@ title="Print to PDF"
                 
   <section id="how-to-use-furnituresim">
 <h1>How to Use FurnitureSim<a class="headerlink" href="#how-to-use-furnituresim" title="Permalink to this headline">#</a></h1>
+<section id="furnituresim-environments">
+<h2>FurnitureSim Environments<a class="headerlink" href="#furnituresim-environments" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSim-v0</span></code>:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImage-v0</span></code>:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImageFeature-v0</span></code>:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageDummy-v0</span></code>:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageFeatureDummy-v0</span></code>:</p></li>
+</ul>
+</section>
 <section id="furnituresim-configuration">
 <h2>FurnitureSim Configuration<a class="headerlink" href="#furnituresim-configuration" title="Permalink to this headline">#</a></h2>
 <p>FurnitureSim can be configured with the following arguments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
-<span class="kn">import</span> <span class="nn">furniture_bench</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">furniture_bench</span>
+<span class="kn">import</span> <span class="nn">gym</span>
 
 <span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
   <span class="s2">&quot;FurnitureSim-v0&quot;</span><span class="p">,</span>

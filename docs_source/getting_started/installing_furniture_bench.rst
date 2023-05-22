@@ -267,7 +267,7 @@ although you have the flexibility to adjust it during fine-grained calibration i
     :width: 60%
     :alt: rear_camera
 
-    \(d) Rear camera installation.
+    \(d) Rear camera installation
 
 
 Install Wrist Camera
@@ -429,7 +429,7 @@ To establish connections to the server and cameras, the client Docker container 
 
 .. code-block:: bash
 
-    export SERVER_IP=<IP of Server computer>  # e.g., 192.168.0.138
+    export SERVER_IP=<IP of the server computer>  # e.g., 192.168.0.138
     export CAM_WRIST_SERIAL=<serial number of the wrist camera>
     export CAM_FRONT_SERIAL=<serial number of the front camera>
     export CAM_REAR_SERIAL=<serial number of the rear camera>
@@ -482,28 +482,28 @@ Then, launch a server-side daemon:
 
 1. Set the absolute path to the ``furniture-bench`` repo in the server computer.
 
-  .. code:: bash
+.. code:: bash
 
-    export FURNITURE_BENCH=<path/to/furniture-bench>
+  export FURNITURE_BENCH=<path/to/furniture-bench>
 
 2. Launch the server Docker container.
 
-  .. code:: bash
+.. code:: bash
 
-    ./launch_server.sh --pulled  # (case 1) Docker pull.
-    ./launch_server.sh --built   # (case 2) Local build.
+  ./launch_server.sh --pulled  # (case 1) Docker pull.
+  ./launch_server.sh --built   # (case 2) Local build.
 
 3. Specify IP of Franka Control (shop floor network), not IP of the Robot arm, in the server Docker container.
 
-  .. code:: bash
+.. code:: bash
 
-    export ROBOT_IP=<IP of the robot controller>  # e.g., 192.168.0.10
+  export ROBOT_IP=<IP of the robot controller>  # e.g., 192.168.0.10
 
 4. Launch the server daemon in the server Docker container.
 
-  .. code:: bash
+.. code:: bash
 
-    /furniture-bench/launch_daemon.sh
+  /furniture-bench/launch_daemon.sh
 
 .. tip::
 
@@ -535,15 +535,15 @@ In our visualization tool, the image from the current view is displayed as a sol
 
 1. First, run the following command to move the robot up to prevent it from blocking the camera's view.
 
-  .. code::
+.. code::
 
-    python furniture_bench/scripts/move_up.py
+  python furniture_bench/scripts/move_up.py
 
 2. Run the camera calibration tool:
 
-  .. code::
+.. code::
 
-    python furniture_bench/scripts/calibration.py --target setup_front
+  python furniture_bench/scripts/calibration.py --target setup_front
 
 3. Adjust the camera to **match both images and numbers**.
 4. Here is the list of *tips* for matching the camera pose:
@@ -580,27 +580,27 @@ The 3D printed obstacle can be attached to the table using double-sided rubber t
 
 1. Install the obstacle with the guidance of the provided visualization tool:
 
-  .. code-block:: bash
+.. code-block:: bash
 
-    python furniture_bench/scripts/calibration.py --target obstacle
+  python furniture_bench/scripts/calibration.py --target obstacle
 
 2. Attach the obstacle to the table while aligning it with the pre-recorded obstacle pose.
 
-    .. figure:: ../_static/instruction/obstacle.jpg
-        :width: 80%
-        :align: center
-        :alt: obstacle
+.. figure:: ../_static/instruction/obstacle.jpg
+    :width: 80%
+    :align: center
+    :alt: obstacle
 
-        \(a) Obstacle installation.
+    \(a) Obstacle installation.
 
 3. Affix the obstacle with double-sided rubber tape, as shown in the figure below. Make sure the obstacle does not move when pushed.
 
-    .. figure:: ../_static/instruction/obstacle_affix.jpg
-        :width: 80%
-        :align: center
-        :alt: obstacle
+.. figure:: ../_static/instruction/obstacle_affix.jpg
+    :width: 80%
+    :align: center
+    :alt: obstacle
 
-        \(b) Affix obstacle. The red circles represent where to attach the double-sided rubber tape.
+    \(b) Affix obstacle. The red circles represent where to attach the double-sided rubber tape.
 
 .. checklist::
 
@@ -636,9 +636,9 @@ The one-leg assembly consists of phases: (1) pick up the tabletop, (2) push to t
 
     -  Double-check the camera calibration using the following script. All the numbers should be green and the robot base, obstacle, and base tag should be aligned accurately: |test_uncheck_1|
 
-      .. code::
+    .. code::
 
-        python furniture_bench/scripts/calibration.py --target one_leg
+      python furniture_bench/scripts/calibration.py --target one_leg
 
     - Green backdrop cloth has minimum wrinkles. |test_uncheck_2|
     - Wipe three camera lenses using a lens cloth, as they may be blurry from fingerprint smudges. |test_uncheck_3|
@@ -661,11 +661,15 @@ The one-leg assembly consists of phases: (1) pick up the tabletop, (2) push to t
 
 4. Evaluate the pre-trained policy using the following script:
 
-  .. code::
+.. code::
 
-    ./evaluate.sh --low
+  ./evaluate.sh --low
 
-  The command above will first show visualization and prompt to indicate where furniture parts should be positioned. Initialize the furniture parts, as shown in (a). The screen will prompt “initialization done” when everything is correctly aligned, as shown in (b).
+|
+
+  - This evaluation script will first ask to initialize the environment. As shown in (a), the GUI indicates where furniture parts should be positioned.
+  - Rearrange the furniture parts following the GUI. If every part is correctly placed, the screen will prompt “initialization done”, as shown in (b).
+  - Once the initialization is done, press “Enter” to execute the policy. Make sure that there is nothing but furniture parts in the workspace.
 
   .. |init_GUI_prompt| image:: ../_static/instruction/initialization_GUI_prompt.jpg
   .. |init_done| image:: ../_static/instruction/initialization_done.jpg
@@ -678,8 +682,6 @@ The one-leg assembly consists of phases: (1) pick up the tabletop, (2) push to t
       +=======================================================================+==================================================================================+
       | \(a) Visualization tool and prompt indicates where to place each part | \(b) Initialization done. After this stage, press ”Enter” to execute the policy. |
       +-----------------------------------------------------------------------+----------------------------------------------------------------------------------+
-
-  Once the initialization is done, press “Enter” to execute the policy. Make sure that there is nothing but furniture parts in the workspace.
 
 .. checklist::
 

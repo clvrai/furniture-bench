@@ -324,6 +324,11 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furniturebench-environments">
+   FurnitureBench Environments
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#furniturebench-configuration">
    FurnitureBench Configuration
   </a>
@@ -377,6 +382,11 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furniturebench-environments">
+   FurnitureBench Environments
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#furniturebench-configuration">
    FurnitureBench Configuration
   </a>
@@ -422,11 +432,21 @@ title="Print to PDF"
                 
   <section id="how-to-use-furniturebench">
 <h1>How to Use FurnitureBench<a class="headerlink" href="#how-to-use-furniturebench" title="Permalink to this headline">#</a></h1>
+<section id="furniturebench-environments">
+<h2>FurnitureBench Environments<a class="headerlink" href="#furniturebench-environments" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureBench-v0</span></code>:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureBenchImage-v0</span></code>:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureBenchImageFeature-v0</span></code>:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageDummy-v0</span></code>:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageFeatureDummy-v0</span></code>:</p></li>
+</ul>
+</section>
 <section id="furniturebench-configuration">
 <h2>FurnitureBench Configuration<a class="headerlink" href="#furniturebench-configuration" title="Permalink to this headline">#</a></h2>
 <p>FurnitureBench can be configured with the following arguments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
-<span class="kn">import</span> <span class="nn">furniture_bench</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">furniture_bench</span>
+<span class="kn">import</span> <span class="nn">gym</span>
 
 <span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
   <span class="s2">&quot;FurnitureBench-v0&quot;</span><span class="p">,</span>
