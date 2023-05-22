@@ -260,7 +260,7 @@
                     <h2>Reproducible Environment</h2>
                     <div style="text-align: justify;">
                         <p>
-                            To make the real-robot environment easy to reproduce, we opt for widely used products across the world (e.g. Franka Panda, Intel RealSense cameras, IKEA table) and 3D-printing objects. 10 participants could successfully reproduce the environment from scratch with the performance gaps smaller than 16%.
+                            To make the real-robot environment easy to reproduce, we opt for widely used products across the world (e.g., Franka Panda, Intel RealSense cameras, IKEA table) and 3D-printing objects. 10 participants could successfully reproduce the environment from scratch with the performance gaps smaller than 16%.
                         </p>
                         <p>
                             Our benchmark has three different levels of randomness in the initial states: low, medium, and high. The higher the randomness in the initial state is, the more generalization capability is required for an agent.
@@ -299,7 +299,7 @@
                     <h2>Easy-to-Use Environment</h2>
                     <div style="text-align: justify;">
                         <p>
-                            We provide a Python-based plug-and-play software stack, including scripts for environment setup, data collection, evaluation, training, and more. FurnitureBench's Python APIs are shared across real-world and simulated environments.
+                            We provide a Python-based plug-and-play software stack, including scripts for environment setup, data collection, training, evaluation, and more. FurnitureBench's Python APIs are shared across real-world and simulated environments.
                         </p>
                     </div>
                     <div class="dropdown">
@@ -354,7 +354,7 @@
                 <div class="mdcontainer">
                     <h2>FurnitureSim</h2>
                     <p>
-                        <b>FurnitureSim</b> is a fast and realistic simulator of FurnitureBench, based on <a href="https://developer.nvidia.com/isaac-gym" target="_blank">IsaacGym</a> and <a href="https://sites.google.com/nvidia.com/factory/">Factory</a>. FurnitureSim is designed to be a seamless substitution of the real-world environment, and enables rapid prototyping of new algorithms!
+                        <b>FurnitureSim</b> is a fast and realistic simulator of FurnitureBench, based on <a href="https://developer.nvidia.com/isaac-gym" target="_blank">IsaacGym</a> and <a href="https://sites.google.com/nvidia.com/factory/">Factory</a>. FurnitureSim is designed to be a seamless substitution of the real-world environment, which enables rapid prototyping of new algorithms.
                     </p>
 
                     <table class="responsivetable" style="width:100%; margin: auto; max-width: 1400px;">
@@ -610,8 +610,8 @@
                     <h2 id="experiments">Benchmark Results</h2>
                     <p>Our experiments consist of two benchmarks:</p>
                     <ul class="browser-default" style="text-align: justify;">
-                        <li><b>Single-Skill Benchmark</b> evaluates each individual subtask (e.g. grasping, pushing, inserting, screwing)</li>
-                        <li><b>Full-Assembly Benchmark</b> evaluates entire assembly tasks that requires long-horizon planning and dexterous control</li>
+                        <li><b>Single-Skill Benchmark</b> evaluates each individual subtask (e.g., grasping, pushing, inserting, screwing)</li>
+                        <li><b>Full-Assembly Benchmark</b> evaluates entire assembly tasks that require long-horizon planning and dexterous control</li>
                     </ul>
                     <p>We evaluate our benchmark with imitation learning (BC) and the state-of-the-art offline RL (IQL).</p>
                 </div>
@@ -621,7 +621,7 @@
                 <div class="mdcontainer">
                     <h2>Single-Skill Benchmark</h2>
                     <p style="text-align: justify;">
-                        We benchmark first five skills of each furniture task. The results in the table below demonstrate that individual skill policies can successfully learn <i>grasping</i> and <i>placing</i> skills; but, mostly fails at <i>inserting</i>, which requires precise alignment.
+                        We benchmark first five skills of each furniture task. The results in the table below demonstrate that individual skill policies can successfully learn <i>grasping</i> and <i>placing</i> skills; but, mostly fail at <i>inserting</i>, which requires precise alignment.
                     </p>
                     <div style="text-align: center;">
                         <figure>
@@ -635,7 +635,7 @@
                 <div class="mdcontainer">
                     <h2>Full-Assembly Benchmark</h2>
                     <p style="text-align: justify;">
-                        We present both quantitative and qualitative results on full furniture assembly tasks below. The completed phases represent the number of successful subtasks (e.g. grasping, placing, inserting) of full-assembly tasks. Overall, neither BC nor IQL achieve a single part assembly except for <i>one-leg</i>.
+                        We present both quantitative and qualitative results on full furniture assembly tasks below. The completed phases represent the number of successful subtasks (e.g., grasping, placing, inserting) of full-assembly tasks. Overall, neither BC nor IQL achieves a single part assembly except for <i>one-leg</i>.
                     </p>
                     <div style="text-align: center;">
                         <figure>

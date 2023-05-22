@@ -376,10 +376,6 @@ title="Print to PDF"
 <h1>Teleoperation<a class="headerlink" href="#teleoperation" title="Permalink to this headline">#</a></h1>
 <p>Our system supports Oculus Quest 2 controller and keyboard for teleoperation.</p>
 <a class="reference internal image-reference" href="../_images/teleoperation.jpg"><img alt="Teleoperation" class="align-center" src="../_images/teleoperation.jpg" style="width: 70%;" /></a>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When you use Docker, make sure to mount the storage to save your data (<a class="reference internal" href="../getting_started/installing_furniture_bench.html#run-client"><span class="std std-ref">Run Client</span></a>). Otherwise, the collected data will be deleted once you close the docker container.</p>
-</div>
 <section id="setup-oculus-quest-2">
 <h2>Setup Oculus Quest 2<a class="headerlink" href="#setup-oculus-quest-2" title="Permalink to this headline">#</a></h2>
 <p>You need to set up Oculus Quest 2 on its first use.</p>
@@ -403,12 +399,18 @@ title="Print to PDF"
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--out-data-path<span class="w"> </span>&lt;/path/to/save/data&gt;
 </pre></div>
 </div>
-<p>2.1. If you want to use only a keyboard, add an argument <code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">keyboard</span></code>:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When you use Docker, make sure to mount the storage to save your data (<a class="reference internal" href="../getting_started/installing_furniture_bench.html#run-client"><span class="std std-ref">Run Client</span></a>). Otherwise, the collected data will be deleted once you close the docker container.</p>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>(Optional) If you want to use only a keyboard, add an argument <code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">keyboard</span></code>:</p></li>
+</ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Oculus Quest 2 sometimes asks permission for connection. So, if the controller does not work, wear the headset and press the “Allow” button.</p>
 </div>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple" start="4">
 <li><p>The command above will launch a GUI, as shown below. To start data collection, place furniture parts in their reset positions shown in the tool.</p></li>
 </ol>
 <figure class="align-center">

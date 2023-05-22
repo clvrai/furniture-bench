@@ -1,6 +1,17 @@
 How to Use FurnitureBench
 =========================
 
+
+FurnitureBench Environments
+---------------------------
+
+- ``FurnitureBench-v0``:
+- ``FurnitureBenchImage-v0``:
+- ``FurnitureBenchImageFeature-v0``:
+- ``FurnitureImageDummy-v0``:
+- ``FurnitureImageFeatureDummy-v0``:
+
+
 FurnitureBench Configuration
 ----------------------------
 
@@ -8,8 +19,8 @@ FurnitureBench can be configured with the following arguments:
 
 .. code::
 
-    import gym
     import furniture_bench
+    import gym
 
     env = gym.make(
       "FurnitureBench-v0",
