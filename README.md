@@ -1,6 +1,6 @@
 # FurnitureBench: Reproducible Real-World Furniture Assembly Benchmark
 
-[**Paper**](#)
+[**Paper**](http://arxiv.org/abs/2305.12821)
 | [**Website**](https://clvrai.com/furniture-bench/)
 | [**Documentation**](https://clvrai.github.io/furniture-bench/docs/index.html)
 
