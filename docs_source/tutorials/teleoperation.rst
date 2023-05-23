@@ -8,10 +8,6 @@ Our system supports Oculus Quest 2 controller and keyboard for teleoperation.
    :align: center
    :alt: Teleoperation
 
-.. note::
-
-    When you use Docker, make sure to mount the storage to save your data (:ref:`Run Client`). Otherwise, the collected data will be deleted once you close the docker container.
-
 
 Setup Oculus Quest 2
 ~~~~~~~~~~~~~~~~~~~~
@@ -39,13 +35,17 @@ Start Teleoperation
 
   python furniture_bench/scripts/collect_data.py --furniture <furniture> --out-data-path </path/to/save/data>
 
-2.1. If you want to use only a keyboard, add an argument ``--device keyboard``:
+.. note::
+
+    When you use Docker, make sure to mount the storage to save your data (:ref:`Run Client`). Otherwise, the collected data will be deleted once you close the docker container.
+
+3. (Optional) If you want to use only a keyboard, add an argument ``--device keyboard``:
 
 .. note::
 
     Oculus Quest 2 sometimes asks permission for connection. So, if the controller does not work, wear the headset and press the "Allow" button.
 
-3. The command above will launch a GUI, as shown below. To start data collection, place furniture parts in their reset positions shown in the tool.
+4. The command above will launch a GUI, as shown below. To start data collection, place furniture parts in their reset positions shown in the tool.
 
 .. figure:: ../_static/images/initialization_tool.gif
     :width: 70%

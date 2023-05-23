@@ -17,7 +17,7 @@ A general overview of FurnitureBench is available in our `project website <../in
    :width: 100%
    :alt: furniture_teaser
 
-If you use FurnitureBench in your research, please cite our paper:
+If you use FurnitureBench in your research, please cite `our paper <http://arxiv.org/abs/2305.12821>`_:
 
 .. code-block:: bibtex
 

@@ -334,11 +334,6 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dataset-directory-structure">
-   Dataset Directory Structure
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#demonstration-file-format">
    Demonstration File Format
   </a>
@@ -378,11 +373,6 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dataset-directory-structure">
-   Dataset Directory Structure
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#demonstration-file-format">
    Demonstration File Format
   </a>
@@ -408,14 +398,38 @@ title="Print to PDF"
 <p>Each furniture assembly task has three different levels with respect to the randomness in task initialization: <cite>low</cite>, <cite>medium</cite>, and <cite>high</cite>.</p>
 <section id="download-dataset">
 <h2>Download Dataset<a class="headerlink" href="#download-dataset" title="Permalink to this headline">#</a></h2>
-<p>FurnitureBench dataset can be downloaded from <a class="reference external" href="https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing">our Google Drive</a>.</p>
-<ul class="simple">
-<li><p>Use <a class="reference external" href="https://rclone.org/">rclone</a> for fast download following <a class="reference external" href="#download-with-rclone">Download with rclone</a>.</p></li>
-</ul>
+<p>The FurnitureBench dataset is available on <a class="reference external" href="https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing">our Google Drive</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">low</span>               <span class="c1"># Low randomness</span>
+  <span class="o">|-</span> <span class="n">cabinet</span>      <span class="c1"># Demonstration files for cabinet</span>
+    <span class="o">|-</span> <span class="mf">0.</span><span class="n">pkl</span>
+    <span class="o">|-</span> <span class="mf">1.</span><span class="n">pkl</span>
+    <span class="o">|-</span> <span class="o">...</span>
+  <span class="o">|-</span> <span class="n">chair</span>        <span class="c1"># Demonstration files for chair</span>
+  <span class="o">|-</span> <span class="o">...</span>
+<span class="n">med</span>               <span class="c1"># Medium randomness</span>
+  <span class="o">|-</span> <span class="n">cabinet</span>
+  <span class="o">|-</span> <span class="o">...</span>
+<span class="n">high</span>              <span class="c1"># High randomness</span>
+  <span class="o">|-</span> <span class="n">cabinet</span>
+  <span class="o">|-</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>For easy downloading, we also provide compressed datasets for each furniture model and randomness level under <code class="docutils literal notranslate"><span class="pre">low_compressed</span></code>, <code class="docutils literal notranslate"><span class="pre">med_compressed</span></code>, and <code class="docutils literal notranslate"><span class="pre">high_compressed</span></code>. You can download our dataset:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">gdown</span>
+
+<span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_dataset</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">untar</span> <span class="o">--</span><span class="n">randomness</span> <span class="p">[</span><span class="n">low</span><span class="o">|</span><span class="n">med</span><span class="o">|</span><span class="n">high</span><span class="p">]</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">furniture</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">&gt;</span>
+
+<span class="c1"># E.g., download lamp data with low randomness</span>
+<span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_dataset</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">untar</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">lamp</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">./</span><span class="n">furniture_dataset</span>
+
+<span class="c1"># E.g., download all furniture data with medium randomness</span>
+<span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_dataset</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">untar</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">med</span> <span class="o">--</span><span class="n">furniture</span> <span class="nb">all</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">./</span><span class="n">furniture_dataset</span>
+</pre></div>
+</div>
 </section>
 <section id="dataset-size">
 <h2>Dataset Size<a class="headerlink" href="#dataset-size" title="Permalink to this headline">#</a></h2>
-<p>The size (in GB) of demonstrations for each furniture in each level is summarized below:</p>
+<p>The size (in GB) of demonstrations of raw .pkl files for each furniture in each level is summarized below:</p>
 <table class="table">
 <colgroup>
 <col style="width: 45%" />
@@ -484,31 +498,6 @@ title="Print to PDF"
 </tbody>
 </table>
 </section>
-<section id="dataset-directory-structure">
-<h2>Dataset Directory Structure<a class="headerlink" href="#dataset-directory-structure" title="Permalink to this headline">#</a></h2>
-<p>FurnitureBench dataset is structured as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">furniture</span>
-  <span class="o">|-</span> <span class="n">dataset</span>
-    <span class="o">|-</span> <span class="n">furniture_low</span>  <span class="c1"># Low randomness</span>
-      <span class="o">|-</span> <span class="n">lamp</span>
-        <span class="o">|-</span> <span class="mf">0.</span><span class="n">pkl</span>      <span class="c1"># Demonstration 0</span>
-        <span class="o">|-</span> <span class="mf">1.</span><span class="n">pkl</span>
-        <span class="o">|-</span> <span class="o">...</span>
-      <span class="o">|-</span> <span class="n">square_table</span>
-      <span class="o">|-</span> <span class="n">desk</span>
-      <span class="o">|-</span> <span class="n">drawer</span>
-      <span class="o">|-</span> <span class="n">cabinet</span>
-      <span class="o">|-</span> <span class="n">round_table</span>
-      <span class="o">|-</span> <span class="n">stool</span>
-      <span class="o">|-</span> <span class="n">chair</span>
-      <span class="o">|-</span> <span class="n">one_leg</span>
-    <span class="o">|-</span> <span class="n">furniture_med</span>  <span class="c1"># Medium randomness</span>
-      <span class="o">|-</span> <span class="o">...</span>
-    <span class="o">|-</span> <span class="n">furniture_high</span> <span class="c1"># High randomness</span>
-      <span class="o">|-</span> <span class="o">...</span>
-</pre></div>
-</div>
-</section>
 <section id="demonstration-file-format">
 <h2>Demonstration File Format<a class="headerlink" href="#demonstration-file-format" title="Permalink to this headline">#</a></h2>
 <p>Each demonstration is stored in a <code class="docutils literal notranslate"><span class="pre">.pkl</span></code> file, containing a sequence of sensory inputs, actions, rewards, and other metadata:</p>
@@ -536,6 +525,7 @@ title="Print to PDF"
 </section>
 <section id="download-with-rclone">
 <h2>Download with rclone<a class="headerlink" href="#download-with-rclone" title="Permalink to this headline">#</a></h2>
+<p>Sometime gdown might operate slowly, or reject your download request due to access quota limitations. In this case, you can utilize <a class="reference external" href="https://rclone.org/">rclone</a> to download the dataset.</p>
 <ol class="arabic simple">
 <li><p>Install <a class="reference external" href="https://rclone.org/install/">rclone</a>.</p></li>
 <li><p>Run <code class="docutils literal notranslate"><span class="pre">rclone</span> <span class="pre">config</span></code> to setup Google Drive remote:</p></li>
@@ -637,15 +627,15 @@ e/n/d/r/c/s/q&gt; q
 </ol>
 <a class="reference internal image-reference" href="../_images/add_shortcut.png"><img alt="../_images/add_shortcut.png" src="../_images/add_shortcut.png" style="width: 400px;" /></a>
 <ol class="arabic simple" start="4">
-<li><p>Run the following Python script to download our dataset:</p></li>
+<li><p>The following Python script will download our dataset. Use <code class="docutils literal notranslate"><span class="pre">--untar</span></code> flag to decompress files after downloading.</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_dataset</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="p">[</span><span class="n">low</span><span class="o">/</span><span class="n">med</span><span class="o">/</span><span class="n">high</span><span class="p">]</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">name</span> <span class="n">of</span> <span class="n">furniture</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_dataset</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="p">[</span><span class="n">low</span><span class="o">/</span><span class="n">med</span><span class="o">/</span><span class="n">high</span><span class="p">]</span> <span class="o">--</span><span class="n">furniture</span> <span class="o">&lt;</span><span class="n">name</span> <span class="n">of</span> <span class="n">furniture</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">rclone</span> <span class="o">&lt;--</span><span class="n">untar</span><span class="o">&gt;</span>
 
 <span class="c1"># E.g., download lamp data with low randomness</span>
-<span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">lamp</span> <span class="o">--</span><span class="n">out_dir</span> <span class="n">furniture_dataset</span>
+<span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span> <span class="o">--</span><span class="n">furniture</span> <span class="n">lamp</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">./</span><span class="n">furniture_dataset</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">rclone</span>
 
-<span class="c1"># E.g., download all furniture data with low randomness</span>
-<span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span> <span class="o">--</span><span class="n">furniture</span> <span class="nb">all</span> <span class="o">--</span><span class="n">out_dir</span> <span class="n">furniture_dataset</span>
+<span class="c1"># E.g., download all furniture data with medium randomness</span>
+<span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_data</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">med</span> <span class="o">--</span><span class="n">furniture</span> <span class="nb">all</span> <span class="o">--</span><span class="n">out_dir</span> <span class="o">./</span><span class="n">furniture_dataset</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">rclone</span>
 </pre></div>
 </div>
 </section>

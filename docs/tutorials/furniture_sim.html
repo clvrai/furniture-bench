@@ -324,6 +324,11 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furnituresim-environments">
+   FurnitureSim Environments
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#furnituresim-configuration">
    FurnitureSim Configuration
   </a>
@@ -365,6 +370,11 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#furnituresim-environments">
+   FurnitureSim Environments
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#furnituresim-configuration">
    FurnitureSim Configuration
   </a>
@@ -398,11 +408,24 @@ title="Print to PDF"
                 
   <section id="how-to-use-furnituresim">
 <h1>How to Use FurnitureSim<a class="headerlink" href="#how-to-use-furnituresim" title="Permalink to this headline">#</a></h1>
+<section id="furnituresim-environments">
+<h2>FurnitureSim Environments<a class="headerlink" href="#furnituresim-environments" title="Permalink to this headline">#</a></h2>
+<dl class="simple">
+<dt>The following environments are available in FurnitureSim:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSim-v0</span></code>: is mainly used for data collection, providing all available observations, including robot states, high-resolution RGB images, and depth inputs from wrist, front, and rear cameras.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImage-v0</span></code>: is used for pixel-based RL and IL by providing 224x224 wrist and front RGB images and robot states for observation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImageFeature-v0</span></code>: provides pre-trained image features (R3M or VIP) instead of visual observations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageDummy-v0</span></code>: Dummy environment for pixel-based policies.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageFeatureDummy-v0</span></code>: Dummy environment for policies with pre-trained visual encoders.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
 <section id="furnituresim-configuration">
 <h2>FurnitureSim Configuration<a class="headerlink" href="#furnituresim-configuration" title="Permalink to this headline">#</a></h2>
 <p>FurnitureSim can be configured with the following arguments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
-<span class="kn">import</span> <span class="nn">furniture_bench</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">furniture_bench</span>
+<span class="kn">import</span> <span class="nn">gym</span>
 
 <span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
   <span class="s2">&quot;FurnitureSim-v0&quot;</span><span class="p">,</span>
@@ -487,14 +510,14 @@ title="Print to PDF"
 <p>Using this assembly script, you can collect <code class="docutils literal notranslate"><span class="pre">num-demos</span></code> demonstrations. Before you collect data, make sure you mount the output data path to the docker container.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.collect_data<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--scripted<span class="w"> </span>--is-sim<span class="w"> </span>--out-data-path<span class="w"> </span>&lt;path/to/output&gt;<span class="w"> </span>--gpu-id<span class="w"> </span>&lt;gpu_id&gt;<span class="w"> </span>--num-demos<span class="w"> </span>&lt;num_demos&gt;<span class="w"> </span>--headless
 
-<span class="c1"># E.g.,</span>
+<span class="c1"># E.g., collect 100 demonstrations for one_leg assembly</span>
 python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.collect_data<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted<span class="w"> </span>--is-sim<span class="w"> </span>--out-data-path<span class="w"> </span>/hdd/scripted_sim_demo<span class="w"> </span>--gpu-id<span class="w"> </span><span class="m">0</span><span class="w"> </span>--num-demos<span class="w"> </span><span class="m">100</span><span class="w"> </span>--headless
 </pre></div>
 </div>
-<p>To visualize a collected demonstration, use the following script with a demonstration path (a directory contains <cite>pkl</cite> and <cite>mp4</cite> files of one trajectory):</p>
+<p>To visualize a collected demonstration, use the following script with a demonstration path (i.e., a directory contains <cite>pkl</cite> and <cite>mp4</cite> files of one trajectory):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.show_trajectory<span class="w"> </span>--data-dir<span class="w"> </span>&lt;path/to/data&gt;
 
-<span class="c1"># E.g.,</span>
+<span class="c1"># E.g., show a sequence of three camera inputs with metadata</span>
 python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.show_trajectory<span class="w"> </span>--data-dir<span class="w"> </span>/hdd/scripted_sim_demo/one_leg/2022-12-22-03:19:48
 </pre></div>
 </div>

@@ -1,6 +1,18 @@
 How to Use FurnitureSim
 =======================
 
+
+FurnitureSim Environments
+-------------------------
+
+The following environments are available in FurnitureSim:
+  * ``FurnitureSim-v0``: is mainly used for data collection, providing all available observations, including robot states, high-resolution RGB images, and depth inputs from wrist, front, and rear cameras.
+  * ``FurnitureSimImage-v0``: is used for pixel-based RL and IL by providing 224x224 wrist and front RGB images and robot states for observation.
+  * ``FurnitureSimImageFeature-v0``: provides pre-trained image features (R3M or VIP) instead of visual observations.
+  * ``FurnitureImageDummy-v0``: Dummy environment for pixel-based policies.
+  * ``FurnitureImageFeatureDummy-v0``: Dummy environment for policies with pre-trained visual encoders.
+
+
 FurnitureSim Configuration
 --------------------------
 
@@ -8,8 +20,8 @@ FurnitureSim can be configured with the following arguments:
 
 .. code::
 
-    import gym
     import furniture_bench
+    import gym
 
     env = gym.make(
       "FurnitureSim-v0",
@@ -109,16 +121,16 @@ Using this assembly script, you can collect ``num-demos`` demonstrations. Before
 
    python -m furniture_bench.scripts.collect_data --furniture <furniture> --scripted --is-sim --out-data-path <path/to/output> --gpu-id <gpu_id> --num-demos <num_demos> --headless
 
-   # E.g.,
+   # E.g., collect 100 demonstrations for one_leg assembly
    python -m furniture_bench.scripts.collect_data --furniture one_leg --scripted --is-sim --out-data-path /hdd/scripted_sim_demo --gpu-id 0 --num-demos 100 --headless
 
-To visualize a collected demonstration, use the following script with a demonstration path (a directory contains `pkl` and `mp4` files of one trajectory):
+To visualize a collected demonstration, use the following script with a demonstration path (i.e., a directory contains `pkl` and `mp4` files of one trajectory):
 
 .. code:: bash
 
    python -m furniture_bench.scripts.show_trajectory --data-dir <path/to/data>
 
-   # E.g.,
+   # E.g., show a sequence of three camera inputs with metadata
    python -m furniture_bench.scripts.show_trajectory --data-dir /hdd/scripted_sim_demo/one_leg/2022-12-22-03:19:48
 
 
