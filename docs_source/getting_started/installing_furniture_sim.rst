@@ -68,6 +68,7 @@ Install FurnitureSim using Docker (Option 2)
   export CLIENT_DOCKER=furniturebench/client-gpu:latest
 
   # Case 2: build locally
+  DOCKER_BUILDKIT=1 docker build -t client-gpu . -f docker/client_gpu.Dockerfile
   export CLIENT_DOCKER=client-gpu
 
 3. Set the environment variables following :ref:`Run Client`.
@@ -100,6 +101,8 @@ Test FurnitureSim Installation
 
 .. code:: bash
 
+  # In the Docker container,
+  cd /furniture-bench
   python -m furniture_bench.scripts.run_sim_env --furniture one_leg --scripted
 
 

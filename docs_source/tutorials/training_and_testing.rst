@@ -7,7 +7,7 @@ This tutorial shows how to train and evaluate a policy on FurnitureBench and Fur
 Prerequisites
 ~~~~~~~~~~~~~
 
-* Install the packages for benchmarking:
+* Install the following packages to train and test BC and Implicit Q-Learning policies:
 
   .. code::
 
@@ -16,6 +16,7 @@ Prerequisites
     pip install -e r3m
     pip install -e vip
     pip install -r implicit_q_learning/requirements.txt
+    conda install -c anaconda cudnn=8.2.1
 
 * Prepare training data. You can download the FurnitureBench dataset (:ref:`Dataset`) or generate one in FurnitureSim (:ref:`Automated Assembly Script`).
 
@@ -24,13 +25,15 @@ Evaluating Pre-trained Policies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This section shows how to evaluate pre-trained policies of BC and Implicit Q-Learning (IQL) algorithms.
 
-
 Evaluating Pre-trained IQL
 --------------------------
 
 You can run our pre-trained IQL policies in FurnitureSim using ``implicit_q_learning/test_offline.py``.
 
 .. code::
+
+    # Disable memory allocation from JAX; otherwise it will cause out-of-memory (OOM) errors.
+    export XLA_PYTHON_CLIENT_PREALLOCATE=false
 
     cd <path/to/furniture-bench>
 
@@ -48,7 +51,7 @@ You can run our pre-trained IQL policies in FurnitureSim using ``implicit_q_lear
 ``one_leg_full_iql_r3m_med_1000``     / ``42``          IQL trained with 1000 real-world demos, medium randomness.
 ==============================================          ====================================================================================
 
-* To evaluate the real-world policies, you must change ``--env_name`` with the real-world environment: ``FurnitureBenchImage-v0`` for BC and ``FurnitureBenchImageFeature-v0`` for IQL.
+* To evaluate the real-world policies, you must change ``--env_name`` with the real-world environment: ``FurnitureBenchImageFeature-v0``.
 
 
 Evaluating Pre-trained BC
@@ -57,11 +60,12 @@ BC policies are evaluated using ``run.py``.
 
 .. code::
 
-    python -m run algo@rolf=bc env.id=FurnitureSimImage-v0 env.furniture=one_leg init_ckpt_path=<path/to/checkpoint> rolf.encoder_type=<encoder_type> is_train=False gpu=<gpu_id> rolf.resnet=<resnet_type> env.randomness=<randomness>
+    python -m run env.id=FurnitureSim-v0 env.furniture=one_leg run_prefix=<run_prefix> init_ckpt_path=<path/to/checkpoint> rolf.encoder_type=<encoder_type> is_train=False gpu=<gpu_id> env.randomness=<randomness>
 
     # E.g., evaluate a pre-trained BC policy with ResNet18 encoder
-    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim_1000 algo@rolf=bc env.id=FurnitureSimImage-v0 env.furniture=one_leg init_ckpt_path=checkpoints/ckpt/one_leg_full_bc_resnet18_low_sim_1000/ckpt_00000000050.pt rolf.encoder_type=resnet18 is_train=False gpu=0 rolf.resnet=resnet18 env.randomness=low
+    python -m run env.id=FurnitureSim-v0 env.furniture=one_leg run_prefix=one_leg_full_bc_resnet18_low_sim_1000 init_ckpt_path=checkpoints/ckpt/one_leg_full_bc_resnet18_low_sim_1000/ckpt_00000000050.pt rolf.encoder_type=resnet18 is_train=False gpu=0 env.randomness=low
 
+* To evaluate the real-world policies, set ``env.name=FurnitureBenchImage-v0``.
 
 Training a Policy from Scratch
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,23 +92,23 @@ The following command trains a BC policy. You can change ``rolf.encoder_type`` t
 
 .. code::
 
-    python -m run --config-path bc run_prefix=<run_prefix> rolf.demo_path=<path/to/processed/demo> env.furniture=<furniture> rolf.encoder_type=<encoder_type> gpu=<gpu_id>
+    python -m run run_prefix=<run_prefix> rolf.demo_path=<path/to/processed/demo> env.furniture=<furniture> rolf.encoder_type=<encoder_type> gpu=<gpu_id>
 
     # E.g., train BC with ResNet18 encoder
-    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim_1000 rolf.demo_path=one_leg_processed_1000/ env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0
+    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim rolf.demo_path=one_leg_processed_1000/ env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0
 
 
 Evaluating BC
 -------------
 
-To evaluate a BC policy, add ``is_train=False`` and the checkpoint path to evalute ``init_ckpt_path=log/FurnitureImageDummy-v0.bc.<run_prefix>.<seed>/<checkpoint name>``.
+To evaluate a BC policy, add ``is_train=False`` and the checkpoint path to evalute ``init_ckpt_path=log/FurnitureDummy-v0.bc.<run_prefix>.<seed>/<checkpoint name>``.
 
 .. code::
 
-    python -m run --config-path bc run_prefix=<run_prefix> env.furniture=<furniture> rolf.encoder_type=<encoder_type> gpu=<gpu_id> is_train=False init_ckpt_path=<path/to/checkpoint>
+    python -m run run_prefix=<run_prefix> env.furniture=<furniture> rolf.encoder_type=<encoder_type> gpu=<gpu_id> is_train=False init_ckpt_path=<path/to/checkpoint>
 
     # E.g., evaluate BC with ResNet18 encoder
-    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim_1000 env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0 is_train=False init_ckpt_path=log/FurnitureImageDummy-v0.bc.one_leg_full_bc_resnet18_low_sim_1000.123/ckpt_00000000050.pt
+    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0 is_train=False init_ckpt_path=log/FurnitureDummy-v0.bc.one_leg_full_bc_resnet18_low_sim.123/ckpt_00000000050.pt
 
 
 Training IQL
@@ -117,7 +121,7 @@ Training IQL
     python implicit_q_learning/extract_feature.py --furniture <furniture> --demo_dir <path/to/data> --out_file_path <path/to/converted_data> [--use_r3m | --use_vip]
 
     # E.g., extract R3M features from the dataset
-    python implicit_q_learning/extract_feature.py --furniture one_leg --demo_dir scripted_sim_demo/one_leg_processed/ --out_file_path scripted_sim_demo/one_leg_sim_1000.pkl --use_r3m
+    python implicit_q_learning/extract_feature.py --furniture one_leg --demo_dir scripted_sim_demo/one_leg_processed/ --out_file_path scripted_sim_demo/one_leg_sim.pkl --use_r3m
 
 2) You can train an IQL policy using the following script. If you want to log using ``wandb``, use these arguments: ``--wandb --wandb_entity <entity_name> --wandb_project <project_name>``.
 
@@ -126,7 +130,7 @@ Training IQL
     python implicit_q_learning/train_offline.py --env_name=FurnitureImageFeatureDummy-v0/<furniture> --config=implicit_q_learning/configs/furniture_config.py --run_name <run_name> --data_path=<path/to/pkl> --encoder_type=[vip | r3m]
 
     # E.g., train IQL with R3M features
-    python implicit_q_learning/train_offline.py --env_name=FurnitureImageFeatureDummy-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --run_name one_leg_sim --data_path=scripted_sim_demo/one_leg_sim_1000.pkl --encoder_type=r3m
+    python implicit_q_learning/train_offline.py --env_name=FurnitureImageFeatureDummy-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --run_name one_leg_sim --data_path=scripted_sim_demo/one_leg_sim.pkl --encoder_type=r3m
 
 
 Evaluating IQL

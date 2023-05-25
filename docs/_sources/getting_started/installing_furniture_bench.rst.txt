@@ -171,7 +171,7 @@ Install Base AprilTag
 The base AprilTag defines the world coordinate system; therefore, the camera will be set relative to this base tag. The position and angle of the base tag are critical for reproducibility; thus the placement of the base tag on the table should be precise.
 Be cautious when attaching the AprilTag, as it can easily be attached with tilted angles. Ensure that both the rulers and AprilTag are properly aligned and straight.
 
-1. Align tape ruler so that 0 cm is at the left of the table and plastic ruler so that 0 cm is at the top edge of the table, as illustrated in (a).
+1. Align the tape ruler so that 0 cm is at the left of the table and plastic ruler so that 0 cm is at the top edge of the table, as illustrated in (a).
 2. Place the center of the base tag at 24.5 cm horizontally and 37.5 cm vertically, as shown in (b). Make sure the two rulers are perpendicular.
 3. Check the direction of the base tag by observing its pattern: correct direction in (c).
 4. Use double-sided tape to affix the base tag. Note that wrinkled paper causes unreliable detection. Ensure the paper remains flat by attaching it with double-sided tape in all four corners.
@@ -438,10 +438,10 @@ To maintain the connection permanently, you can modify lines 12-15 in ``furnitur
 
 .. code-block:: bash
 
-    SERVER_IP="<IP of the server computer>"
-    CAM_WRIST_SERIAL="<serial number of the wrist camera>"
-    CAM_FRONT_SERIAL="<serial number of the front camera>"
-    CAM_REAR_SERIAL="<serial number of the rear camera>"
+    SERVER_IP = os.getenv("SERVER_IP", "<IP of the server computer>")
+    CAM_WRIST_SERIAL = os.getenv("CAM_WRIST_SERIAL", "<serial number of the wrist camera>")
+    CAM_FRONT_SERIAL = os.getenv("CAM_FRONT_SERIAL", "<serial number of the front camera>")
+    CAM_REAR_SERIAL = os.getenv("CAM_REAR_SERIAL", "<serial number of the rear camera>")
 
 To make sure that all the cameras are correctly installed and appropriately connected, execute the following command in the client Docker container and confirm the items in the checklist.
 

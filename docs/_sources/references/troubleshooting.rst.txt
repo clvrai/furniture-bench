@@ -146,16 +146,24 @@ Device Connections
     - Please double-check if you follow the instructions in the :ref:`Setup Oculus Quest 2` section.
     - If the problem persist, restart the Oculus.
 
-Training and Evaluation
+Training and Testing
 ~~~~~~~~~~~~~~~~~~~~~~~
+| **Q:** How can I resolve ``RuntimeError: GET was unable to find an engine to execute this computation`` error during the evaluation of IQL model?
 
-| **Q:** What should I do if I face a CUDA Out of memory (OOM) issue while trying to learn implicit_q_learning (IQL)?
+  **A:** This may be due to JAX version mismatch. Try to install a different version of JAX. For example, run the following command:
 
-  **A:** If you face a CUDA Out of memory (OOM) issue while trying to learn implicit_q_learning (IQL), it might be due to preallocated GPU memory. You can adjust the memory fraction by setting ``XLA_PYTHON_CLIENT_MEM_FRACTION=.XX`` to resolve this issue.
+  .. code:: bash
 
-| **Q:** What should I do if I face ``Access denied with the following error:`` or `FileNotFoundError: [Errno 2] No such file or directory: '/root/.r3m/r3m_50/model.pt'` while downloading r3m checkpoints?
+     conda install -c anaconda cudnn=8.2.1
+     pip install -U jax[cuda11_cudnn82] -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
-  **A:** This might be due to the permission issue. Please download the checkpoints manually from the Google Drive and copy them to the Docker image.
+| **Q:** What should I do if I face a ``CUDA Out of memory (OOM)`` issue while trying to learn implicit_q_learning?
+
+  **A:** It might be due to preallocated GPU memory by JAX. You can adjust the memory fraction by setting ``export XLA_PYTHON_CLIENT_PREALLOCATE=false`` to resolve this issue.
+
+| **Q:** What should I do if I face ``Access denied with the following error:`` or ``FileNotFoundError: [Errno 2] No such file or directory: '/root/.r3m/r3m_50/model.pt'`` while downloading r3m checkpoints?
+
+  **A:** This might be due to the permission issue. Please download the checkpoints manually from Google Drive and copy them to the Docker image.
 
   - (Here we show the example of downloading the checkpoint for ``r3m ResNet50``.)
   - Download the `checkpoint <https://drive.google.com/uc?id=1Xu0ssuG0N1zjZS54wmWzJ7-nb0-7XzbA>`__ in your local machine

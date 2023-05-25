@@ -467,20 +467,21 @@ You can install FurnitureSim using PyPI or Docker.</p>
 <li><p>Specify whether to pull the client Docker image from Docker Hub or build it locally:</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Case 1: pull from Docker Hub</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_DOCKER</span><span class="o">=</span>furniturebench/client-gpu:latest
+<span class="nb">export</span> <span class="nv">CLIENT_DOCKER</span><span class="o">=</span>furniturebench/client-gpu:latest
 
 <span class="c1"># Case 2: build locally</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_DOCKER</span><span class="o">=</span>client-gpu
+<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build -t client-gpu . -f docker/client_gpu.Dockerfile
+<span class="nb">export</span> <span class="nv">CLIENT_DOCKER</span><span class="o">=</span>client-gpu
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
 <li><p>Set the environment variables following <a class="reference internal" href="installing_furniture_bench.html#run-client"><span class="std std-ref">Run Client</span></a>.</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the absolute path to the furniture-bench repo</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
+<span class="nb">export</span> <span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
 
 <span class="c1"># Set the absolute path to Isaac Gym</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;path/to/isaacgym&gt;
+<span class="nb">export</span> <span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;path/to/isaacgym&gt;
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
@@ -495,13 +496,15 @@ You can install FurnitureSim using PyPI or Docker.</p>
 <ul class="simple">
 <li><p>Test FurnitureSim using the following command with a furniture name <code class="docutils literal notranslate"><span class="pre">&lt;furniture&gt;=[lamp|square_table|desk|drawer|cabinet|round_table|stool|chair|one_leg]</span></code>.</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.run_sim_env<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--no-action
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m furniture_bench.scripts.run_sim_env --furniture &lt;furniture&gt; --no-action
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>You can run our scripted agent for <code class="docutils literal notranslate"><span class="pre">one_leg</span></code> by adding <code class="docutils literal notranslate"><span class="pre">--scripted</span></code> to the arguments:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.run_sim_env<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># In the Docker container,</span>
+<span class="nb">cd</span> /furniture-bench
+python -m furniture_bench.scripts.run_sim_env --furniture one_leg --scripted
 </pre></div>
 </div>
 <div class="admonition note">
