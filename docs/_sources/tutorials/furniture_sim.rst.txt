@@ -6,11 +6,19 @@ FurnitureSim Environments
 -------------------------
 
 The following environments are available in FurnitureSim:
-  * ``FurnitureSim-v0``: is the main environment for FurnitureSim. By default, it provides 224x224 wrist and front RGB images, and robot states for observation. When initialized with ``full_obs=True``, it provides all available observations, including robot states, poses of the furniture parts, and RGB-D images from wrist, front, and rear cameras.
-  * ``FurnitureSimImageFeature-v0``: provides pre-trained image features (R3M or VIP) instead of visual observations.
-  * ``FurnitureDummy-v0``: Dummy environment for pixel-based policies.
-  * ``FurnitureImageFeatureDummy-v0``: Dummy environment for policies with pre-trained visual encoders.
-  * ``FurnitureSimLegacy-v0``: A legacy environment for FurnitureSim, which was employed in the main paper. Deprecated in favor of simpler and consistent APIs.
+  * ``FurnitureSim-v0`` is the most basic environment. The observation includes 224x224 images from the wrist and front cameras and the robot state.
+  * ``FurnitureSimFull-v0`` is mainly used for data collection, which serves all available observations: robot state, object poses, and color and depth images from the wrist, front, and rear cameras.
+  * ``FurnitureSimImageFeature-v0`` uses the pre-trained image features (R3M or VIP) as observation, instead of images.
+  * ``FurnitureSimState-v0`` is a state-based environment.
+  * ``FurnitureDummy-v0`` can be used if you only needs the envionment spec for pixel-based policies.
+  * ``FurnitureImageFeatureDummy-v0`` can be used if you only needs the environment spec for policies with pre-trained visual encoders.
+  * ``FurnitureSimLegacy-v0`` is the deprecated environment used in the main paper.
+
+
+.. warning::
+
+    FurnitureSim is not yet optimized for multi-environment simulation. It will be soon supported.
+
 
 FurnitureSim Configuration
 --------------------------
@@ -24,21 +32,22 @@ FurnitureSim can be configured with the following arguments:
 
     env = gym.make(
       "FurnitureSim-v0",
-      furniture=...,           # Specifies the type of furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].
-      num_envs=1,              # Number of parallel environments.
-      resize_img=True,         # If true, images are resized to 224 x 224.
-      full_obs=False           # If true, use all the available observations (i.e., RGB-D image from three cameras, proprioceptive states, and poses of the furniture parts.)
-      headless=False,          # If true, simulation runs without GUI.
-      compute_device_id=0,     # GPU device ID for simulation.
-      graphics_device_id=0,    # GPU device ID for rendering.
-      init_assembled=False,    # If true, the environment is initialized with assembled furniture.
-      np_step_out=False,       # If true, env.step() returns Numpy arrays.
-      channel_first=False,     # If true, images are returned in channel first format.
-      randomness="low",        # Level of randomness in the environment [low | med | high].
-      high_random_idx=-1,      # Index of the high randomness level (range: [0-2]). Default -1 will randomly select the index within the range.
-      save_camera_input=False, # If true, the initial camera inputs are saved.
-      record=False             # If true, videos of the wrist and front cameras' RGB inputs are recorded.
-      max_env_steps=3000,      # Maximum number of steps per episode.
+      furniture,                # Specifies the type of furniture [lamp | square_table | desk | drawer | cabinet | round_table | stool | chair | one_leg].
+      num_envs=1,               # Number of parallel environments.
+      obs_keys=None,            # List of observations.
+      concat_robot_state=False, # Whether to return robot_state in a vector or dictionary.
+      resize_img=True,          # If true, images are resized to 224 x 224.
+      headless=False,           # If true, simulation runs without GUI.
+      compute_device_id=0,      # GPU device ID for simulation.
+      graphics_device_id=0,     # GPU device ID for rendering.
+      init_assembled=False,     # If true, the environment is initialized with assembled furniture.
+      np_step_out=False,        # If true, env.step() returns Numpy arrays.
+      channel_first=False,      # If true, images are returned in channel first format.
+      randomness="low",         # Level of randomness in the environment [low | med | high].
+      high_random_idx=-1,       # Index of the high randomness level (range: [0-2]). Default -1 will randomly select the index within the range.
+      save_camera_input=False,  # If true, the initial camera inputs are saved.
+      record=False,             # If true, videos of the wrist and front cameras' RGB inputs are recorded.
+      max_env_steps=3000,       # Maximum number of steps per episode.
     )
 
 
@@ -60,31 +69,29 @@ FurnitureSim Arguments
 
     FurnitureSim initialized with an assembled `chair`.
 
+- ``resize_img`` will resize the images to 224 x 224. This argument is set to ``True`` by default. ``--high-res`` flag in ``run_sim_env.py`` is a negation of ``resize_img`` argument.
+
+.. code:: bash
+
+       python -m furniture_bench.scripts.run_sim_env --furniture <furniture> --init-assembled --save-camera-input
+
+.. figure:: ../_static/images/wrist_and_front_resized.png
+    :width: 448px
+    :height: 224px
+    :align: center
+
+    Resized 224x224 images.
+
 - ``save_camera_input`` saves camera inputs of the first frame of an episode to ``sim_camera/``.
 
 .. code:: bash
 
    python -m furniture_bench.scripts.run_sim_env --furniture <furniture> --init-assembled --save-camera-input
 
-
-.. image:: ../_static/images/wrist_and_front_resized.png
-    :width: 448px
-    :height: 224px
-    :align: center
-
-- ``full_obs`` provides all available observations, including robot states, poses of the furniture parts, and RGB-D images from wrist, front, and rear cameras.
-- ``resize_img`` will resize the images to 224 x 224. This argument is set to ``True`` by default.
-
-.. code:: bash
-
-       # ``--high-res`` flag in ``run_sim_env.py`` is a negation of ``resize_img`` argument.
-       python -m furniture_bench.scripts.run_sim_env --furniture <furniture> --init-assembled --save-camera-input --full-obs --high-res
-
-
 .. figure:: ../_static/images/camera_view.jpg
     :width: 450px
 
-    Wrist, front, and rear camera views of the `one_leg`.
+    Wrist, front, and rear camera views of `square_table`.
 
 - ``record`` records the wrist and front camera inputs and saves each episode in ``mp4`` to ``sim_record/``.
 
@@ -120,7 +127,7 @@ We provide automated furniture assembly scripts. It currently supports only ``on
     :width: 50%
     :alt: Assembly script
 
-Using this assembly script, you can collect ``num-demos`` demonstrations. If you use Docker, make sure you mount the output data path to the Docker container before you collect data.
+**Data Collection:** Using our scripted policy, you can collect ``num-demos`` demonstrations. If you use Docker, make sure you mount the output data path to the Docker container before you collect data.
 
 .. code:: bash
 
@@ -157,10 +164,10 @@ FurnitureSim supports teleoperation using a keyboard and Oculus Quest 2.
 You first need to set up Oculus Quest 2 by following :ref:`Teleoperation`.
 
 
-Importantly, due to authorization involving keyboard inputs and dependencies specific to Oculus Quest 2, teleoperation is presently only supported within Docker containers.
-
 To start FurnitureSim with teleoperation, execute the following command:
 
 .. code::
 
     python -m furniture_bench.scripts.collect_data --furniture <furniture> --out-data-path <path/to/output> --is-sim
+
+By default, both keyboard and Oculus Quest 2 will be used for teleoperation. You can also choose to use only keyboard (``--input-device keyboard``) or Oculus (``--input-device oculus``).
