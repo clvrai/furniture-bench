@@ -5,8 +5,8 @@ Troubleshooting
 
   <br/>
 
-Polymetis
-~~~~~~~~~
+[Q&A] Polymetis
+~~~~~~~~~~~~~~~
 
 **Q:** What should I do if I get the ``communication_constraints_violation`` error on the server while using Polymetis (Library for Franka robot interface)?
 
@@ -95,8 +95,9 @@ Polymetis
 
   **A:** It does not affect the functionality of the system, so you can ignore it.
 
-Device Connections
-~~~~~~~~~~~~~~~~~~
+
+[Q&A] Device Connections
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note::
     Make sure all the devices (cameras, Oculus if you are collecting the data) are using USB 3.x.
@@ -146,8 +147,10 @@ Device Connections
     - Please double-check if you follow the instructions in the :ref:`Setup Oculus Quest 2` section.
     - If the problem persist, restart the Oculus.
 
-Training and Testing
-~~~~~~~~~~~~~~~~~~~~~~~
+
+[Q&A] Training and Testing
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 | **Q:** How can I resolve ``RuntimeError: GET was unable to find an engine to execute this computation`` error during the evaluation of IQL model?
 
   **A:** This may be due to JAX version mismatch. Try to install a different version of JAX. For example, run the following command:
@@ -171,8 +174,8 @@ Training and Testing
   - Copy the checkpoint to the container by running ``docker cp <checkpoint_path> <container_id>:/root/.r3m/r3m_50/``
 
 
-Oculus
-~~~~~~
+[Q&A] Oculus
+~~~~~~~~~~~~
 
 | **Q:** What should I do to prevent sudden actions from the robot due to wrong signal readings when using Oculus?
 
@@ -182,8 +185,9 @@ Oculus
 
   **A:** Make sure to control the robot in the guidance area of Oculus, allow access to the Oculus, and verify that the device is visible and accessible by running adb devices. Also, check the Oculus is turned on (white light is on in the front).
 
-Camera
-~~~~~~
+
+[Q&A] Camera
+~~~~~~~~~~~~
 
 | **Q:** How can I check if my camera is connected stably?
 
@@ -211,8 +215,9 @@ Camera
       - Make sure recent firmware is installed. (Our setting was 05.13.00.50 version)
       - Make the camera is connected using USB 3.x
 
-Simulator
-~~~~~~~~~
+
+[Q&A] FurnitureSim
+~~~~~~~~~~~~~~~~~~
 
 | **Q:** What should I do if I encounter an error ``isaacgymenvs setup command: 'python_requires' must be a string containing valid version specifiers; Invalid specifier: '>=3.6.*`` during local installation?
 
@@ -262,8 +267,9 @@ Simulator
 
   **A:** It could happen when the input streams are blocked. The workaround is to press Ctrl+Z and then ``kill %1`` to terminate the first job.
 
-Gym
-~~~
+
+[Q&A] Gym
+~~~~~~~~~
 
 | **Q:** What should I do if I encounter an observation space error while working with Gym? (such as ``'python_requires' must be a string containing valid version specifiers; Invalid specifier: '>=3.6.*'``)
 

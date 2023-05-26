@@ -389,6 +389,12 @@ title="Print to PDF"
 <li><p>Go to “Settings &gt; System &gt; Developer” and disable “Guardian.”</p></li>
 <li><p>Connect your Oculus Quest 2 to the client computer with USB-A to USB-C cable.</p></li>
 </ol>
+<div class="line-block">
+<div class="line">If you are not using Docker, you need to install <code class="docutils literal notranslate"><span class="pre">oculus-reader</span></code> package following this <a class="reference external" href="https://github.com/rail-berkeley/oculus_reader">instruction</a>. If you already have ADB and git-lfs installed, you can simply install <code class="docutils literal notranslate"><span class="pre">oculus_reader</span></code>:</div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/rail-berkeley/oculus_reader.git
+</pre></div>
+</div>
 </section>
 <section id="start-teleoperation">
 <h2>Start Teleoperation<a class="headerlink" href="#start-teleoperation" title="Permalink to this headline">#</a></h2>
@@ -396,7 +402,7 @@ title="Print to PDF"
 <li><p>Before starting teleoperation, check whether the server daemon is running (see <a class="reference internal" href="../getting_started/installing_furniture_bench.html#run-server"><span class="std std-ref">Run Server</span></a>).</p></li>
 <li><p>In the client computer, execute the following script:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python furniture_bench/scripts/collect_data.py --furniture &lt;furniture&gt; --out-data-path &lt;/path/to/save/data&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/collect_data.py<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--out-data-path<span class="w"> </span>&lt;/path/to/save/data&gt;
 </pre></div>
 </div>
 <div class="admonition note">

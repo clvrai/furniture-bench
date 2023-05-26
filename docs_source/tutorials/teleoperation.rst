@@ -23,6 +23,12 @@ You need to set up Oculus Quest 2 on its first use.
 7. Go to "Settings > System > Developer" and disable "Guardian."
 8. Connect your Oculus Quest 2 to the client computer with USB-A to USB-C cable.
 
+| If you are not using Docker, you need to install ``oculus-reader`` package following this `instruction <https://github.com/rail-berkeley/oculus_reader>`_. If you already have ADB and git-lfs installed, you can simply install ``oculus_reader``:
+
+.. code:: bash
+
+  pip install git+https://github.com/rail-berkeley/oculus_reader.git
+
 
 Start Teleoperation
 ~~~~~~~~~~~~~~~~~~~
