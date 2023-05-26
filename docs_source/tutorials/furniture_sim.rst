@@ -10,6 +10,7 @@ The following environments are available in FurnitureSim:
   * ``FurnitureSimImageFeature-v0``: provides pre-trained image features (R3M or VIP) instead of visual observations.
   * ``FurnitureDummy-v0``: Dummy environment for pixel-based policies.
   * ``FurnitureImageFeatureDummy-v0``: Dummy environment for policies with pre-trained visual encoders.
+  * ``FurnitureSimLegacy-v0``: A legacy environment for FurnitureSim, which was employed in the main paper. Deprecated in favor of simpler and consistent APIs.
 
 FurnitureSim Configuration
 --------------------------

@@ -10,6 +10,7 @@ The following environments are available in FurnitureSim:
   * ``FurnitureSimImageFeature-v0``: provides pre-trained image features (R3M or VIP) instead of visual observations.
   * ``FurnitureDummy-v0``: Dummy environment for pixel-based policies.
   * ``FurnitureImageFeatureDummy-v0``: Dummy environment for policies with pre-trained visual encoders.
+  * ``FurnitureSimLegacy-v0``: A legacy environment for FurnitureSim, which was employed in the main paper. Deprecated in favor of simpler and consistent APIs.
 
 FurnitureSim Configuration
 --------------------------
@@ -70,10 +71,6 @@ FurnitureSim Arguments
     :width: 448px
     :height: 224px
     :align: center
-.. .. |image2| image:: ../_static/images/front_sim_resized.png
-..     :width: 224px
-..     :height: 224px
-
 
 - ``full_obs`` provides all available observations, including robot states, poses of the furniture parts, and RGB-D images from wrist, front, and rear cameras.
 - ``resize_img`` will resize the images to 224 x 224. This argument is set to ``True`` by default.
