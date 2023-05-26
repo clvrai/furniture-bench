@@ -157,8 +157,6 @@ FurnitureSim supports teleoperation using a keyboard and Oculus Quest 2.
 You first need to set up Oculus Quest 2 by following :ref:`Teleoperation`.
 
 
-Importantly, due to authorization involving keyboard inputs and dependencies specific to Oculus Quest 2, teleoperation is presently only supported within Docker containers.
-
 To start FurnitureSim with teleoperation, execute the following command:
 
 .. code::
