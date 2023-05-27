@@ -327,12 +327,27 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furniturebench-environments">
    FurnitureBench Environments
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#furniturebench-configuration">
-   FurnitureBench Configuration
-  </a>
   <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#environment-list">
+     Environment List
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#furniturebench-configuration">
+     FurnitureBench Configuration
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#furniturebench-env-step">
+     FurnitureBench
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       env.step
+      </span>
+     </code>
+    </a>
+   </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#furniturebench-arguments">
      FurnitureBench Arguments
@@ -385,12 +400,27 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furniturebench-environments">
    FurnitureBench Environments
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#furniturebench-configuration">
-   FurnitureBench Configuration
-  </a>
   <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#environment-list">
+     Environment List
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#furniturebench-configuration">
+     FurnitureBench Configuration
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#furniturebench-env-step">
+     FurnitureBench
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       env.step
+      </span>
+     </code>
+    </a>
+   </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#furniturebench-arguments">
      FurnitureBench Arguments
@@ -434,6 +464,8 @@ title="Print to PDF"
 <h1>How to Use FurnitureBench<a class="headerlink" href="#how-to-use-furniturebench" title="Permalink to this headline">#</a></h1>
 <section id="furniturebench-environments">
 <h2>FurnitureBench Environments<a class="headerlink" href="#furniturebench-environments" title="Permalink to this headline">#</a></h2>
+<section id="environment-list">
+<h3>Environment List<a class="headerlink" href="#environment-list" title="Permalink to this headline">#</a></h3>
 <dl class="simple">
 <dt>The following environments are available in FurnitureBench:</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">FurnitureBench-v0</span></code>: is mainly used for data collection, providing all available observations, including robot states, high-resolution RGB images, and depth inputs from wrist, front, and rear cameras.</p></li>
@@ -446,7 +478,7 @@ title="Print to PDF"
 </dl>
 </section>
 <section id="furniturebench-configuration">
-<h2>FurnitureBench Configuration<a class="headerlink" href="#furniturebench-configuration" title="Permalink to this headline">#</a></h2>
+<h3>FurnitureBench Configuration<a class="headerlink" href="#furniturebench-configuration" title="Permalink to this headline">#</a></h3>
 <p>FurnitureBench can be configured with the following arguments:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">furniture_bench</span>
 <span class="kn">import</span> <span class="nn">gym</span>
@@ -469,6 +501,36 @@ title="Print to PDF"
 <span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="furniturebench-env-step">
+<h3>FurnitureBench <code class="docutils literal notranslate"><span class="pre">env.step</span></code><a class="headerlink" href="#furniturebench-env-step" title="Permalink to this headline">#</a></h3>
+<p>The input and output of the APIs are as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd"># Input</span>
+<span class="sd">action: np.ndarray (shape: (8,)) # 3D EE delta position, 4D EE delta rotation (quaternion), and 1D gripper.Range to [-1, 1].</span>
+
+<span class="sd"># Output</span>
+<span class="sd">obs: Observation in dictionary format.</span>
+<span class="sd">reward: float # Reward of the action.</span>
+<span class="sd">done: boolean # True if the episode is terminated.</span>
+<span class="sd">info: Dictionary of additional information.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
+    <span class="s2">&quot;FurnitureBench-v0&quot;</span><span class="p">,</span>
+    <span class="n">furniture</span><span class="o">=</span><span class="s1">&#39;one_leg&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">ac</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="c1"># np.ndarray shape (8,)</span>
+    <span class="n">ob</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ob</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>                <span class="c1"># [&#39;color_image1&#39;, &#39;color_image2&#39;, &#39;color_imag3&#39;, &#39;depth_image1&#39;, &#39;depth_image2&#39;, &#39;depth_image3&#39;, &#39;robot_state&#39;, &#39;parts_poses&#39;]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ob</span><span class="p">[</span><span class="s1">&#39;robot_state&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="c1"># [&#39;ee_pos&#39;, &#39;ee_quat&#39;, &#39;ee_pos_vel&#39;, &#39;ee_ori_vel&#39;, &#39;gripper_width&#39;, &#39;joint_positions&#39;, &#39;joint_velocities&#39;, &#39;joint_torques&#39;]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ob</span><span class="p">[</span><span class="s1">&#39;color_image1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># Wrist camera of shape (1, 3, 224, 224)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ob</span><span class="p">[</span><span class="s1">&#39;color_image2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># Front camera os shape (1, 3, 224, 224)</span>
+</pre></div>
+</div>
+</section>
 <section id="furniturebench-arguments">
 <h3>FurnitureBench Arguments<a class="headerlink" href="#furniturebench-arguments" title="Permalink to this headline">#</a></h3>
 <ul class="simple">

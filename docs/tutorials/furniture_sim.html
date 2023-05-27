@@ -327,12 +327,27 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furnituresim-environments">
    FurnitureSim Environments
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#furnituresim-configuration">
-   FurnitureSim Configuration
-  </a>
   <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#environment-list">
+     Environment List
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#furnituresim-configuration">
+     FurnitureSim Configuration
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#furnituresim-env-step">
+     FurnitureSim
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       env.step
+      </span>
+     </code>
+    </a>
+   </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#furnituresim-arguments">
      FurnitureSim Arguments
@@ -373,12 +388,27 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#furnituresim-environments">
    FurnitureSim Environments
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#furnituresim-configuration">
-   FurnitureSim Configuration
-  </a>
   <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#environment-list">
+     Environment List
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#furnituresim-configuration">
+     FurnitureSim Configuration
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#furnituresim-env-step">
+     FurnitureSim
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       env.step
+      </span>
+     </code>
+    </a>
+   </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#furnituresim-arguments">
      FurnitureSim Arguments
@@ -410,14 +440,16 @@ title="Print to PDF"
 <h1>How to Use FurnitureSim<a class="headerlink" href="#how-to-use-furnituresim" title="Permalink to this headline">#</a></h1>
 <section id="furnituresim-environments">
 <h2>FurnitureSim Environments<a class="headerlink" href="#furnituresim-environments" title="Permalink to this headline">#</a></h2>
+<section id="environment-list">
+<h3>Environment List<a class="headerlink" href="#environment-list" title="Permalink to this headline">#</a></h3>
 <dl class="simple">
 <dt>The following environments are available in FurnitureSim:</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSim-v0</span></code> is the most basic environment. The observation includes 224x224 images from the wrist and front cameras and the robot state.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimFull-v0</span></code> is mainly used for data collection, which serves all available observations: robot state, object poses, and color and depth images from the wrist, front, and rear cameras.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImageFeature-v0</span></code> uses the pre-trained image features (R3M or VIP) as observation, instead of images.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimImageFeature-v0</span></code> uses the pre-trained image features (R3M or VIP) as observation instead of images.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimState-v0</span></code> is a state-based environment.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureDummy-v0</span></code> can be used if you only needs the envionment spec for pixel-based policies.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageFeatureDummy-v0</span></code> can be used if you only needs the environment spec for policies with pre-trained visual encoders.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureDummy-v0</span></code> can be used if you only need the environment spec for pixel-based policies.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FurnitureImageFeatureDummy-v0</span></code> can be used if you only need the environment spec for policies with pre-trained visual encoders.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">FurnitureSimLegacy-v0</span></code> is the deprecated environment used in the main paper.</p></li>
 </ul>
 </dd>
@@ -428,7 +460,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="furnituresim-configuration">
-<h2>FurnitureSim Configuration<a class="headerlink" href="#furnituresim-configuration" title="Permalink to this headline">#</a></h2>
+<h3>FurnitureSim Configuration<a class="headerlink" href="#furnituresim-configuration" title="Permalink to this headline">#</a></h3>
 <p>FurnitureSim can be configured with the following arguments:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">furniture_bench</span>
 <span class="kn">import</span> <span class="nn">gym</span>
@@ -454,6 +486,39 @@ title="Print to PDF"
 <span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="furnituresim-env-step">
+<h3>FurnitureSim <code class="docutils literal notranslate"><span class="pre">env.step</span></code><a class="headerlink" href="#furnituresim-env-step" title="Permalink to this headline">#</a></h3>
+<p>The input and output of the APIs are as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd"># Input</span>
+<span class="sd">action: torch.Tensor or np.ndarray (shape: [num_envs, action_dim]) # Action space is 8-dimensional (3D EE delta position, 4D EE delta rotation (quaternion), and 1D gripper.Range to [-1, 1].</span>
+
+<span class="sd"># Output</span>
+<span class="sd">obs: Dictionary of observations. The keys are specified in obs_keys. The default keys are: [&#39;color_image1&#39;, &#39;color_image2&#39;, &#39;robot_state&#39;].</span>
+<span class="sd">reward: torch.Tensor or np.ndarray (shape: [num_envs, 1])</span>
+<span class="sd">done: torch.Tensor or np.ndarray (shape: [num_envs, 1])</span>
+<span class="sd">info: Dictionary of additional information.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
+    <span class="s2">&quot;FurnitureSim-v0&quot;</span><span class="p">,</span>
+    <span class="n">furniture</span><span class="o">=</span><span class="s1">&#39;one_leg&#39;</span><span class="p">,</span>
+    <span class="n">num_envs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">ac</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span> <span class="c1"># (1, 8) torch.Tensor</span>
+    <span class="n">ob</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ob</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>                <span class="c1"># [&#39;color_image1&#39;, &#39;color_image2&#39;, &#39;robot_state&#39;]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ob</span><span class="p">[</span><span class="s1">&#39;robot_state&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="c1"># [&#39;ee_pos&#39;, &#39;ee_quat&#39;, &#39;ee_pos_vel&#39;, &#39;ee_ori_vel&#39;]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ob</span><span class="p">[</span><span class="s1">&#39;color_image1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># Wrist camera of shape (1, 3, 224, 224)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ob</span><span class="p">[</span><span class="s1">&#39;color_image2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># Front camera os shape (1, 3, 224, 224)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">rew</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>                <span class="c1"># (1, 1)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">done</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>               <span class="c1"># (1, 1)</span>
+</pre></div>
+</div>
+</section>
 <section id="furnituresim-arguments">
 <h3>FurnitureSim Arguments<a class="headerlink" href="#furnituresim-arguments" title="Permalink to this headline">#</a></h3>
 <ul class="simple">

@@ -5,13 +5,16 @@ How to Use FurnitureSim
 FurnitureSim Environments
 -------------------------
 
+Environment List
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The following environments are available in FurnitureSim:
   * ``FurnitureSim-v0`` is the most basic environment. The observation includes 224x224 images from the wrist and front cameras and the robot state.
   * ``FurnitureSimFull-v0`` is mainly used for data collection, which serves all available observations: robot state, object poses, and color and depth images from the wrist, front, and rear cameras.
-  * ``FurnitureSimImageFeature-v0`` uses the pre-trained image features (R3M or VIP) as observation, instead of images.
+  * ``FurnitureSimImageFeature-v0`` uses the pre-trained image features (R3M or VIP) as observation instead of images.
   * ``FurnitureSimState-v0`` is a state-based environment.
-  * ``FurnitureDummy-v0`` can be used if you only needs the envionment spec for pixel-based policies.
-  * ``FurnitureImageFeatureDummy-v0`` can be used if you only needs the environment spec for policies with pre-trained visual encoders.
+  * ``FurnitureDummy-v0`` can be used if you only need the environment spec for pixel-based policies.
+  * ``FurnitureImageFeatureDummy-v0`` can be used if you only need the environment spec for policies with pre-trained visual encoders.
   * ``FurnitureSimLegacy-v0`` is the deprecated environment used in the main paper.
 
 
@@ -19,9 +22,8 @@ The following environments are available in FurnitureSim:
 
     FurnitureSim is not yet optimized for multi-environment simulation. It will be soon supported.
 
-
 FurnitureSim Configuration
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FurnitureSim can be configured with the following arguments:
 
@@ -49,6 +51,40 @@ FurnitureSim can be configured with the following arguments:
       record=False,             # If true, videos of the wrist and front cameras' RGB inputs are recorded.
       max_env_steps=3000,       # Maximum number of steps per episode.
     )
+
+FurnitureSim ``env.step``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The input and output of the APIs are as follows:
+
+.. code:: python
+
+    """
+    # Input
+    action: torch.Tensor or np.ndarray (shape: [num_envs, action_dim]) # Action space is 8-dimensional (3D EE delta position, 4D EE delta rotation (quaternion), and 1D gripper.Range to [-1, 1].
+
+    # Output
+    obs: Dictionary of observations. The keys are specified in obs_keys. The default keys are: ['color_image1', 'color_image2', 'robot_state'].
+    reward: torch.Tensor or np.ndarray (shape: [num_envs, 1])
+    done: torch.Tensor or np.ndarray (shape: [num_envs, 1])
+    info: Dictionary of additional information.
+    """
+    env = gym.make(
+        "FurnitureSim-v0",
+        furniture='one_leg',
+        num_envs=1,
+    )
+
+    while True:
+        ac = env.action_space.sample().float().to('cuda') # (1, 8) torch.Tensor
+        ob, rew, done, _ = env.step(ac)
+
+        print(ob.keys())                # ['color_image1', 'color_image2', 'robot_state']
+        print(ob['robot_state'].keys()) # ['ee_pos', 'ee_quat', 'ee_pos_vel', 'ee_ori_vel']
+        print(ob['color_image1'].shape) # Wrist camera of shape (1, 3, 224, 224)
+        print(ob['color_image2'].shape) # Front camera os shape (1, 3, 224, 224)
+        print(rew.shape)                # (1, 1)
+        print(done.shape)               # (1, 1)
 
 
 FurnitureSim Arguments

@@ -5,6 +5,9 @@ How to Use FurnitureBench
 FurnitureBench Environments
 ---------------------------
 
+Environment List
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The following environments are available in FurnitureBench:
   * ``FurnitureBench-v0``: is mainly used for data collection, providing all available observations, including robot states, high-resolution RGB images, and depth inputs from wrist, front, and rear cameras.
   * ``FurnitureBenchImage-v0``: is used for pixel-based RL and IL by providing 224x224 wrist and front RGB images and robot states for observation.
@@ -14,7 +17,7 @@ The following environments are available in FurnitureBench:
 
 
 FurnitureBench Configuration
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FurnitureBench can be configured with the following arguments:
 
@@ -39,6 +42,38 @@ FurnitureBench can be configured with the following arguments:
       record=False,             # If true, the video of the agent's observation is recorded.
       manual_reset=True         # If true, a manual reset of the environment is allowed.
     )
+
+FurnitureBench ``env.step``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The input and output of the APIs are as follows:
+
+.. code:: python
+
+    """
+    # Input
+    action: np.ndarray (shape: (8,)) # 3D EE delta position, 4D EE delta rotation (quaternion), and 1D gripper.Range to [-1, 1].
+
+    # Output
+    obs: Observation in dictionary format.
+    reward: float # Reward of the action.
+    done: boolean # True if the episode is terminated.
+    info: Dictionary of additional information.
+    """
+    env = gym.make(
+        "FurnitureBench-v0",
+        furniture='one_leg',
+    )
+
+    while True:
+        ac = env.action_space.sample() # np.ndarray shape (8,)
+        ob, rew, done, _ = env.step(ac)
+
+        print(ob.keys())                # ['color_image1', 'color_image2', 'color_imag3', 'depth_image1', 'depth_image2', 'depth_image3', 'robot_state', 'parts_poses']
+        print(ob['robot_state'].keys()) # ['ee_pos', 'ee_quat', 'ee_pos_vel', 'ee_ori_vel', 'gripper_width', 'joint_positions', 'joint_velocities', 'joint_torques']
+        print(ob['color_image1'].shape) # Wrist camera of shape (1, 3, 224, 224)
+        print(ob['color_image2'].shape) # Front camera os shape (1, 3, 224, 224)
+
 
 
 FurnitureBench Arguments
