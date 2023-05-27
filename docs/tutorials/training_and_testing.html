@@ -598,6 +598,14 @@ title="Print to PDF"
 <section id="evaluating-iql">
 <h3>Evaluating IQL<a class="headerlink" href="#evaluating-iql" title="Permalink to this headline">#</a></h3>
 <p>To evaluate an IQL policy, run <code class="docutils literal notranslate"><span class="pre">implicit_q_learning/test_offline.py</span></code> as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">XLA_PYTHON_CLIENT_PREALLOCATE</span><span class="o">=</span><span class="n">false</span>
+
+<span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">test_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">FurnitureSimImageFeature</span><span class="o">-</span><span class="n">v0</span><span class="o">/&lt;</span><span class="n">furniture</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="o">&lt;</span><span class="n">run_name</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=</span><span class="p">[</span><span class="n">vip</span> <span class="o">|</span> <span class="n">r3m</span><span class="p">]</span> <span class="o">--</span><span class="n">ckpt_step</span> <span class="o">&lt;</span><span class="n">ckpt_step</span><span class="o">&gt;</span>
+
+<span class="c1"># E.g., evaluate IQL with R3M features</span>
+<span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">test_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">FurnitureSimImageFeature</span><span class="o">-</span><span class="n">v0</span><span class="o">/</span><span class="n">one_leg</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">run_name</span> <span class="n">one_leg_sim</span> <span class="o">--</span><span class="n">encoder_type</span><span class="o">=</span><span class="n">r3m</span> <span class="o">--</span><span class="n">ckpt_step</span> <span class="mi">1000000</span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>

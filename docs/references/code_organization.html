@@ -329,66 +329,63 @@ title="Print to PDF"
 <h1>Code Organization<a class="headerlink" href="#code-organization" title="Permalink to this headline">#</a></h1>
 <p>Here we list the core files and folders in the codebase. The codebase is organized as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">furniture_bench</span>
-  <span class="o">|-</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>                       <span class="c1"># Register gym environments</span>
+  <span class="o">|-</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>                          <span class="c1"># Register gym environments</span>
   <span class="o">|-</span> <span class="n">assets</span>
-    <span class="o">|-</span> <span class="n">franka_description_ros</span>            <span class="c1"># Franka Panda URDF, mesh for simulation</span>
-    <span class="o">|-</span> <span class="n">furniture</span>                         <span class="c1"># Furniture URDF, mesh for simulation</span>
-  <span class="o">|-</span> <span class="n">config</span><span class="o">.</span><span class="n">py</span>                         <span class="c1"># The most important configuration file for the interface. It contains the configuration for the robot, camera, and the device interface.</span>
-  <span class="o">|-</span> <span class="n">sim_config</span><span class="o">.</span><span class="n">py</span>                     <span class="c1"># Configuration file for the simulation environment</span>
+    <span class="o">|-</span> <span class="n">franka_description_ros</span>             <span class="c1"># Franka Panda URDF, mesh for simulation</span>
+    <span class="o">|-</span> <span class="n">furniture</span>                          <span class="c1"># Furniture URDF, mesh for simulation</span>
+  <span class="o">|-</span> <span class="n">config</span><span class="o">.</span><span class="n">py</span>                            <span class="c1"># The configuration file for the environment. It contains the configuration for the robot, camera, furniture, and the device interface etc</span>
+  <span class="o">|-</span> <span class="n">sim_config</span><span class="o">.</span><span class="n">py</span>                        <span class="c1"># Configuration file for the simulation environment</span>
   <span class="o">|-</span> <span class="n">controllers</span>
-    <span class="o">|-</span> <span class="n">control_utils</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># Utility functions for controlling the robot</span>
-    <span class="o">|-</span> <span class="n">osc</span><span class="o">.</span><span class="n">py</span>                          <span class="c1"># Implementation of OSC controller in PyTorch (will run in the `server` workstation)</span>
+    <span class="o">|-</span> <span class="n">control_utils</span><span class="o">.</span><span class="n">py</span>                   <span class="c1"># Utility functions for controlling the robot</span>
+    <span class="o">|-</span> <span class="n">osc</span><span class="o">.</span><span class="n">py</span>                             <span class="c1"># Implementation of OSC controller in PyTorch (will run in the `server` workstation)</span>
   <span class="o">|-</span> <span class="n">data</span>
-    <span class="o">|-</span> <span class="n">collect_enum</span><span class="o">.</span><span class="n">py</span>                 <span class="c1"># Define data collection status</span>
-    <span class="o">|-</span> <span class="n">data_collector</span><span class="o">.</span><span class="n">py</span>               <span class="c1"># Main class for the data collection which rollout the environment, communicate with interface (e.g., teleoperation, automatic scripts), and save data</span>
+    <span class="o">|-</span> <span class="n">collect_enum</span><span class="o">.</span><span class="n">py</span>                    <span class="c1"># Define data collection status</span>
+    <span class="o">|-</span> <span class="n">data_collector</span><span class="o">.</span><span class="n">py</span>                  <span class="c1"># Define data collection class that rollout the environment, get action from the interface (e.g., teleoperation, automatic scripts), and save data</span>
   <span class="o">|-</span> <span class="n">envs</span>
-    <span class="o">|-</span> <span class="n">policy_envs</span>
-      <span class="o">|-</span> <span class="n">furniture_dummy_env</span><span class="o">.</span><span class="n">py</span>        <span class="c1"># Env for training policies</span>
-      <span class="o">|-</span> <span class="n">furniture_image_env</span><span class="o">.</span><span class="n">py</span>        <span class="c1"># Env for rollout policies with image observations</span>
-      <span class="o">|-</span> <span class="n">furniture_image_dummy_env</span><span class="o">.</span><span class="n">py</span>  <span class="c1"># Env for training policies with image observations</span>
-      <span class="o">|-</span> <span class="n">furniture_image_sim_env</span><span class="o">.</span><span class="n">py</span>    <span class="c1"># Env for rollout policies with images in simulation</span>
-      <span class="o">|-</span> <span class="n">furniture_iql_env</span><span class="o">.</span><span class="n">py</span>          <span class="c1"># Env for rollout policies with images using IQL</span>
-      <span class="o">|-</span> <span class="n">furniture_iql_dummy_env</span><span class="o">.</span><span class="n">py</span>    <span class="c1"># Env for training policies with images using IQL</span>
-      <span class="o">|-</span> <span class="n">furniture_iql_sim_env</span><span class="o">.</span><span class="n">py</span>      <span class="c1"># Env for rollout policies with images in simulation using IQL</span>
-    <span class="o">|-</span> <span class="n">furniture_env</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># FurnitureBench environment</span>
-    <span class="o">|-</span> <span class="n">furniture_sim_env</span><span class="o">.</span><span class="n">py</span>            <span class="c1"># FurnitureSim environment</span>
-    <span class="o">|-</span> <span class="n">initialization_mode</span><span class="o">.</span><span class="n">py</span>          <span class="c1"># Initialization mode for the environment (e.g., randomness, skill modes)</span>
-  <span class="o">|-</span> <span class="n">furniture</span>                         <span class="c1"># Codes related to furniture and furniture parts</span>
-    <span class="o">|-</span> <span class="n">furniture</span><span class="o">.</span><span class="n">py</span>                    <span class="c1"># Define base class for all furniture. It contains the core functions and properties for the furniture (e.g., furniture parts, computing reward function, getting observation,etc.)</span>
-    <span class="o">|-</span> <span class="n">square_table</span><span class="o">.</span><span class="n">py</span>                 <span class="c1"># Define square table furniture</span>
-    <span class="o">|-</span> <span class="n">chair</span><span class="o">.</span><span class="n">py</span>                        <span class="c1"># Define chair furniture</span>
-    <span class="o">|-</span> <span class="o">...</span>                             <span class="c1"># Other furniture classes</span>
-    <span class="o">|-</span> <span class="n">parts</span>                           <span class="c1"># Define parts</span>
-      <span class="o">|-</span> <span class="n">part</span><span class="o">.</span><span class="n">py</span>                       <span class="c1"># Define base class for all furniture parts. It contains the core functions and properties for the furniture parts (e.g., reset pose, AprilTag detector, etc.)</span>
-      <span class="o">|-</span> <span class="n">cabinet_body</span><span class="o">.</span><span class="n">py</span>               <span class="c1"># Define cabinet body part</span>
-      <span class="o">|-</span> <span class="n">cabinet_door</span><span class="o">.</span><span class="n">py</span>               <span class="c1"># Define cabinet door part</span>
-      <span class="o">|-</span> <span class="o">...</span>                           <span class="c1"># Other furniture part classes</span>
-    <span class="o">|-</span> <span class="n">device</span>
-      <span class="o">|-</span> <span class="n">keyboard</span>
-        <span class="o">|-</span> <span class="n">keyboard_interface</span><span class="o">.</span><span class="n">py</span>       <span class="c1"># Control the robot using keyboard</span>
-      <span class="o">|-</span> <span class="n">oculus</span>
-        <span class="o">|-</span> <span class="n">oculus_interface</span><span class="o">.</span><span class="n">py</span>         <span class="c1"># Control the robot using Oculus</span>
-      <span class="o">|-</span> <span class="n">device_interface</span><span class="o">.</span><span class="n">py</span>           <span class="c1"># ABC for device interface</span>
-      <span class="o">|-</span> <span class="n">key_enum</span><span class="o">.</span><span class="n">py</span>                   <span class="c1"># Define key enum for keyboard interface</span>
-      <span class="o">|-</span> <span class="n">keyboard_oculus_interface</span><span class="o">.</span><span class="n">py</span>  <span class="c1"># Control the robot using keyboard and Oculus</span>
-      <span class="o">|-</span> <span class="n">utils</span><span class="o">.</span><span class="n">py</span>                      <span class="c1"># Utility functions for device interface (e.g., factory function for the device interface)</span>
-      <span class="o">|-</span> <span class="n">perception</span>
-        <span class="o">|-</span> <span class="n">apriltag</span><span class="o">.</span><span class="n">py</span>                 <span class="c1"># Define AprilTag detector class</span>
-        <span class="o">|-</span> <span class="n">image_utils</span><span class="o">.</span><span class="n">py</span>              <span class="c1"># Utility functions for image processing (e.g., image cropping, image resizing used for the policy)</span>
-        <span class="o">|-</span> <span class="n">realsense</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># Define Realsense camera class</span>
-      <span class="o">|-</span> <span class="n">robot</span>
-        <span class="o">|-</span> <span class="n">panda</span><span class="o">.</span><span class="n">py</span>                    <span class="c1"># Panda robot class which build interface to actual robot.</span>
-        <span class="o">|-</span> <span class="n">robot_state</span><span class="o">.</span><span class="n">py</span>              <span class="c1"># Define enum for properties of the robot and robot error</span>
-      <span class="o">|-</span> <span class="n">scripts</span>                       <span class="c1"># Define python scripts to run the code</span>
-        <span class="o">|-</span> <span class="n">calibrations</span><span class="o">.</span><span class="n">py</span>             <span class="c1"># Calibration of extrinsic of front camera</span>
-        <span class="o">|-</span> <span class="n">collect_data</span><span class="o">.</span><span class="n">py</span>             <span class="c1"># Script for data collection</span>
-        <span class="o">|-</span> <span class="n">preprocess_data</span><span class="o">.</span><span class="n">py</span>          <span class="c1"># Preprocessing of the data</span>
-        <span class="o">|-</span> <span class="n">reset</span><span class="o">.</span><span class="n">py</span>                    <span class="c1"># Move the robot to the initial position</span>
-        <span class="o">|-</span> <span class="n">run_cam_apriltag</span><span class="o">.</span><span class="n">py</span>         <span class="c1"># Run AprilTag detector for the all three cameras</span>
-        <span class="o">|-</span> <span class="n">show_trajectory</span><span class="o">.</span><span class="n">py</span>          <span class="c1"># Show the trajectory of the saved dataset</span>
-      <span class="o">|-</span> <span class="n">utils</span>                         <span class="c1"># Utility functions for the geometry, camera, robot control etc. (e.g., rotation matrix, quaternion, etc.)</span>
-        <span class="o">|-</span> <span class="n">detection</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># Related to camera reading and AprilTag pose estimation</span>
-        <span class="o">|-</span> <span class="n">pose</span><span class="o">.</span><span class="n">py</span>                     <span class="c1"># Utility for pose (e.g., rotation matrix, quaternion, etc.)</span>
+    <span class="o">|-</span> <span class="n">policy_envs</span>                        <span class="c1"># Environment with different observation spaces for the policy</span>
+      <span class="o">|-</span> <span class="n">furniture_bench_image_feature</span><span class="o">.</span><span class="n">py</span> <span class="c1"># FurnitureBench with image features (R3M or VIP) as observation instead of visual observations</span>
+      <span class="o">|-</span> <span class="n">furniture_bench_image</span><span class="o">.</span><span class="n">py</span>         <span class="c1"># FurnitureBench with 224x224 wrist and front RGB images and robot states as observation</span>
+      <span class="o">|-</span> <span class="n">furniture_sim_image_feature</span><span class="o">.</span><span class="n">py</span>   <span class="c1"># FurnitureSim with image features (R3M or VIP) as observation instead of visual observations</span>
+      <span class="o">|-</span> <span class="o">...</span>
+    <span class="o">|-</span> <span class="n">furniture_bench_env</span><span class="o">.</span><span class="n">py</span>             <span class="c1"># FurnitureBench environment</span>
+    <span class="o">|-</span> <span class="n">furniture_sim_env</span><span class="o">.</span><span class="n">py</span>               <span class="c1"># FurnitureSim environment</span>
+    <span class="o">|-</span> <span class="n">initialization_mode</span><span class="o">.</span><span class="n">py</span>             <span class="c1"># Initialization mode for the environment (e.g., randomness, skill modes)</span>
+    <span class="o">|-</span> <span class="n">observation</span><span class="o">.</span><span class="n">py</span>                     <span class="c1"># Define constant of observation keys</span>
+  <span class="o">|-</span> <span class="n">furniture</span>
+    <span class="o">|-</span> <span class="n">furniture</span><span class="o">.</span><span class="n">py</span>                       <span class="c1"># Define base class for all furniture. It contains the core functions and properties for the furniture (e.g., furniture parts, computing reward function, getting observation,etc.)</span>
+    <span class="o">|-</span> <span class="n">square_table</span><span class="o">.</span><span class="n">py</span>                    <span class="c1"># Define square_table furniture</span>
+    <span class="o">|-</span> <span class="n">chair</span><span class="o">.</span><span class="n">py</span>                           <span class="c1"># Define chair furniture</span>
+    <span class="o">|-</span> <span class="o">...</span>                                <span class="c1"># Other furniture classes</span>
+    <span class="o">|-</span> <span class="n">parts</span>
+      <span class="o">|-</span> <span class="n">part</span><span class="o">.</span><span class="n">py</span>                          <span class="c1"># Define base class for all furniture parts. It contains the core functions and properties for the furniture parts (e.g., reset pose, AprilTag detector, etc.)</span>
+      <span class="o">|-</span> <span class="n">cabinet_body</span><span class="o">.</span><span class="n">py</span>                  <span class="c1"># Define cabinet body part</span>
+      <span class="o">|-</span> <span class="n">cabinet_door</span><span class="o">.</span><span class="n">py</span>                  <span class="c1"># Define cabinet door part</span>
+      <span class="o">|-</span> <span class="o">...</span>                              <span class="c1"># Other furniture part classes</span>
+  <span class="o">|-</span> <span class="n">device</span>
+    <span class="o">|-</span> <span class="n">keyboard_interface</span><span class="o">.</span><span class="n">py</span>              <span class="c1"># Control the robot using keyboard</span>
+    <span class="o">|-</span> <span class="n">oculus_interface</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># Control the robot using Oculus</span>
+    <span class="o">|-</span> <span class="n">device_interface</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># ABC for device interface</span>
+    <span class="o">|-</span> <span class="n">key_enum</span><span class="o">.</span><span class="n">py</span>                        <span class="c1"># Define key enum for keyboard interface</span>
+    <span class="o">|-</span> <span class="n">keyboard_oculus_interface</span><span class="o">.</span><span class="n">py</span>       <span class="c1"># Control the robot using keyboard and Oculus</span>
+    <span class="o">|-</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>                        <span class="c1"># Utility functions for device interface (e.g., factory function for the device interface)</span>
+  <span class="o">|-</span> <span class="n">perception</span>
+    <span class="o">|-</span> <span class="n">apriltag</span><span class="o">.</span><span class="n">py</span>                        <span class="c1"># Define AprilTag detector class</span>
+    <span class="o">|-</span> <span class="n">image_utils</span><span class="o">.</span><span class="n">py</span>                     <span class="c1"># Utility functions for image processing (e.g., image cropping, image resizing used for the policy)</span>
+    <span class="o">|-</span> <span class="n">realsense</span><span class="o">.</span><span class="n">py</span>                       <span class="c1"># Define Realsense camera class</span>
+  <span class="o">|-</span> <span class="n">robot</span>
+    <span class="o">|-</span> <span class="n">panda</span><span class="o">.</span><span class="n">py</span>                           <span class="c1"># Panda robot class which build interface to actual robot</span>
+    <span class="o">|-</span> <span class="n">robot_state</span><span class="o">.</span><span class="n">py</span>                     <span class="c1"># Define enum for properties of the robot and robot error. Also define utility functions for the robot states (e.g., flatten robot states.)</span>
+  <span class="o">|-</span> <span class="n">scripts</span>
+    <span class="o">|-</span> <span class="n">calibration</span><span class="o">.</span><span class="n">py</span>                     <span class="c1"># Script for extrinsic calibration of front camera</span>
+    <span class="o">|-</span> <span class="n">collect_data</span><span class="o">.</span><span class="n">py</span>                    <span class="c1"># Script for data collection</span>
+    <span class="o">|-</span> <span class="n">preprocess_data</span><span class="o">.</span><span class="n">py</span>                 <span class="c1"># Script for preprocessing the data</span>
+    <span class="o">|-</span> <span class="n">reset</span><span class="o">.</span><span class="n">py</span>                           <span class="c1"># Move the robot to the initial position</span>
+    <span class="o">|-</span> <span class="n">run_cam_apriltag</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># Show camera image and AprilTag detection</span>
+    <span class="o">|-</span> <span class="n">show_trajectory</span><span class="o">.</span><span class="n">py</span>                 <span class="c1"># Show the trajectory of the saved dataset</span>
+  <span class="o">|-</span> <span class="n">utils</span>                                <span class="c1"># Utility functions for the geometry, camera, robot control etc. (e.g., rotation matrix, quaternion, etc.)</span>
+    <span class="o">|-</span> <span class="n">detection</span><span class="o">.</span><span class="n">py</span>                       <span class="c1"># Define functions for camera reading and AprilTag pose estimation</span>
+    <span class="o">|-</span> <span class="n">pose</span><span class="o">.</span><span class="n">py</span>                            <span class="c1"># Utility for pose (e.g., rotation matrix, quaternion, etc.)</span>
+    <span class="o">|-</span> <span class="o">...</span>
 </pre></div>
 </div>
 </section>
