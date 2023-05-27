@@ -534,6 +534,18 @@ We run the following commands with cabinet <a class="reference external" href="h
 <figure class="align-center">
 <a class="reference internal image-reference" href="../_images/trajectory_example.gif"><img alt="trajectory_example" src="../_images/trajectory_example.gif" style="width: 80%;" /></a>
 </figure>
+<p>Similarly, you can visualize trajectory you’ve collected by yourself own by setting <code class="docutils literal notranslate"><span class="pre">--data-path</span></code>, or <code class="docutils literal notranslate"><span class="pre">-data-dir</span></code> argument.
+<code class="docutils literal notranslate"><span class="pre">--data-path</span></code> specify single pickle file, while <code class="docutils literal notranslate"><span class="pre">--data-dir</span></code> is a demonstration directory (i.e., a directory containing <cite>pkl</cite> and <cite>mp4</cite> files of one trajectory):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.show_trajectory<span class="w"> </span>--data-path<span class="w"> </span>&lt;path/to/pkl/file&gt;
+python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.show_trajectory<span class="w"> </span>--data-dir<span class="w"> </span>&lt;path/to/data&gt;
+
+<span class="c1"># E.g., show a sequence of three camera inputs with metadata</span>
+python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.show_trajectory<span class="w"> </span>--data-dir<span class="w"> </span>/hdd/demo_path/one_leg/2022-12-22-03:19:48
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">furniture_bench</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">show_trajectory</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">data</span><span class="o">-</span><span class="nb">dir</span> <span class="o">&lt;</span><span class="n">your_data_dir</span><span class="o">&gt;</span>
+</pre></div>
+</div>
 </section>
 <section id="camera-calibration">
 <h3>Camera Calibration<a class="headerlink" href="#camera-calibration" title="Permalink to this headline">#</a></h3>
