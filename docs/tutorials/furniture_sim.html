@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>How to Use FurnitureSim &#8212; FurnitureBench</title>
-
+    
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
-
+    
   <link rel="stylesheet"
     href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -28,7 +28,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
-
+    
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
@@ -54,10 +54,10 @@
     <link rel="prev" title="How to Use FurnitureBench" href="furniture_bench.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
-
+    
 
     <!-- Google Analytics -->
-
+    
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
 <!-- Checkboxes to toggle the left sidebar -->
@@ -74,24 +74,24 @@
 <div class="announcement header-item noprint"></div>
 <div class="header header-item noprint"></div>
 
-
+    
     <div class="container-fluid" id="banner"></div>
 
-
+    
 
     <div class="container-xl">
       <div class="row">
-
+          
 <!-- Sidebar -->
 <div class="bd-sidebar noprint" id="site-navigation">
     <div class="bd-sidebar__content">
         <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
-
-
-
+      
+      
+      
       <h1 class="site-logo" id="site-title">FurnitureBench</h1>
-
+      
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
@@ -184,41 +184,41 @@
 </nav></div>
         <div class="bd-sidebar__bottom">
              <!-- To handle the deprecated key -->
-
+            
             <div class="navbar_extra_footer">
             Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
             </div>
-
+            
         </div>
     </div>
     <div id="rtd-footer-container"></div>
 </div>
 
 
+          
 
 
-
-
+          
 <!-- A tiny helper pixel to detect if we've scrolled -->
 <div class="sbt-scroll-pixel-helper"></div>
 <!-- Main content -->
 <div class="col py-0 content-container">
-
+    
     <div class="header-article row sticky-top noprint">
-
+        
 
 
 
 <div class="col py-1 d-flex header-article-main">
     <div class="header-article__left">
-
+        
         <label for="__navigation"
   class="headerbtn"
   data-toggle="tooltip"
 data-placement="right"
 title="Toggle navigation"
 >
-
+  
 
 <span class="headerbtn__icon-container">
   <i class="fas fa-bars"></i>
@@ -226,7 +226,7 @@ title="Toggle navigation"
 
 </label>
 
-
+        
     </div>
     <div class="header-article__right">
 <button onclick="toggleFullScreen()"
@@ -235,7 +235,7 @@ title="Toggle navigation"
 data-placement="bottom"
 title="Fullscreen mode"
 >
-
+  
 
 <span class="headerbtn__icon-container">
   <i class="fas fa-expand"></i>
@@ -248,7 +248,7 @@ title="Fullscreen mode"
 data-placement="bottom"
 title="Source repository"
 >
-
+  
 
 <span class="headerbtn__icon-container">
   <i class="fab fa-github"></i>
@@ -270,7 +270,7 @@ title="Source repository"
 data-placement="left"
 title="Download source file"
 >
-
+  
 
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
@@ -279,16 +279,16 @@ title="Download source file"
 </a>
 
       </li>
-
+      
       <li>
-
+        
 <button onclick="printPdf(this)"
   class="headerbtn"
   data-toggle="tooltip"
 data-placement="left"
 title="Print to PDF"
 >
-
+  
 
 <span class="headerbtn__icon-container">
   <i class="fas fa-file-pdf"></i>
@@ -297,15 +297,15 @@ title="Print to PDF"
 </button>
 
       </li>
-
+      
     </ul>
   </div>
 </div>
 <label for="__page-toc"
   class="headerbtn headerbtn-page-toc"
-
+  
 >
-
+  
 
 <span class="headerbtn__icon-container">
   <i class="fas fa-list"></i>
@@ -363,7 +363,7 @@ title="Print to PDF"
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
-
+                        
                         <div>
                             <h2> Contents </h2>
                         </div>
@@ -403,9 +403,9 @@ title="Print to PDF"
                 </div>
             </div>
             <main id="main-content" role="main">
-
+                
               <div>
-
+                
   <section id="how-to-use-furnituresim">
 <h1>How to Use FurnitureSim<a class="headerlink" href="#how-to-use-furnituresim" title="Permalink to this headline">#</a></h1>
 <section id="furnituresim-environments">
@@ -485,7 +485,7 @@ title="Print to PDF"
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">save_camera_input</span></code> saves camera inputs of the first frame of an episode to <code class="docutils literal notranslate"><span class="pre">sim_camera/</span></code>.</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.run_sim_env<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--init-assembled<span class="w"> </span>--save-camera-input
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m furniture_bench.scripts.run_sim_env --furniture &lt;furniture&gt; --init-assembled --save-camera-input
 </pre></div>
 </div>
 <figure class="align-default" id="id3">
@@ -516,10 +516,10 @@ title="Print to PDF"
 <a class="reference internal image-reference" href="../_images/assembly_script.gif"><img alt="Assembly script" src="../_images/assembly_script.gif" style="width: 50%;" /></a>
 </figure>
 <p><strong>Data Collection:</strong> Using our scripted policy, you can collect <code class="docutils literal notranslate"><span class="pre">num-demos</span></code> demonstrations. If you use Docker, make sure you mount the output data path to the Docker container before you collect data.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.collect_data<span class="w"> </span>--furniture<span class="w"> </span>&lt;furniture&gt;<span class="w"> </span>--scripted<span class="w"> </span>--is-sim<span class="w"> </span>--out-data-path<span class="w"> </span>&lt;path/to/output&gt;<span class="w"> </span>--gpu-id<span class="w"> </span>&lt;gpu_id&gt;<span class="w"> </span>--num-demos<span class="w"> </span>&lt;num_demos&gt;<span class="w"> </span>--headless
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m furniture_bench.scripts.collect_data --furniture &lt;furniture&gt; --scripted --is-sim --out-data-path &lt;path/to/output&gt; --gpu-id &lt;gpu_id&gt; --num-demos &lt;num_demos&gt; --headless
 
 <span class="c1"># E.g., collect 100 demonstrations for one_leg assembly</span>
-python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.collect_data<span class="w"> </span>--furniture<span class="w"> </span>one_leg<span class="w"> </span>--scripted<span class="w"> </span>--is-sim<span class="w"> </span>--out-data-path<span class="w"> </span>scripted_sim_demo<span class="w"> </span>--gpu-id<span class="w"> </span><span class="m">0</span><span class="w"> </span>--num-demos<span class="w"> </span><span class="m">100</span><span class="w"> </span>--headless
+python -m furniture_bench.scripts.collect_data --furniture one_leg --scripted --is-sim --out-data-path scripted_sim_demo --gpu-id <span class="m">0</span> --num-demos <span class="m">100</span> --headless
 </pre></div>
 </div>
 <p>Here are some additional flags for <code class="docutils literal notranslate"><span class="pre">collect_data.py</span></code>:</p>
@@ -531,7 +531,7 @@ python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m furniture_bench.scripts.show_trajectory --data-dir &lt;path/to/data&gt;
 
 <span class="c1"># E.g., show a sequence of three camera inputs with metadata</span>
-python<span class="w"> </span>-m<span class="w"> </span>furniture_bench.scripts.show_trajectory<span class="w"> </span>--data-dir<span class="w"> </span>scripted_sim_demo/one_leg/2022-12-22-03:19:48
+python -m furniture_bench.scripts.show_trajectory --data-dir scripted_sim_demo/one_leg/2022-12-22-03:19:48
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -554,10 +554,10 @@ You first need to set up Oculus Quest 2 by following <a class="reference interna
 
 
               </div>
-
+              
             </main>
             <footer class="footer-article noprint">
-
+                
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="furniture_bench.html" title="previous page">
@@ -580,20 +580,20 @@ You first need to set up Oculus Quest 2 by following <a class="reference interna
     </div>
     <div class="footer-content row">
         <footer class="col footer"><p>
-
+  
     By CLVR @ KAIST<br/>
-
+  
       &copy; Copyright 2023.<br/>
 </p>
         </footer>
     </div>
-
+    
 </div>
 
 
       </div>
     </div>
-
+  
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
   <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 

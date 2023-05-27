@@ -139,8 +139,9 @@ Evaluating IQL
 To evaluate an IQL policy, run ``implicit_q_learning/test_offline.py`` as follows:
 
 .. code::
+    export XLA_PYTHON_CLIENT_PREALLOCATE=false
 
-    python implicit_q_learning/test_offline.py --env_name=FurnitureSimImageFeature-v0/<furniture> --config=implicit_q_learning/configs/furniture_config.py --run_name <run_name> --encoder_type=[vip | r3m]
+    python implicit_q_learning/test_offline.py --env_name=FurnitureSimImageFeature-v0/<furniture> --config=implicit_q_learning/configs/furniture_config.py --run_name <run_name> --encoder_type=[vip | r3m] --ckpt_step <ckpt_step>
 
     # E.g., evaluate IQL with R3M features
-    python implicit_q_learning/test_offline.py --env_name=FurnitureSimImageFeature-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --run_name one_leg_sim --encoder_type=r3m
+    python implicit_q_learning/test_offline.py --env_name=FurnitureSimImageFeature-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --run_name one_leg_sim --encoder_type=r3m --ckpt_step 1000000

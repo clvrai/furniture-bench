@@ -81,7 +81,7 @@ Both for BC and IQL training, you need to convert a raw dataset as follows:
 
     python furniture_bench/scripts/preprocess_data.py --in-data-path <path/to/demos> --out-data-path <path/to/processed/demo>
 
-    # E.g., convert data in `scripted_sim_demo/one_leg` and store in `one_leg_processed`
+    # E.g., convert data in `scripted_sim_demo/one_leg` and store in `scripted_sim_demo/one_leg_processed`
     python furniture_bench/scripts/preprocess_data.py --in-data-path scripted_sim_demo/one_leg --out-data-path scripted_sim_demo/one_leg_processed
 
 
