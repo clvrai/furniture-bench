@@ -75,16 +75,15 @@ The input and output of the APIs are as follows:
         num_envs=1,
     )
 
-    while True:
-        ac = env.action_space.sample().float().to('cuda') # (1, 8) torch.Tensor
-        ob, rew, done, _ = env.step(ac)
+    ac = torch.tensor(env.action_space.sample()).float().to('cuda') # (1, 8) torch.Tensor
+    ob, rew, done, _ = env.step(ac)
 
-        print(ob.keys())                # ['color_image1', 'color_image2', 'robot_state']
-        print(ob['robot_state'].keys()) # ['ee_pos', 'ee_quat', 'ee_pos_vel', 'ee_ori_vel']
-        print(ob['color_image1'].shape) # Wrist camera of shape (1, 3, 224, 224)
-        print(ob['color_image2'].shape) # Front camera os shape (1, 3, 224, 224)
-        print(rew.shape)                # (1, 1)
-        print(done.shape)               # (1, 1)
+    print(ob.keys())                # ['color_image1', 'color_image2', 'robot_state']
+    print(ob['robot_state'].keys()) # ['ee_pos', 'ee_quat', 'ee_pos_vel', 'ee_ori_vel', 'gripper_width']
+    print(ob['color_image1'].shape) # Wrist camera of shape (1, 224, 224, 3)
+    print(ob['color_image2'].shape) # Front camera os shape (1, 224, 224, 3)
+    print(rew.shape)                # (1, 1)
+    print(done.shape)               # (1, 1)
 
 
 FurnitureSim Arguments
