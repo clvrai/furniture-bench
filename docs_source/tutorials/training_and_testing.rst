@@ -16,7 +16,6 @@ Prerequisites
     pip install -e r3m
     pip install -e vip
     pip install -r implicit_q_learning/requirements.txt
-    conda install -c anaconda cudnn=8.2.1
 
 * Prepare training data. You can download the FurnitureBench dataset (:ref:`Dataset`) or generate one in FurnitureSim (:ref:`Automated Assembly Script`).
 
@@ -73,18 +72,17 @@ Training a Policy from Scratch
 We provide a tutorial on how to train a policy from scratch using our codebase.
 
 
-Convert Data for Training
+Preprocess Data for Training
 -------------------------
 
 Both for BC and IQL training, you need to convert a raw dataset as follows:
 
 .. code::
 
-    python furniture_bench/scripts/convert_data.py --in-data-path <path/to/demos> --out-data-path <path/to/processed/demo>
+    python furniture_bench/scripts/preprocess_data.py --in-data-path <path/to/demos> --out-data-path <path/to/processed/demo>
 
     # E.g., convert data in `one_leg_1000` and store in `one_leg_processed_1000`
-    python furniture_bench/scripts/convert_data.py --in-data-path scripted_sim_demo/one_leg_1000 --out-data-path scripted_sim_demo/one_leg_processed_1000
-
+    python furniture_bench/scripts/preprocess_data.py --in-data-path scripted_sim_demo/one_leg --out-data-path scripted_sim_demo/one_leg_processed
 
 Training BC
 -----------
@@ -95,20 +93,21 @@ The following command trains a BC policy. You can change ``rolf.encoder_type`` t
     python -m run run_prefix=<run_prefix> rolf.demo_path=<path/to/processed/demo> env.furniture=<furniture> rolf.encoder_type=<encoder_type> gpu=<gpu_id>
 
     # E.g., train BC with ResNet18 encoder
-    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim rolf.demo_path=one_leg_processed_1000/ env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0
+    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim rolf.demo_path=scripted_sim_demo/one_leg_processed env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0
 
+The setup for BC training is specified in the file ``rolf/rolf/config/algo/bc.yaml``. This configuration will be merged with the default settings for the training. The merged configuration will be stored in the ``config`` directory, following the naming convention: ``FurnitureDummy-v0.bc.<run_prefix>.<seed>.yaml``.
 
 Evaluating BC
 -------------
 
-To evaluate a BC policy, add ``is_train=False`` and the checkpoint path to evalute ``init_ckpt_path=log/FurnitureDummy-v0.bc.<run_prefix>.<seed>/<checkpoint name>``.
+To evaluate a BC policy, add ``is_train=False`` and the checkpoint path to evalute ``init_ckpt_path=log/FurnitureDummy-v0.bc.<run_prefix>.<seed>/ckpt/<checkpoint name>``.
 
 .. code::
 
-    python -m run run_prefix=<run_prefix> env.furniture=<furniture> rolf.encoder_type=<encoder_type> gpu=<gpu_id> is_train=False init_ckpt_path=<path/to/checkpoint>
+    python -m run env.id=FurnitureSim-v0  run_prefix=<run_prefix> env.furniture=<furniture> rolf.encoder_type=<encoder_type> gpu=<gpu_id> is_train=False init_ckpt_path=<path/to/checkpoint>
 
     # E.g., evaluate BC with ResNet18 encoder
-    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0 is_train=False init_ckpt_path=log/FurnitureDummy-v0.bc.one_leg_full_bc_resnet18_low_sim.123/ckpt_00000000050.pt
+    python -m run env.id=FurnitureSim-v0  run_prefix=one_leg_full_bc_resnet18_low_sim env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0 is_train=False init_ckpt_path=log/FurnitureDummy-v0.bc.one_leg_full_bc_resnet18_low_sim.123/ckpt/ckpt_00000000050.pt
 
 
 Training IQL
@@ -139,8 +138,9 @@ Evaluating IQL
 To evaluate an IQL policy, run ``implicit_q_learning/test_offline.py`` as follows:
 
 .. code::
+    export XLA_PYTHON_CLIENT_PREALLOCATE=false
 
-    python implicit_q_learning/test_offline.py --env_name=FurnitureSimImageFeature-v0/<furniture> --config=implicit_q_learning/configs/furniture_config.py --run_name <run_name> --encoder_type=[vip | r3m]
+    python implicit_q_learning/test_offline.py --env_name=FurnitureSimImageFeature-v0/<furniture> --config=implicit_q_learning/configs/furniture_config.py --run_name <run_name> --encoder_type=[vip | r3m] --ckpt_step <ckpt_step>
 
     # E.g., evaluate IQL with R3M features
-    python implicit_q_learning/test_offline.py --env_name=FurnitureSimImageFeature-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --run_name one_leg_sim --encoder_type=r3m
+    python implicit_q_learning/test_offline.py --env_name=FurnitureSimImageFeature-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --run_name one_leg_sim --encoder_type=r3m --ckpt_step 1000000

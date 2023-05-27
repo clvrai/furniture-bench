@@ -127,7 +127,7 @@ Using this assembly script, you can collect ``num-demos`` demonstrations. If you
    python -m furniture_bench.scripts.collect_data --furniture <furniture> --scripted --is-sim --out-data-path <path/to/output> --gpu-id <gpu_id> --num-demos <num_demos> --headless
 
    # E.g., collect 100 demonstrations for one_leg assembly
-   python -m furniture_bench.scripts.collect_data --furniture one_leg --scripted --is-sim --out-data-path /hdd/scripted_sim_demo --gpu-id 0 --num-demos 100 --headless
+   python -m furniture_bench.scripts.collect_data --furniture one_leg --scripted --is-sim --out-data-path scripted_sim_demo --gpu-id 0 --num-demos 100 --headless
 
 Here are some additional flags for ``collect_data.py``:
 

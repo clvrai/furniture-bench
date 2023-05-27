@@ -213,7 +213,7 @@ Sometime gdown might operate slowly, or reject your download request due to acce
     python furniture_bench/scripts/download_dataset.py --randomness [low/med/high] --furniture <name of furniture> --out_dir <path/to/data> --use-rclone <--untar>
 
     # E.g., download lamp data with low randomness
-    python furniture_bench/scripts/download_data.py --randomness low --furniture lamp --out_dir ./furniture_dataset --use-rclone
+    python furniture_bench/scripts/download_dataset.py --randomness low --furniture lamp --out_dir ./furniture_dataset --use-rclone
 
     # E.g., download all furniture data with medium randomness
-    python furniture_bench/scripts/download_data.py --randomness med --furniture all --out_dir ./furniture_dataset --use-rclone
+    python furniture_bench/scripts/download_dataset.py --randomness med --furniture all --out_dir ./furniture_dataset --use-rclone
