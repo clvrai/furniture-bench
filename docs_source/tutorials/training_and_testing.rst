@@ -80,10 +80,10 @@ Both for BC and IQL training, you need to convert a raw dataset as follows:
 
 .. code::
 
-    python furniture_bench/scripts/convert_data.py --in-data-path <path/to/demos> --out-data-path <path/to/processed/demo>
+    python furniture_bench/scripts/preprocess_data.py --in-data-path <path/to/demos> --out-data-path <path/to/processed/demo>
 
-    # E.g., convert data in `one_leg_1000` and store in `one_leg_processed_1000`
-    python furniture_bench/scripts/convert_data.py --in-data-path scripted_sim_demo/one_leg_1000 --out-data-path scripted_sim_demo/one_leg_processed_1000
+    # E.g., convert data in `scripted_sim_demo/one_leg` and store in `one_leg_processed`
+    python furniture_bench/scripts/preprocess_data.py --in-data-path scripted_sim_demo/one_leg --out-data-path scripted_sim_demo/one_leg_processed
 
 
 Training BC
@@ -95,7 +95,7 @@ The following command trains a BC policy. You can change ``rolf.encoder_type`` t
     python -m run run_prefix=<run_prefix> rolf.demo_path=<path/to/processed/demo> env.furniture=<furniture> rolf.encoder_type=<encoder_type> gpu=<gpu_id>
 
     # E.g., train BC with ResNet18 encoder
-    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim rolf.demo_path=one_leg_processed_1000/ env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0
+    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim rolf.demo_path=scripted_sim_demo/one_leg_processed/ env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0
 
 
 Evaluating BC

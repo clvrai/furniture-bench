@@ -134,7 +134,7 @@ We provide automated furniture assembly scripts. It currently supports only ``on
    python -m furniture_bench.scripts.collect_data --furniture <furniture> --scripted --is-sim --out-data-path <path/to/output> --gpu-id <gpu_id> --num-demos <num_demos> --headless
 
    # E.g., collect 100 demonstrations for one_leg assembly
-   python -m furniture_bench.scripts.collect_data --furniture one_leg --scripted --is-sim --out-data-path /hdd/scripted_sim_demo --gpu-id 0 --num-demos 100 --headless
+   python -m furniture_bench.scripts.collect_data --furniture one_leg --scripted --is-sim --out-data-path scripted_sim_demo --gpu-id 0 --num-demos 100 --headless
 
 Here are some additional flags for ``collect_data.py``:
 
@@ -148,7 +148,7 @@ To visualize a collected demonstration, use the following script with a demonstr
    python -m furniture_bench.scripts.show_trajectory --data-dir <path/to/data>
 
    # E.g., show a sequence of three camera inputs with metadata
-   python -m furniture_bench.scripts.show_trajectory --data-dir /hdd/scripted_sim_demo/one_leg/2022-12-22-03:19:48
+   python -m furniture_bench.scripts.show_trajectory --data-dir scripted_sim_demo/one_leg/2022-12-22-03:19:48
 
 
 .. tip::

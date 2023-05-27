@@ -100,6 +100,7 @@ The wrist and front camera views are shown in the left and right panels, respect
 If you want to try out with the pre-recorded trajectories, you can download the ``.pkl`` files from :ref:`Download dataset`.
 We run the following commands with cabinet `trajectory <https://drive.google.com/file/d/1PSh0uvhf7nqFw4KYLf4gn4E7GKferUvD/view?usp=share_link>`__.
 
+
 .. code::
 
     python furniture_bench/scripts/show_trajectory.py --data-path 00149.pkl
@@ -109,6 +110,23 @@ We run the following commands with cabinet `trajectory <https://drive.google.com
     :align: center
     :width: 80%
     :alt: trajectory_example
+
+Similarly, you can visualize trajectory you've collected by yourself own by setting ``--data-path``, or ``-data-dir`` argument.
+``--data-path`` specify single pickle file, while ``--data-dir`` is a demonstration directory (i.e., a directory containing `pkl` and `mp4` files of one trajectory):
+
+.. code:: bash
+
+   python -m furniture_bench.scripts.show_trajectory --data-path <path/to/pkl/file>
+   python -m furniture_bench.scripts.show_trajectory --data-dir <path/to/data>
+
+   # E.g., show a sequence of three camera inputs with metadata
+   python -m furniture_bench.scripts.show_trajectory --data-dir /hdd/demo_path/one_leg/2022-12-22-03:19:48
+
+
+.. code::
+
+    python furniture_bench/scripts/show_trajectory.py --data-dir <your_data_dir>
+
 
 
 Camera Calibration

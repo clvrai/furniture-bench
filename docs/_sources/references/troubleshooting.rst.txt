@@ -199,8 +199,7 @@ Troubleshooting
 
 | **Q:** What should I do if I encounter a RuntimeError: Frame didn't arrive within 5000 error when using a camera?
 
-  **A:** You should unplug
-  your camera and then plug it back in.
+  **A:** Please unplug and replug the USB cable. 
 
 | **Q:** What does the error message “RuntimeError: xioctl(VIDIOC_S_FMT) failed Last Error: Device or resource busy” mean when working with a camera?
 
