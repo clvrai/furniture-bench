@@ -944,12 +944,12 @@ although you have the flexibility to adjust it during fine-grained calibration i
 <p>We install our software stack using Docker due to complex dependencies and customized packages for our setup (e.g., custom <a class="reference external" href="https://github.com/facebookresearch/fairo/tree/main/polymetis">Polymetis</a>).</p>
 <section id="install-client-software">
 <h3>Install Client Software<a class="headerlink" href="#install-client-software" title="Permalink to this headline">#</a></h3>
-<p>We provide a Docker image for data collection, training, and evaluation. We provide both CPU and GPU versions. The GPU-enabled image is built upon <code class="docutils literal notranslate"><span class="pre">nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04</span></code> and requires a machine to have a proper CUDA driver (515.105.01 in our case). Please refer to <a class="reference external" href="https://docs.nvidia.com/deploy/cuda-compatibility/index.html#deployment-consideration-forward">“compatibility of CUDA with different driver versions”</a> for details.</p>
+<p>We provide a Docker image for data collection, training, and evaluation. We provide both CPU and GPU versions. The GPU-enabled image is built upon <code class="docutils literal notranslate"><span class="pre">nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04</span></code> and requires a machine to have a proper CUDA driver (515.105.01 in our case). Please refer to <a class="reference external" href="https://docs.nvidia.com/deploy/cuda-compatibility/index.html#deployment-consideration-forward">“compatibility of CUDA with different driver versions”</a> for details.</p>
 <ol class="arabic simple">
 <li><p>Clone the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repository on the client computer. We mount it into the Docker image to enable editing the code on the host machine.</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/clvrai/furniture-bench.git
-<span class="nb">cd</span> furniture-bench
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/clvrai/furniture-bench.git
+<span class="nb">cd</span><span class="w"> </span>furniture-bench
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
@@ -959,19 +959,19 @@ although you have the flexibility to adjust it during fine-grained calibration i
 <div><ul>
 <li><p>Pull the pre-built Docker image from Docker Hub.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU version</span>
-docker pull furniturebench/client-gpu:latest
+docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client-gpu:latest
 
 <span class="c1"># CPU-only version</span>
-docker pull furniturebench/client:latest
+docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/client:latest
 </pre></div>
 </div>
 </li>
 <li><p>Or build the Docker image.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU version</span>
-<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build -t client-gpu . -f docker/client_gpu.Dockerfile
+<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>client-gpu<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/client_gpu.Dockerfile
 
 <span class="c1"># CPU-only version</span>
-<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build -t client . -f docker/client.Dockerfile
+<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>client<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/client.Dockerfile
 </pre></div>
 </div>
 </li>
@@ -984,8 +984,8 @@ docker pull furniturebench/client:latest
 <ol class="arabic simple">
 <li><p>Clone the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repository on the server computer.</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/clvrai/furniture-bench.git
-<span class="nb">cd</span> furniture-bench
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/clvrai/furniture-bench.git
+<span class="nb">cd</span><span class="w"> </span>furniture-bench
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
@@ -994,12 +994,12 @@ docker pull furniturebench/client:latest
 <blockquote>
 <div><ul>
 <li><p>Pull the pre-built Docker image from Docker Hub.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker pull furniturebench/server:latest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>furniturebench/server:latest
 </pre></div>
 </div>
 </li>
 <li><p>Or build the Docker image.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build -t server . -f docker/server.Dockerfile
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>server<span class="w"> </span>.<span class="w"> </span>-f<span class="w"> </span>docker/server.Dockerfile
 </pre></div>
 </div>
 </li>
@@ -1015,18 +1015,18 @@ docker pull furniturebench/client:latest
 <blockquote>
 <div><ul>
 <li><p>Set the absolute path to the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repo.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
 </pre></div>
 </div>
 </li>
 <li><p>(Optional) If you want to use FurnitureSim, specify the absolute path to IsaacGym downloaded from <a class="reference external" href="https://developer.nvidia.com/isaac-gym">https://developer.nvidia.com/isaac-gym</a>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;path/to/isaacgym&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ISAAC_GYM_PATH</span><span class="o">=</span>&lt;path/to/isaacgym&gt;
 </pre></div>
 </div>
 </li>
 <li><p>(Optional) Environment variable for extra mounting (e.g., for data collection). This will set Docker Volume flag <code class="docutils literal notranslate"><span class="pre">-v</span> <span class="pre">$HOST_DATA_MOUNT:$CONTAINER_DATA_MOUNT</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">HOST_DATA_MOUNT</span><span class="o">=</span>&lt;path/to/host_dir&gt;
-<span class="nb">export</span> <span class="nv">CONTAINER_DATA_MOUNT</span><span class="o">=</span>&lt;path/to/container_dir&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HOST_DATA_MOUNT</span><span class="o">=</span>&lt;path/to/host_dir&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">CONTAINER_DATA_MOUNT</span><span class="o">=</span>&lt;path/to/container_dir&gt;
 </pre></div>
 </div>
 </li>
@@ -1036,13 +1036,13 @@ docker pull furniturebench/client:latest
 <li><p>Run the client image. <code class="docutils literal notranslate"><span class="pre">launch_client.sh</span></code> will read the environment variables and run the Docker image. You need to specify the option (<code class="docutils literal notranslate"><span class="pre">--gpu</span></code>, <code class="docutils literal notranslate"><span class="pre">--cpu</span></code>, <code class="docutils literal notranslate"><span class="pre">--sim-gpu</span></code>) and the image type (<code class="docutils literal notranslate"><span class="pre">--built</span></code> or <code class="docutils literal notranslate"><span class="pre">--pulled</span></code>).</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># GPU image + locally built</span>
-./launch_client.sh --gpu --built
+./launch_client.sh<span class="w"> </span>--gpu<span class="w"> </span>--built
 
 <span class="c1"># CPU image + pulled from Docker Hub</span>
-./launch_client.sh --cpu --pulled
+./launch_client.sh<span class="w"> </span>--cpu<span class="w"> </span>--pulled
 
 <span class="c1"># GPU image with FurnitureSim + pulled from Docker Hub</span>
-./launch_client.sh --sim-gpu --pulled
+./launch_client.sh<span class="w"> </span>--sim-gpu<span class="w"> </span>--pulled
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -1058,22 +1058,22 @@ docker pull furniturebench/client:latest
 <a class="reference internal image-reference" href="../_images/example_network_setup.jpg"><img alt="example_network_setup" class="align-right" src="../_images/example_network_setup.jpg" style="width: 50%;" /></a>
 <p>The server, client, and robot communicate through a local Ethernet network, as shown in the figure on the right.</p>
 <p>To establish connections to the server and cameras, the client Docker container needs the following environment variables to be set:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SERVER_IP</span><span class="o">=</span>&lt;IP of the server computer&gt;  <span class="c1"># e.g., 192.168.0.138</span>
-<span class="nb">export</span> <span class="nv">CAM_WRIST_SERIAL</span><span class="o">=</span>&lt;serial number of the wrist camera&gt;
-<span class="nb">export</span> <span class="nv">CAM_FRONT_SERIAL</span><span class="o">=</span>&lt;serial number of the front camera&gt;
-<span class="nb">export</span> <span class="nv">CAM_REAR_SERIAL</span><span class="o">=</span>&lt;serial number of the rear camera&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SERVER_IP</span><span class="o">=</span>&lt;IP<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>server<span class="w"> </span>computer&gt;<span class="w">  </span><span class="c1"># e.g., 192.168.0.138</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CAM_WRIST_SERIAL</span><span class="o">=</span>&lt;serial<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>wrist<span class="w"> </span>camera&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">CAM_FRONT_SERIAL</span><span class="o">=</span>&lt;serial<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>front<span class="w"> </span>camera&gt;
+<span class="nb">export</span><span class="w"> </span><span class="nv">CAM_REAR_SERIAL</span><span class="o">=</span>&lt;serial<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>rear<span class="w"> </span>camera&gt;
 </pre></div>
 </div>
 <p>To maintain the connection permanently, you can modify lines 12-15 in <code class="docutils literal notranslate"><span class="pre">furniture_bench/config.py</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">SERVER_IP</span> <span class="o">=</span> os.getenv<span class="o">(</span><span class="s2">&quot;SERVER_IP&quot;</span>, <span class="s2">&quot;&lt;IP of the server computer&gt;&quot;</span><span class="o">)</span>
-<span class="nv">CAM_WRIST_SERIAL</span> <span class="o">=</span> os.getenv<span class="o">(</span><span class="s2">&quot;CAM_WRIST_SERIAL&quot;</span>, <span class="s2">&quot;&lt;serial number of the wrist camera&gt;&quot;</span><span class="o">)</span>
-<span class="nv">CAM_FRONT_SERIAL</span> <span class="o">=</span> os.getenv<span class="o">(</span><span class="s2">&quot;CAM_FRONT_SERIAL&quot;</span>, <span class="s2">&quot;&lt;serial number of the front camera&gt;&quot;</span><span class="o">)</span>
-<span class="nv">CAM_REAR_SERIAL</span> <span class="o">=</span> os.getenv<span class="o">(</span><span class="s2">&quot;CAM_REAR_SERIAL&quot;</span>, <span class="s2">&quot;&lt;serial number of the rear camera&gt;&quot;</span><span class="o">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">SERVER_IP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>os.getenv<span class="o">(</span><span class="s2">&quot;SERVER_IP&quot;</span>,<span class="w"> </span><span class="s2">&quot;&lt;IP of the server computer&gt;&quot;</span><span class="o">)</span>
+<span class="nv">CAM_WRIST_SERIAL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>os.getenv<span class="o">(</span><span class="s2">&quot;CAM_WRIST_SERIAL&quot;</span>,<span class="w"> </span><span class="s2">&quot;&lt;serial number of the wrist camera&gt;&quot;</span><span class="o">)</span>
+<span class="nv">CAM_FRONT_SERIAL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>os.getenv<span class="o">(</span><span class="s2">&quot;CAM_FRONT_SERIAL&quot;</span>,<span class="w"> </span><span class="s2">&quot;&lt;serial number of the front camera&gt;&quot;</span><span class="o">)</span>
+<span class="nv">CAM_REAR_SERIAL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>os.getenv<span class="o">(</span><span class="s2">&quot;CAM_REAR_SERIAL&quot;</span>,<span class="w"> </span><span class="s2">&quot;&lt;serial number of the rear camera&gt;&quot;</span><span class="o">)</span>
 </pre></div>
 </div>
 <p>To make sure that all the cameras are correctly installed and appropriately connected, execute the following command in the client Docker container and confirm the items in the checklist.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /furniture-bench
-python furniture_bench/scripts/run_cam_april.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/furniture-bench
+python<span class="w"> </span>furniture_bench/scripts/run_cam_april.py
 </pre></div>
 </div>
 <figure class="align-center" id="id4">
@@ -1123,20 +1123,20 @@ python furniture_bench/scripts/run_cam_april.py
 <ol class="arabic simple">
 <li><p>Set the absolute path to the <code class="docutils literal notranslate"><span class="pre">furniture-bench</span></code> repo in the server computer.</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FURNITURE_BENCH</span><span class="o">=</span>&lt;path/to/furniture-bench&gt;
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>Launch the server Docker container.</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./launch_server.sh --pulled  <span class="c1"># (case 1) Docker pull.</span>
-./launch_server.sh --built   <span class="c1"># (case 2) Local build.</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./launch_server.sh<span class="w"> </span>--pulled<span class="w">  </span><span class="c1"># (case 1) Docker pull.</span>
+./launch_server.sh<span class="w"> </span>--built<span class="w">   </span><span class="c1"># (case 2) Local build.</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
 <li><p>Specify IP of Franka Control (shop floor network), not IP of the Robot arm, in the server Docker container.</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ROBOT_IP</span><span class="o">=</span>&lt;IP of the robot controller&gt;  <span class="c1"># e.g., 192.168.0.10</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ROBOT_IP</span><span class="o">=</span>&lt;IP<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>robot<span class="w"> </span>controller&gt;<span class="w">  </span><span class="c1"># e.g., 192.168.0.10</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
@@ -1222,7 +1222,7 @@ Other programs, such as the camera setup, policy training, and data collection, 
 <ol class="arabic simple">
 <li><p>Install the obstacle with the guidance of the provided visualization tool:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python furniture_bench/scripts/calibration.py --target obstacle
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>furniture_bench/scripts/calibration.py<span class="w"> </span>--target<span class="w"> </span>obstacle
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">

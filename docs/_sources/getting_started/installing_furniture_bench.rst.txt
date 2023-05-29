@@ -313,7 +313,7 @@ We install our software stack using Docker due to complex dependencies and custo
 Install Client Software
 -----------------------
 
-We provide a Docker image for data collection, training, and evaluation. We provide both CPU and GPU versions. The GPU-enabled image is built upon ``nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04`` and requires a machine to have a proper CUDA driver (515.105.01 in our case). Please refer to `"compatibility of CUDA with different driver versions" <https://docs.nvidia.com/deploy/cuda-compatibility/index.html#deployment-consideration-forward>`__ for details.
+We provide a Docker image for data collection, training, and evaluation. We provide both CPU and GPU versions. The GPU-enabled image is built upon ``nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04`` and requires a machine to have a proper CUDA driver (515.105.01 in our case). Please refer to `"compatibility of CUDA with different driver versions" <https://docs.nvidia.com/deploy/cuda-compatibility/index.html#deployment-consideration-forward>`__ for details.
 
 1. Clone the ``furniture-bench`` repository on the client computer. We mount it into the Docker image to enable editing the code on the host machine.
 

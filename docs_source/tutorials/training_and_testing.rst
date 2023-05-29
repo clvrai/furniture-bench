@@ -7,15 +7,12 @@ This tutorial shows how to train and evaluate a policy on FurnitureBench and Fur
 Prerequisites
 ~~~~~~~~~~~~~
 
-* Install the following packages to train and test BC and Implicit Q-Learning policies:
+* Run following commands to install the dependencies for training and testing.
 
   .. code::
 
     cd <path/to/furniture-bench>
-    pip install -e rolf
-    pip install -e r3m
-    pip install -e vip
-    pip install -r implicit_q_learning/requirements.txt
+    ./install_model_deps.sh
 
 * Prepare training data. You can download the FurnitureBench dataset (:ref:`Dataset`) or generate one in FurnitureSim (:ref:`Automated Assembly Script`).
 
@@ -31,9 +28,6 @@ You can run our pre-trained IQL policies in FurnitureSim using ``implicit_q_lear
 
 .. code::
 
-    # Disable memory allocation from JAX; otherwise it will cause out-of-memory (OOM) errors.
-    export XLA_PYTHON_CLIENT_PREALLOCATE=false
-
     cd <path/to/furniture-bench>
 
     python implicit_q_learning/test_offline.py --env_name=FurnitureSimImageFeature-v0/one_leg --config=implicit_q_learning/configs/furniture_config.py --ckpt_step=1000000 --run_name one_leg_full_iql_r3m_low_sim_1000 --randomness low
@@ -48,6 +42,7 @@ You can run our pre-trained IQL policies in FurnitureSim using ``implicit_q_lear
 ``one_leg_full_iql_r3m_low_sim_1000`` / ``42``          IQL trained with 1000 scripted demos in simulation, low randomness.
 ``one_leg_full_iql_r3m_low_1000``     / ``42``          IQL trained with 1000 real-world demos, low randomness.
 ``one_leg_full_iql_r3m_med_1000``     / ``42``          IQL trained with 1000 real-world demos, medium randomness.
+``one_leg_full_iql_r3m_mixed_2000``   / ``42``          IQL trained with 2000 real-world demos, low and medium randomness.
 ==============================================          ====================================================================================
 
 * To evaluate the real-world policies, you must change ``--env_name`` with the real-world environment: ``FurnitureBenchImageFeature-v0``.

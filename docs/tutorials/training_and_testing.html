@@ -466,12 +466,9 @@ title="Print to PDF"
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">#</a></h2>
 <ul>
-<li><p>Install the following packages to train and test BC and Implicit Q-Learning policies:</p>
+<li><p>Run following commands to install the dependencies for training and testing.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">rolf</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">r3m</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">vip</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="o">./</span><span class="n">install_model_deps</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 </li>
@@ -484,10 +481,7 @@ title="Print to PDF"
 <section id="evaluating-pre-trained-iql">
 <h3>Evaluating Pre-trained IQL<a class="headerlink" href="#evaluating-pre-trained-iql" title="Permalink to this headline">#</a></h3>
 <p>You can run our pre-trained IQL policies in FurnitureSim using <code class="docutils literal notranslate"><span class="pre">implicit_q_learning/test_offline.py</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Disable memory allocation from JAX; otherwise it will cause out-of-memory (OOM) errors.</span>
-<span class="n">export</span> <span class="n">XLA_PYTHON_CLIENT_PREALLOCATE</span><span class="o">=</span><span class="n">false</span>
-
-<span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">furniture</span><span class="o">-</span><span class="n">bench</span><span class="o">&gt;</span>
 
 <span class="n">python</span> <span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">test_offline</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">env_name</span><span class="o">=</span><span class="n">FurnitureSimImageFeature</span><span class="o">-</span><span class="n">v0</span><span class="o">/</span><span class="n">one_leg</span> <span class="o">--</span><span class="n">config</span><span class="o">=</span><span class="n">implicit_q_learning</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">furniture_config</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">ckpt_step</span><span class="o">=</span><span class="mi">1000000</span> <span class="o">--</span><span class="n">run_name</span> <span class="n">one_leg_full_iql_r3m_low_sim_1000</span> <span class="o">--</span><span class="n">randomness</span> <span class="n">low</span>
 </pre></div>
@@ -515,6 +509,9 @@ title="Print to PDF"
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_med_1000</span></code>     / <code class="docutils literal notranslate"><span class="pre">42</span></code></p></td>
 <td><p>IQL trained with 1000 real-world demos, medium randomness.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">one_leg_full_iql_r3m_mixed_2000</span></code>   / <code class="docutils literal notranslate"><span class="pre">42</span></code></p></td>
+<td><p>IQL trained with 2000 real-world demos, low and medium randomness.</p></td>
 </tr>
 </tbody>
 </table>
