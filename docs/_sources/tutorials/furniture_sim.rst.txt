@@ -104,7 +104,7 @@ FurnitureSim Arguments
 
     FurnitureSim initialized with an assembled `chair`.
 
-- ``resize_img`` will resize the images to 224 x 224. This argument is set to ``True`` by default. ``--high-res`` flag in ``run_sim_env.py`` is a negation of ``resize_img`` argument.
+- ``save_camera_input`` saves camera inputs of the first frame of an episode to ``sim_camera/``.
 
 .. code:: bash
 
@@ -115,13 +115,14 @@ FurnitureSim Arguments
     :height: 224px
     :align: center
 
-    Resized 224x224 images.
+    Images from wrist and front camera.
 
-- ``save_camera_input`` saves camera inputs of the first frame of an episode to ``sim_camera/``.
+- To get all available observations, initialize ``FurnitureSimFull-v0`` environment.
+- ``resize_img`` will resize the images to 224 x 224. This argument is set to ``True`` by default. ``--high-res`` flag in ``run_sim_env.py`` is a negation of ``resize_img`` argument.
 
 .. code:: bash
 
-   python -m furniture_bench.scripts.run_sim_env --furniture <furniture> --init-assembled --save-camera-input
+   python -m furniture_bench.scripts.run_sim_env --furniture <furniture> --init-assembled --save-camera-input --env-id FurnitureSimFull-v0 --high-res
 
 .. figure:: ../_static/images/camera_view.jpg
     :width: 450px

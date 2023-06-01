@@ -101,8 +101,6 @@ Test FurnitureSim Installation
 
 .. code:: bash
 
-  # In the Docker container,
-  cd /furniture-bench
   python -m furniture_bench.scripts.run_sim_env --furniture one_leg --scripted
 
 
