@@ -1,0 +1,32 @@
+defaults:
+  - common
+  - ../data@data: maze
+  - _self_
+
+name: prior
+
+# Model
+img: true
+n_rollout_steps: 10
+kl_div_weight: 1e-2
+prior_input_res: 32
+n_input_frames: 2
+cond_decode: true
+batch_size: 128
+use_convs: false
+normalize: "batch"
+input_nc: 6 # number of input feature maps
+ngf: 8 # number of feature maps in shallowest level
+nz_enc: 32 # size of image encoder output feature
+
+# Training
+lr: 1e-3
+gradient_clip: None
+init_grad_clip: 0.001
+init_grad_clip_step: 100 # clip gradients in initial N steps to avoid NaNs
+log_every: 1
+evaluate_every: 5
+ckpt_every: 5
+is_train: true
+
+

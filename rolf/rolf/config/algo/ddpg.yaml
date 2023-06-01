@@ -1,0 +1,21 @@
+defaults:
+  - off_policy
+  - _self_
+
+name: ddpg
+
+actor_update_delay: 2000
+actor_update_freq: 2
+actor_target_update_freq: 2
+critic_target_update_freq: 2
+actor_soft_update_weight: 0.995
+critic_soft_update_weight: 0.995
+max_grad_norm: 40
+
+epsilon_greedy: false
+epsilon_greedy_eps: 0.3
+expl_noise: 0.1
+
+gaussian_policy: false
+
+absorbing_state: false

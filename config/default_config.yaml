@@ -1,0 +1,66 @@
+defaults:
+  - algo@rolf: bc
+  - env: default
+  - _self_
+  - override hydra/hydra_logging: none
+  - override hydra/job_logging: stdout
+
+num_threads: 8
+
+
+env:
+  screen_size: [512, 512]
+  action_repeat: 1
+  absorbing_state: false
+  pixel_ob: false
+  state_ob: true
+  furniture: null
+  record: false
+  use_all_cam: false # Use all camera inputs.
+  randomness: 'low'
+  from_skill: 0
+  skill: -1
+  high_random_idx: 0
+  channel_first: true
+  np_step_out: true
+  id: FurnitureDummy-v0
+  concat_robot_state: true
+
+rolf:
+  reward_scale: 1.0
+  encoder: null
+  finetune_encoder: false
+  device: null
+  image_agmt: false
+  rotation: quaternion # quaternion, or ortho6d (6D representation).
+
+# Training
+seed: 123
+is_train: true
+init_ckpt_path: null
+init_ckpt_pretrained: false
+init_ckpt_dir: "checkpoints/ckpt"
+gpu: null
+device: null
+precision: 32
+
+# Evaluation
+ckpt_num: null
+num_eval: 1
+record_video: true
+record_video_caption: true
+record_demo: false
+
+# Log
+run_prefix: null
+notes: null
+log_root_dir: log
+wandb: false
+wandb_entity: 'clvr'
+wandb_project: 'furniture-bench'
+
+# Hydra
+hydra:
+  output_subdir: null
+  run:
+    dir: .

@@ -1,0 +1,44 @@
+defaults:
+  - algo@rolf: ppo
+  - env: default
+  - _self_
+  - override hydra/hydra_logging: none
+  - override hydra/job_logging: stdout
+
+
+env:
+  screen_size: [512, 512]
+  action_repeat: 1
+  absorbing_state: false
+  pixel_ob: false
+  state_ob: true
+
+# Training
+seed: 123
+is_train: true
+init_ckpt_path: null
+init_ckpt_pretrained: false
+gpu: null
+precision: 32
+pretrain: false
+
+# Evaluation
+ckpt_num: null
+num_eval: 1
+record_video: true
+record_video_caption: true
+record_demo: false
+
+# Log
+run_prefix: null
+notes: null
+log_root_dir: log
+wandb: false
+wandb_entity: null
+wandb_project: null
+
+# Hydra
+hydra:
+  output_subdir: null
+  run:
+    dir: .

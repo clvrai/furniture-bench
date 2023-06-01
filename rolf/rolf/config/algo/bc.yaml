@@ -1,0 +1,26 @@
+defaults:
+  - il
+  - _self_
+
+name: bc
+data_path: null
+
+ckpt_every: 10
+log_every: 1
+batch_size: 64
+gaussian_policy: false
+max_global_step: 50
+num_eval: 50
+ob_norm: false
+evaluate_every: 1
+bc_lr: 3e-4
+policy_mlp_dim: [512, 256, 256]
+val_split: 0.05
+use_log_std_bias: false
+normalizer: 'bn'
+policy_activation: relu
+rnn: False
+rnn_hidden_size: 1024
+rnn_num_layers: 2
+seq_len: 10
+num_demos: null

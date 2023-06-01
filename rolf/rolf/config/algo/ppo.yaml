@@ -1,0 +1,19 @@
+defaults:
+  - on_policy
+  - _self_
+
+name: ppo
+
+ppo_clip: 0.2
+value_loss_coeff: 0.5
+action_loss_coeff: 1.0
+entropy_loss_coeff: 0
+
+ppo_epoch: 10
+max_grad_norm: null
+actor_update_freq: 1
+ob_norm: true
+log_every: 1
+evaluate_every: 20
+ckpt_every: 20
+policy_activation: tanh

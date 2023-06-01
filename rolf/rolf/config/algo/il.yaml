@@ -1,0 +1,9 @@
+defaults:
+  - common
+  - _self_
+
+# IL parameters
+demo_path: null
+demo_low_level: false
+demo_subsample_interval: 1
+demo_sample_range: [0.0, 1.0]

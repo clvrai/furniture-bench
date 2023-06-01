@@ -1,0 +1,18 @@
+defaults:
+  - common
+  - _self_
+
+name: spirl
+
+warm_up_steps: 5e3
+max_global_step: 1e7   # num_epochs (100) * n_steps_per_epoch (1e5) in spirl hp
+n_steps_per_update: 1  # number of env steps collected per policy update
+
+log_every: 100
+evaluate_every: 1e5    # evaluate at the end of every epoch (1e5 steps)
+ckpt_every: 1e5
+sampler_init_every: 1e5
+
+sampler_config:
+  n_frames: 2
+

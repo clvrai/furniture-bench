@@ -1,0 +1,15 @@
+defaults:
+  - off_policy
+  - _self_
+
+name: sac
+
+actor_update_freq: 2
+critic_target_update_freq: 2
+target_entropy: null
+alpha_init_temperature: 0.1
+alpha_lr: 1e-4
+critic_soft_update_weight: 0.99
+critic_ensemble: 2
+warm_up_steps: 5e3
+evaluate_every: 1e5

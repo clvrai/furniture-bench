@@ -1,0 +1,11 @@
+id: maze
+reward_norm: 1.
+screen_size: [32, 32]
+action_repeat: 1
+frame_stack: 1
+absorbing_state: false
+pixel_ob: true
+state_ob: true
+agent_centric_view: true
+max_rollout_len: 2000
+downsize: 32

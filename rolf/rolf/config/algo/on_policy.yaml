@@ -1,0 +1,6 @@
+defaults:
+  - rl
+  - _self_
+
+gae_lambda: 0.95
+advantage_norm: true

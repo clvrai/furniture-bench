@@ -1,0 +1,33 @@
+defaults:
+  - il
+  - ../algo@rl_algo: ppo  # "ppo", "sac", "td3"
+  - _self_
+
+name: gail
+
+gail_entropy_loss_coeff: 0
+gail_reward: vanilla  # "vanilla", "gan", "d", "amp"
+discriminator_loss_type: gan  # "gan", "lsgan"
+discriminator_lr: 1e-4
+discriminator_mlp_dim: [256, 256]
+discriminator_activation: tanh  # "tanh", "elu", "relu"
+discriminator_update_freq: 4
+discriminator_replay_buffer: false
+discriminator_buffer_size: 100
+gail_use_action: true
+gail_use_next_ob: false
+gail_env_reward: 0
+gail_grad_penalty_coeff: 10
+
+train_every: 2048
+warm_up_steps: 0
+evaluate_every: 1
+ckpt_every: 20
+log_every: 20
+
+rl_algo:
+  train_every: ${..train_every}
+  warm_up_steps: ${..warm_up_steps}
+  evaluate_every: ${..evaluate_every}
+  ckpt_every: ${..ckpt_every}
+  log_every: ${..log_every}

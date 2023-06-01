@@ -1,0 +1,30 @@
+defaults:
+  - il
+  - _self_
+
+name: iris
+
+data_path: "/home/minho/pppis-900-trunc.pkl"
+  # data_path: "/Users/youngwoon/pppis-50.pkl"
+batch_size: 2048
+log_every: 1
+max_global_step: 200
+num_eval: 50
+evaluate_every: 1
+ob_norm: false
+bc_lr: 1e-3
+ckpt_every: 50
+
+skill_horizon: 20
+lstm_size: 512
+vae_dim: 64
+vae_kl_coef: 1e-5
+train_iter: 100
+goal_recon_coef: 1
+bc_coef: 1
+decoder:
+  hidden_dims: [1024,1024]
+  dense_act: relu
+encoder2:
+  hidden_dims: [1024,1024]
+  dense_act: relu

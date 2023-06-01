@@ -1,0 +1,10 @@
+id: kitchen
+reward_norm: 1.
+screen_size: [32, 32]
+action_repeat: 1
+frame_stack: 1
+absorbing_state: false
+pixel_ob: true
+state_ob: true
+max_rollout_len: 280
+downsize: 32

@@ -1,0 +1,6 @@
+id: Hopper-v2
+screen_size: [512, 512]
+action_repeat: 1
+absorbing_state: false
+pixel_ob: false
+state_ob: true
