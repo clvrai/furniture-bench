@@ -523,31 +523,31 @@ export LD_LIBRARY_PATH=/usr/local/cuda-11.7/lib64:$LD_LIBRARY_PATH
 the communication speed in Mbps located at the end of each line must be
 equal to or above 5000M (USB 3.0).</p>
 <p>For example,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ lsusb
-Bus <span class="m">002</span> Device <span class="m">006</span>: ID <span class="m">8086</span>:0b07 Intel Corp. Intel<span class="o">(</span>R<span class="o">)</span> RealSense<span class="o">(</span>TM<span class="o">)</span> Depth Camera <span class="m">435</span>
-Bus <span class="m">002</span> Device <span class="m">007</span>: ID <span class="m">8086</span>:0b07 Intel Corp. Intel<span class="o">(</span>R<span class="o">)</span> RealSense<span class="o">(</span>TM<span class="o">)</span> Depth Camera <span class="m">435</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>lsusb
+Bus<span class="w"> </span><span class="m">002</span><span class="w"> </span>Device<span class="w"> </span><span class="m">006</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">8086</span>:0b07<span class="w"> </span>Intel<span class="w"> </span>Corp.<span class="w"> </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>RealSense<span class="o">(</span>TM<span class="o">)</span><span class="w"> </span>Depth<span class="w"> </span>Camera<span class="w"> </span><span class="m">435</span>
+Bus<span class="w"> </span><span class="m">002</span><span class="w"> </span>Device<span class="w"> </span><span class="m">007</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">8086</span>:0b07<span class="w"> </span>Intel<span class="w"> </span>Corp.<span class="w"> </span>Intel<span class="o">(</span>R<span class="o">)</span><span class="w"> </span>RealSense<span class="o">(</span>TM<span class="o">)</span><span class="w"> </span>Depth<span class="w"> </span>Camera<span class="w"> </span><span class="m">435</span>
 
-Bus <span class="m">004</span> Device <span class="m">008</span>: ID <span class="m">2833</span>:0183 GenesysLogic USB3.2 Hub
-Bus <span class="m">004</span> Device <span class="m">002</span>: ID 05e3:0625 Genesys Logic, Inc. USB3.2 Hub
-Bus <span class="m">004</span> Device <span class="m">001</span>: ID 1d6b:0003 Linux Foundation <span class="m">3</span>.0 root hub
+Bus<span class="w"> </span><span class="m">004</span><span class="w"> </span>Device<span class="w"> </span><span class="m">008</span>:<span class="w"> </span>ID<span class="w"> </span><span class="m">2833</span>:0183<span class="w"> </span>GenesysLogic<span class="w"> </span>USB3.2<span class="w"> </span>Hub
+Bus<span class="w"> </span><span class="m">004</span><span class="w"> </span>Device<span class="w"> </span><span class="m">002</span>:<span class="w"> </span>ID<span class="w"> </span>05e3:0625<span class="w"> </span>Genesys<span class="w"> </span>Logic,<span class="w"> </span>Inc.<span class="w"> </span>USB3.2<span class="w"> </span>Hub
+Bus<span class="w"> </span><span class="m">004</span><span class="w"> </span>Device<span class="w"> </span><span class="m">001</span>:<span class="w"> </span>ID<span class="w"> </span>1d6b:0003<span class="w"> </span>Linux<span class="w"> </span>Foundation<span class="w"> </span><span class="m">3</span>.0<span class="w"> </span>root<span class="w"> </span>hub
 
-$ lsusb -t
-/:  Bus <span class="m">04</span>.Port <span class="m">1</span>: Dev <span class="m">1</span>, <span class="nv">Class</span><span class="o">=</span>root_hub, <span class="nv">Driver</span><span class="o">=</span>xhci_hcd/2p, 10000M
-    <span class="p">|</span>__ Port <span class="m">2</span>: Dev <span class="m">2</span>, If <span class="m">0</span>, <span class="nv">Class</span><span class="o">=</span>Hub, <span class="nv">Driver</span><span class="o">=</span>hub/4p, 5000M
-        <span class="p">|</span>__ Port <span class="m">2</span>: Dev <span class="m">8</span>, If <span class="m">0</span>, <span class="nv">Class</span><span class="o">=</span>Imaging, <span class="nv">Driver</span><span class="o">=</span>usbfs, 5000M
-        <span class="p">|</span>__ Port <span class="m">2</span>: Dev <span class="m">8</span>, If <span class="m">1</span>, <span class="nv">Class</span><span class="o">=</span>Vendor Specific Class, <span class="nv">Driver</span><span class="o">=</span>, 5000M
-        <span class="p">|</span>__ Port <span class="m">2</span>: Dev <span class="m">8</span>, If <span class="m">2</span>, <span class="nv">Class</span><span class="o">=</span>Vendor Specific Class, <span class="nv">Driver</span><span class="o">=</span>usbfs, 5000M
-/:  Bus <span class="m">02</span>.Port <span class="m">1</span>: Dev <span class="m">1</span>, <span class="nv">Class</span><span class="o">=</span>root_hub, <span class="nv">Driver</span><span class="o">=</span>xhci_hcd/6p, 5000M
-    <span class="p">|</span>__ Port <span class="m">2</span>: Dev <span class="m">7</span>, If <span class="m">0</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
-    <span class="p">|</span>__ Port <span class="m">2</span>: Dev <span class="m">7</span>, If <span class="m">1</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
-    <span class="p">|</span>__ Port <span class="m">2</span>: Dev <span class="m">7</span>, If <span class="m">2</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
-    <span class="p">|</span>__ Port <span class="m">2</span>: Dev <span class="m">7</span>, If <span class="m">3</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
-    <span class="p">|</span>__ Port <span class="m">2</span>: Dev <span class="m">7</span>, If <span class="m">4</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
-    <span class="p">|</span>__ Port <span class="m">5</span>: Dev <span class="m">6</span>, If <span class="m">4</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
-    <span class="p">|</span>__ Port <span class="m">5</span>: Dev <span class="m">6</span>, If <span class="m">2</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
-    <span class="p">|</span>__ Port <span class="m">5</span>: Dev <span class="m">6</span>, If <span class="m">0</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
-    <span class="p">|</span>__ Port <span class="m">5</span>: Dev <span class="m">6</span>, If <span class="m">3</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
-    <span class="p">|</span>__ Port <span class="m">5</span>: Dev <span class="m">6</span>, If <span class="m">1</span>, <span class="nv">Class</span><span class="o">=</span>Video, <span class="nv">Driver</span><span class="o">=</span>uvcvideo, 5000M
+$<span class="w"> </span>lsusb<span class="w"> </span>-t
+/:<span class="w">  </span>Bus<span class="w"> </span><span class="m">04</span>.Port<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>root_hub,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>xhci_hcd/2p,<span class="w"> </span>10000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">2</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Hub,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>hub/4p,<span class="w"> </span>5000M
+<span class="w">        </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">8</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Imaging,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>usbfs,<span class="w"> </span>5000M
+<span class="w">        </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">8</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Vendor<span class="w"> </span>Specific<span class="w"> </span>Class,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>,<span class="w"> </span>5000M
+<span class="w">        </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">8</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Vendor<span class="w"> </span>Specific<span class="w"> </span>Class,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>usbfs,<span class="w"> </span>5000M
+/:<span class="w">  </span>Bus<span class="w"> </span><span class="m">02</span>.Port<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>root_hub,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>xhci_hcd/6p,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
+<span class="w">    </span><span class="p">|</span>__<span class="w"> </span>Port<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>Dev<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>If<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="nv">Class</span><span class="o">=</span>Video,<span class="w"> </span><span class="nv">Driver</span><span class="o">=</span>uvcvideo,<span class="w"> </span>5000M
 </pre></div>
 </div>
 </div></blockquote>
@@ -572,8 +572,8 @@ $ lsusb -t
 </div>
 <blockquote>
 <div><p><strong>A:</strong> This may be due to JAX version mismatch. Try to install a different version of JAX. For example, run the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c anaconda <span class="nv">cudnn</span><span class="o">=</span><span class="m">8</span>.2.1
-pip install -U jax<span class="o">[</span>cuda11_cudnn82<span class="o">]</span> -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>anaconda<span class="w"> </span><span class="nv">cudnn</span><span class="o">=</span><span class="m">8</span>.2.1
+pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>jax<span class="o">[</span>cuda11_cudnn82<span class="o">]</span><span class="w"> </span>-f<span class="w"> </span>https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 </pre></div>
 </div>
 </div></blockquote>
@@ -654,9 +654,9 @@ camera and close it before running the desired program.</p>
 </div>
 <blockquote>
 <div><p><strong>A:</strong> execute the following commands, and then rerun the installation.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade pip wheel
-pip install <span class="nv">setuptools</span><span class="o">==</span><span class="m">58</span>
-pip install --upgrade <span class="nv">pip</span><span class="o">==</span><span class="m">22</span>.2.2
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span>wheel
+pip<span class="w"> </span>install<span class="w"> </span><span class="nv">setuptools</span><span class="o">==</span><span class="m">58</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span><span class="nv">pip</span><span class="o">==</span><span class="m">22</span>.2.2
 </pre></div>
 </div>
 </div></blockquote>
@@ -678,13 +678,13 @@ pip install --upgrade <span class="nv">pip</span><span class="o">==</span><span 
 <blockquote>
 <div><p><strong>A:</strong> You should specify vulkan explicitly.</p>
 <p>Shut down the current Docker container, and then run the following commands</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt install vulkan-tools
-<span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span>list vulkaninfo
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt<span class="w"> </span>install<span class="w"> </span>vulkan-tools
+<span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span>list<span class="w"> </span>vulkaninfo
 </pre></div>
 </div>
 <p>Rerun the Docker container, and then specify the device</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># e.g.</span>
-<span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span><span class="s1">&#39;10de:2204&#39;</span> python furniture_bench/scripts/run_sim_env.py --furniture square_table --no-action
+<span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span><span class="s1">&#39;10de:2204&#39;</span><span class="w"> </span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--no-action
 </pre></div>
 </div>
 </div></blockquote>
@@ -711,10 +711,10 @@ pip install --upgrade <span class="nv">pip</span><span class="o">==</span><span 
 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gym==0.21.0</span></code>.</p>
 </div></blockquote>
 <div class="line-block">
-<div class="line"><strong>Q:</strong> I am getting the error while running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gym==0.21.0</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code></div>
+<div class="line"><strong>Q:</strong> I am getting the error while running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gym==0.21.0</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">extras_require</span> <span class="pre">..</span></code>).</div>
 </div>
 <blockquote>
-<div><p><strong>A:</strong> Run the following commands</p>
+<div><p><strong>A:</strong> Run the following commands and then rerun the installation.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span> <span class="n">wheel</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="n">setuptools</span><span class="o">==</span><span class="mi">58</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span><span class="o">==</span><span class="mf">22.2.2</span>

@@ -199,7 +199,7 @@ Troubleshooting
 
 | **Q:** What should I do if I encounter a RuntimeError: Frame didn't arrive within 5000 error when using a camera?
 
-  **A:** Please unplug and replug the USB cable. 
+  **A:** Please unplug and replug the USB cable.
 
 | **Q:** What does the error message “RuntimeError: xioctl(VIDIOC_S_FMT) failed Last Error: Device or resource busy” mean when working with a camera?
 
@@ -275,9 +275,9 @@ Troubleshooting
   **A:** Install Gym version 0.21.0 by running
   ``pip install gym==0.21.0``.
 
-| **Q:** I am getting the error while running ``pip install gym==0.21.0`` or ``pip install -r requirements.txt``
+| **Q:** I am getting the error while running ``pip install gym==0.21.0`` (e.g., ``extras_require ..``).
 
-  **A:** Run the following commands
+  **A:** Run the following commands and then rerun the installation.
 
   .. code::
 
