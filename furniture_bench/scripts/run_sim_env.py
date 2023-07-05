@@ -57,11 +57,15 @@ def main():
         type=int,
         help="The index of high_randomness.",
     )
-
     parser.add_argument(
         "--env-id",
         default="FurnitureSim-v0",
         help="Environment id of FurnitureSim",
+    )
+    parser.add_argument(
+        "--replay-path",
+        type=str,
+        help='Path to the saved data to replay action.'
     )
 
     parser.add_argument("--num-envs", type=int, default=1)
@@ -127,14 +131,20 @@ def main():
         for ac in data["actions"]:
             ac = action_tensor(ac)
             env.step(ac)
-
     elif args.scripted:
         # Execute hard-coded assembly script.
         while not done:
             action, skill_complete = env.get_assembly_action()
             action = action_tensor(action)
             ob, rew, done, _ = env.step(action)
-
+    elif args.replay_path:
+        # Replay the trajectory.
+        with open(args.replay_path, "rb") as f:
+            data = pickle.load(f)
+        env.reset_to([data['observations'][0]]) # reset to the first observation.
+        for ac in data["actions"]:
+            ac = action_tensor(ac)
+            ob, rew, done, _  = env.step(ac)
     else:
         raise ValueError(f"No action specified")
 

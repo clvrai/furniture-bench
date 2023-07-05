@@ -991,6 +991,15 @@ class FurnitureSimEnv(gym.Env):
 
         return self._get_observation()
 
+    def reset_to(self, state):
+        """Reset to a specific state.
+
+        Args:
+            state: List of observation dictionary for each environment.
+        """
+        for i in range(self.num_envs):
+            self.reset_env_to(i, state[i])
+
     def reset_env(self, env_idx):
         """Resets the environment.
 
@@ -1013,7 +1022,26 @@ class FurnitureSimEnv(gym.Env):
         self.env_steps[env_idx] = 0
         self.move_neutral = False
 
-    def _reset_franka(self, env_idx):
+    def reset_env_to(self, env_idx, state):
+        """Reset to a specific state.
+
+        Args:
+            env_idx: Environment index.
+            state: A dict containing the state of the environment.
+        """
+        self.furnitures[env_idx].reset()
+        dof_pos = np.concatenate(
+            [
+                state["robot_state"]["joint_positions"],
+                np.array([state["robot_state"]["gripper_width"] / 2] * 2),
+            ],
+        )
+        self._reset_franka(env_idx, dof_pos)
+        self._reset_parts(env_idx, state["parts_poses"])
+        self.env_steps[env_idx] = 0
+        self.move_neutral = False
+
+    def _reset_franka(self, env_idx, dof_pos=None):
         # Low randomness only.
         if self.from_skill >= 1:
             dof_pos = torch.from_numpy(self.default_dof_pos)
@@ -1025,7 +1053,7 @@ class FurnitureSimEnv(gym.Env):
             )
             dof_pos = self.robot_model.inverse_kinematics(ee_pos, ee_quat)
         else:
-            dof_pos = self.default_dof_pos
+            dof_pos = self.default_dof_pos if dof_pos is None else dof_pos
 
         self.dof_pos[:, 0 : self.franka_num_dofs] = torch.tensor(
             dof_pos, device=self.device, dtype=torch.float32
@@ -1044,15 +1072,24 @@ class FurnitureSimEnv(gym.Env):
             len(idxs),
         )
 
-    def _reset_parts(self, env_idx):
+    def _reset_parts(self, env_idx, parts_poses=None):
         """Resets furniture parts to the initial pose.
 
         Args:
             env_idx (int): The index of the environment.
-            random_noise_fixed (bool): If True, add random noise to the fixed initial pose.
+            parts_poses (np.ndarray): The poses of the parts. If None, the parts will be reset to the initial pose.
         """
-        for part in self.furnitures[env_idx].parts:
-            pos, ori = self._get_reset_pose(part)
+        for part_idx, part in enumerate(self.furnitures[env_idx].parts):
+            # Use the given pose.
+            if parts_poses is not None:
+                part_pose = parts_poses[part_idx * 7 : (part_idx + 1) * 7]
+
+                pos = part_pose[:3]
+                ori = T.to_homogeneous(
+                    [0, 0, 0], T.quat2mat(part_pose[3:])
+                )  # Dummy zero position.
+            else:
+                pos, ori = self._get_reset_pose(part)
 
             part_pose_mat = self.april_coord_to_sim_coord(get_mat(pos, [0, 0, 0]))
             part_pose = gymapi.Transform()
