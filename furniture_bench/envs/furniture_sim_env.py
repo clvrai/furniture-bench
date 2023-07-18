@@ -613,7 +613,14 @@ class FurnitureSimEnv(gym.Env):
 
     @property
     def action_space(self):
-        return gym.spaces.Box(-1.0, 1.0, (self.num_envs, self.pose_dim + 1))
+        # Action space to be -1.0 to 1.0.
+        low = np.array([-1] * self.pose_dim + [-1], dtype=np.float32)
+        high = np.array([1] * self.pose_dim + [1], dtype=np.float32)
+
+        low = np.tile(low, (self.num_envs, 1))
+        high = np.tile(high, (self.num_envs, 1))
+
+        return gym.spaces.Box(low, high, (self.num_envs, self.pose_dim + 1))
 
     @property
     def observation_space(self):
@@ -660,6 +667,11 @@ class FurnitureSimEnv(gym.Env):
             action = torch.from_numpy(action).float().to(device=self.device)
         if len(action.shape) == 1:
             action = action.unsqueeze(0)
+
+        # Clip the action to be within the action space.
+        low = torch.from_numpy(self.action_space.low).to(device=self.device)
+        high = torch.from_numpy(self.action_space.high).to(device=self.device)
+        action = torch.clamp(action, low, high)
 
         sim_steps = int(
             1.0
