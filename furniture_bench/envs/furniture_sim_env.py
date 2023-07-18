@@ -945,6 +945,7 @@ class FurnitureSimEnv(gym.Env):
             robot_state = {k: v.cpu().numpy() for k, v in robot_state.items()}
             color_obs = {k: v.cpu().numpy() for k, v in color_obs.items()}
             depth_obs = {k: v.cpu().numpy() for k, v in depth_obs.items()}
+            parts_poses = parts_poses.cpu().numpy()
 
         if robot_state and self.concat_robot_state:
             if self.np_step_out:
