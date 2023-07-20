@@ -1,4 +1,4 @@
-"""Code derived from https://github.com/StanfordVL/perls2 and https://github.com/ARISE-Initiative/robomimic
+"""Code derived from https://github.com/StanfordVL/perls2 and https://github.com/ARISE-Initiative/robomimic and https://github.com/ARISE-Initiative/robosuite
 
 Utility functions for controlling the robot.
 """
@@ -387,3 +387,29 @@ def to_homogeneous(pos: torch.Tensor, rot: torch.Tensor) -> torch.Tensor:
     transform[3, 3] = 1
 
     return transform
+
+
+@torch.jit.script
+def axisangle2quat(vec):
+    """
+    Converts scaled axis-angle to quat.
+
+    Args:
+        vec (torch.Tensor): (ax, ay, az) axis-angle exponential coordinates
+    Returns:
+        torch.Tensor: (x, y, z, w) vec4 float angles
+    """
+    # Grab angle
+    angle = torch.norm(vec)
+
+    # handle zero-rotation case
+    if torch.isclose(angle, torch.tensor([0.0]).to(vec.device)):
+        return torch.tensor([0.0, 0.0, 0.0, 1.0]).to(vec.device)
+
+    # make sure that axis is a unit vector
+    axis = vec / angle
+
+    q = torch.zeros(4, device=vec.device)
+    q[3] = torch.cos(angle / 2.0)
+    q[:3] = axis * torch.sin(angle / 2.0)
+    return q

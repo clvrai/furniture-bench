@@ -63,9 +63,15 @@ def main():
         help="Environment id of FurnitureSim",
     )
     parser.add_argument(
-        "--replay-path",
+        "--replay-path", type=str, help="Path to the saved data to replay action."
+    )
+
+    parser.add_argument(
+        "--act-rot-repr",
         type=str,
-        help='Path to the saved data to replay action.'
+        help="Rotation representation for action space.",
+        choices=["quat", "axis"],
+        default="quat",
     )
 
     parser.add_argument("--num-envs", type=int, default=1)
@@ -83,6 +89,7 @@ def main():
         save_camera_input=args.save_camera_input,
         randomness=args.randomness,
         high_random_idx=args.high_random_idx,
+        act_rot_repr=args.act_rot_repr,
     )
 
     # Initialize FurnitureSim.
@@ -111,9 +118,11 @@ def main():
     elif args.no_action or args.init_assembled:
         # Execute 0 actions.
         while True:
-            ac = action_tensor([0, 0, 0, 0, 0, 0, 1, -1])
+            if args.act_rot_repr == "quat":
+                ac = action_tensor([0, 0, 0, 0, 0, 0, 1, -1])
+            else:
+                ac = action_tensor([0, 0, 0, 0, 0, 0, -1])
             ob, rew, done, _ = env.step(ac)
-
     elif args.random_action:
         # Execute randomly sampled actions.
         import tqdm
@@ -141,10 +150,10 @@ def main():
         # Replay the trajectory.
         with open(args.replay_path, "rb") as f:
             data = pickle.load(f)
-        env.reset_to([data['observations'][0]]) # reset to the first observation.
+        env.reset_to([data["observations"][0]])  # reset to the first observation.
         for ac in data["actions"]:
             ac = action_tensor(ac)
-            ob, rew, done, _  = env.step(ac)
+            ob, rew, done, _ = env.step(ac)
     else:
         raise ValueError(f"No action specified")
 
