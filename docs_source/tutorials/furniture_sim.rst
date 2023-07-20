@@ -50,6 +50,7 @@ FurnitureSim can be configured with the following arguments:
       save_camera_input=False,  # If true, the initial camera inputs are saved.
       record=False,             # If true, videos of the wrist and front cameras' RGB inputs are recorded.
       max_env_steps=3000,       # Maximum number of steps per episode.
+      act_rot_repr='quat'       # Representation of rotation for action space. Options are 'quat' and 'axis'.
     )
 
 FurnitureSim ``env.step``
