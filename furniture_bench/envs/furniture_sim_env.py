@@ -68,6 +68,7 @@ class FurnitureSimEnv(gym.Env):
         save_camera_input: bool = False,
         record: bool = False,
         max_env_steps: int = 3000,
+        act_rot_repr: str = "quat",
         **kwargs,
     ):
         """
@@ -90,6 +91,7 @@ class FurnitureSimEnv(gym.Env):
             save_camera_input (bool): If true, the initial camera inputs are saved.
             record (bool): If true, videos of the wrist and front cameras' RGB inputs are recorded.
             max_env_steps (int): Maximum number of steps per episode (default: 3000).
+            act_rot_repr (str): Representation of rotation for action space. Options are 'quat' and 'axis'.
         """
         super(FurnitureSimEnv, self).__init__()
         self.device = torch.device("cuda", compute_device_id)
@@ -173,6 +175,10 @@ class FurnitureSimEnv(gym.Env):
                 30,
                 (self.img_size[1] * 2, self.img_size[0]),  # Wrist and front cameras.
             )
+
+        if act_rot_repr != "quat" and act_rot_repr != "axis":
+            raise ValueError(f"Invalid rotation representation: {act_rot_repr}")
+        self.act_rot_repr = act_rot_repr
 
     def _create_ground_plane(self):
         """Creates ground plane."""
@@ -614,13 +620,15 @@ class FurnitureSimEnv(gym.Env):
     @property
     def action_space(self):
         # Action space to be -1.0 to 1.0.
-        low = np.array([-1] * self.pose_dim + [-1], dtype=np.float32)
-        high = np.array([1] * self.pose_dim + [1], dtype=np.float32)
+        pose_dim = 7 if self.act_rot_repr == "quat" else 6
+
+        low = np.array([-1] * pose_dim + [-1], dtype=np.float32)
+        high = np.array([1] * pose_dim + [1], dtype=np.float32)
 
         low = np.tile(low, (self.num_envs, 1))
         high = np.tile(high, (self.num_envs, 1))
 
-        return gym.spaces.Box(low, high, (self.num_envs, self.pose_dim + 1))
+        return gym.spaces.Box(low, high, (self.num_envs, pose_dim + 1))
 
     @property
     def observation_space(self):
@@ -661,7 +669,8 @@ class FurnitureSimEnv(gym.Env):
 
         Args:
             action:
-                (num_envs, 8): End-effector delta in [x, y, z, qx, qy, qz, qw, gripper]
+                (num_envs, 8): End-effector delta in [x, y, z, qx, qy, qz, qw, gripper] if self.act_rot_repr == "quat".
+                (num_envs, 7): End-effector delta in [x, y, z, ax, ay, az, gripper] if self.act_rot_repr == "axis".
         """
         if isinstance(action, np.ndarray):
             action = torch.from_numpy(action).float().to(device=self.device)
@@ -686,9 +695,15 @@ class FurnitureSimEnv(gym.Env):
         ee_pos, ee_quat = self.get_ee_pose()
 
         for env_idx in range(self.num_envs):
+            action_quat = (
+                action[env_idx][3:7]
+                if self.act_rot_repr == "quat"
+                else C.axisangle2quat(action[env_idx][3:6])
+            )
+
             self.osc_ctrls[env_idx].set_goal(
                 action[env_idx][:3] + ee_pos[env_idx],
-                C.quat_multiply(ee_quat[env_idx], action[env_idx][3:7]).to(self.device),
+                C.quat_multiply(ee_quat[env_idx], action_quat).to(self.device),
             )
 
         for _ in range(sim_steps):
