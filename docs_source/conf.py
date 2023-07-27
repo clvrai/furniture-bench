@@ -35,9 +35,9 @@ extensions = [
     'sphinx_lesson',
     'sphinx.ext.napoleon',
     'sphinx.ext.autosummary',
-    'checkbox_directive'
+    'checkbox_directive',
+    'sphinx_toolbox.collapse',
 ]
-
 
 autodoc_mock_imports = [
     "numpy",

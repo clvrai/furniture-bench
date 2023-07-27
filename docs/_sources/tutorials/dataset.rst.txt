@@ -26,8 +26,10 @@ The FurnitureBench dataset is available on `our Google Drive <https://drive.goog
      |- cabinet
      |- ...
 
-For easy downloading, we also provide compressed datasets for each furniture model and randomness level under ``low_compressed``, ``med_compressed``, and ``high_compressed``. You can download our dataset:
+For easy downloading, we also provide compressed datasets (\*.tar.gz) for each furniture model and randomness level under ``low_compressed``, ``med_compressed``, and ``high_compressed`` directory. You can download our data with commands below.
 
+Download with gdown
+--------------------
 .. code::
 
     pip install gdown
@@ -39,6 +41,133 @@ For easy downloading, we also provide compressed datasets for each furniture mod
 
     # E.g., download all furniture data with medium randomness
     python furniture_bench/scripts/download_dataset.py --untar --randomness med --furniture all --out_dir ./furniture_dataset
+
+**Note!** If you are facing download issues related to ``Too many users have viewed or downloaded...``, please refer to the following :ref:`Download with rclone` section.
+
+
+Download with rclone
+--------------------
+
+Sometimes gdown might be slow or reject your download request due to access quota limitations. In this case, you can utilize `rclone <https://rclone.org/>`__ to download the dataset.
+
+How to use rclone
+^^^^^^^^^^^^^^^^^
+
+.. collapse:: Expand to see instructions
+
+    1. Install `rclone <https://rclone.org/install/>`__.
+
+    2. Run ``rclone config`` to setup Google Drive remote:
+
+    .. code::
+
+        No remotes found, make a new one?
+        n) New remote
+        s) Set configuration password
+        q) Quit config
+        n/s/q> n
+        --------------------
+
+        Enter name for new remote.
+        name> furniture
+        --------------------
+
+        Choose a number from below, or type in your own value
+        Storage> 18
+        --------------------
+
+        Two double "Enter" to skip client_id and client_secret
+        --------------------
+
+        Choose a number from below, or type in your own value.
+        Press Enter to leave empty.
+        scope> 2
+        --------------------
+
+        Enter a value. Press Enter to leave empty.
+        service_account_file> "Enter"
+        --------------------
+
+        Edit advanced config?
+        y) Yes
+        n) No (default)
+        y/n> n
+        --------------------
+
+        Use web browser to automatically authenticate rclone with remote?
+        * Say Y if the machine running rclone has a web browser you can use
+        * Say N if running rclone on a (remote) machine without web browser access
+        If not sure try Y. If Y failed, try N.
+
+        y) Yes (default)
+        n) No
+        y/n> n
+        --------------------
+
+        Option config_token.
+        For this to work, you will need rclone available on a machine that has
+        a web browser available.
+        For more help and alternate methods see: https://rclone.org/remote_setup/
+        Execute the following on the machine with the web browser (same rclone
+        version recommended):
+                rclone authorize "drive" "<Your config_token>"
+        Then paste the result.
+        Enter a value.
+        config_token>
+
+        *Writer's note*
+        # Copy and past `rclone authorize "drive" "<Your config_token>"` in a machine with web browser
+        # Login to your Google account
+        # Allow rclone to access your Google Drive
+        # Past the result to `config_token` in the terminal
+        --------------------
+
+        Configure this as a Shared Drive (Team Drive)?
+
+        y) Yes
+        n) No (default)
+        y/n> n
+        --------------------
+
+        Keep this "furniture" remote?
+        y) Yes this is OK (default)
+        e) Edit this remote
+        d) Delete this remote
+        y/e/d> y
+        --------------------
+
+        Current remotes:
+
+        Name                 Type
+        ====                 ====
+        furniture            drive
+
+        e) Edit existing remote
+        n) New remote
+        d) Delete remote
+        r) Rename remote
+        c) Copy remote
+        s) Set configuration password
+        q) Quit config
+        e/n/d/r/c/s/q> q
+        --------------------
+
+    3. Connect to Google Drive remote by opening the `dataset Google Drive <https://drive.google.com/drive/u/1/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt>`__ and clicking "Add a shortcut to Drive", "My Drive", and "Add".
+
+    .. image:: ../_static/images/add_shortcut.png
+            :width: 400
+
+    4. The following Python script will download our dataset. Use ``--untar`` flag to decompress files after downloading.
+
+    .. code::
+
+        python furniture_bench/scripts/download_dataset.py --randomness [low/med/high] --furniture <name of furniture> --out_dir <path/to/data> --use-rclone <--untar>
+
+        # E.g., download lamp data with low randomness
+        python furniture_bench/scripts/download_dataset.py --randomness low --furniture lamp --out_dir ./furniture_dataset --use-rclone
+
+        # E.g., download all furniture data with medium randomness
+        python furniture_bench/scripts/download_dataset.py --randomness med --furniture all --out_dir ./furniture_dataset --use-rclone
 
 
 Dataset Size
@@ -97,123 +226,3 @@ Each demonstration is stored in a ``.pkl`` file, containing a sequence of sensor
    'actions': List of 8-D actions
    'rewards': List of rewards (1 if a furniture part is assembled; otherwise, 0)
    'skills': List of skill completion flags (1 if a skill is completed; otherwise, 0)
-
-
-Download with rclone
-~~~~~~~~~~~~~~~~~~~~
-
-Sometime gdown might operate slowly, or reject your download request due to access quota limitations. In this case, you can utilize `rclone <https://rclone.org/>`__ to download the dataset.
-
-1. Install `rclone <https://rclone.org/install/>`__.
-
-2. Run ``rclone config`` to setup Google Drive remote:
-
-.. code::
-
-    No remotes found, make a new one?
-    n) New remote
-    s) Set configuration password
-    q) Quit config
-    n/s/q> n
-    --------------------
-
-    Enter name for new remote.
-    name> furniture
-    --------------------
-
-    Choose a number from below, or type in your own value
-    Storage> 18
-    --------------------
-
-    Two double "Enter" to skip client_id and client_secret
-    --------------------
-
-    Choose a number from below, or type in your own value.
-    Press Enter to leave empty.
-    scope> 2
-    --------------------
-
-    Enter a value. Press Enter to leave empty.
-    service_account_file> "Enter"
-    --------------------
-
-    Edit advanced config?
-    y) Yes
-    n) No (default)
-    y/n> n
-    --------------------
-
-    Use web browser to automatically authenticate rclone with remote?
-    * Say Y if the machine running rclone has a web browser you can use
-    * Say N if running rclone on a (remote) machine without web browser access
-    If not sure try Y. If Y failed, try N.
-
-    y) Yes (default)
-    n) No
-    y/n> n
-    --------------------
-
-    Option config_token.
-    For this to work, you will need rclone available on a machine that has
-    a web browser available.
-    For more help and alternate methods see: https://rclone.org/remote_setup/
-    Execute the following on the machine with the web browser (same rclone
-    version recommended):
-            rclone authorize "drive" "<Your config_token>"
-    Then paste the result.
-    Enter a value.
-    config_token>
-
-    *Writer's note*
-    # Copy and past `rclone authorize "drive" "<Your config_token>"` in a machine with web browser
-    # Login to your Google account
-    # Allow rclone to access your Google Drive
-    # Past the result to `config_token` in the terminal
-    --------------------
-
-    Configure this as a Shared Drive (Team Drive)?
-
-    y) Yes
-    n) No (default)
-    y/n> n
-    --------------------
-
-    Keep this "furniture" remote?
-    y) Yes this is OK (default)
-    e) Edit this remote
-    d) Delete this remote
-    y/e/d> y
-    --------------------
-
-    Current remotes:
-
-    Name                 Type
-    ====                 ====
-    furniture            drive
-
-    e) Edit existing remote
-    n) New remote
-    d) Delete remote
-    r) Rename remote
-    c) Copy remote
-    s) Set configuration password
-    q) Quit config
-    e/n/d/r/c/s/q> q
-    --------------------
-
-3. Connect to Google Drive remote by opening the `dataset Google Drive <https://drive.google.com/drive/u/1/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt>`__ and clicking "Add a shortcut to Drive", "My Drive", and "Add".
-
-.. image:: ../_static/images/add_shortcut.png
-        :width: 400
-
-4. The following Python script will download our dataset. Use ``--untar`` flag to decompress files after downloading.
-
-.. code::
-
-    python furniture_bench/scripts/download_dataset.py --randomness [low/med/high] --furniture <name of furniture> --out_dir <path/to/data> --use-rclone <--untar>
-
-    # E.g., download lamp data with low randomness
-    python furniture_bench/scripts/download_dataset.py --randomness low --furniture lamp --out_dir ./furniture_dataset --use-rclone
-
-    # E.g., download all furniture data with medium randomness
-    python furniture_bench/scripts/download_dataset.py --randomness med --furniture all --out_dir ./furniture_dataset --use-rclone

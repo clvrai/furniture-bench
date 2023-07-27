@@ -17,3 +17,4 @@ sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml
 recommonmark==0.7.1
+sphinx-toolbox==3.5.0
