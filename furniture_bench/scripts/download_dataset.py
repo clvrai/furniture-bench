@@ -7,12 +7,17 @@ import subprocess
 def download_folder_rclone(randomness, furniture, out_dir):
     """Use rclone to download a folder from the Google Drive."""
     path = f"dataset/{randomness}_compressed/{furniture}.tar.gz"
+    target_path = f"{out_dir}/{randomness}/{furniture}.tar.gz"
 
-    print(f"Start downloading folder {path}")
-    command = f"rclone copy -P furniture:{path} ./{out_dir}/{randomness}"
+    if os.path.exists(target_path):
+        print(f"Skipped {furniture}: file already exists at {target_path}")
+        return
+
+    print(f"Start downloading Google Drive folder {path}")
+    command = f"rclone copy -P furniture:{path} {out_dir}/{randomness}"
     process = subprocess.Popen(command, shell=True)
     process.wait()
-    print(f"Finished downloading folder {path}")
+    print(f"Finished downloading Google Drive folder {path} in {out_dir}/{randomness}")
 
 
 def download_file_gdown(randomness, furniture, out_dir):
@@ -58,11 +63,16 @@ def download_file_gdown(randomness, furniture, out_dir):
     if not os.path.exists(f"{out_dir}/{randomness}"):
         os.makedirs(f"{out_dir}/{randomness}")
 
-    print(f"Start downloading file {randomness}/{furniture}")
+    target_path = f"{out_dir}/{randomness}/{furniture}.tar.gz"
 
+    if os.path.exists(target_path):
+        print(f"Skipped {furniture}: file already exists at {target_path}")
+        return
+
+    print(f"Start downloading file {randomness}/{furniture}")
     gdown.download(
         id=download_links[randomness][furniture],
-        output=f"{out_dir}/{randomness}/{furniture}.tar.gz",
+        output=target_path,
         quiet=False,
     )
 
