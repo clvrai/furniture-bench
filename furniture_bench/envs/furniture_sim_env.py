@@ -715,14 +715,14 @@ class FurnitureSimEnv(gym.Env):
                 state_dict["jacobian"] = self.jacobian_eef[
                     env_idx
                 ].t()  # OSC expect column major
-                torque_action[:, :7] = self.osc_ctrls[env_idx](state_dict)[
+                torque_action[env_idx, :7] = self.osc_ctrls[env_idx](state_dict)[
                     "joint_torques"
                 ]
 
                 if grip_sep > 0:
-                    torque_action[:, 7:9] = sim_config["robot"]["gripper_torque"]
+                    torque_action[env_idx, 7:9] = sim_config["robot"]["gripper_torque"]
                 else:
-                    torque_action[:, 7:9] = -sim_config["robot"]["gripper_torque"]
+                    torque_action[env_idx, 7:9] = -sim_config["robot"]["gripper_torque"]
 
             self.isaac_gym.set_dof_actuation_force_tensor(
                 self.sim, gymtorch.unwrap_tensor(torque_action)
