@@ -14,6 +14,15 @@ Prerequisites
     cd <path/to/furniture-bench>
     ./install_model_deps.sh
 
+* Now, install JAX with GPU support based on your CUDA version. See `official doc <https://github.com/google/jax#pip-installation-gpu-cuda-installed-via-pip-easier>`__.
+
+* Make sure your PyTorch and JAX are installed properly. You can run the following commands to check the installation.
+
+  .. code::
+
+    python -c "import torch; print(f'PyTorch installed successfully, with GPU support = {torch.cuda.is_available()}')"
+    python -c "import jax.numpy as jnp; jnp.ones((3,)); print('JAX installed successfully')"
+
 * Prepare training data. You can download the FurnitureBench dataset (:ref:`Dataset`) or generate one in FurnitureSim (:ref:`Automated Assembly Script`).
 
 

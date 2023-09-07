@@ -472,6 +472,13 @@ title="Print to PDF"
 </pre></div>
 </div>
 </li>
+<li><p>Now, install JAX with GPU support based on your CUDA version. See <a class="reference external" href="https://github.com/google/jax#pip-installation-gpu-cuda-installed-via-pip-easier">official doc</a>.</p></li>
+<li><p>Make sure your PyTorch and JAX are installed properly. You can run the following commands to check the installation.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;import torch; print(f&#39;PyTorch installed successfully, with GPU support = {torch.cuda.is_available()}&#39;)&quot;</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;import jax.numpy as jnp; jnp.ones((3,)); print(&#39;JAX installed successfully&#39;)&quot;</span>
+</pre></div>
+</div>
+</li>
 <li><p>Prepare training data. You can download the FurnitureBench dataset (<a class="reference internal" href="dataset.html#dataset"><span class="std std-ref">Dataset</span></a>) or generate one in FurnitureSim (<a class="reference internal" href="furniture_sim.html#automated-assembly-script"><span class="std std-ref">Automated Assembly Script</span></a>).</p></li>
 </ul>
 </section>
