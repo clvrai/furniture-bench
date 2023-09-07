@@ -49,4 +49,4 @@ If you find FurnitureBench useful for your research, please cite this work:
 - R3M: https://github.com/facebookresearch/r3m
 - VIP: https://github.com/facebookresearch/vip
 - Factory: https://github.com/NVIDIA-Omniverse/IsaacGymEnvs/blob/main/docs/factory.md
-- OSC controller references: https://github.com/StanfordVL/perls2 and https://github.com/ARISE-Initiative/robomimic
+- OSC controller references: https://github.com/StanfordVL/perls2 and https://github.com/ARISE-Initiative/robomimic and https://github.com/ARISE-Initiative/robosuite
