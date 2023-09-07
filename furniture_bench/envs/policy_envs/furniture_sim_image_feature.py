@@ -5,6 +5,7 @@ import torch
 
 from furniture_bench.config import config
 from furniture_bench.envs.furniture_sim_env import FurnitureSimEnv
+from furniture_bench.envs.legacy_envs.furniture_sim_legacy_env import FurnitureSimEnvLegacy # Deprecated.
 from furniture_bench.perception.image_utils import resize, resize_crop
 from furniture_bench.robot.robot_state import filter_and_concat_robot_state
 
@@ -49,6 +50,10 @@ class FurnitureSimImageFeature(FurnitureSimEnv):
 
     def _get_observation(self):
         obs = super()._get_observation()
+
+        if isinstance(obs['robot_state'],  dict):
+            # For legacy envs.
+            obs['robot_state'] = filter_and_concat_robot_state(obs["robot_state"])
 
         robot_state = obs["robot_state"].squeeze()
         image1 = obs["color_image1"].squeeze()
