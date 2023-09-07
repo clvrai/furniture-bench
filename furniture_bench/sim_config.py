@@ -25,7 +25,7 @@ sim_params.physx.use_gpu = True
 
 sim_config["sim_params"] = sim_params
 sim_config["parts"] = {"friction": 0.15}
-sim_config["table"] = {"friction": 0.15}
+sim_config["table"] = {"friction": 0.10}
 sim_config["asset"] = {}
 
 # Parameters for the robot.
