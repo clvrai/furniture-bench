@@ -32,7 +32,7 @@ def filter_and_concat_robot_state(robot_state):
         if rs == "gripper_width" and robot_state[rs].shape == ():
             robot_state[rs] = np.array([robot_state[rs]])
         current_robot_state.append(robot_state[rs])
-    return np.concatenate(current_robot_state)
+    return np.concatenate(current_robot_state, axis=-1)
 
 
 @dataclass
