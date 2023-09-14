@@ -2,6 +2,10 @@ import os
 import subprocess
 from typing import Tuple
 
+import furniture_bench
+
+import torch
+
 import gym
 import numpy as np
 
@@ -58,7 +62,6 @@ def make_env(
     headless: bool
 ) -> gym.Env:
     if "Furniture" in env_name:
-        import furniture_bench
         env_id, furniture_name = env_name.split("/")
         env = gym.make(
             env_id,

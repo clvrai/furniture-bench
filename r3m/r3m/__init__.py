@@ -84,11 +84,11 @@ def load_r3m_reproduce(modelid):
         foldername = "original_r3m_noaug"
         modelurl = 'https://drive.google.com/uc?id=1k_ZlVtvlktoYLtBcfD0aVFnrZcyCNS9D'
         configurl = 'https://drive.google.com/uc?id=1hPmJwDiWPkd6GGez6ywSC7UOTIX7NgeS'
-    elif modelif == "r3m_nol1":
+    elif modelid == "r3m_nol1":
         foldername = "original_r3m_nol1"
         modelurl = 'https://drive.google.com/uc?id=1LpW3aBMdjoXsjYlkaDnvwx7q22myM_nB'
         configurl = 'https://drive.google.com/uc?id=1rZUBrYJZvlF1ReFwRidZsH7-xe7csvab'
-    elif modelif == "r3m_nolang":
+    elif modelid == "r3m_nolang":
         foldername = "original_r3m_nolang"
         modelurl = 'https://drive.google.com/uc?id=1FXcniRei2JDaGMJJ_KlVxHaLy0Fs_caV'
         configurl = 'https://drive.google.com/uc?id=192G4UkcNJO4EKN46ECujMcH0AQVhnyQe'
