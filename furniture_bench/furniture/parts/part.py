@@ -15,7 +15,7 @@ import furniture_bench.controllers.control_utils as C
 
 class Part(ABC):
     @abstractmethod
-    def __init__(self, part_config, part_idx: int):
+    def __init__(self, part_config, part_idx: int, verbose: bool = False):
         # Three pose filter. (Each camera has filter.)
         self.pose_filter = [PoseFilter(), PoseFilter(), PoseFilter()]
         self.part_config = copy.deepcopy(part_config)
@@ -47,6 +47,8 @@ class Part(ABC):
         self.part_attached_skill_idx = part_config.get(
             "part_attached_skill_idx", np.inf
         )
+
+        self.verbose = verbose
 
     def randomize_init_pose(self, from_skill=0, pos_range=[-0.05, 0.05], rot_range=45):
         self.reset_pos[from_skill][:2] = self.part_config["reset_pos"][from_skill][
@@ -167,12 +169,12 @@ class Part(ABC):
             pose, from_skill, pos_threshold
         ) and self.is_in_reset_ori(pose, from_skill, ori_bound):
             return True
-        print(
+        self.verbose_print(
             f"[reset] Part {self.__class__.__name__} [{self.part_idx}] is not in the reset pose."
         )
 
         if not self.is_in_reset_pos(pose, from_skill, pos_threshold):
-            print(
+            self.verbose_print(
                 "xy should be ({0:0.3f}, {1:0.3f}), but got ({2:0.3f}, {3:0.3f})".format(
                     self.reset_pos[from_skill][0],
                     self.reset_pos[from_skill][1],
@@ -182,7 +184,7 @@ class Part(ABC):
             )
             return False
         if not self.is_in_reset_ori(pose, from_skill, ori_bound):
-            print("Reset orientation mismatch.")
+            self.verbose_print("Reset orientation mismatch.")
             return False
 
     def is_in_reset_pos(self, pose, from_skill, pos_threshold):
@@ -223,7 +225,7 @@ class Part(ABC):
         ):
             return True
         if self.curr_cnt - self.prev_cnt >= max_len:
-            print("phase time out")
+            self.verbose_print("phase time out")
             return True
         return False
 
@@ -244,7 +246,7 @@ class Part(ABC):
     def may_transit_state(self, next_state):
         skill_complete = 0
         if next_state != self._state:
-            print(f"Changing state from {self._state} to {next_state}")
+            self.verbose_print(f"Changing state from {self._state} to {next_state}")
             self._state = next_state
             if next_state in self.skill_complete_next_states:
                 skill_complete = 1
@@ -294,3 +296,7 @@ class Part(ABC):
 
     def state_no_noise(self):
         return False
+    
+    def verbose_print(self, *args, **kwargs):
+        if self.verbose:
+            print(*args, **kwargs)

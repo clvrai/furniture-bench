@@ -348,9 +348,9 @@ class DataCollector:
         self.verbose_print(f"Data saved at {path}")
 
     
-    def verbose_print(self, msg):
+    def verbose_print(self, *args, **kwargs):
         if self.verbose:
-            print(msg)
+            print(*args, **kwargs)
 
     def update_pbar(self):
         if self.pbar is not None:
