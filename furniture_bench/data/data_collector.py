@@ -36,7 +36,9 @@ class DataCollector:
         pkl_only: bool = False,
         save_failure: bool = False,
         num_demos: int = 100,
+        verbose: bool = False,
     ):
+        
         """
         Args:
             is_sim (bool): Whether to use simulator or real world environment.
@@ -100,10 +102,16 @@ class DataCollector:
         self.pkl_only = pkl_only
         self.save_failure = save_failure
 
+        self.verbose = verbose
+
         self._reset_collector_buffer()
 
+    def verbose_print(self, msg):
+        if self.verbose:
+            print(msg)
+
     def collect(self):
-        print("[data collection] Start collecting the data!")
+        self.verbose_print("[data collection] Start collecting the data!")
 
         obs = self.reset()
         done = False
@@ -120,7 +128,7 @@ class DataCollector:
                     self.skill_set.append(skill_complete)
 
             if collect_enum == CollectEnum.TERMINATE:
-                print("Terminate the program.")
+                self.verbose_print("Terminate the program.")
                 break
 
             # An episode is done.
@@ -145,11 +153,11 @@ class DataCollector:
 
                 if done and not self.env.furnitures[0].all_assembled():
                     if self.save_failure:
-                        print("Saving failure trajectory.")
+                        self.verbose_print("Saving failure trajectory.")
                         collect_enum = CollectEnum.FAIL
                         obs = self.save_and_reset(collect_enum, {})
                     else:
-                        print("Failed to assemble the furniture, reset without saving.")
+                        self.verbose_print("Failed to assemble the furniture, reset without saving.")
                         obs = self.reset()
                         collect_enum = CollectEnum.SUCCESS
                     self.num_fail += 1
@@ -160,7 +168,7 @@ class DataCollector:
                     obs = self.save_and_reset(collect_enum, {})
                     self.num_success += 1
                 self.traj_counter += 1
-                print(f"Success: {self.num_success}, Fail: {self.num_fail}")
+                self.verbose_print(f"Success: {self.num_success}, Fail: {self.num_fail}")
                 done = False
                 continue
 
@@ -182,7 +190,7 @@ class DataCollector:
 
             # Error handling.
             if not info["obs_success"]:
-                print("Getting observation failed, save trajectory.")
+                self.verbose_print("Getting observation failed, save trajectory.")
                 # Pop the last reward and action so that obs has length plus 1 then those of actions and rewards.
                 self.rews.pop()
                 self.acts.pop()
@@ -191,7 +199,7 @@ class DataCollector:
 
             # Logging a step.
             self.step_counter += 1
-            print(
+            self.verbose_print(
                 f"{[self.step_counter]} assembled: {self.env.furniture.assembled_set} num assembled: {len(self.env.furniture.assembled_set)} Skill: {len(self.skill_set)}"
             )
 
@@ -224,23 +232,23 @@ class DataCollector:
                 self.skills.append(skill_complete)
             obs = next_obs
 
-        print(
+        self.verbose_print(
             f"Collected {self.traj_counter} / {self.num_demos} successful trajectories!"
         )
 
     def save_and_reset(self, collect_enum: CollectEnum, info):
         """Saves the collected data and reset the environment."""
         self.save(collect_enum, info)
-        print(f"Saved {self.traj_counter} trajectories in this run.")
+        self.verbose_print(f"Saved {self.traj_counter} trajectories in this run.")
         return self.reset()
 
     def reset(self):
         obs = self.env.reset()
         self._reset_collector_buffer()
 
-        print("Start collecting the data!")
+        self.verbose_print("Start collecting the data!")
         if not self.scripted:
-            print("Press enter to start")
+            self.verbose_print("Press enter to start")
             while True:
                 if input() == "":
                     break
@@ -259,7 +267,7 @@ class DataCollector:
         self.skill_set = []
 
     def save(self, collect_enum: CollectEnum, info):
-        print(f"Length of trajectory: {len(self.obs)}")
+        self.verbose_print(f"Length of trajectory: {len(self.obs)}")
 
         data_name = datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
         demo_path = self.data_path / data_name
@@ -306,7 +314,7 @@ class DataCollector:
 
             # Save raw color images in mp4.
             if not self.pkl_only:
-                print("Start saving raw color images.")
+                self.verbose_print("Start saving raw color images.")
                 outs = []
                 for n in self.color_video_names:
                     outs.append(
@@ -323,7 +331,7 @@ class DataCollector:
                     outs[i].release()
 
                 # Save raw depth images in png.
-                print("Start saving raw depth images.")
+                self.verbose_print("Start saving raw depth images.")
                 for i, k in enumerate(self.depth_names):
                     self.depth_paths[i].mkdir(parents=True, exist_ok=True)
                     Parallel(n_jobs=8)(
@@ -336,7 +344,7 @@ class DataCollector:
                     )
 
             pickle.dump(data, f)
-        print(f"Data saved at {path}")
+        self.verbose_print(f"Data saved at {path}")
 
     def __del__(self):
         del self.env
