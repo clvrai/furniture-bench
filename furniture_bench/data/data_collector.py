@@ -8,6 +8,7 @@ import cv2
 import gym
 import torch
 from joblib import Parallel, delayed
+from tqdm import tqdm
 
 from furniture_bench.device.device_interface import DeviceInterface
 from furniture_bench.data.collect_enum import CollectEnum
@@ -36,7 +37,8 @@ class DataCollector:
         pkl_only: bool = False,
         save_failure: bool = False,
         num_demos: int = 100,
-        verbose: bool = False,
+        verbose: bool = True,
+        show_pbar: bool = False,
     ):
         
         """
@@ -103,12 +105,9 @@ class DataCollector:
         self.save_failure = save_failure
 
         self.verbose = verbose
+        self.pbar = None if not show_pbar else tqdm(total=self.num_demos)
 
         self._reset_collector_buffer()
-
-    def verbose_print(self, msg):
-        if self.verbose:
-            print(msg)
 
     def collect(self):
         self.verbose_print("[data collection] Start collecting the data!")
@@ -167,6 +166,8 @@ class DataCollector:
 
                     obs = self.save_and_reset(collect_enum, {})
                     self.num_success += 1
+                    self.update_pbar()
+
                 self.traj_counter += 1
                 self.verbose_print(f"Success: {self.num_success}, Fail: {self.num_fail}")
                 done = False
@@ -345,6 +346,15 @@ class DataCollector:
 
             pickle.dump(data, f)
         self.verbose_print(f"Data saved at {path}")
+
+    
+    def verbose_print(self, msg):
+        if self.verbose:
+            print(msg)
+
+    def update_pbar(self):
+        if self.pbar is not None:
+            self.pbar.update(1)
 
     def __del__(self):
         del self.env
