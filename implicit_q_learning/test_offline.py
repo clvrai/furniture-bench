@@ -3,7 +3,6 @@ import subprocess
 from typing import Tuple
 
 import furniture_bench
-
 import torch
 
 import gym
