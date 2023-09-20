@@ -39,8 +39,9 @@ class DataCollector:
         num_demos: int = 100,
         verbose: bool = True,
         show_pbar: bool = False,
+        obs_type: str = "state",
+        encoder_type: str = "vip",
     ):
-        
         """
         Args:
             is_sim (bool): Whether to use simulator or real world environment.
@@ -58,20 +59,34 @@ class DataCollector:
             num_demos (int): The maximum number of demonstrations to collect in this run. Internal loop will be terminated when this number is reached.
         """
         if is_sim:
-            self.env = gym.make(
-                "FurnitureSimFull-v0",
+            sim_type = dict(
+                state="FurnitureSimState-v0",
+                full="FurnitureSimFull-v0",
+                feature="FurnitureSimImageFeature-v0",
+            )[obs_type]
+
+            kwargs = dict(
                 furniture=furniture,
                 max_env_steps=600 if scripted else 3000,
                 headless=headless,
                 num_envs=1,  # Only support 1 for now.
                 manual_done=False if scripted else True,
-                resize_img=False,
-                np_step_out=False,  # Always output Tensor in this setting. Will change to numpy in this code.
-                channel_first=False,
                 randomness=randomness,
                 compute_device_id=gpu_id,
                 graphics_device_id=gpu_id,
             )
+            if obs_type != "feature":
+                kwargs.update(
+                    resize_img=False,
+                    np_step_out=False,  # Always output Tensor in this setting. Will change to numpy in this code.
+                    channel_first=False,
+                )
+            if obs_type == "feature":
+                kwargs.update(
+                    encoder_type=encoder_type,
+                )
+
+            self.env = gym.make(sim_type, **kwargs)
         else:
             if randomness == "med":
                 randomness = Randomness.MEDIUM_COLLECT
@@ -106,8 +121,28 @@ class DataCollector:
 
         self.verbose = verbose
         self.pbar = None if not show_pbar else tqdm(total=self.num_demos)
+        self.obs_type = obs_type
 
         self._reset_collector_buffer()
+
+    def _squeeze_and_numpy(self, v):
+        if isinstance(v, torch.Tensor):
+            v = v.cpu().numpy()
+        v = v.squeeze()
+        return v
+
+    def _set_dictionary(self, to, from_):
+        if self.obs_type == "full":
+            to["color_image1"] = resize(from_["color_image1"])
+            to["color_image2"] = resize_crop(from_["color_image2"])
+
+        if self.obs_type in ["state", "full"]:
+            to["robot_state"] = from_["robot_state"]
+            to["parts_poses"] = from_["parts_poses"]
+
+        if self.obs_type == "feature":
+            to["image1"] = from_["image1"]
+            to["image2"] = from_["image2"]
 
     def collect(self):
         self.verbose_print("[data collection] Start collecting the data!")
@@ -137,17 +172,16 @@ class DataCollector:
                     for k, v in next_obs.items():
                         if isinstance(v, dict):
                             for k1, v1 in v.items():
-                                v[k1] = v1.squeeze().cpu().numpy()
+                                v[k1] = self._squeeze_and_numpy(v1)
                         else:
-                            next_obs[k] = v.squeeze().cpu().numpy()
+                            next_obs[k] = self._squeeze_and_numpy(v)
 
                 self.org_obs.append(next_obs)
 
                 n_ob = {}
-                n_ob["color_image1"] = resize(next_obs["color_image1"])
-                n_ob["color_image2"] = resize_crop(next_obs["color_image2"])
-                n_ob["robot_state"] = next_obs["robot_state"]
-                n_ob["parts_poses"] = next_obs["parts_poses"]
+
+                self._set_dictionary(to=n_ob, from_=next_obs)
+
                 self.obs.append(n_ob)
 
                 if done and not self.env.furnitures[0].all_assembled():
@@ -156,7 +190,9 @@ class DataCollector:
                         collect_enum = CollectEnum.FAIL
                         obs = self.save_and_reset(collect_enum, {})
                     else:
-                        self.verbose_print("Failed to assemble the furniture, reset without saving.")
+                        self.verbose_print(
+                            "Failed to assemble the furniture, reset without saving."
+                        )
                         obs = self.reset()
                         collect_enum = CollectEnum.SUCCESS
                     self.num_fail += 1
@@ -169,7 +205,9 @@ class DataCollector:
                     self.update_pbar()
 
                 self.traj_counter += 1
-                self.verbose_print(f"Success: {self.num_success}, Fail: {self.num_fail}")
+                self.verbose_print(
+                    f"Success: {self.num_success}, Fail: {self.num_fail}"
+                )
                 done = False
                 continue
 
@@ -210,18 +248,17 @@ class DataCollector:
                     for k, v in obs.items():
                         if isinstance(v, dict):
                             for k1, v1 in v.items():
-                                v[k1] = v1.squeeze().cpu().numpy()
+                                v[k1] = self._squeeze_and_numpy(v1)
                         else:
-                            obs[k] = v.squeeze().cpu().numpy()
+                            obs[k] = self._squeeze_and_numpy(v)
                     if isinstance(rew, torch.Tensor):
                         rew = float(rew.squeeze().cpu())
 
                 self.org_obs.append(obs.copy())
                 ob = {}
-                ob["color_image1"] = resize(obs["color_image1"])
-                ob["color_image2"] = resize_crop(obs["color_image2"])
-                ob["robot_state"] = obs["robot_state"]
-                ob["parts_poses"] = obs["parts_poses"]
+
+                self._set_dictionary(to=ob, from_=obs)
+
                 self.obs.append(ob)
                 if self.is_sim:
                     if isinstance(action, torch.Tensor):
@@ -347,7 +384,6 @@ class DataCollector:
             pickle.dump(data, f)
         self.verbose_print(f"Data saved at {path}")
 
-    
     def verbose_print(self, *args, **kwargs):
         if self.verbose:
             print(*args, **kwargs)
