@@ -24,6 +24,7 @@ You can install FurnitureSim using PyPI or Docker.
 
     - Ubuntu 20.04 LTS
     - NVIDIA RTX GPU
+    - Python 3.8
 
 
 Download Isaac Gym
