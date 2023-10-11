@@ -518,31 +518,30 @@ class FurnitureSimEnv(gym.Env):
             return camera
 
         camera_names = {"1": "wrist", "2": "front", "3": "rear"}
-        for k in self.obs_keys:
-            if k.startswith("color"):
-                camera_name = camera_names[k[-1]]
-                render_type = gymapi.IMAGE_COLOR
-            elif k.startswith("depth"):
-                camera_name = camera_names[k[-1]]
-                render_type = gymapi.IMAGE_DEPTH
-            else:
-                continue
-
-            # Create a camera, if not exist.
-            if camera_name not in self.camera_handles:
-                self.camera_handles[camera_name] = [
-                    create_camera(camera_name, i) for i in range(self.num_envs)
-                ]
-
-            # Create camera observation tensors.
-            self.camera_obs[k] = [
-                gymtorch.wrap_tensor(
+        for env_idx, env in enumerate(self.envs):
+            for k in self.obs_keys:
+                if k.startswith("color"):
+                    camera_name = camera_names[k[-1]]
+                    render_type = gymapi.IMAGE_COLOR
+                elif k.startswith("depth"):
+                    camera_name = camera_names[k[-1]]
+                    render_type = gymapi.IMAGE_DEPTH
+                else:
+                    continue
+                if camera_name not in self.camera_handles:
+                    self.camera_handles[camera_name] = []
+                # Only when the camera handle for the current environment does not exist.
+                if len(self.camera_handles[camera_name]) <= env_idx:
+                    self.camera_handles[camera_name].append(create_camera(camera_name, env_idx))
+                handle = self.camera_handles[camera_name][env_idx]
+                tensor = gymtorch.wrap_tensor(
                     self.isaac_gym.get_camera_image_gpu_tensor(
                         self.sim, env, handle, render_type
                     )
                 )
-                for env, handle in zip(self.envs, self.camera_handles[camera_name])
-            ]
+                if k not in self.camera_obs:
+                    self.camera_obs[k] = []
+                self.camera_obs[k].append(tensor)
 
     def import_assets(self):
         self.base_tag_asset = self._import_base_tag_asset()
