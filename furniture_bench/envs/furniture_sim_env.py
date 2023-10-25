@@ -1105,7 +1105,10 @@ class FurnitureSimEnv(gym.Env):
         self.env_steps[env_idx] = 0
         self.move_neutral = False
 
-    def _reset_franka(self, env_idx, dof_pos=None):
+    def _update_franka_dof_state_buffer(self, dof_pos=None):
+        """
+        Sets internal tensor state buffer for Franka actor 
+        """
         # Low randomness only.
         if self.from_skill >= 1:
             dof_pos = torch.from_numpy(self.default_dof_pos)
@@ -1118,7 +1121,8 @@ class FurnitureSimEnv(gym.Env):
             dof_pos = self.robot_model.inverse_kinematics(ee_pos, ee_quat)
         else:
             dof_pos = self.default_dof_pos if dof_pos is None else dof_pos
-
+        
+        # Views for self.dof_states (used with set_dof_state_tensor* function)
         self.dof_pos[:, 0 : self.franka_num_dofs] = torch.tensor(
             dof_pos, device=self.device, dtype=torch.float32
         )
@@ -1126,6 +1130,16 @@ class FurnitureSimEnv(gym.Env):
             [0] * len(self.default_dof_pos), device=self.device, dtype=torch.float32
         )
 
+    def _reset_franka(self, env_idx, dof_pos=None):
+        """
+        Resets Franka actor within a single env. If calling multiple times,
+        need to refresh in between calls to properly register individual env changes, 
+        and set zero torques on frankas across all envs to prevent the reset arms
+        from moving while others are still being reset
+        """
+        self._update_franka_dof_state_buffer(dof_pos=dof_pos)
+        
+        # Update a single actor 
         actor_idx = self.franka_actor_idxs_all_t[env_idx].reshape(1, 1)
         self.isaac_gym.set_dof_state_tensor_indexed(
             self.sim,
@@ -1135,26 +1149,12 @@ class FurnitureSimEnv(gym.Env):
         )
 
     def _reset_franka_all(self, dof_pos=None):
-        # Low randomness only.
-        if self.from_skill >= 1:
-            dof_pos = torch.from_numpy(self.default_dof_pos)
-            ee_pos = torch.from_numpy(
-                self.furniture.furniture_conf["ee_pos"][self.from_skill]
-            )
-            ee_quat = torch.from_numpy(
-                self.furniture.furniture_conf["ee_quat"][self.from_skill]
-            )
-            dof_pos = self.robot_model.inverse_kinematics(ee_pos, ee_quat)
-        else:
-            dof_pos = self.default_dof_pos if dof_pos is None else dof_pos
+        """
+        Resets all Franka actors across all envs
+        """
+        self._update_franka_dof_state_buffer(dof_pos=dof_pos)
 
-        self.dof_pos[:, 0 : self.franka_num_dofs] = torch.tensor(
-            dof_pos, device=self.device, dtype=torch.float32
-        )
-        self.dof_vel[:, 0 : self.franka_num_dofs] = torch.tensor(
-            [0] * len(self.default_dof_pos), device=self.device, dtype=torch.float32
-        )
-
+        # Update all actors across envs at once
         self.isaac_gym.set_dof_state_tensor_indexed(
             self.sim,
             gymtorch.unwrap_tensor(self.dof_states),
@@ -1162,7 +1162,7 @@ class FurnitureSimEnv(gym.Env):
             len(self.franka_actor_idxs_all_t),
         )
 
-    def _reset_parts(self, env_idx, parts_poses=None):
+    def _reset_parts(self, env_idx, parts_poses=None, skip_set_state=False):
         """Resets furniture parts to the initial pose.
 
         Args:
@@ -1199,6 +1199,12 @@ class FurnitureSimEnv(gym.Env):
                 device=self.device,
             )
 
+        if skip_set_state:
+            # Set the value for the root state tensor, but don't call isaac gym function yet (useful when resetting all at once)
+            # If skip_set_state == True, then must self.refresh() to register the isaac set_actor_root_state* function
+            return
+
+        # Reset root state for actors in a single env
         part_actor_idxs = torch.tensor(self.part_actor_idx_by_env[env_idx], device=self.device, dtype=torch.int32)
         self.isaac_gym.get_sim_actor_count(self.sim)
         self.isaac_gym.set_actor_root_state_tensor_indexed(
@@ -1212,40 +1218,12 @@ class FurnitureSimEnv(gym.Env):
         """Resets ALL furniture parts to the initial pose.
 
         Args:
-            env_idx (int): The index of the environment.
             parts_poses (np.ndarray): The poses of the parts. If None, the parts will be reset to the initial pose.
         """
         for env_idx in range(self.num_envs):
-            for part_idx, part in enumerate(self.furnitures[env_idx].parts):
-                # Use the given pose.
-                if parts_poses is not None:
-                    part_pose = parts_poses[part_idx * 7 : (part_idx + 1) * 7]
+            self._reset_parts(env_idx, parts_poses=parts_poses, skip_set_state=True)
 
-                    pos = part_pose[:3]
-                    ori = T.to_homogeneous(
-                        [0, 0, 0], T.quat2mat(part_pose[3:])
-                    )  # Dummy zero position.
-                else:
-                    pos, ori = self._get_reset_pose(part)
-
-                part_pose_mat = self.april_coord_to_sim_coord(get_mat(pos, [0, 0, 0]))
-                part_pose = gymapi.Transform()
-                part_pose.p = gymapi.Vec3(
-                    part_pose_mat[0, 3], part_pose_mat[1, 3], part_pose_mat[2, 3]
-                )
-                reset_ori = self.april_coord_to_sim_coord(ori)
-                part_pose.r = gymapi.Quat(*T.mat2quat(reset_ori[:3, :3]))
-                idxs = self.parts_handles[part.name]
-                idxs = torch.tensor(idxs, device=self.device, dtype=torch.int32)
-
-                self.root_pos[env_idx, idxs] = torch.tensor(
-                    [part_pose.p.x, part_pose.p.y, part_pose.p.z], device=self.device
-                )
-                self.root_quat[env_idx, idxs] = torch.tensor(
-                    [part_pose.r.x, part_pose.r.y, part_pose.r.z, part_pose.r.w],
-                    device=self.device,
-                )
-
+        # Reset root state for actors across all envs
         self.isaac_gym.get_sim_actor_count(self.sim)
         self.isaac_gym.set_actor_root_state_tensor_indexed(
             self.sim,
