@@ -80,8 +80,9 @@ def main(_):
                 img1 = torch.from_numpy(np.stack(img1))
                 img2 = torch.from_numpy(np.stack(img2))
 
-                img1_feature = np.zeros((l, 2048), dtype=np.float32)
-                img2_feature = np.zeros((l, 2048), dtype=np.float32)
+                feature_dim = 2048 if FLAGS.use_r3m else 1024 
+                img1_feature = np.zeros((l, feature_dim), dtype=np.float32)
+                img2_feature = np.zeros((l, feature_dim), dtype=np.float32)
 
                 with torch.no_grad():
                     # Use batch size.
