@@ -13,31 +13,8 @@ Comment out the following code in `gym/utils/passive_env_checker.py:passive_env_
 ```
 
 
-### Data
-```bash
-$ python convert_furniture_data.py --furniture={furniture} --demo_dir={data/dir/path}
-# e.g.
-$ python convert_furniture_data.py --furniture=drawer --demo_dir=drawer_image
-```
-
-Script above will convert demonstrations to a pickle file that can be used by IQL code. Converted demonstrations will be stored in `data/Image/FURNITURE.pkl` or `data/Parts/FURNITURE.pkl`.
-
-### Training
-`--run_name`: specify run name. Log dir name is `RUN_NAME.SEED`.
-`--env_name=ENV_ID/FURNITURE`
-`--config`: we need to find `expectile`, `temperature`, and `dropout_rate`.
-
-```bash
-$ python train_offline.py --env_name=Furniture-IQL-Dummy-v0/square_table --config=configs/furniture_config.py --run_name debug --data_path={/path/to/data}
-```
-
-### Testing
-`--run_name`: specify run name you used for the training. Log dir name is `RUN_NAME.SEED`. This will determine the ckpt you want to load.
-`--ckpt_step`: specify ckpt number you want to load.
-```bash
-# E.g.
-$ python test_offline.py --env_name=Furniture-IQL-v0/square_table --config=configs/furniture_config.py --ckpt_step=1000000 --run_name debug
-```
+### Data processing + Training/Testing
+Refer to: [https://clvrai.github.io/furniture-bench/docs/tutorials/training_and_testing.html#training-bc](https://clvrai.github.io/furniture-bench/docs/tutorials/training_and_testing.html)
 
 
 ## Original README
