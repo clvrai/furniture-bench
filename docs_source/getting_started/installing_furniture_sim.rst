@@ -24,7 +24,10 @@ You can install FurnitureSim using PyPI or Docker.
 
     - Ubuntu 20.04 LTS
     - NVIDIA RTX GPU
-    - Python 3.8
+    - Python 3.8 (Conda)
+
+    Tested with:
+    nvidia driver: 525.147.05, 520.61.05 with PyTorch: 1.12.1+cu113
 
 
 Download Isaac Gym
@@ -37,10 +40,10 @@ Download Isaac Gym
 5. Download and unzip ``Isaac Gym - Ubuntu Linux 18.04 / 20.04 Preview 4 release``.
 
 
-Install FurnitureSim using PyPI (Option 1)
+Install FurnitureSim using PyPI / from Source (Option 1)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-FurnitureSim is available to install via PyPI. You need an NVIDIA driver and CUDA. Please refer to `NVIDIA CUDA Installation Guide <https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html>`__.
+You need an NVIDIA driver and CUDA first. Please refer to `NVIDIA CUDA Installation Guide <https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html>`__.
 
 1. Install Isaac Gym:
 
@@ -53,6 +56,12 @@ FurnitureSim is available to install via PyPI. You need an NVIDIA driver and CUD
 
 .. code::
 
+  # Install FurnitureBench from source
+  git clone https://github.com/clvrai/furniture-bench
+  cd furniture-bench
+  pip install -e .
+
+  # Or install via PyPI. 
   pip install furniture-bench
 
 

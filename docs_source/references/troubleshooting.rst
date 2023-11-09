@@ -243,19 +243,26 @@ Troubleshooting
 
   **A:** You should specify vulkan explicitly.
 
-  Shut down the current Docker container, and then run the following commands
-
   .. code:: bash
 
+    # Get the device id.
     apt install vulkan-tools
     MESA_VK_DEVICE_SELECT=list vulkaninfo
 
-  Rerun the Docker container, and then specify the device
+  Specify the device id.
 
   .. code:: bash
 
     # e.g.
     MESA_VK_DEVICE_SELECT='10de:2204' python furniture_bench/scripts/run_sim_env.py --furniture square_table --no-action
+
+  If the above method does not work, especially on a machine with multiple GPUs, explicitly specifying the graphics device ID with ``graphics-device-id`` might resolve the problem (note that the device ID may vary depending on the machine)."
+
+  .. code:: bash
+
+    # e.g.
+    python furniture_bench/scripts/run_sim_env.py --furniture square_table --no-action --graphics-device-id 2
+  
 
 | **Q:** FurnitureSim crashes with segmentation fault.
 

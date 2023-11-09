@@ -677,14 +677,19 @@ pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="
 </div>
 <blockquote>
 <div><p><strong>A:</strong> You should specify vulkan explicitly.</p>
-<p>Shut down the current Docker container, and then run the following commands</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt<span class="w"> </span>install<span class="w"> </span>vulkan-tools
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the device id.</span>
+apt<span class="w"> </span>install<span class="w"> </span>vulkan-tools
 <span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span>list<span class="w"> </span>vulkaninfo
 </pre></div>
 </div>
-<p>Rerun the Docker container, and then specify the device</p>
+<p>Specify the device id.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># e.g.</span>
 <span class="nv">MESA_VK_DEVICE_SELECT</span><span class="o">=</span><span class="s1">&#39;10de:2204&#39;</span><span class="w"> </span>python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--no-action
+</pre></div>
+</div>
+<p>If the above method does not work, especially on a machine with multiple GPUs, explicitly specifying the graphics device ID with <code class="docutils literal notranslate"><span class="pre">graphics-device-id</span></code> might resolve the problem (note that the device ID may vary depending on the machine).”</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># e.g.</span>
+python<span class="w"> </span>furniture_bench/scripts/run_sim_env.py<span class="w"> </span>--furniture<span class="w"> </span>square_table<span class="w"> </span>--no-action<span class="w"> </span>--graphics-device-id<span class="w"> </span><span class="m">2</span>
 </pre></div>
 </div>
 </div></blockquote>
