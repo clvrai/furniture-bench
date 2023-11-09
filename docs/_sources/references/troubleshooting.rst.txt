@@ -277,10 +277,8 @@ Troubleshooting
 
 | **Q:** I am getting the error while running ``pip install gym==0.21.0`` (e.g., ``extras_require ..``).
 
-  **A:** Run the following commands and then rerun the installation.
+  **A:** Run the following commands and then rerun the installation (`reference <https://github.com/openai/gym/issues/3176#issuecomment-1560026649>`__).
 
   .. code::
 
-    pip install --upgrade pip wheel
-    pip install setuptools==58
-    pip install --upgrade pip==22.2.2
+    pip install setuptools==65.5.0 pip==21  # gym 0.21 installation is broken with more recent versions
