@@ -32,7 +32,8 @@ class DataCollector:
         manual_label: bool,
         scripted: bool,
         randomness: Randomness.LOW,
-        gpu_id: int = 0,
+        compute_device_id: int,
+        graphics_device_id: int,
         pkl_only: bool = False,
         save_failure: bool = False,
         num_demos: int = 100,
@@ -48,7 +49,8 @@ class DataCollector:
             manual_label (bool): Whether to manually label the reward.
             scripted (bool): Whether to use scripted function for getting action.
             randomness (str): Initialization randomness level.
-            gpu_id (int): GPU ID.
+            compute_device_id (int): GPU device ID used for simulation.
+            graphics_device_id (int): GPU device ID used for rendering.
             pkl_only (bool): Whether to save only `pkl` files (i.e., exclude *.mp4 and *.png).
             save_failure (bool): Whether to save failure trajectories.
             num_demos (int): The maximum number of demonstrations to collect in this run. Internal loop will be terminated when this number is reached.
@@ -65,8 +67,8 @@ class DataCollector:
                 np_step_out=False,  # Always output Tensor in this setting. Will change to numpy in this code.
                 channel_first=False,
                 randomness=randomness,
-                compute_device_id=gpu_id,
-                graphics_device_id=gpu_id,
+                compute_device_id=compute_device_id,
+                graphics_device_id=graphics_device_id
             )
         else:
             if randomness == "med":
