@@ -74,6 +74,20 @@ def main():
         default="quat",
     )
 
+    parser.add_argument(
+        "--compute-device-id",
+        type=int,
+        default=0,
+        help="GPU device ID used for simulation.",
+    )
+
+    parser.add_argument(
+        "--graphics-device-id",
+        type=int,
+        default=0,
+        help="GPU device ID used for rendering.",
+    )
+
     parser.add_argument("--num-envs", type=int, default=1)
     args = parser.parse_args()
 
@@ -90,6 +104,8 @@ def main():
         randomness=args.randomness,
         high_random_idx=args.high_random_idx,
         act_rot_repr=args.act_rot_repr,
+        compute_device_id=args.compute_device_id,
+        graphics_device_id=args.graphics_device_id,
     )
 
     # Initialize FurnitureSim.
