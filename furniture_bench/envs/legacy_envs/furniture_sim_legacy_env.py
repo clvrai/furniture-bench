@@ -150,6 +150,9 @@ class FurnitureSimEnvLegacy(gym.Env):
                 (img_size[0] * 2, img_size[1]),  # Wrist and front cameras.
             )
 
+        self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
+        self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
+
     def _create_ground_plane(self):
         # add ground plane
         plane_params = gymapi.PlaneParams()
@@ -940,6 +943,8 @@ class FurnitureSimEnvLegacy(gym.Env):
             color_img3 = color_img3.cpu().numpy()
             depth_img3 = depth_img3.cpu().numpy()
 
+            parts_poses = parts_poses.cpu().numpy()
+
             robot_state = robot_state.__dict__
             for k, v in robot_state.items():
                 robot_state[k] = v.cpu().numpy()
@@ -958,16 +963,39 @@ class FurnitureSimEnvLegacy(gym.Env):
             stacked_img = np.hstack(record_images)
             self.video_writer.write(cv2.cvtColor(stacked_img, cv2.COLOR_RGB2BGR))
 
-        return dict(
-            robot_state=robot_state.__dict__,
-            color_image1=color_img1,
-            depth_image1=depth_img1,
-            color_image2=color_img2,
-            depth_image2=depth_img2,
-            color_image3=color_img3,
-            depth_image3=depth_img3,
-            parts_poses=parts_poses,
-        )
+        ret = {
+            "color_image1": color_img1,
+            "depth_image1": depth_img1,
+            "color_image2": color_img2,
+            "depth_image2": depth_img2,
+            "color_image3": color_img3,
+            "depth_image3": depth_img3,
+            "parts_poses": parts_poses,
+        }
+        if self.robot_state_as_dict:
+            ret["robot_state"] = robot_state.__dict__
+        else:
+            ret.update(robot_state.__dict__) # Flatten the dict.
+
+        if self.squeeze_batch_dim:
+            for k, v in ret.items():
+                if isinstance(v, dict):
+                    for kk, vv in v.items():
+                        ret[k][kk] = vv.squeeze(0)
+                else:
+                    ret[k] = v.squeeze(0)
+        return ret
+
+    def get_observation(self):
+        return self._get_observation()
+
+    def render(self, mode="rgb_array"):
+        if mode != "rgb_array":
+            raise NotImplementedError
+        return self._get_observation()["color_image2"]
+
+    def is_success(self, env_idx=0):
+        return {"task": self.furnitures[env_idx].all_assembled()}
 
     def reset(self):
         for i in range(self.num_envs):

@@ -180,6 +180,9 @@ class FurnitureSimEnv(gym.Env):
             raise ValueError(f"Invalid rotation representation: {act_rot_repr}")
         self.act_rot_repr = act_rot_repr
 
+        self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
+        self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
+
     def _create_ground_plane(self):
         """Creates ground plane."""
         plane_params = gymapi.PlaneParams()
@@ -1007,9 +1010,13 @@ class FurnitureSimEnv(gym.Env):
             self.video_writer.write(cv2.cvtColor(stacked_img, cv2.COLOR_RGB2BGR))
 
         obs = {}
-        if isinstance(robot_state, (np.ndarray, torch.Tensor)) or robot_state:
-            # Check if robot_state is empty.
-            obs["robot_state"] = robot_state
+        if (
+            isinstance(robot_state, (np.ndarray, torch.Tensor)) or robot_state
+        ):  # Check if robot_state is empty.
+            if self.robot_state_as_dict:
+                obs["robot_state"] = robot_state
+            else:
+                obs.update(robot_state)  # Flatten the dict.
         for k in self.obs_keys:
             if k == "parts_poses":
                 obs["parts_poses"] = parts_poses
@@ -1017,10 +1024,28 @@ class FurnitureSimEnv(gym.Env):
                 obs[k] = color_obs[k]
             elif k.startswith("depth"):
                 obs[k] = depth_obs[k]
+
+        if self.squeeze_batch_dim:
+            for k, v in obs.items():
+                if isinstance(v, dict):
+                    for kk, vv in v.items():
+                        obs[k][kk] = vv.squeeze(0)
+                else:
+                    obs[k] = v.squeeze(0)
         return obs
 
-    def reset(self):
+    def get_observation(self):
+        return self._get_observation()
 
+    def render(self, mode="rgb_array"):
+        if mode != "rgb_array":
+            raise NotImplementedError
+        return self._get_observation()["color_image2"]
+
+    def is_success(self, env_idx=0):
+        return {"task": self.furnitures[env_idx].all_assembled()}
+
+    def reset(self):
         # can also reset the full set of robots/parts, without applying torques and refreshing
         # self._reset_franka_all()
         # self._reset_parts_all()
