@@ -70,7 +70,7 @@ def main():
         "--act-rot-repr",
         type=str,
         help="Rotation representation for action space.",
-        choices=["quat", "axis"],
+        choices=["quat", "axis", "rot_6d"],
         default="quat",
     )
 
