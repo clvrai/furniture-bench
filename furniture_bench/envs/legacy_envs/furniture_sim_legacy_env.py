@@ -63,6 +63,7 @@ class FurnitureSimEnvLegacy(gym.Env):
         high_random_idx: int = 0,
         save_camera_input: bool = False,
         record: bool = False,
+        rot_6d: bool = False,
         **kwargs,
     ):
         """
@@ -80,6 +81,7 @@ class FurnitureSimEnvLegacy(gym.Env):
             high_random_idx (int): Index of the high randomness level (range: [0-2]). Default -1 will randomly select the index within the range.
             save_camera_input (bool): If true, the initial camera inputs are saved.
             record (bool): If true, videos of the wrist and front cameras' RGB inputs are recorded.
+            rot_6d (bool): If true, the action rotation is represented as 6D vector.
         """
         super(FurnitureSimEnvLegacy, self).__init__()
         self.device = torch.device("cuda", compute_device_id)
@@ -91,6 +93,7 @@ class FurnitureSimEnvLegacy(gym.Env):
 
         self.furniture_name = furniture
         self.num_envs = num_envs
+        self.rot_6d = rot_6d
         self.pose_dim = 7
         self.resize_img = resize_img
         self.manual_done = manual_done
@@ -622,9 +625,20 @@ class FurnitureSimEnvLegacy(gym.Env):
 
     @property
     def action_space(self):
+        if self.rot_6d:
+            return gym.spaces.Box(
+                low=-1.0, high=1.0, shape=(self.num_envs, 10)
+            )
         return gym.spaces.Box(
-            low=-1.0, high=1.0, shape=(self.num_envs, self.pose_dim + 1)
+            low=-1.0, high=1.0, shape=(self.num_envs, 8)
         )
+
+    @property
+    def action_dimension(self):
+        """
+        Returns dimension of actions (int).
+        """
+        return self.action_space.shape[1]
 
     @property
     def observation_space(self):
@@ -662,12 +676,21 @@ class FurnitureSimEnvLegacy(gym.Env):
         """Robot takes an action.
         Args:
             action:
-                (num_envs, 7): dx, dy, dz, dax, day, daz, grip
+                (num_envs, 7): dx, dy, dz, dax, day, daz, grip or
+                (num_envs, 10): dx, dy, dz, 6D rotation, grip
         """
         if isinstance(action, np.ndarray):
             action = torch.from_numpy(action).float().to(device=self.device)
         if len(action.shape) == 1:
             action = action.unsqueeze(0)
+        if self.rot_6d:
+            import pytorch3d.transforms as pt
+            # Create "actions" dataset.
+            rot_6d = action[:, 3:9]
+            rot_mat = pt.rotation_6d_to_matrix(rot_6d)
+            quat = pt.matrix_to_quaternion(rot_mat)
+            # Change the actions quaterion.
+            action = torch.cat([action[:, :3], quat, action[:, -1:]], dim=1)
 
         sim_steps = int(
             1.0
