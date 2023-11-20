@@ -1058,8 +1058,8 @@ class FurnitureSimEnv(gym.Env):
             raise NotImplementedError
         return self._get_observation()["color_image2"]
 
-    def is_success(self, env_idx=0):
-        return {"task": self.furnitures[env_idx].all_assembled()}
+    def is_success(self):
+        return [{"task": self.furnitures[env_idx].all_assembled()} for env_idx in range(self.num_envs)]
 
     def reset(self):
         # can also reset the full set of robots/parts, without applying torques and refreshing
