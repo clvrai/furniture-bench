@@ -73,6 +73,9 @@ def main():
     )
 
     parser.add_argument("--num-demos", default=100, type=int)
+
+    parser.add_argument("--resize-sim-img", action="store_true")
+
     args = parser.parse_args()
 
     if args.scripted:
@@ -100,6 +103,7 @@ def main():
         pkl_only=args.pkl_only,
         save_failure=args.save_failure,
         num_demos=args.num_demos,
+        resize_sim_img=args.resize_sim_img,
     )
     data_collector.collect()
 

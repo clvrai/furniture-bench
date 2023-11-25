@@ -37,6 +37,7 @@ class DataCollector:
         pkl_only: bool = False,
         save_failure: bool = False,
         num_demos: int = 100,
+        resize_sim_img: bool = False,
     ):
         """
         Args:
@@ -54,6 +55,7 @@ class DataCollector:
             pkl_only (bool): Whether to save only `pkl` files (i.e., exclude *.mp4 and *.png).
             save_failure (bool): Whether to save failure trajectories.
             num_demos (int): The maximum number of demonstrations to collect in this run. Internal loop will be terminated when this number is reached.
+            resize_sim_img (bool): Read resized image
         """
         if is_sim:
             self.env = gym.make(
@@ -63,7 +65,7 @@ class DataCollector:
                 headless=headless,
                 num_envs=1,  # Only support 1 for now.
                 manual_done=False if scripted else True,
-                resize_img=False,
+                resize_img=resize_sim_img,
                 np_step_out=False,  # Always output Tensor in this setting. Will change to numpy in this code.
                 channel_first=False,
                 randomness=randomness,
@@ -101,6 +103,7 @@ class DataCollector:
 
         self.pkl_only = pkl_only
         self.save_failure = save_failure
+        self.resize_sim_img = resize_sim_img
 
         self._reset_collector_buffer()
 
@@ -211,8 +214,13 @@ class DataCollector:
 
                 self.org_obs.append(obs.copy())
                 ob = {}
-                ob["color_image1"] = resize(obs["color_image1"])
-                ob["color_image2"] = resize_crop(obs["color_image2"])
+                if (not self.is_sim) or (not self.resize_sim_img):
+                    # Resize for every real world images, or for sim didn't resize in simulation side.
+                    ob["color_image1"] = resize(obs["color_image1"])
+                    ob["color_image2"] = resize_crop(obs["color_image2"])
+                else:
+                    ob["color_image1"] = obs["color_image1"]
+                    ob["color_image2"] = obs["color_image2"]
                 ob["robot_state"] = obs["robot_state"]
                 ob["parts_poses"] = obs["parts_poses"]
                 self.obs.append(ob)
