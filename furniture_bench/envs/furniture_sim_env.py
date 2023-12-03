@@ -504,7 +504,10 @@ class FurnitureSimEnv(gym.Env):
             camera_cfg.enable_tensors = True
             camera_cfg.width = self.img_size[0]
             camera_cfg.height = self.img_size[1]
+            camera_cfg.near_plane = 0.001
+            camera_cfg.far_plane = 2.0
             camera_cfg.horizontal_fov = 40.0 if self.resize_img else 69.4
+            self.camera_cfg = camera_cfg
 
             if name == "wrist":
                 if self.resize_img:
@@ -523,6 +526,10 @@ class FurnitureSimEnv(gym.Env):
                 cam_pos = gymapi.Vec3(0.90, -0.00, 0.65)
                 cam_target = gymapi.Vec3(-1, -0.00, 0.3)
                 self.isaac_gym.set_camera_location(camera, env, cam_pos, cam_target)
+                self.front_cam_pos = np.array([cam_pos.x, cam_pos.y, cam_pos.z])
+                self.front_cam_target = np.array(
+                    [cam_target.x, cam_target.y, cam_target.z]
+                )
             elif name == "rear":
                 camera = self.isaac_gym.create_camera_sensor(env, camera_cfg)
                 transform = gymapi.Transform()
@@ -988,6 +995,56 @@ class FurnitureSimEnv(gym.Env):
         if self.channel_first:
             color_obs = color_obs.permute(0, 3, 1, 2)  # NHWC -> NCHW
         return color_obs
+
+    def get_front_projection_view_matrix(self):
+        cam_pos = self.front_cam_pos
+        cam_target = self.front_cam_target
+        width = self.img_size[0]
+        height = self.img_size[1]
+        near_plane = self.camera_cfg.near_plane
+        far_plane = self.camera_cfg.far_plane
+        horizontal_fov = self.camera_cfg.horizontal_fov
+
+        # Compute aspect ratio
+        aspect_ratio = width / height
+        # Convert horizontal FOV from degrees to radians and calculate focal length
+        fov_rad = np.radians(horizontal_fov)
+        f = 1 / np.tan(fov_rad / 2)
+        # Construct the projection matrix
+        # fmt: off
+        P = np.array(
+            [
+                [f / aspect_ratio, 0, 0, 0],
+                [0, f, 0, 0],
+                [0, 0, (far_plane + near_plane) / (near_plane - far_plane), (2 * far_plane * near_plane) / (near_plane - far_plane)],
+                [0, 0, -1, 0],
+            ]
+        )
+        # fmt: on
+
+        def normalize(v):
+            norm = np.linalg.norm(v)
+            return v / norm if norm > 0 else v
+
+        forward = normalize(cam_target - cam_pos)
+        up = np.array([0, 1, 0])
+        right = normalize(np.cross(up, forward))
+        # Recompute Up Vector
+        up = np.cross(forward, right)
+
+        # Construct the View Matrix
+        # fmt: off
+        V = np.matrix(
+            [
+                [right[0], right[1], right[2], -np.dot(right, cam_pos)],
+                [up[0], up[1], up[2], -np.dot(up, cam_pos)],
+                [forward[0], forward[1], forward[2], -np.dot(forward, cam_pos)],
+                [0, 0, 0, 1],
+            ]
+        )
+        # fmt: on
+
+        return P, V
 
     def _get_observation(self):
         robot_state = self._read_robot_state()
