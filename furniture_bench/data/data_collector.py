@@ -12,6 +12,7 @@ from joblib import Parallel, delayed
 from furniture_bench.device.device_interface import DeviceInterface
 from furniture_bench.data.collect_enum import CollectEnum
 from furniture_bench.config import config
+from furniture_bench.sim_config import sim_config
 from furniture_bench.perception.image_utils import resize, resize_crop
 from furniture_bench.envs.initialization_mode import Randomness
 
@@ -61,7 +62,9 @@ class DataCollector:
             self.env = gym.make(
                 "FurnitureSimFull-v0",
                 furniture=furniture,
-                max_env_steps=600 if scripted else 3000,
+                max_env_steps=sim_config["scripted_timeout"][furniture]
+                if scripted
+                else 3000,
                 headless=headless,
                 num_envs=1,  # Only support 1 for now.
                 manual_done=False if scripted else True,

@@ -1408,8 +1408,8 @@ class FurnitureSimEnv(gym.Env):
             Tuple (action for the assembly task, skill complete mask)
         """
         assert self.num_envs == 1  # Only support one environment for now.
-        if self.furniture_name not in ["one_leg"]:
-            raise NotImplementedError("Only one_leg is supported for now.")
+        if self.furniture_name not in ["one_leg", "cabinet"]:
+            raise NotImplementedError("[one_leg, cabinet] are supported for scripted agent")
 
         if self.assemble_idx > len(self.furniture.should_be_assembled):
             return torch.tensor([0, 0, 0, 0, 0, 0, 1, -1], device=self.device)
