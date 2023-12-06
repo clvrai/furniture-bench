@@ -822,7 +822,8 @@ class FurnitureSimEnv(gym.Env):
             # Return zeros since the reward is manually labeled by data_collector.py.
             return rewards
 
-        parts_poses, founds = self._get_parts_poses()
+        # Don't have to convert to AprilTag coordinate since the reward is computed with relative poses.
+        parts_poses, founds = self._get_parts_poses(sim_coord=True) 
         for env_idx in range(self.num_envs):
             env_parts_poses = parts_poses[env_idx].cpu().numpy()
             env_founds = founds[env_idx].cpu().numpy()
@@ -835,8 +836,11 @@ class FurnitureSimEnv(gym.Env):
 
         return rewards
 
-    def _get_parts_poses(self):
+    def _get_parts_poses(self, sim_coord=False):
         """Get furniture parts poses in the AprilTag frame.
+        
+        Args:
+            sim_coord: If True, return the poses in the simulator coordinate. Otherwise, return the poses in the AprilTag coordinate.
 
         Returns:
             parts_poses: (num_envs, num_parts * pose_dim). The poses of all parts in the AprilTag frame.
@@ -852,6 +856,18 @@ class FurnitureSimEnv(gym.Env):
             dtype=torch.float32,
             device=self.device,
         )
+        if sim_coord:
+            # Return the poses in the simulator coordinate.
+            for part_idx in range(len(self.furniture.parts)):
+                part = self.furniture.parts[part_idx]
+                rb_idx = self.part_idxs[part.name]
+                part_pose = self.rb_states[rb_idx, :7]
+                parts_poses[
+                    :, part_idx * self.pose_dim : (part_idx + 1) * self.pose_dim
+                ] = part_pose[:, : self.pose_dim]
+
+            return parts_poses, founds
+
         for env_idx in range(self.num_envs):
             for part_idx in range(len(self.furniture.parts)):
                 part = self.furniture.parts[part_idx]
@@ -1048,7 +1064,6 @@ class FurnitureSimEnv(gym.Env):
 
     def _get_observation(self):
         robot_state = self._read_robot_state()
-        parts_poses, _ = self._get_parts_poses()  # Part poses in AprilTag coordinate.
         color_obs = {
             k: self._get_color_obs(v)
             for k, v in self.camera_obs.items()
@@ -1062,7 +1077,6 @@ class FurnitureSimEnv(gym.Env):
             robot_state = {k: v.cpu().numpy() for k, v in robot_state.items()}
             color_obs = {k: v.cpu().numpy() for k, v in color_obs.items()}
             depth_obs = {k: v.cpu().numpy() for k, v in depth_obs.items()}
-            parts_poses = parts_poses.cpu().numpy()
 
         if robot_state and self.concat_robot_state:
             if self.np_step_out:
@@ -1092,6 +1106,9 @@ class FurnitureSimEnv(gym.Env):
                 obs.update(robot_state)  # Flatten the dict.
         for k in self.obs_keys:
             if k == "parts_poses":
+                parts_poses, _ = self._get_parts_poses()  # Part poses in AprilTag coordinate.
+                if self.np_step_out:
+                    parts_poses = parts_poses.cpu().numpy()
                 obs["parts_poses"] = parts_poses
             elif k.startswith("color"):
                 obs[k] = color_obs[k]
