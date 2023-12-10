@@ -6,6 +6,12 @@ from furniture_bench.config import config
 
 sim_config = config.copy()
 
+# Timeout for # environment steps for each furniture model.
+sim_config["scripted_timeout"] = {
+    "one_leg": 600,
+    "cabinet": 1500
+}
+
 # Simulator options.
 sim_params = gymapi.SimParams()
 sim_params.up_axis = gymapi.UP_AXIS_Z
