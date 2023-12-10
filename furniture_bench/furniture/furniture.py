@@ -61,6 +61,9 @@ class Furniture(ABC):
             sum(self.max_env_steps_skills[i:])
             for i in range(len(self.max_env_steps_skills) - 1)
         ]
+        # Check whether the furniture is assembled.
+        # If the value is smaller than these thresholds, we consider the furniture is assembled.
+        self.assembled_pos_threshold = config["furniture"]["assembled_pos_threshold"]
 
     def randomize_init_pose(
         self, from_skill, pos_range=[-0.05, 0.05], rot_range=45
@@ -458,7 +461,7 @@ class Furniture(ABC):
                 assembled_rel_pose,
                 rel_pose,
                 ori_bound=ori_bound,
-                pos_threshold=[0.010, 0.005, 0.010],
+                pos_threshold=self.assembled_pos_threshold,
             ):
                 return True
 
