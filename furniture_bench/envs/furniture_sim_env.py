@@ -91,7 +91,7 @@ class FurnitureSimEnv(gym.Env):
             save_camera_input (bool): If true, the initial camera inputs are saved.
             record (bool): If true, videos of the wrist and front cameras' RGB inputs are recorded.
             max_env_steps (int): Maximum number of steps per episode (default: 3000).
-            act_rot_repr (str): Representation of rotation for action space. Options are 'quat' and 'axis'.
+            act_rot_repr (str): Representation of rotation for action space. Options are 'quat', 'axis', or 'rot_6d'.
         """
         super(FurnitureSimEnv, self).__init__()
         self.device = torch.device("cuda", compute_device_id)
@@ -176,9 +176,12 @@ class FurnitureSimEnv(gym.Env):
                 (self.img_size[1] * 2, self.img_size[0]),  # Wrist and front cameras.
             )
 
-        if act_rot_repr != "quat" and act_rot_repr != "axis":
+        if act_rot_repr != "quat" and act_rot_repr != "axis" and act_rot_repr != "rot_6d":
             raise ValueError(f"Invalid rotation representation: {act_rot_repr}")
         self.act_rot_repr = act_rot_repr
+
+        self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
+        self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
 
     def _create_ground_plane(self):
         """Creates ground plane."""
@@ -409,6 +412,21 @@ class FurnitureSimEnv(gym.Env):
                 self.parts_handles[part.name] = self.isaac_gym.find_actor_index(
                     env, part.name, gymapi.DOMAIN_ENV
                 )
+        
+        # print(f'Getting the separate actor indices for the frankas and the furniture parts (not the handles)')
+        self.franka_actor_idx_all = []
+        self.part_actor_idx_all = []  # global list of indices, when resetting all parts
+        self.part_actor_idx_by_env = {}  # allow to access part indices based on environment indices
+        for env_idx in range(self.num_envs):
+            self.franka_actor_idx_all.append(self.isaac_gym.find_actor_index(self.envs[env_idx], 'franka', gymapi.DOMAIN_SIM))
+            self.part_actor_idx_by_env[env_idx] = []
+            for part in self.furnitures[env_idx].parts:
+                part_actor_idx = self.isaac_gym.find_actor_index(self.envs[env_idx], part.name, gymapi.DOMAIN_SIM)
+                self.part_actor_idx_all.append(part_actor_idx)
+                self.part_actor_idx_by_env[env_idx].append(part_actor_idx)
+
+        self.franka_actor_idxs_all_t = torch.tensor(self.franka_actor_idx_all, device=self.device, dtype=torch.int32)
+        self.part_actor_idxs_all_t = torch.tensor(self.part_actor_idx_all, device=self.device, dtype=torch.int32)
 
     def _get_reset_pose(self, part: Part):
         """Get the reset pose of the part.
@@ -486,7 +504,10 @@ class FurnitureSimEnv(gym.Env):
             camera_cfg.enable_tensors = True
             camera_cfg.width = self.img_size[0]
             camera_cfg.height = self.img_size[1]
+            camera_cfg.near_plane = 0.001
+            camera_cfg.far_plane = 2.0
             camera_cfg.horizontal_fov = 40.0 if self.resize_img else 69.4
+            self.camera_cfg = camera_cfg
 
             if name == "wrist":
                 if self.resize_img:
@@ -505,6 +526,10 @@ class FurnitureSimEnv(gym.Env):
                 cam_pos = gymapi.Vec3(0.90, -0.00, 0.65)
                 cam_target = gymapi.Vec3(-1, -0.00, 0.3)
                 self.isaac_gym.set_camera_location(camera, env, cam_pos, cam_target)
+                self.front_cam_pos = np.array([cam_pos.x, cam_pos.y, cam_pos.z])
+                self.front_cam_target = np.array(
+                    [cam_target.x, cam_target.y, cam_target.z]
+                )
             elif name == "rear":
                 camera = self.isaac_gym.create_camera_sensor(env, camera_cfg)
                 transform = gymapi.Transform()
@@ -619,7 +644,12 @@ class FurnitureSimEnv(gym.Env):
     @property
     def action_space(self):
         # Action space to be -1.0 to 1.0.
-        pose_dim = 7 if self.act_rot_repr == "quat" else 6
+        if self.act_rot_repr == "quat":
+            pose_dim = 7
+        elif self.act_rot_repr == "rot_6d":
+            pose_dim = 9
+        else: # axis
+            pose_dim = 6
 
         low = np.array([-1] * pose_dim + [-1], dtype=np.float32)
         high = np.array([1] * pose_dim + [1], dtype=np.float32)
@@ -628,6 +658,10 @@ class FurnitureSimEnv(gym.Env):
         high = np.tile(high, (self.num_envs, 1))
 
         return gym.spaces.Box(low, high, (self.num_envs, pose_dim + 1))
+    
+    @property
+    def action_dimension(self):
+        return self.action_space.shape[-1]
 
     @property
     def observation_space(self):
@@ -669,6 +703,7 @@ class FurnitureSimEnv(gym.Env):
         Args:
             action:
                 (num_envs, 8): End-effector delta in [x, y, z, qx, qy, qz, qw, gripper] if self.act_rot_repr == "quat".
+                (num_envs, 10): End-effector delta in [x, y, z, 6D rotation, gripper] if self.act_rot_repr == "rot_6d".
                 (num_envs, 7): End-effector delta in [x, y, z, ax, ay, az, gripper] if self.act_rot_repr == "axis".
         """
         if isinstance(action, np.ndarray):
@@ -694,11 +729,17 @@ class FurnitureSimEnv(gym.Env):
         ee_pos, ee_quat = self.get_ee_pose()
 
         for env_idx in range(self.num_envs):
-            action_quat = (
-                action[env_idx][3:7]
-                if self.act_rot_repr == "quat"
-                else C.axisangle2quat(action[env_idx][3:6])
-            )
+            if self.act_rot_repr == "quat":
+                action_quat = action[env_idx][3:7]
+            elif self.act_rot_repr == "rot_6d":
+                import pytorch3d.transforms as pt
+                # Create "actions" dataset.
+                rot_6d = action[:, 3:9]
+                rot_mat = pt.rotation_6d_to_matrix(rot_6d)
+                quat = pt.matrix_to_quaternion(rot_mat)
+                action_quat = quat[env_idx]
+            else:
+                action_quat = C.axisangle2quat(action[env_idx][3:6])
 
             self.osc_ctrls[env_idx].set_goal(
                 action[env_idx][:3] + ee_pos[env_idx],
@@ -781,7 +822,8 @@ class FurnitureSimEnv(gym.Env):
             # Return zeros since the reward is manually labeled by data_collector.py.
             return rewards
 
-        parts_poses, founds = self._get_parts_poses()
+        # Don't have to convert to AprilTag coordinate since the reward is computed with relative poses.
+        parts_poses, founds = self._get_parts_poses(sim_coord=True) 
         for env_idx in range(self.num_envs):
             env_parts_poses = parts_poses[env_idx].cpu().numpy()
             env_founds = founds[env_idx].cpu().numpy()
@@ -794,8 +836,11 @@ class FurnitureSimEnv(gym.Env):
 
         return rewards
 
-    def _get_parts_poses(self):
+    def _get_parts_poses(self, sim_coord=False):
         """Get furniture parts poses in the AprilTag frame.
+        
+        Args:
+            sim_coord: If True, return the poses in the simulator coordinate. Otherwise, return the poses in the AprilTag coordinate.
 
         Returns:
             parts_poses: (num_envs, num_parts * pose_dim). The poses of all parts in the AprilTag frame.
@@ -811,6 +856,18 @@ class FurnitureSimEnv(gym.Env):
             dtype=torch.float32,
             device=self.device,
         )
+        if sim_coord:
+            # Return the poses in the simulator coordinate.
+            for part_idx in range(len(self.furniture.parts)):
+                part = self.furniture.parts[part_idx]
+                rb_idx = self.part_idxs[part.name]
+                part_pose = self.rb_states[rb_idx, :7]
+                parts_poses[
+                    :, part_idx * self.pose_dim : (part_idx + 1) * self.pose_dim
+                ] = part_pose[:, : self.pose_dim]
+
+            return parts_poses, founds
+
         for env_idx in range(self.num_envs):
             for part_idx in range(len(self.furniture.parts)):
                 part = self.furniture.parts[part_idx]
@@ -955,9 +1012,58 @@ class FurnitureSimEnv(gym.Env):
             color_obs = color_obs.permute(0, 3, 1, 2)  # NHWC -> NCHW
         return color_obs
 
+    def get_front_projection_view_matrix(self):
+        cam_pos = self.front_cam_pos
+        cam_target = self.front_cam_target
+        width = self.img_size[0]
+        height = self.img_size[1]
+        near_plane = self.camera_cfg.near_plane
+        far_plane = self.camera_cfg.far_plane
+        horizontal_fov = self.camera_cfg.horizontal_fov
+
+        # Compute aspect ratio
+        aspect_ratio = width / height
+        # Convert horizontal FOV from degrees to radians and calculate focal length
+        fov_rad = np.radians(horizontal_fov)
+        f = 1 / np.tan(fov_rad / 2)
+        # Construct the projection matrix
+        # fmt: off
+        P = np.array(
+            [
+                [f / aspect_ratio, 0, 0, 0],
+                [0, f, 0, 0],
+                [0, 0, (far_plane + near_plane) / (near_plane - far_plane), (2 * far_plane * near_plane) / (near_plane - far_plane)],
+                [0, 0, -1, 0],
+            ]
+        )
+        # fmt: on
+
+        def normalize(v):
+            norm = np.linalg.norm(v)
+            return v / norm if norm > 0 else v
+
+        forward = normalize(cam_target - cam_pos)
+        up = np.array([0, 1, 0])
+        right = normalize(np.cross(up, forward))
+        # Recompute Up Vector
+        up = np.cross(forward, right)
+
+        # Construct the View Matrix
+        # fmt: off
+        V = np.matrix(
+            [
+                [right[0], right[1], right[2], -np.dot(right, cam_pos)],
+                [up[0], up[1], up[2], -np.dot(up, cam_pos)],
+                [forward[0], forward[1], forward[2], -np.dot(forward, cam_pos)],
+                [0, 0, 0, 1],
+            ]
+        )
+        # fmt: on
+
+        return P, V
+
     def _get_observation(self):
         robot_state = self._read_robot_state()
-        parts_poses, _ = self._get_parts_poses()  # Part poses in AprilTag coordinate.
         color_obs = {
             k: self._get_color_obs(v)
             for k, v in self.camera_obs.items()
@@ -971,7 +1077,6 @@ class FurnitureSimEnv(gym.Env):
             robot_state = {k: v.cpu().numpy() for k, v in robot_state.items()}
             color_obs = {k: v.cpu().numpy() for k, v in color_obs.items()}
             depth_obs = {k: v.cpu().numpy() for k, v in depth_obs.items()}
-            parts_poses = parts_poses.cpu().numpy()
 
         if robot_state and self.concat_robot_state:
             if self.np_step_out:
@@ -992,22 +1097,59 @@ class FurnitureSimEnv(gym.Env):
             self.video_writer.write(cv2.cvtColor(stacked_img, cv2.COLOR_RGB2BGR))
 
         obs = {}
-        if isinstance(robot_state, (np.ndarray, torch.Tensor)) or robot_state:
-            # Check if robot_state is empty.
-            obs["robot_state"] = robot_state
+        if (
+            isinstance(robot_state, (np.ndarray, torch.Tensor)) or robot_state
+        ):  # Check if robot_state is empty.
+            if self.robot_state_as_dict:
+                obs["robot_state"] = robot_state
+            else:
+                obs.update(robot_state)  # Flatten the dict.
         for k in self.obs_keys:
             if k == "parts_poses":
+                parts_poses, _ = self._get_parts_poses()  # Part poses in AprilTag coordinate.
+                if self.np_step_out:
+                    parts_poses = parts_poses.cpu().numpy()
                 obs["parts_poses"] = parts_poses
             elif k.startswith("color"):
                 obs[k] = color_obs[k]
             elif k.startswith("depth"):
                 obs[k] = depth_obs[k]
+
+        if self.squeeze_batch_dim:
+            for k, v in obs.items():
+                if isinstance(v, dict):
+                    for kk, vv in v.items():
+                        obs[k][kk] = vv.squeeze(0)
+                else:
+                    obs[k] = v.squeeze(0)
         return obs
 
-    def reset(self):
-        for i in range(self.num_envs):
-            self.reset_env(i)
+    def get_observation(self):
+        return self._get_observation()
 
+    def render(self, mode="rgb_array"):
+        if mode != "rgb_array":
+            raise NotImplementedError
+        return self._get_observation()["color_image2"]
+
+    def is_success(self):
+        return [{"task": self.furnitures[env_idx].all_assembled()} for env_idx in range(self.num_envs)]
+
+    def reset(self):
+        # can also reset the full set of robots/parts, without applying torques and refreshing
+        # self._reset_franka_all()
+        # self._reset_parts_all()
+        for i in range(self.num_envs):
+            # if using ._reset_*_all(), can set reset_franka=False and reset_parts=False in .reset_env
+            self.reset_env(i)  
+
+            # apply zero torque across the board and refresh in between each env reset (not needed if using ._reset_*_all())
+            torque_action = torch.zeros_like(self.dof_pos)
+            self.isaac_gym.set_dof_actuation_force_tensor(
+                self.sim, gymtorch.unwrap_tensor(torque_action)
+            )
+            self.refresh()
+        
         self.furniture.reset()
 
         self.refresh()
@@ -1027,11 +1169,16 @@ class FurnitureSimEnv(gym.Env):
         for i in range(self.num_envs):
             self.reset_env_to(i, state[i])
 
-    def reset_env(self, env_idx):
-        """Resets the environment.
+    def reset_env(self, env_idx, reset_franka=True, reset_parts=True):
+        """Resets the environment. **MUST refresh in between multiple calls
+        to this function to have changes properly reflected in each environment.
+        Also might want to set a zero-torque action via .set_dof_actuation_force_tensor
+        to avoid additional movement**
 
         Args:
             env_idx: Environment index.
+            reset_franka: If True, then reset the franka for this env
+            reset_parts: If True, then reset the part poses for this env
         """
         self.furnitures[env_idx].reset()
         if self.randomness == Randomness.LOW and not self.init_assembled:
@@ -1043,14 +1190,19 @@ class FurnitureSimEnv(gym.Env):
             self.furnitures[env_idx].randomize_init_pose(self.from_skill)
         elif self.randomness == Randomness.HIGH:
             self.furnitures[env_idx].randomize_high(self.high_random_idx)
-
-        self._reset_franka(env_idx)
-        self._reset_parts(env_idx)
+        
+        if reset_franka:
+            self._reset_franka(env_idx)
+        if reset_parts:
+            self._reset_parts(env_idx)
         self.env_steps[env_idx] = 0
         self.move_neutral = False
 
     def reset_env_to(self, env_idx, state):
-        """Reset to a specific state.
+        """Reset to a specific state. **MUST refresh in between multiple calls
+        to this function to have changes properly reflected in each environment.
+        Also might want to set a zero-torque action via .set_dof_actuation_force_tensor
+        to avoid additional movement**
 
         Args:
             env_idx: Environment index.
@@ -1068,7 +1220,10 @@ class FurnitureSimEnv(gym.Env):
         self.env_steps[env_idx] = 0
         self.move_neutral = False
 
-    def _reset_franka(self, env_idx, dof_pos=None):
+    def _update_franka_dof_state_buffer(self, dof_pos=None):
+        """
+        Sets internal tensor state buffer for Franka actor 
+        """
         # Low randomness only.
         if self.from_skill >= 1:
             dof_pos = torch.from_numpy(self.default_dof_pos)
@@ -1081,25 +1236,48 @@ class FurnitureSimEnv(gym.Env):
             dof_pos = self.robot_model.inverse_kinematics(ee_pos, ee_quat)
         else:
             dof_pos = self.default_dof_pos if dof_pos is None else dof_pos
-
+        
+        # Views for self.dof_states (used with set_dof_state_tensor* function)
         self.dof_pos[:, 0 : self.franka_num_dofs] = torch.tensor(
             dof_pos, device=self.device, dtype=torch.float32
         )
         self.dof_vel[:, 0 : self.franka_num_dofs] = torch.tensor(
             [0] * len(self.default_dof_pos), device=self.device, dtype=torch.float32
         )
-        idxs = torch.tensor(self.franka_handles, device=self.device, dtype=torch.int32)[
-            env_idx : env_idx + 1
-        ]
 
+    def _reset_franka(self, env_idx, dof_pos=None):
+        """
+        Resets Franka actor within a single env. If calling multiple times,
+        need to refresh in between calls to properly register individual env changes, 
+        and set zero torques on frankas across all envs to prevent the reset arms
+        from moving while others are still being reset
+        """
+        self._update_franka_dof_state_buffer(dof_pos=dof_pos)
+        
+        # Update a single actor 
+        actor_idx = self.franka_actor_idxs_all_t[env_idx].reshape(1, 1)
         self.isaac_gym.set_dof_state_tensor_indexed(
             self.sim,
             gymtorch.unwrap_tensor(self.dof_states),
-            gymtorch.unwrap_tensor(idxs),
-            len(idxs),
+            gymtorch.unwrap_tensor(actor_idx),
+            len(actor_idx),
         )
 
-    def _reset_parts(self, env_idx, parts_poses=None):
+    def _reset_franka_all(self, dof_pos=None):
+        """
+        Resets all Franka actors across all envs
+        """
+        self._update_franka_dof_state_buffer(dof_pos=dof_pos)
+
+        # Update all actors across envs at once
+        self.isaac_gym.set_dof_state_tensor_indexed(
+            self.sim,
+            gymtorch.unwrap_tensor(self.dof_states),
+            gymtorch.unwrap_tensor(self.franka_actor_idxs_all_t),
+            len(self.franka_actor_idxs_all_t),
+        )
+
+    def _reset_parts(self, env_idx, parts_poses=None, skip_set_state=False):
         """Resets furniture parts to the initial pose.
 
         Args:
@@ -1136,15 +1314,37 @@ class FurnitureSimEnv(gym.Env):
                 device=self.device,
             )
 
-        idxs = torch.tensor(
-            list(self.parts_handles.values()), dtype=torch.int32, device=self.device
-        )
+        if skip_set_state:
+            # Set the value for the root state tensor, but don't call isaac gym function yet (useful when resetting all at once)
+            # If skip_set_state == True, then must self.refresh() to register the isaac set_actor_root_state* function
+            return
+
+        # Reset root state for actors in a single env
+        part_actor_idxs = torch.tensor(self.part_actor_idx_by_env[env_idx], device=self.device, dtype=torch.int32)
         self.isaac_gym.get_sim_actor_count(self.sim)
         self.isaac_gym.set_actor_root_state_tensor_indexed(
             self.sim,
             gymtorch.unwrap_tensor(self.root_tensor),
-            gymtorch.unwrap_tensor(idxs),
-            len(idxs),
+            gymtorch.unwrap_tensor(part_actor_idxs),
+            len(part_actor_idxs),
+        )
+
+    def _reset_parts_all(self, parts_poses=None):
+        """Resets ALL furniture parts to the initial pose.
+
+        Args:
+            parts_poses (np.ndarray): The poses of the parts. If None, the parts will be reset to the initial pose.
+        """
+        for env_idx in range(self.num_envs):
+            self._reset_parts(env_idx, parts_poses=parts_poses, skip_set_state=True)
+
+        # Reset root state for actors across all envs
+        self.isaac_gym.get_sim_actor_count(self.sim)
+        self.isaac_gym.set_actor_root_state_tensor_indexed(
+            self.sim,
+            gymtorch.unwrap_tensor(self.root_tensor),
+            gymtorch.unwrap_tensor(self.part_actor_idxs_all_t),
+            len(self.part_actor_idxs_all_t),
         )
 
     def _import_base_tag_asset(self):
@@ -1208,8 +1408,8 @@ class FurnitureSimEnv(gym.Env):
             Tuple (action for the assembly task, skill complete mask)
         """
         assert self.num_envs == 1  # Only support one environment for now.
-        if self.furniture_name not in ["one_leg"]:
-            raise NotImplementedError("Only one_leg is supported for now.")
+        if self.furniture_name not in ["one_leg", "cabinet"]:
+            raise NotImplementedError("[one_leg, cabinet] are supported for scripted agent")
 
         if self.assemble_idx > len(self.furniture.should_be_assembled):
             return torch.tensor([0, 0, 0, 0, 0, 0, 1, -1], device=self.device)

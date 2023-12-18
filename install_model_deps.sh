@@ -24,11 +24,11 @@ download_file() {
 }
 
 # Download r3m ResNet50 model.
-download_file "1Xu0ssuG0N1zjZS54wmWzJ7-nb0-7XzbA" "/root/.r3m/r3m_50" "model.pt"
-# Without Docker container, use the following line instead
-# download_file "1Xu0ssuG0N1zjZS54wmWzJ7-nb0-7XzbA" "$HOME/.r3m/r3m_50" "model.pt"
+# With Docker container, use the following line instead
+# download_file "1Xu0ssuG0N1zjZS54wmWzJ7-nb0-7XzbA" "/root/.r3m/r3m_50" "model.pt"
+download_file "1Xu0ssuG0N1zjZS54wmWzJ7-nb0-7XzbA" "$HOME/.r3m/r3m_50" "model.pt"
 
 # Download r3m ResNet50 config
-download_file "10jY2VxrrhfOdNPmsFdES568hjjIoBJx8" "/root/.r3m/r3m_50" "config.yaml"
-# Without Docker container, use the following line instead
-# download_file "10jY2VxrrhfOdNPmsFdES568hjjIoBJx8" "$HOME/.r3m/r3m_50" "config.yaml"
+# With Docker container, use the following line instead
+# download_file "10jY2VxrrhfOdNPmsFdES568hjjIoBJx8" "/root/.r3m/r3m_50" "config.yaml"
+download_file "10jY2VxrrhfOdNPmsFdES568hjjIoBJx8" "$HOME/.r3m/r3m_50" "config.yaml"

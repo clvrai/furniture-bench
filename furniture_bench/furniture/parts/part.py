@@ -227,17 +227,17 @@ class Part(ABC):
             return True
         return False
 
-    def gripper_less(self, gripper_width, target_width):
+    def gripper_less(self, gripper_width, target_width, cnt_max=10):
         if gripper_width <= target_width:
             return True
-        if self.curr_cnt - self.prev_cnt >= 10:
+        if self.curr_cnt - self.prev_cnt >= cnt_max:
             return True
         return False
 
-    def gripper_greater(self, gripper_width, target_width):
+    def gripper_greater(self, gripper_width, target_width, cnt_max=10):
         if gripper_width >= target_width:
             return True
-        if self.curr_cnt - self.prev_cnt >= 10:
+        if self.curr_cnt - self.prev_cnt >= cnt_max:
             return True
         return False
 

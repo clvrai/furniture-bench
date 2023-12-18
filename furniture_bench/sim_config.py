@@ -6,6 +6,19 @@ from furniture_bench.config import config
 
 sim_config = config.copy()
 
+
+# Positional threshold for declaring the furniture assembled.
+# This is a smaller value compared to the real-world config, since the detection can be more accurate in simulation.
+# This will reduce the false positive rate.
+sim_config["furniture"]["assembled_pos_threshold"] = [0.005, 0.005, 0.005]
+
+
+# Timeout for # environment steps for each furniture model.
+sim_config["scripted_timeout"] = {
+    "one_leg": 600,
+    "cabinet": 1500
+}
+
 # Simulator options.
 sim_params = gymapi.SimParams()
 sim_params.up_axis = gymapi.UP_AXIS_Z

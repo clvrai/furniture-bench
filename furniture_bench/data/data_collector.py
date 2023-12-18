@@ -12,6 +12,7 @@ from joblib import Parallel, delayed
 from furniture_bench.device.device_interface import DeviceInterface
 from furniture_bench.data.collect_enum import CollectEnum
 from furniture_bench.config import config
+from furniture_bench.sim_config import sim_config
 from furniture_bench.perception.image_utils import resize, resize_crop
 from furniture_bench.envs.initialization_mode import Randomness
 
@@ -32,10 +33,12 @@ class DataCollector:
         manual_label: bool,
         scripted: bool,
         randomness: Randomness.LOW,
-        gpu_id: int = 0,
+        compute_device_id: int,
+        graphics_device_id: int,
         pkl_only: bool = False,
         save_failure: bool = False,
         num_demos: int = 100,
+        resize_sim_img: bool = False,
     ):
         """
         Args:
@@ -48,25 +51,29 @@ class DataCollector:
             manual_label (bool): Whether to manually label the reward.
             scripted (bool): Whether to use scripted function for getting action.
             randomness (str): Initialization randomness level.
-            gpu_id (int): GPU ID.
+            compute_device_id (int): GPU device ID used for simulation.
+            graphics_device_id (int): GPU device ID used for rendering.
             pkl_only (bool): Whether to save only `pkl` files (i.e., exclude *.mp4 and *.png).
             save_failure (bool): Whether to save failure trajectories.
             num_demos (int): The maximum number of demonstrations to collect in this run. Internal loop will be terminated when this number is reached.
+            resize_sim_img (bool): Read resized image
         """
         if is_sim:
             self.env = gym.make(
                 "FurnitureSimFull-v0",
                 furniture=furniture,
-                max_env_steps=600 if scripted else 3000,
+                max_env_steps=sim_config["scripted_timeout"][furniture]
+                if scripted
+                else 3000,
                 headless=headless,
                 num_envs=1,  # Only support 1 for now.
                 manual_done=False if scripted else True,
-                resize_img=False,
+                resize_img=resize_sim_img,
                 np_step_out=False,  # Always output Tensor in this setting. Will change to numpy in this code.
                 channel_first=False,
                 randomness=randomness,
-                compute_device_id=gpu_id,
-                graphics_device_id=gpu_id,
+                compute_device_id=compute_device_id,
+                graphics_device_id=graphics_device_id
             )
         else:
             if randomness == "med":
@@ -99,6 +106,7 @@ class DataCollector:
 
         self.pkl_only = pkl_only
         self.save_failure = save_failure
+        self.resize_sim_img = resize_sim_img
 
         self._reset_collector_buffer()
 
@@ -209,8 +217,13 @@ class DataCollector:
 
                 self.org_obs.append(obs.copy())
                 ob = {}
-                ob["color_image1"] = resize(obs["color_image1"])
-                ob["color_image2"] = resize_crop(obs["color_image2"])
+                if (not self.is_sim) or (not self.resize_sim_img):
+                    # Resize for every real world images, or for sim didn't resize in simulation side.
+                    ob["color_image1"] = resize(obs["color_image1"])
+                    ob["color_image2"] = resize_crop(obs["color_image2"])
+                else:
+                    ob["color_image1"] = obs["color_image1"]
+                    ob["color_image2"] = obs["color_image2"]
                 ob["robot_state"] = obs["robot_state"]
                 ob["parts_poses"] = obs["parts_poses"]
                 self.obs.append(ob)

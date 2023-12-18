@@ -90,6 +90,7 @@ config: Dict[str, Any] = {
             [-0.21, 0.21],
             [0.07, 0.37],
         ],  # Furniture parts position limits.
+        "assembled_pos_threshold": [0.010, 0.005, 0.010], # Positional threshold for declaring the furniture assembled.
         "rel_pose_from_coordinate": {
             0: get_mat([-0.03, -0.03, 0], [0, 0, 0]),
             1: get_mat([0.03, -0.03, 0], [0, 0, 0]),
@@ -1875,6 +1876,7 @@ config: Dict[str, Any] = {
                         )
                     ],
                 ],
+                "default_assembled_pose": get_mat([-0.02275, -0.0375, 0.025], [0, np.pi / 2, 0])
             },
             "cabinet_door_right": {
                 "name": "cabinet_door_right",
@@ -1919,6 +1921,7 @@ config: Dict[str, Any] = {
                         )
                     ],
                 ],
+                "default_assembled_pose": get_mat([-0.0275, -0.0375, -0.025], [0, np.pi / 2, 0])
             },
             "cabinet_top": {
                 "name": "cabinet_top",
@@ -1964,6 +1967,7 @@ config: Dict[str, Any] = {
                         )
                     ],
                 ],
+                "default_assembled_pose": get_mat([0.0, -0.07750, 0], [0, -np.pi / 2, 0])
             },
         },
     },

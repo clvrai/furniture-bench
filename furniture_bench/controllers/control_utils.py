@@ -413,3 +413,13 @@ def axisangle2quat(vec):
     q[3] = torch.cos(angle / 2.0)
     q[:3] = axis * torch.sin(angle / 2.0)
     return q
+
+
+@torch.jit.script
+def rel_mat(s, t):
+    s_inv = torch.linalg.inv(s)
+    return t @ s_inv
+
+def rot_mat_tensor(x, y, z, device):
+    from furniture_bench.utils.pose import get_mat, rot_mat
+    return torch.tensor(rot_mat([x, y, z], hom=True), device=device).float()

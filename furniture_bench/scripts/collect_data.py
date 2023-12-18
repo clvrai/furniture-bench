@@ -58,8 +58,24 @@ def main():
         help="Manually label the reward",
     )
     parser.add_argument("--randomness", default="low", choices=["low", "med", "high"])
-    parser.add_argument("--gpu-id", default=0, type=int)
+    parser.add_argument(
+        "--compute-device-id",
+        type=int,
+        default=0,
+        help="GPU device ID used for simulation.",
+    )
+
+    parser.add_argument(
+        "--graphics-device-id",
+        type=int,
+        default=0,
+        help="GPU device ID used for rendering.",
+    )
+
     parser.add_argument("--num-demos", default=100, type=int)
+
+    parser.add_argument("--resize-sim-img", action="store_true")
+
     args = parser.parse_args()
 
     if args.scripted:
@@ -82,10 +98,12 @@ def main():
         manual_label=args.manual_label,
         scripted=args.scripted,
         randomness=args.randomness,
-        gpu_id=args.gpu_id,
+        compute_device_id=args.compute_device_id,
+        graphics_device_id=args.graphics_device_id,
         pkl_only=args.pkl_only,
         save_failure=args.save_failure,
         num_demos=args.num_demos,
+        resize_sim_img=args.resize_sim_img,
     )
     data_collector.collect()
 
