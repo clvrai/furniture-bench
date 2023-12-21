@@ -24,6 +24,7 @@ import torch
 import cv2
 import gym
 import numpy as np
+import time
 
 import furniture_bench.utils.transform as T
 import furniture_bench.controllers.control_utils as C
@@ -43,6 +44,12 @@ from furniture_bench.furniture.parts.part import Part
 
 
 ASSET_ROOT = str(Path(__file__).parent.parent.absolute() / "assets")
+
+
+observation_times = []
+reward_times = []
+control_times = []
+control_refresh_times = []
 
 
 class FurnitureSimEnv(gym.Env):
@@ -746,8 +753,13 @@ class FurnitureSimEnv(gym.Env):
                 C.quat_multiply(ee_quat[env_idx], action_quat).to(self.device),
             )
 
+        control_time_start = time.time()
+        control_refresh_time = 0
         for _ in range(sim_steps):
+            control_refresh_time_start = time.time()
             self.refresh()
+            control_refresh_time_end = time.time()
+            control_refresh_time += (control_refresh_time_end - control_refresh_time_start)
 
             pos_action = torch.zeros_like(self.dof_pos)
             torque_action = torch.zeros_like(self.dof_pos)
@@ -800,14 +812,28 @@ class FurnitureSimEnv(gym.Env):
                 self.isaac_gym.draw_viewer(self.viewer, self.sim, False)
                 self.isaac_gym.sync_frame_time(self.sim)
 
+        control_time_end = time.time()
+        # Control time without refresh time.
+        control_times.append((control_time_end - control_time_start) - control_refresh_time)
+        control_refresh_times.append(control_refresh_time)
         self.isaac_gym.end_access_image_tensors(self.sim)
 
+        observation_time_start = time.time()
         obs = self._get_observation()
+        observation_time_end = time.time()
+
+        observation_times.append(observation_time_end - observation_time_start)
+
+        reward_start_time = time.time()
+        reward = self._reward()
+        reward_end_time = time.time()
+        reward_times.append(reward_end_time - reward_start_time)
+        
         self.env_steps += 1
 
         return (
             obs,
-            self._reward(),
+            reward,
             self._done(),
             {"obs_success": True, "action_success": True},
         )

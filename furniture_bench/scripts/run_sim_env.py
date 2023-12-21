@@ -141,13 +141,55 @@ def main():
             ob, rew, done, _ = env.step(ac)
     elif args.random_action:
         # Execute randomly sampled actions.
-        import tqdm
+        from tqdm import tqdm
 
-        pbar = tqdm.tqdm()
-        while True:
-            ac = action_tensor(env.action_space.sample())
-            ob, rew, done, _ = env.step(ac)
-            pbar.update(args.num_envs)
+        episodes = 256
+        steps = 300
+        from cProfile import Profile
+        from pstats import Stats, SortKey
+        per_step_times = []
+        import time
+        # with Profile() as profile:
+        import GPUtil
+        gpus = GPUtil.getGPUs()
+        gpu = gpus[0]
+
+        gpu_memories = [] # MB unit.
+        for epi in tqdm(range(int(episodes / args.num_envs))):
+            env.reset()
+            for i in range(steps):
+                ac = action_tensor(env.action_space.sample())
+                start = time.time()
+                ob, rew, done, _ = env.step(ac)
+                end = time.time()
+                per_step_times.append(end - start)
+                
+                if i % 50 == 0:
+                    gpu_memories.append(gpu.memoryUsed)
+
+            env.reset()
+
+        from contextlib import redirect_stdout
+        from furniture_bench.envs.furniture_sim_env import observation_times, reward_times, control_times, control_refresh_times
+        with open(f'sim_speed_{args.num_envs}.txt', 'w') as f:
+            with redirect_stdout(f):
+                print(f"Task: {args.furniture}", f"observation: parts_poses, color_image1, color_image2")
+                print("=======================================================")
+                print(f"Average steps per time: {1 / np.mean(per_step_times) * args.num_envs}")
+                print(f"Average observation per time: {1 / np.mean(observation_times) * args.num_envs}")
+                print(f"Average reward per time: {1 / np.mean(reward_times) * args.num_envs}")
+                print(f"Average control per time: {1 / np.mean(control_times) * args.num_envs}")
+                print(f"Average control refresh per time: {1 / np.mean(control_refresh_times) * args.num_envs}")
+
+                print(f"Number of steps: {len(per_step_times) * args.num_envs}")
+                print(f"Number of observations: {len(observation_times) * args.num_envs}")
+                print(f"Number of rewards: {len(reward_times) * args.num_envs}")
+                print(f"Number of controls: {len(control_times) * args.num_envs}")
+                print(f"Number of controls refresh: {len(control_refresh_times) * args.num_envs}")
+                
+                print("=======================================================")
+                
+                print(f"Average GPU memory (MB): {np.mean(gpu_memories)}")
 
     elif args.file_path is not None:
         # Play actions in the demo.
