@@ -7,13 +7,12 @@ from typing import Optional, Tuple, List
 
 import numpy as np
 import numpy.typing as npt
-from gym import logger
+from gymnasium import logger
 
 import furniture_bench.utils.transform as T
 from furniture_bench.utils.pose import is_similar_pose
 from furniture_bench.config import config
 from furniture_bench.furniture.parts.part import Part
-from furniture_bench.utils.detection import detection_loop
 from furniture_bench.furniture.parts.obstacle_front import ObstacleFront
 from furniture_bench.furniture.parts.obstacle_right import ObstacleRight
 from furniture_bench.furniture.parts.obstacle_left import ObstacleLeft
@@ -206,6 +205,8 @@ class Furniture(ABC):
 
         if self.detection_started:
             return
+
+        from furniture_bench.utils.detection import detection_loop
 
         self.shm = self.create_shared_memory()
         self.lock = self.ctx.Lock()

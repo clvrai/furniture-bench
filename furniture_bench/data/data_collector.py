@@ -5,7 +5,9 @@ from datetime import datetime
 from pathlib import Path
 
 import cv2
-import gym
+
+# import gym
+import gymnasium as gym
 import torch
 from joblib import Parallel, delayed
 
@@ -73,7 +75,7 @@ class DataCollector:
                 channel_first=False,
                 randomness=randomness,
                 compute_device_id=compute_device_id,
-                graphics_device_id=graphics_device_id
+                graphics_device_id=graphics_device_id,
             )
         else:
             if randomness == "med":

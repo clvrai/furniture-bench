@@ -2,7 +2,8 @@
 Register FurnitureBench and FurnitureSim environments to OpenAI Gym.
 """
 
-from gym.envs.registration import register
+# from gym.envs.registration import register
+from gymnasium.envs.registration import register
 
 # Ignore ImportError from isaacgym.
 try:

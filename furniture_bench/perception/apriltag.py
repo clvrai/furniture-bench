@@ -1,4 +1,3 @@
-import pyrealsense2 as rs
 import numpy as np
 import cv2
 from dt_apriltags import Detector
@@ -26,6 +25,8 @@ class AprilTag:
         Returns:
             Detected tags.
         """
+        import pyrealsense2 as rs
+
         if isinstance(frame, rs.frame):
             frame = np.asanyarray(frame.get_data())
         if frame.ndim == 3:
