@@ -1,5 +1,0 @@
-[submodule "robomimic"]
-	path = robomimic
-	url = https://github.com/ARISE-Initiative/robomimic.git
-    update = merge
-    branch = r2d2
