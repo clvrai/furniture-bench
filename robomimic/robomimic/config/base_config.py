@@ -110,6 +110,7 @@ class BaseConfig(Config):
 
         # envs to evaluate model on (assuming rollouts are enabled), to override the metadata stored in dataset
         self.experiment.env = None                                  # no need to set this (unless you want to override)
+        self.experiment.num_envs = 1                                # number of environments to use for evaluation
         self.experiment.additional_envs = None                      # additional environments that should get evaluated
 
 

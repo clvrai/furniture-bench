@@ -26,6 +26,12 @@ import sys
 import socket
 import traceback
 
+try:
+    import furniture_bench
+except:
+    # Skip if furniture_bench is not installed.
+    pass
+
 from collections import OrderedDict
 
 import torch
@@ -131,7 +137,24 @@ def train(config, device):
                     use_image_obs=shape_meta["use_images"],
                     # seed=config.train.seed * 1000 + env_i # TODO: add seeding across environments
                 )
-                env = EnvUtils.create_env_from_metadata(**env_kwargs)
+                if env_meta["env_name"].startswith("Furniture"):
+                    import gymnasium as gym
+                    env = gym.make(
+                        env_meta['env_name'],
+                        **env_meta['env_kwargs'],
+                        num_envs=config.experiment.num_envs,
+                        resize_img=True,
+                        headless=True,
+                        robot_state_as_dict=False,
+                        compute_device_id=args.compute_device_id,
+                        graphics_device_id=args.graphics_device_id,
+                        act_rot_repr='quat'
+                    )
+                    env.name = env_meta["env_name"]
+                    from robomimic.envs.wrappers import FurniturePreprocessWrapper
+                    env = FurniturePreprocessWrapper(env)
+                else:
+                    env = EnvUtils.create_env_from_metadata(**env_kwargs)
                 # handle environment wrappers
                 env = EnvUtils.wrap_env_from_config(env, config=config)  # apply environment warpper, if applicable
 
@@ -506,6 +529,20 @@ if __name__ == "__main__":
         "--debug",
         action='store_true',
         help="set this flag to run a quick training run for debugging purposes"
+    )
+    
+    parser.add_argument(
+        "--compute_device_id",
+        type=int,
+        default=0,
+        help="Compute device ID for FurnitureSim environment."
+    )
+
+    parser.add_argument(
+        "--graphics_device_id",
+        type=int,
+        default=0,
+        help="Rendering device ID for FurnitureSim environment."
     )
 
     args = parser.parse_args()

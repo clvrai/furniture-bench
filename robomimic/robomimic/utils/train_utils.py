@@ -113,11 +113,11 @@ def load_data_for_training(config, obs_keys):
             "did not specify filter keys corresponding to train and valid split in dataset" \
             " - please fill config.train.hdf5_filter_key and config.train.hdf5_validation_filter_key"
         train_demo_keys = FileUtils.get_demos_for_filter_key(
-            hdf5_path=os.path.expanduser(config.train.data),
+            hdf5_path=os.path.expanduser(config.train.data[0]['path']),
             filter_key=train_filter_by_attribute,
         )
         valid_demo_keys = FileUtils.get_demos_for_filter_key(
-            hdf5_path=os.path.expanduser(config.train.data),
+            hdf5_path=os.path.expanduser(config.train.data[0]['path']),
             filter_key=valid_filter_by_attribute,
         )
         assert set(train_demo_keys).isdisjoint(set(valid_demo_keys)), "training demonstrations overlap with " \
@@ -152,6 +152,7 @@ def dataset_factory(config, obs_keys, filter_by_attribute=None, dataset_path=Non
     """
     if dataset_path is None:
         dataset_path = config.train.data
+    dataset_path = config.train.data[0]['path']
 
     ds_kwargs = dict(
         hdf5_path=dataset_path,
@@ -179,16 +180,38 @@ def dataset_factory(config, obs_keys, filter_by_attribute=None, dataset_path=Non
     ds_langs = [ds_cfg.get("lang", "dummy") for ds_cfg in config.train.data]
 
     meta_ds_kwargs = dict()
-
-    dataset = get_dataset(
-        ds_class=R2D2Dataset if config.train.data_format == "r2d2" else SequenceDataset,
-        ds_kwargs=ds_kwargs,
-        ds_weights=ds_weights,
-        ds_langs=ds_langs,
-        normalize_weights_by_ds_size=False,
-        meta_ds_class=MetaDataset,
-        meta_ds_kwargs=meta_ds_kwargs,
-    )
+    if config.train.data_format == "r2d2":
+        dataset = get_dataset(
+            ds_class=R2D2Dataset,
+            ds_kwargs=ds_kwargs,
+            ds_weights=ds_weights,
+            ds_langs=ds_langs,
+            normalize_weights_by_ds_size=False,
+            meta_ds_class=MetaDataset,
+            meta_ds_kwargs=meta_ds_kwargs,
+        )
+    else:
+        ds_kwargs = dict(
+            hdf5_path=dataset_path,
+            obs_keys=obs_keys,
+            dataset_keys=config.train.dataset_keys,
+            load_next_obs=config.train.hdf5_load_next_obs, # whether to load next observations (s') from dataset
+            frame_stack=config.train.frame_stack,
+            seq_length=config.train.seq_length,
+            pad_frame_stack=config.train.pad_frame_stack,
+            pad_seq_length=config.train.pad_seq_length,
+            get_pad_mask=False,
+            goal_mode=config.train.goal_mode,
+            hdf5_cache_mode=config.train.hdf5_cache_mode,
+            hdf5_use_swmr=config.train.hdf5_use_swmr,
+            hdf5_normalize_obs=config.train.hdf5_normalize_obs,
+            filter_by_attribute=filter_by_attribute,
+            action_keys=config.train.action_keys,
+            action_config={
+                "actions": {} # TODO (MH): Might need this config.
+            }
+        )
+        dataset = SequenceDataset(**ds_kwargs)
 
     return dataset
 

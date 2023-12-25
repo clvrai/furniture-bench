@@ -7,6 +7,7 @@ import numpy as np
 from collections import deque
 
 import robomimic.envs.env_base as EB
+import robomimic.utils.obs_utils as ObsUtils                
 
 
 class EnvWrapper(object):
@@ -18,7 +19,7 @@ class EnvWrapper(object):
         Args:
             env (EnvBase instance): The environment to wrap.
         """
-        assert isinstance(env, EB.EnvBase) or isinstance(env, EnvWrapper)
+        assert isinstance(env, EB.EnvBase) or isinstance(env, EnvWrapper) or env.name.startswith('Furniture')
         self.env = env
 
     @classmethod
@@ -220,3 +221,46 @@ class FrameStackWrapper(EnvWrapper):
     def _to_string(self):
         """Info to pretty print."""
         return "num_frames={}".format(self.num_frames)
+
+
+class FurniturePreprocessWrapper(EnvWrapper):
+
+    def __init__(self, env):
+        super(FurniturePreprocessWrapper, self).__init__(env=env)
+        self.name = env.name
+    
+    def get_observation(self):
+        ob_dict = self.env.get_observation()
+        return self._preprocess(ob_dict)
+
+    def reset(self, env_idx=None):
+        if env_idx is None:
+            ob_dict = self.env.reset()
+        else:
+            self.env.reset_env(env_idx)
+            whole_obs = self.env.get_observation()
+            # Only return the current observation.
+            ob_dict = {}
+            for k in whole_obs:
+                ob_dict[k] = whole_obs[k][env_idx]
+        return self._preprocess(ob_dict)
+
+    def step(self, action):
+        ob_dict, r, done, info = self.env.step(action)
+        r = r.squeeze(-1) # Remove the 1-dimension.
+        return self._preprocess(ob_dict), r, done, info
+   
+    def _preprocess(self, ob_dict):
+        # ob_dict["object"] = ob_dict["parts_poses"]
+        ob_dict["robot0_eef_pos"] = ob_dict["ee_pos"]
+        ob_dict["robot0_eef_quat"] = ob_dict["ee_quat"]
+        ob_dict["robot0_gripper_qpos"] = ob_dict["gripper_width"].reshape(-1, 1) # Add a dimension since squeezed in data saving.
+        ob_dict["robot0_eye_in_hand_image"] = ob_dict["color_image1"]
+        ob_dict["agentview_image"] = ob_dict["color_image2"]
+
+
+        for k in ob_dict:
+            if (k in ObsUtils.OBS_KEYS_TO_MODALITIES) and ObsUtils.key_is_obs_modality(key=k, obs_modality="rgb"):
+                ob_dict[k] = ObsUtils.process_obs(obs=ob_dict[k], obs_key=k)
+        return ob_dict 
+ 
