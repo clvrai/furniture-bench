@@ -20,7 +20,7 @@ class LampBulb(Leg):
 
         self.reset_gripper_width = 0.07
         self.grasp_margin_x = 0.043
-        self.grasp_margin_z = 0.043
+        self.grasp_margin_z = 0.053
 
     def reset(self):
         self.prev_pose = None
