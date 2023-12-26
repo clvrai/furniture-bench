@@ -711,6 +711,9 @@ class FurnitureSimEnv(gym.Env):
         if robot_state:
             if self.concat_robot_state:
                 obs_dict["robot_state"] = gym.spaces.Box(low, high, (robot_state_dim,))
+            elif not self.robot_state_as_dict:
+                for k, v in robot_state.items():
+                    obs_dict[k] = v
             else:
                 obs_dict["robot_state"] = gym.spaces.Dict(robot_state)
 
