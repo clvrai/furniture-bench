@@ -207,9 +207,7 @@ def dataset_factory(config, obs_keys, filter_by_attribute=None, dataset_path=Non
             hdf5_normalize_obs=config.train.hdf5_normalize_obs,
             filter_by_attribute=filter_by_attribute,
             action_keys=config.train.action_keys,
-            action_config={
-                "actions": {} # TODO (MH): Might need this config.
-            }
+            action_config=config.train.action_config
         )
         dataset = SequenceDataset(**ds_kwargs)
 
@@ -341,6 +339,9 @@ def run_rollout(
 
             # play action
             ob_dict, r, done, info = env.step(ac)
+            if env.name.startswith("Furniture"):
+                assert env.num_envs == 1
+                info["is_success"] = env.is_success()[0] # Assume it it a single environment
 
             # render to screen
             if render:
@@ -392,7 +393,10 @@ def run_rollout(
                             frame = frames[env_i]
                             video_frames[env_i].append(frame)
                     else:
-                        frame = env.render(mode="rgb_array", height=512, width=512)
+                        if env.name.startswith("Furniture"):
+                            frame = env.render(mode="rgb_array")
+                        else:
+                            frame = env.render(mode="rgb_array", height=512, width=512)
                         
                         # cam_imgs = []
                         # for im_name in ["robot0_eye_in_hand_image", "robot0_agentview_right_image", "robot0_agentview_left_image"]:
