@@ -233,7 +233,7 @@ class LampBulb(Leg):
                 )
             )
             target_ori = torch.tensor(
-                get_mat([0, 0, 0], [np.pi / 2, 0, np.pi / 6]), device=device
+                get_mat([0, 0, 0], [np.pi / 2, 0, np.pi / 4]), device=device
             )[:3, :3]
             target_pos = base_hole_pose_robot[:3, 3]
             target_hole_pose_robot = C.to_homogeneous(target_pos, target_ori)
