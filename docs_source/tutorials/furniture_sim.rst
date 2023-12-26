@@ -140,7 +140,7 @@ FurnitureSim Arguments
 Automated Assembly Script
 -------------------------
 
-We provide automated furniture assembly scripts. It currently supports ``one_leg`` and ``cabinet``.
+We provide automated furniture assembly scripts. It currently supports ``one_leg``, ``cabinet``, and ``lamp``.
 
 ..  ============== =================
 ..    Furniture     Assembly script
@@ -158,7 +158,7 @@ We provide automated furniture assembly scripts. It currently supports ``one_leg
 
 .. code:: bash
 
-   python -m furniture_bench.scripts.run_sim_env --furniture <one_leg | cabinet>  --scripted
+   python -m furniture_bench.scripts.run_sim_env --furniture <one_leg | cabinet | lamp>  --scripted
 
 .. figure:: ../_static/images/assembly_script.gif
     :width: 50%
