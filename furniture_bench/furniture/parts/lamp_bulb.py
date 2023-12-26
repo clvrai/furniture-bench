@@ -217,7 +217,7 @@ class LampBulb(Leg):
                 target,
                 pos_error_threshold=0.0,
                 ori_error_threshold=0.3,
-                max_len=10,
+                max_len=20,
             ):
                 self.prev_pose = target
                 next_state = "reach_base_z"
@@ -242,7 +242,7 @@ class LampBulb(Leg):
             target = rel @ ee_pose
             target[2] += 0.03  # Margin.
             if self.satisfy(
-                ee_pose, target, pos_error_threshold=0.007, ori_error_threshold=0.15
+                ee_pose, target, pos_error_threshold=0.000, ori_error_threshold=0.0, max_len=30
             ):
                 self.prev_pose = target
                 next_state = "insert_wait"

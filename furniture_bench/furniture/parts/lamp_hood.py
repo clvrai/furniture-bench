@@ -150,6 +150,7 @@ class LampHood(Part):
             pos = hood_pose[:4, 3]
             target_pos = (april_to_robot @ pos)[:3]
             target_pos[2] = ee_pos[2]  # Keep the z.
+
             target_pos[1] += 0.032
             target = C.to_homogeneous(target_pos, target_ori)
             if self.satisfy(ee_pose, target, pos_error_threshold=0.02):
@@ -231,7 +232,7 @@ class LampHood(Part):
                 )
             )
             target = self.prev_pose
-            target[2, 3] = base_pose_robot[2, 3] + 0.06  # Move up a bit.
+            target[2, 3] = base_pose_robot[2, 3] + 0.07  # Move up a bit.
             base_pose_robot[:3, :3] = self.prev_pose[:3, :3]
             target[:3, :3] = self.prev_pose[:3, :3]  # Keep the same orientation.
             if self.satisfy(
