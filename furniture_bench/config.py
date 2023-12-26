@@ -1480,8 +1480,8 @@ config: Dict[str, Any] = {
                 "name": "lamp_bulb",
                 "asset_file": "furniture/urdf/lamp/lamp_bulb.urdf",
                 "ids": [174, 177, 176, 175],
-                "reset_pos": [[0.18, 0.13, -0.03]] * 4 + [[0.12, 0.31, -0.09]],
-                "reset_ori": [rot_mat(np.array([0, 0, 0]), hom=True)] * 4
+                "reset_pos": [[0.18, 0.13, -0.016]] * 4 + [[0.12, 0.31, -0.09]],
+                "reset_ori": [rot_mat(np.array([-np.arctan2(7.6, 52), 0, 0]), hom=True)] * 4
                 + [rot_mat([-np.pi / 2, 0, 0], hom=True)],
                 "default_assembled_pose": get_mat(
                     [0, -0.0678, 0], [0, 0, np.pi],
