@@ -103,7 +103,7 @@ The following command trains a BC policy. You can change ``rolf.encoder_type`` t
     python -m run run_prefix=<run_prefix> rolf.demo_path=<path/to/processed/demo> env.furniture=<furniture> rolf.encoder_type=<encoder_type> gpu=<gpu_id>
 
     # E.g., train BC with ResNet18 encoder
-    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim rolf.demo_path=scripted_sim_demo/one_leg_processed/ env.furniture=one_leg rolf.encoder_type=resnet18 gpu=0
+    python -m run run_prefix=one_leg_full_bc_resnet18_low_sim rolf.demo_path=scripted_sim_demo/one_leg_processed/ env.furniture=one_leg rolf.encoder_type=resnet18 rolf.finetune_encoder=True gpu=0
 
 The setup for BC training is specified in the file ``rolf/rolf/config/algo/bc.yaml``. This configuration will be merged with the default settings for the training. The merged configuration will be stored in the ``config`` directory, following the naming convention: ``FurnitureDummy-v0.bc.<run_prefix>.<seed>.yaml``.
 
