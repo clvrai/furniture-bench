@@ -31,6 +31,10 @@ if __name__ == "__main__":
         type=str,
         help="path to input hdf5 dataset",
     )
+    parser.add_argument(
+        "--num_train", type=int, default=None, help="validation ratio, in (0, 1)"
+    )
     args = parser.parse_args()
 
-    split_train_val_from_hdf5(hdf5_path=args.dataset, val_ratio=0.1)
+    # split_train_val_from_hdf5(hdf5_path=args.dataset, val_ratio=0.1)
+    split_train_val_from_hdf5(hdf5_path=args.dataset, num_train=args.num_train)
