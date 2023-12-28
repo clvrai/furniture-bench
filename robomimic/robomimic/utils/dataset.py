@@ -16,7 +16,7 @@ import robomimic.utils.tensor_utils as TensorUtils
 import robomimic.utils.obs_utils as ObsUtils
 import robomimic.utils.action_utils as AcUtils
 import robomimic.utils.log_utils as LogUtils
-import robomimic.utils.lang_utils as LangUtils
+# import robomimic.utils.lang_utils as LangUtils
 
 
 class SequenceDataset(torch.utils.data.Dataset):
@@ -118,8 +118,8 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.action_config = action_config
 
         # set up lang and language embedding
-        self.lang = lang
-        self._lang_emb = LangUtils.get_lang_emb(self.lang)
+        # self.lang = lang
+        # self._lang_emb = LangUtils.get_lang_emb(self.lang)
 
         self.n_frame_stack = frame_stack
         assert self.n_frame_stack >= 1

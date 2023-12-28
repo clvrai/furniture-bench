@@ -1,7 +1,7 @@
 {
     "algo_name": "bc",
     "experiment": {
-        "name": "furniture-one_leg-bc",
+        "name": "furniture-one_leg-bc-pool",
         "validate": true,
         "logging": {
             "terminal_output_to_txt": true,
@@ -233,19 +233,13 @@
             "rgb": {
                 "core_class": "VisualCore",
                 "core_kwargs": {
-                    "feature_dimension": 64,
-                    "backbone_class": "ResNet18Conv",
+                    "feature_dimension": null,
+                    "backbone_class": "ResNet18ConvPool",
                     "backbone_kwargs": {
                         "pretrained": false,
                         "input_coord_conv": false
                     },
-                    "pool_class": "SpatialSoftmax",
-                    "pool_kwargs": {
-                        "num_kp": 32,
-                        "learnable_temperature": false,
-                        "temperature": 1.0,
-                        "noise_std": 0.0
-                    }
+                    "pool_class": null
                 },
                 "obs_randomizer_class": null,
                 "obs_randomizer_kwargs": {}

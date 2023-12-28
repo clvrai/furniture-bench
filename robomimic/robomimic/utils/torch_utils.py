@@ -34,7 +34,7 @@ def hard_update(source, target):
             target_param.copy_(param)
 
 
-def get_torch_device(try_to_use_cuda):
+def get_torch_device(try_to_use_cuda, device_id):
     """
     Return torch device. If using cuda (GPU), will also set cudnn.benchmark to True
     to optimize CNNs.
@@ -47,7 +47,7 @@ def get_torch_device(try_to_use_cuda):
     """
     if try_to_use_cuda and torch.cuda.is_available():
         torch.backends.cudnn.benchmark = True
-        device = torch.device("cuda:0")
+        device = torch.device(f"cuda:{device_id}")
     else:
         device = torch.device("cpu")
     return device
@@ -158,6 +158,12 @@ def lr_scheduler_from_optim_params(net_optim_params, net, optimizer):
                 milestones=epoch_schedule,
                 gamma=net_optim_params["learning_rate"]["decay_factor"],
             )
+        elif lr_scheduler_type == "step":
+            return optim.lr_scheduler.StepLR(
+            optimizer=optimizer,
+            step_size=epoch_schedule[0],
+            gamma=net_optim_params["learning_rate"]["decay_factor"],
+        )
         else:
             raise ValueError("Invalid LR scheduler type: {}".format(lr_scheduler_type))
         

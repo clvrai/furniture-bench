@@ -150,7 +150,8 @@ def train(config, device):
                         graphics_device_id=args.graphics_device_id,
                         act_rot_repr='quat',
                         squeeze_batch_dim=True,
-                        np_step_out=True
+                        np_step_out=True,
+                        render_mode='rgb_array',
                     )
                     env.name = env_meta["env_name"]
                     from robomimic.envs.wrappers import FurniturePreprocessWrapper
@@ -364,6 +365,9 @@ def train(config, device):
 
                 print("\nEpoch {} Rollouts took {}s (avg) with results:".format(epoch, rollout_logs["time"]))
                 print('Env: {}'.format(env_name))
+                for k, v in rollout_logs.items():
+                    if v is not None:
+                        rollout_logs[k] = float(v)
                 print(json.dumps(rollout_logs, sort_keys=True, indent=4))
 
             # checkpoint and video saving logic
@@ -458,7 +462,7 @@ def main(args):
         config.experiment.name = args.name
 
     # get torch device
-    device = TorchUtils.get_torch_device(try_to_use_cuda=config.train.cuda)
+    device = TorchUtils.get_torch_device(try_to_use_cuda=config.train.cuda, device_id=args.compute_device_id)
 
     # maybe modify config for debugging purposes
     if args.debug:
