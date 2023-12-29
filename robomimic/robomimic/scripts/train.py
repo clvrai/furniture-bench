@@ -150,7 +150,8 @@ def train(config, device):
                         graphics_device_id=args.graphics_device_id,
                         act_rot_repr='quat',
                         squeeze_batch_dim=True,
-                        np_step_out=True
+                        np_step_out=True,
+                        render_mode='rgb_array',
                     )
                     env.name = env_meta["env_name"]
                     from robomimic.envs.wrappers import FurniturePreprocessWrapper

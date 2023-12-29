@@ -1,7 +1,7 @@
 {
     "algo_name": "bc",
     "experiment": {
-        "name": "furniture-cabinet-bc_1000",
+        "name": "furniture-one_leg-bc-pool",
         "validate": true,
         "logging": {
             "terminal_output_to_txt": true,
@@ -29,9 +29,9 @@
         "video_skip": 5,
         "rollout": {
             "enabled": true,
-            "n": 10,
+            "n": 20,
             "horizon": 600,
-            "rate": 50,
+            "rate": 100,
             "warmstart": 0,
             "terminate_on_success": true
         },
@@ -39,16 +39,16 @@
     },
     "train": {
         "data": [{
-            "path": "/global/scratch/users/youngwoon/furniture/demos/cabinet_all.hdf5"
+            "path": "furniture_exp_resources/dataset/furniture/one_leg/one_leg_1000.hdf5"
         }],
-        "output_dir": "/global/scratch/users/youngwoon/furniture/logs/bc_trained_models",
+        "output_dir": "../bc_trained_models",
         "num_data_workers": 0,
         "hdf5_cache_mode": null,
         "hdf5_use_swmr": true,
         "hdf5_load_next_obs": false,
         "hdf5_normalize_obs": false,
-        "hdf5_filter_key": "train_1000",
-        "hdf5_validation_filter_key": "valid_1000",
+        "hdf5_filter_key": "train",
+        "hdf5_validation_filter_key": "valid",
         "seq_length": 1,
         "pad_seq_length": true,
         "frame_stack": 1,
@@ -233,19 +233,13 @@
             "rgb": {
                 "core_class": "VisualCore",
                 "core_kwargs": {
-                    "feature_dimension": 64,
-                    "backbone_class": "ResNet18Conv",
+                    "feature_dimension": null,
+                    "backbone_class": "ResNet18ConvPool",
                     "backbone_kwargs": {
                         "pretrained": false,
                         "input_coord_conv": false
                     },
-                    "pool_class": "SpatialSoftmax",
-                    "pool_kwargs": {
-                        "num_kp": 32,
-                        "learnable_temperature": false,
-                        "temperature": 1.0,
-                        "noise_std": 0.0
-                    }
+                    "pool_class": null
                 },
                 "obs_randomizer_class": null,
                 "obs_randomizer_kwargs": {}

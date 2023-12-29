@@ -161,6 +161,12 @@ def lr_scheduler_from_optim_params(net_optim_params, net, optimizer):
                 milestones=epoch_schedule,
                 gamma=net_optim_params["learning_rate"]["decay_factor"],
             )
+        elif lr_scheduler_type == "step":
+            return optim.lr_scheduler.StepLR(
+            optimizer=optimizer,
+            step_size=epoch_schedule[0],
+            gamma=net_optim_params["learning_rate"]["decay_factor"],
+        )
         else:
             raise ValueError("Invalid LR scheduler type: {}".format(lr_scheduler_type))
 
