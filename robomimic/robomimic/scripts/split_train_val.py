@@ -22,8 +22,9 @@ import numpy as np
 from robomimic.utils.file_utils import create_hdf5_filter_key
 
 
+### YW: let it specify num_train/num_val instead of val_ratio
 def split_train_val_from_hdf5(
-    hdf5_path, val_ratio=None, num_train=None, filter_key=None
+    hdf5_path, val_ratio=None, num_train=None, num_val=None, filter_key=None
 ):
     """
     Splits data into training set and validation set from HDF5 file.
@@ -56,9 +57,11 @@ def split_train_val_from_hdf5(
     num_demos = len(demos)
     if val_ratio is not None:
         num_val = int(val_ratio * num_demos)
+        num_train = num_demos - num_val
     else:
-        num_val = num_demos - num_train
-    mask = np.zeros(num_demos)
+        if num_val is None:
+            num_val = num_demos - num_train
+    mask = np.zeros(num_train + num_val)
     mask[:num_val] = 1.0
     np.random.shuffle(mask)
     mask = mask.astype(int)
@@ -73,8 +76,8 @@ def split_train_val_from_hdf5(
     )
 
     # pass mask to generate split
-    name_1 = "train"
-    name_2 = "valid"
+    name_1 = f"train_{num_train}"
+    name_2 = f"valid_{num_train}"
     if filter_key is not None:
         name_1 = "{}_{}".format(filter_key, name_1)
         name_2 = "{}_{}".format(filter_key, name_2)

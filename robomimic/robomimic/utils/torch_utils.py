@@ -34,7 +34,8 @@ def hard_update(source, target):
             target_param.copy_(param)
 
 
-def get_torch_device(try_to_use_cuda):
+### YW: specify GPU for training via compute_device_id
+def get_torch_device(try_to_use_cuda, device_id=0):
     """
     Return torch device. If using cuda (GPU), will also set cudnn.benchmark to True
     to optimize CNNs.
@@ -47,10 +48,12 @@ def get_torch_device(try_to_use_cuda):
     """
     if try_to_use_cuda and torch.cuda.is_available():
         torch.backends.cudnn.benchmark = True
-        device = torch.device("cuda:0")
+        # device = torch.device("cuda:0")
+        device = torch.device(f"cuda:{device_id}")
     else:
         device = torch.device("cpu")
     return device
+### YW
 
 
 def reparameterize(mu, logvar):

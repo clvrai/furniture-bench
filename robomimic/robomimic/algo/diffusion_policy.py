@@ -141,18 +141,25 @@ class DiffusionPolicyUNet(PolicyAlgo):
         input_batch["obs"] = {k: batch["obs"][k][:, :To, :] for k in batch["obs"]}
         input_batch["goal_obs"] = batch.get("goal_obs", None) # goals may not be present
         input_batch["actions"] = batch["actions"][:, :Tp, :]
-        
+
         # check if actions are normalized to [-1,1]
         if not self.action_check_done:
             actions = input_batch["actions"]
-            in_range = (-1 <= actions) & (actions <= 1)
+            ### YW: provide slack for range
+            # in_range = (-1 <= actions) & (actions <= 1)
+            in_range = (-1.00001 <= actions) & (actions <= 1.00001)
+            ### YW
             all_in_range = torch.all(in_range).item()
             if not all_in_range:
                 raise ValueError('"actions" must be in range [-1,1] for Diffusion Policy! Check if hdf5_normalize_action is enabled.')
             self.action_check_done = True
-        
+
+        ### YW: make sure actions are within [-1,1]. it's sometimes slightly off
+        input_batch["actions"] = torch.clamp(input_batch["actions"], -1, 1)
+        ### YW
+
         return TensorUtils.to_device(TensorUtils.to_float(input_batch), self.device)
-        
+
     def train_on_batch(self, batch, epoch, validate=False):
         """
         Training on a single batch of data.
@@ -326,17 +333,31 @@ class DiffusionPolicyUNet(PolicyAlgo):
             num_inference_timesteps = self.algo_config.ddim.num_inference_timesteps
         else:
             raise ValueError
-        
+
         # select network
         nets = self.nets
         if self.ema is not None:
             nets = self.ema.averaged_model
-        
+
         # encode obs
         inputs = {
             'obs': obs_dict,
             'goal': goal_dict
         }
+
+        ### YW: only [B] for inputs
+        only_b = True
+        for k in self.obs_shapes:
+            only_b = only_b and inputs['obs'][k].ndim - 1 == len(self.obs_shapes[k])
+
+        if only_b:
+            # [B] -> [B, T]
+            for k in self.obs_shapes:
+                inputs['obs'][k] = inputs['obs'][k].unsqueeze(1)
+
+        inputs["obs"] = {k: inputs["obs"][k] for k in self.obs_shapes}
+        ### YW
+
         for k in self.obs_shapes:
             # first two dimensions should be [B, T] for inputs
             assert inputs['obs'][k].ndim - 2 == len(self.obs_shapes[k])

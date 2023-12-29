@@ -249,12 +249,15 @@ class FurniturePreprocessWrapper(EnvWrapper):
         ob_dict, r, done, info = self.env.step(action)
         r = r.squeeze(-1) # Remove the 1-dimension.
         return self._preprocess(ob_dict), r, done, info
-   
+
     def _preprocess(self, ob_dict):
         # ob_dict["object"] = ob_dict["parts_poses"]
         ob_dict["robot0_eef_pos"] = ob_dict["ee_pos"]
         ob_dict["robot0_eef_quat"] = ob_dict["ee_quat"]
-        ob_dict["robot0_gripper_qpos"] = ob_dict["gripper_width"].reshape(-1, 1) # Add a dimension since squeezed in data saving.
+        ### YW: this doesn't work for ACT and Diffusion Policy
+        # ob_dict["robot0_gripper_qpos"] = ob_dict["gripper_width"].reshape(-1, 1) # Add a dimension since squeezed in data saving.
+        ob_dict["robot0_gripper_qpos"] = ob_dict["gripper_width"]
+        ### YW
         ob_dict["robot0_eye_in_hand_image"] = ob_dict["color_image1"]
         ob_dict["agentview_image"] = ob_dict["color_image2"]
 

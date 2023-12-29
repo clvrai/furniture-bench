@@ -364,7 +364,10 @@ def train(config, device):
 
                 print("\nEpoch {} Rollouts took {}s (avg) with results:".format(epoch, rollout_logs["time"]))
                 print('Env: {}'.format(env_name))
-                print(json.dumps(rollout_logs, sort_keys=True, indent=4))
+                ### YW: json.dumps raise an error for float32 values
+                # print(json.dumps(rollout_logs, sort_keys=True, indent=4))
+                print(rollout_logs)
+                ### YW
 
             # checkpoint and video saving logic
             updated_stats = TrainUtils.should_save_from_rollout_logs(
@@ -458,7 +461,13 @@ def main(args):
         config.experiment.name = args.name
 
     # get torch device
-    device = TorchUtils.get_torch_device(try_to_use_cuda=config.train.cuda)
+    ### YW: specify GPU for training via compute_device_id
+    # device = TorchUtils.get_torch_device(try_to_use_cuda=config.train.cuda)
+    device = TorchUtils.get_torch_device(
+        try_to_use_cuda=config.train.cuda,
+        device_id=args.compute_device_id,
+    )
+    ### YW
 
     # maybe modify config for debugging purposes
     if args.debug:
