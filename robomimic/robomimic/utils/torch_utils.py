@@ -92,7 +92,7 @@ def reparameterize(mu, logvar):
 
 def optimizer_from_optim_params(net_optim_params, net):
     """
-    Helper function to return a torch Optimizer from the optim_params 
+    Helper function to return a torch Optimizer from the optim_params
     section of the config for a particular network.
 
     Args:
@@ -124,7 +124,7 @@ def optimizer_from_optim_params(net_optim_params, net):
 
 def lr_scheduler_from_optim_params(net_optim_params, net, optimizer):
     """
-    Helper function to return a LRScheduler from the optim_params 
+    Helper function to return a LRScheduler from the optim_params
     section of the config for a particular network. Returns None
     if a scheduler is not needed.
 
@@ -148,7 +148,7 @@ def lr_scheduler_from_optim_params(net_optim_params, net, optimizer):
         if lr_scheduler_type == "linear":
             assert len(epoch_schedule) == 1
             end_epoch = epoch_schedule[0]
-            
+
             return optim.lr_scheduler.LinearLR(
                 optimizer,
                 start_factor=1.0,
@@ -163,7 +163,7 @@ def lr_scheduler_from_optim_params(net_optim_params, net, optimizer):
             )
         else:
             raise ValueError("Invalid LR scheduler type: {}".format(lr_scheduler_type))
-        
+
     return lr_scheduler
 
 

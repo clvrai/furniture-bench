@@ -7,7 +7,7 @@ import numpy as np
 from collections import deque
 
 import robomimic.envs.env_base as EB
-import robomimic.utils.obs_utils as ObsUtils                
+import robomimic.utils.obs_utils as ObsUtils
 
 
 class EnvWrapper(object):
@@ -60,7 +60,7 @@ class EnvWrapper(object):
 
     def _to_string(self):
         """
-        Subclasses should override this method to print out info about the 
+        Subclasses should override this method to print out info about the
         wrapper (such as arguments passed to it).
         """
         return ''
@@ -131,14 +131,14 @@ class FrameStackWrapper(EnvWrapper):
         obs_history = {}
         for k in init_obs:
             obs_history[k] = deque(
-                [init_obs[k][None] for _ in range(self.num_frames)], 
+                [init_obs[k][None] for _ in range(self.num_frames)],
                 maxlen=self.num_frames,
             )
         return obs_history
 
     def _get_stacked_obs_from_history(self):
         """
-        Helper method to convert internal variable @self.obs_history to a 
+        Helper method to convert internal variable @self.obs_history to a
         stacked observation where each key is a numpy array with leading dimension
         @self.num_frames.
         """
@@ -154,7 +154,7 @@ class FrameStackWrapper(EnvWrapper):
 
     def reset(self):
         """
-        Modify to return frame stacked observation which is @self.num_frames copies of 
+        Modify to return frame stacked observation which is @self.num_frames copies of
         the initial observation.
 
         Returns:
@@ -170,7 +170,7 @@ class FrameStackWrapper(EnvWrapper):
 
     def reset_to(self, state):
         """
-        Modify to return frame stacked observation which is @self.num_frames copies of 
+        Modify to return frame stacked observation which is @self.num_frames copies of
         the initial observation.
 
         Returns:
@@ -211,7 +211,7 @@ class FrameStackWrapper(EnvWrapper):
 
     def update_obs(self, obs, action=None, reset=False):
         obs["timesteps"] = np.array([self.timestep])
-        
+
         if reset:
             obs["actions"] = np.zeros(self.env.action_dimension)
         else:
@@ -228,7 +228,7 @@ class FurniturePreprocessWrapper(EnvWrapper):
     def __init__(self, env):
         super(FurniturePreprocessWrapper, self).__init__(env=env)
         self.name = env.name
-    
+
     def get_observation(self):
         ob_dict = self.env.get_observation()
         return self._preprocess(ob_dict)
@@ -265,5 +265,5 @@ class FurniturePreprocessWrapper(EnvWrapper):
         for k in ob_dict:
             if (k in ObsUtils.OBS_KEYS_TO_MODALITIES) and ObsUtils.key_is_obs_modality(key=k, obs_modality="rgb"):
                 ob_dict[k] = ObsUtils.process_obs(obs=ob_dict[k], obs_key=k)
-        return ob_dict 
- 
+        return ob_dict
+

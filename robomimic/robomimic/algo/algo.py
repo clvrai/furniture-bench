@@ -204,7 +204,7 @@ class Algo(object):
 
         Returns:
             input_batch (dict): processed and filtered batch that
-                will be used for training 
+                will be used for training
         """
         return batch
 
@@ -220,8 +220,8 @@ class Algo(object):
                 training will occur (after @process_batch_for_training
                 is called)
 
-            obs_normalization_stats (dict or None): if provided, this should map observation 
-                keys to dicts with a "mean" and "std" of shape (1, ...) where ... is the 
+            obs_normalization_stats (dict or None): if provided, this should map observation
+                keys to dicts with a "mean" and "std" of shape (1, ...) where ... is the
                 default shape for the observation.
 
         Returns:
@@ -347,7 +347,7 @@ class PolicyAlgo(Algo):
     def compute_traj_pred_actual_actions(self, traj, return_images=False):
         """
         traj is an R2D2Dataset object representing one trajectory
-        This function is slow (>1s per trajectory) because there is no batching 
+        This function is slow (>1s per trajectory) because there is no batching
         and instead loops through all timesteps one by one
         TODO: documentation
         """
@@ -367,9 +367,9 @@ class PolicyAlgo(Algo):
         )
 
         self.reset()
-        actual_actions = [] 
-        predicted_actions = [] 
-        
+        actual_actions = []
+        predicted_actions = []
+
         # loop through each timestep
         for batch in iter(dataloader):
             batch = self.process_batch_for_training(batch)
@@ -383,7 +383,7 @@ class PolicyAlgo(Algo):
             batch = self.postprocess_batch_for_training(batch, obs_normalization_stats=None) # ignore obs_normalization for now
 
             model_output = self.get_action(batch["obs"])
-            
+
             actual_action = TensorUtils.to_numpy(
                 batch["actions"][0][0]
             )
@@ -393,11 +393,11 @@ class PolicyAlgo(Algo):
 
             actual_actions.append(actual_action)
             predicted_actions.append(predicted_action)
-            
+
         actual_actions = np.array(actual_actions)
         predicted_actions = np.array(predicted_actions)
         return actual_actions, predicted_actions, images
-    
+
     def compute_mse_visualize(self, trainset, validset, num_samples, savedir=None):
         """If savedir is not None, then also visualize the model predictions and save them to savedir"""
         visualize = savedir is not None
@@ -410,15 +410,15 @@ class PolicyAlgo(Algo):
             min(len(trainset.datasets), num_samples)
         ).astype(int)
         training_sampled_data = [trainset.datasets[idx] for idx in train_indices]
-        
+
         if validset is not None:
             valid_indices = random_state.choice(
                 len(validset.datasets),
                 min(len(validset.datasets), num_samples)
             ).astype(int)
             validation_sampled_data = [validset.datasets[idx] for idx in valid_indices]
-        
-            inference_datasets_mapping = {"Train": training_sampled_data, "Valid": validation_sampled_data} 
+
+            inference_datasets_mapping = {"Train": training_sampled_data, "Valid": validation_sampled_data}
         else:
             inference_datasets_mapping = {"Train": training_sampled_data}
 
@@ -427,7 +427,7 @@ class PolicyAlgo(Algo):
         training_sample=training_sampled_data[0][0]
         modified_action_keys = [element.replace("action/", "") for element in action_keys]
         action_names = []
-        
+
         for i, action_key in enumerate(action_keys):
             if isinstance(training_sample[action_key][0], np.ndarray):
                 action_names.extend([f'{modified_action_keys[i]}_{j+1}' for j in range(len(training_sample[action_key][0]))])
@@ -452,7 +452,7 @@ class PolicyAlgo(Algo):
                 predicted_actions_all_traj.append(predicted_actions)
                 if visualize:
                     traj_key = "{}_traj_{}".format(inference_key.lower(), traj_num)
-                    save_path = os.path.join(savedir, traj_key + ".png")                
+                    save_path = os.path.join(savedir, traj_key + ".png")
                     VisUtils.make_model_prediction_plot(
                         hdf5_path=d.hdf5_path,
                         save_path=save_path,
@@ -463,23 +463,23 @@ class PolicyAlgo(Algo):
                     )
                     vis_log[traj_key] = imageio.imread(save_path)
                 traj_num += 1
-            
+
             actual_actions_all_traj = np.concatenate(actual_actions_all_traj, axis=0)
-            predicted_actions_all_traj = np.concatenate(predicted_actions_all_traj, axis=0)        
+            predicted_actions_all_traj = np.concatenate(predicted_actions_all_traj, axis=0)
             accuracy_thresholds = np.logspace(-3,-5, num=3).tolist()
             mse = torch.nn.functional.mse_loss(
-                torch.tensor(predicted_actions_all_traj), 
-                torch.tensor(actual_actions_all_traj), 
+                torch.tensor(predicted_actions_all_traj),
+                torch.tensor(actual_actions_all_traj),
                 reduction='none'
             ) # (NxT, D)
             mse_log[f'{inference_key}/action_mse_error'] = mse.mean().item() # average MSE across all timesteps averaged across all action dimensions (D,)
-            
+
             # compute percentage of timesteps that have MSE less than the accuracy thresholds
             for accuracy_threshold in accuracy_thresholds:
                 mse_log[f'{inference_key}/action_accuracy@{accuracy_threshold}'] = (torch.less(mse,accuracy_threshold).float().mean().item())
-        
+
         return mse_log, vis_log
-    
+
 
 class ValueAlgo(Algo):
     """
@@ -617,7 +617,7 @@ class RolloutPolicy(object):
         Prepare raw observation dict from environment for policy.
 
         Args:
-            ob (dict): single observation dictionary from environment (no batch dimension, 
+            ob (dict): single observation dictionary from environment (no batch dimension,
                 and np.array values for each key)
 
             batched (bool): whether the input is already batched
@@ -640,7 +640,7 @@ class RolloutPolicy(object):
         Produce action from raw observation dict (and maybe goal dict) from environment.
 
         Args:
-            ob (dict): single observation dictionary from environment (no batch dimension, 
+            ob (dict): single observation dictionary from environment (no batch dimension,
                 and np.array values for each key)
             goal (dict): goal observation
             batched (bool): whether the input is already batched

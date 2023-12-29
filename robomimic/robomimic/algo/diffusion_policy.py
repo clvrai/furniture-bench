@@ -58,7 +58,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         observation_group_shapes = OrderedDict()
         observation_group_shapes["obs"] = OrderedDict(self.obs_shapes)
         encoder_kwargs = ObsUtils.obs_encoder_kwargs_from_config(self.obs_config.encoder)
-        
+
         obs_encoder = ObsNets.ObservationGroupEncoder(
             observation_group_shapes=observation_group_shapes,
             encoder_kwargs=encoder_kwargs,
@@ -67,7 +67,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         # replace all BatchNorm with GroupNorm to work with EMA
         # performance will tank if you forget to do this!
         obs_encoder = replace_bn_with_gn(obs_encoder)
-        
+
         obs_dim = obs_encoder.output_shape()[0]
 
         # create network object
@@ -85,7 +85,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         })
 
         nets = nets.float().to(self.device)
-        
+
         # setup noise scheduler
         noise_scheduler = None
         if self.algo_config.ddpm.enabled:
@@ -106,12 +106,12 @@ class DiffusionPolicyUNet(PolicyAlgo):
             )
         else:
             raise RuntimeError()
-        
+
         # setup EMA
         ema = None
         if self.algo_config.ema.enabled:
             ema = EMAModel(model=nets, power=self.algo_config.ema.power)
-                
+
         # set attrs
         self.nets = nets
         self.noise_scheduler = noise_scheduler
@@ -119,7 +119,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         self.action_check_done = False
         self.obs_queue = None
         self.action_queue = None
-    
+
     def process_batch_for_training(self, batch):
         """
         Processes input batch from a data loader to filter out
@@ -131,7 +131,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
 
         Returns:
             input_batch (dict): processed and filtered batch that
-                will be used for training 
+                will be used for training
         """
         To = self.algo_config.horizon.observation_horizon
         Ta = self.algo_config.horizon.action_horizon
@@ -182,12 +182,12 @@ class DiffusionPolicyUNet(PolicyAlgo):
         Tp = self.algo_config.horizon.prediction_horizon
         action_dim = self.ac_dim
         B = batch['actions'].shape[0]
-        
-        
+
+
         with TorchUtils.maybe_no_grad(no_grad=validate):
             info = super(DiffusionPolicyUNet, self).train_on_batch(batch, epoch, validate=validate)
             actions = batch['actions']
-            
+
             # encode obs
             inputs = {
                 'obs': batch["obs"],
@@ -196,33 +196,33 @@ class DiffusionPolicyUNet(PolicyAlgo):
             for k in self.obs_shapes:
                 # first two dimensions should be [B, T] for inputs
                 assert inputs['obs'][k].ndim - 2 == len(self.obs_shapes[k])
-            
+
             obs_features = TensorUtils.time_distributed(inputs, self.nets['policy']['obs_encoder'], inputs_as_kwargs=True)
             assert obs_features.ndim == 3  # [B, T, D]
 
             obs_cond = obs_features.flatten(start_dim=1)
-            
+
             # sample noise to add to actions
             noise = torch.randn(actions.shape, device=self.device)
-            
+
             # sample a diffusion iteration for each data point
             timesteps = torch.randint(
-                0, self.noise_scheduler.config.num_train_timesteps, 
+                0, self.noise_scheduler.config.num_train_timesteps,
                 (B,), device=self.device
             ).long()
-            
+
             # add noise to the clean actions according to the noise magnitude at each diffusion iteration
             # (this is the forward diffusion process)
             noisy_actions = self.noise_scheduler.add_noise(
                 actions, noise, timesteps)
-            
+
             # predict the noise residual
             noise_pred = self.nets['policy']['noise_pred_net'](
                 noisy_actions, timesteps, global_cond=obs_cond)
-            
+
             # L2 loss
             loss = F.mse_loss(noise_pred, noise)
-            
+
             # logging
             losses = {
                 'l2_loss': loss
@@ -236,18 +236,18 @@ class DiffusionPolicyUNet(PolicyAlgo):
                     optim=self.optimizers["policy"],
                     loss=loss,
                 )
-                
+
                 # update Exponential Moving Average of the model weights
                 if self.ema is not None:
                     self.ema.step(self.nets)
-                
+
                 step_info = {
                     'policy_grad_norms': policy_grad_norms
                 }
                 info.update(step_info)
 
         return info
-    
+
     def log_info(self, info):
         """
         Process info dictionary from @train_on_batch to summarize
@@ -264,7 +264,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         if "policy_grad_norms" in info:
             log["Policy_Grad_Norms"] = info["policy_grad_norms"]
         return log
-    
+
     def reset(self):
         """
         Reset algo state to prepare for environment rollouts.
@@ -276,7 +276,7 @@ class DiffusionPolicyUNet(PolicyAlgo):
         action_queue = deque(maxlen=Ta)
         self.obs_queue = obs_queue
         self.action_queue = action_queue
-    
+
     def get_action(self, obs_dict, goal_dict=None):
         """
         Get policy action outputs.
@@ -298,29 +298,29 @@ class DiffusionPolicyUNet(PolicyAlgo):
         # if already full, append one to the obs_queue
         # n_repeats = max(To - len(self.obs_queue), 1)
         # self.obs_queue.extend([obs_dict] * n_repeats)
-        
+
         if len(self.action_queue) == 0:
             # no actions left, run inference
             # turn obs_queue into dict of tensors (concat at T dim)
             # import pdb; pdb.set_trace()
             # obs_dict_list = TensorUtils.list_of_flat_dict_to_dict_of_list(list(self.obs_queue))
             # obs_dict_tensor = dict((k, torch.cat(v, dim=0).unsqueeze(0)) for k,v in obs_dict_list.items())
-            
+
             # run inference
             # [1,T,Da]
             action_sequence = self._get_action_trajectory(obs_dict=obs_dict)
-            
+
             # put actions into the queue
             self.action_queue.extend(action_sequence[0])
-        
+
         # has action, execute from left to right
         # [Da]
         action = self.action_queue.popleft()
-        
+
         # [1,Da]
         action = action.unsqueeze(0)
         return action
-        
+
     def _get_action_trajectory(self, obs_dict, goal_dict=None):
         assert not self.nets.training
         To = self.algo_config.horizon.observation_horizon
@@ -372,14 +372,14 @@ class DiffusionPolicyUNet(PolicyAlgo):
         noisy_action = torch.randn(
             (B, Tp, action_dim), device=self.device)
         naction = noisy_action
-        
+
         # init scheduler
         self.noise_scheduler.set_timesteps(num_inference_timesteps)
 
         for k in self.noise_scheduler.timesteps:
             # predict noise
             noise_pred = nets['policy']['noise_pred_net'](
-                sample=naction, 
+                sample=naction,
                 timestep=k,
                 global_cond=obs_cond
             )
@@ -418,14 +418,14 @@ class DiffusionPolicyUNet(PolicyAlgo):
         if model_dict.get("ema", None) is not None:
             self.ema.averaged_model.load_state_dict(model_dict["ema"])
 
-    
-            
-            
+
+
+
 
 # =================== Vision Encoder Utils =====================
 def replace_submodules(
-        root_module: nn.Module, 
-        predicate: Callable[[nn.Module], bool], 
+        root_module: nn.Module,
+        predicate: Callable[[nn.Module], bool],
         func: Callable[[nn.Module], nn.Module]) -> nn.Module:
     """
     Replace all submodules selected by the predicate with
@@ -440,8 +440,8 @@ def replace_submodules(
     if parse_version(torch.__version__) < parse_version('1.9.0'):
         raise ImportError('This function requires pytorch >= 1.9.0')
 
-    bn_list = [k.split('.') for k, m 
-        in root_module.named_modules(remove_duplicate=True) 
+    bn_list = [k.split('.') for k, m
+        in root_module.named_modules(remove_duplicate=True)
         if predicate(m)]
     for *parent, k in bn_list:
         parent_module = root_module
@@ -457,14 +457,14 @@ def replace_submodules(
         else:
             setattr(parent_module, k, tgt_module)
     # verify that all modules are replaced
-    bn_list = [k.split('.') for k, m 
-        in root_module.named_modules(remove_duplicate=True) 
+    bn_list = [k.split('.') for k, m
+        in root_module.named_modules(remove_duplicate=True)
         if predicate(m)]
     assert len(bn_list) == 0
     return root_module
 
 def replace_bn_with_gn(
-    root_module: nn.Module, 
+    root_module: nn.Module,
     features_per_group: int=16) -> nn.Module:
     """
     Relace all BatchNorm layers with GroupNorm.
@@ -473,7 +473,7 @@ def replace_bn_with_gn(
         root_module=root_module,
         predicate=lambda x: isinstance(x, nn.BatchNorm2d),
         func=lambda x: nn.GroupNorm(
-            num_groups=x.num_features//features_per_group, 
+            num_groups=x.num_features//features_per_group,
             num_channels=x.num_features)
     )
     return root_module
@@ -531,9 +531,9 @@ class Conv1dBlock(nn.Module):
 
 
 class ConditionalResidualBlock1D(nn.Module):
-    def __init__(self, 
-            in_channels, 
-            out_channels, 
+    def __init__(self,
+            in_channels,
+            out_channels,
             cond_dim,
             kernel_size=3,
             n_groups=8):
@@ -581,7 +581,7 @@ class ConditionalResidualBlock1D(nn.Module):
 
 
 class ConditionalUnet1D(nn.Module):
-    def __init__(self, 
+    def __init__(self,
         input_dim,
         global_cond_dim,
         diffusion_step_embed_dim=256,
@@ -591,10 +591,10 @@ class ConditionalUnet1D(nn.Module):
         ):
         """
         input_dim: Dim of actions.
-        global_cond_dim: Dim of global conditioning applied with FiLM 
+        global_cond_dim: Dim of global conditioning applied with FiLM
           in addition to diffusion step embedding. This is usually obs_horizon * obs_dim
         diffusion_step_embed_dim: Size of positional encoding for diffusion iteration k
-        down_dims: Channel size for each UNet level. 
+        down_dims: Channel size for each UNet level.
           The length of this array determines numebr of levels.
         kernel_size: Conv kernel size
         n_groups: Number of groups for GroupNorm
@@ -631,10 +631,10 @@ class ConditionalUnet1D(nn.Module):
             is_last = ind >= (len(in_out) - 1)
             down_modules.append(nn.ModuleList([
                 ConditionalResidualBlock1D(
-                    dim_in, dim_out, cond_dim=cond_dim, 
+                    dim_in, dim_out, cond_dim=cond_dim,
                     kernel_size=kernel_size, n_groups=n_groups),
                 ConditionalResidualBlock1D(
-                    dim_out, dim_out, cond_dim=cond_dim, 
+                    dim_out, dim_out, cond_dim=cond_dim,
                     kernel_size=kernel_size, n_groups=n_groups),
                 Downsample1d(dim_out) if not is_last else nn.Identity()
             ]))
@@ -651,7 +651,7 @@ class ConditionalUnet1D(nn.Module):
                     kernel_size=kernel_size, n_groups=n_groups),
                 Upsample1d(dim_in) if not is_last else nn.Identity()
             ]))
-        
+
         final_conv = nn.Sequential(
             Conv1dBlock(start_dim, start_dim, kernel_size=kernel_size),
             nn.Conv1d(start_dim, input_dim, 1),
@@ -666,9 +666,9 @@ class ConditionalUnet1D(nn.Module):
             sum(p.numel() for p in self.parameters()))
         )
 
-    def forward(self, 
-            sample: torch.Tensor, 
-            timestep: Union[torch.Tensor, float, int], 
+    def forward(self,
+            sample: torch.Tensor,
+            timestep: Union[torch.Tensor, float, int],
             global_cond=None):
         """
         x: (B,T,input_dim)
@@ -695,7 +695,7 @@ class ConditionalUnet1D(nn.Module):
             global_feature = torch.cat([
                 global_feature, global_cond
             ], axis=-1)
-        
+
         x = sample
         h = []
         for idx, (resnet, resnet2, downsample) in enumerate(self.down_modules):

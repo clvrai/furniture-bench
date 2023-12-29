@@ -12,7 +12,7 @@ Args:
 
     dataset (str): if provided, override the dataset path defined in the config
 
-    debug (bool): set this flag to run a quick training run for debugging purposes    
+    debug (bool): set this flag to run a quick training run for debugging purposes
 """
 
 import argparse
@@ -127,7 +127,7 @@ def train(config, device):
             env_meta = env_meta_list[dataset_i]
             shape_meta = shape_meta_list[dataset_i]
             env_name = env_meta["env_name"]
-            
+
             def create_env(env_i=0):
                 env_kwargs = dict(
                     env_meta=env_meta,
@@ -170,7 +170,7 @@ def train(config, device):
             else:
                 env = create_env()
                 env_name = env.name
-            
+
             envs[env_name] = env
             print(env)
 
@@ -190,7 +190,7 @@ def train(config, device):
         ac_dim=shape_meta_list[0]["ac_dim"],
         device=device,
     )
-    
+
     # save the config as a json file
     with open(os.path.join(log_dir, '..', 'config.json'), 'w') as outfile:
         json.dump(config, outfile, indent=4)
@@ -403,17 +403,17 @@ def train(config, device):
                 validset,
                 num_samples=config.experiment.mse.num_samples,
                 savedir=save_vis_dir,
-            )    
+            )
             for k, v in mse_log.items():
                 data_logger.record("{}".format(k), v, epoch)
-            
+
             for k, v in vis_log.items():
                 data_logger.record("{}".format(k), v, epoch, data_type='image')
 
 
             print("MSE Log Epoch {}".format(epoch))
             print(json.dumps(mse_log, sort_keys=True, indent=4))
-        
+
         # # Only keep saved videos if the ckpt should be saved (but not because of validation score)
         # should_save_video = (should_save_ckpt and (ckpt_reason != "valid")) or config.experiment.keep_all_videos
         # if video_paths is not None and not should_save_video:
@@ -421,7 +421,7 @@ def train(config, device):
         #         os.remove(video_paths[env_name])
 
         # Save model checkpoints based on conditions (success rate, validation loss, etc)
-        if should_save_ckpt:    
+        if should_save_ckpt:
             TrainUtils.save_model(
                 model=model,
                 config=config,
@@ -541,7 +541,7 @@ if __name__ == "__main__":
         action='store_true',
         help="set this flag to run a quick training run for debugging purposes"
     )
-    
+
     parser.add_argument(
         "--compute_device_id",
         type=int,

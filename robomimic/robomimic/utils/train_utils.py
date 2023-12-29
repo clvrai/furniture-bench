@@ -1,5 +1,5 @@
 """
-This file contains several utility functions used to define the main training loop. It 
+This file contains several utility functions used to define the main training loop. It
 mainly consists of functions to assist with logging, rollouts, and the @run_epoch function,
 which is the core training logic for models in this repository.
 """
@@ -31,14 +31,14 @@ from tianshou.env import SubprocVectorEnv
 def get_exp_dir(config, auto_remove_exp_dir=False):
     """
     Create experiment directory from config. If an identical experiment directory
-    exists and @auto_remove_exp_dir is False (default), the function will prompt 
+    exists and @auto_remove_exp_dir is False (default), the function will prompt
     the user on whether to remove and replace it, or keep the existing one and
     add a new subdirectory with the new timestamp for the current run.
 
     Args:
         auto_remove_exp_dir (bool): if True, automatically remove the existing experiment
             folder if it exists at the same path.
-    
+
     Returns:
         log_dir (str): path to created log directory (sub-folder in experiment directory)
         output_dir (str): path to created models directory (sub-folder in experiment directory)
@@ -82,7 +82,7 @@ def get_exp_dir(config, auto_remove_exp_dir=False):
     # vis directory
     vis_dir = os.path.join(base_output_dir, time_str, "vis")
     os.makedirs(vis_dir)
-    
+
     return log_dir, output_dir, video_dir, vis_dir
 
 
@@ -228,7 +228,7 @@ def get_dataset(
 ):
     ds_list = []
     for i in range(len(ds_weights)):
-        
+
         ds_kwargs_copy = deepcopy(ds_kwargs)
 
         keys = ["hdf5_path", "filter_by_attribute"]
@@ -237,9 +237,9 @@ def get_dataset(
             ds_kwargs_copy[k] = ds_kwargs[k][i]
 
         ds_kwargs_copy["lang"] = ds_langs[i]
-        
+
         ds_list.append(ds_class(**ds_kwargs_copy))
-    
+
     if len(ds_weights) == 1:
         ds = ds_list[0]
     else:
@@ -263,13 +263,13 @@ def batchify_obs(obs_list):
     obs = {
         k: np.stack([obs_list[i][k] for i in range(len(obs_list))]) for k in keys
     }
-    
+
     return obs
 
 
 def run_rollout(
-        policy, 
-        env, 
+        policy,
+        env,
         horizon,
         use_goals=False,
         render=False,
@@ -291,7 +291,7 @@ def run_rollout(
 
         render (bool): if True, render the rollout to the screen
 
-        video_writer (imageio Writer instance): if not None, use video writer object to append frames at 
+        video_writer (imageio Writer instance): if not None, use video writer object to append frames at
             rate given by @video_skip
 
         video_skip (int): how often to write video frame
@@ -329,7 +329,7 @@ def run_rollout(
         video_frames = [[] for _ in range(len(env))]
     else:
         video_frames = []
-    
+
     try:
         for step_i in range(horizon): #LogUtils.tqdm(range(horizon)):
             # get action from policy
@@ -371,7 +371,7 @@ def run_rollout(
                 if video_count % video_skip == 0:
                     if batched:
                         # frames = env.render(mode="rgb_array", height=video_height, width=video_width)
-                        
+
                         frames = []
                         policy_ob = deepcopy(policy_ob)
                         for env_i in range(len(env)):
@@ -391,7 +391,7 @@ def run_rollout(
                             frame = np.concatenate(cam_imgs, axis=1)
                             frame = (frame * 255.0).astype(np.uint8)
                             frames.append(frame)
-                        
+
                         for env_i in range(len(env)):
                             frame = frames[env_i]
                             video_frames[env_i].append(frame)
@@ -400,7 +400,7 @@ def run_rollout(
                             frame = env.render(mode="rgb_array")
                         else:
                             frame = env.render(mode="rgb_array", height=512, width=512)
-                        
+
                         # cam_imgs = []
                         # for im_name in ["robot0_eye_in_hand_image", "robot0_agentview_right_image", "robot0_agentview_left_image"]:
                         #     im_input = TensorUtils.to_numpy(
@@ -425,7 +425,7 @@ def run_rollout(
                 for env_i in range(len(env)):
                     if end_step[env_i] is not None:
                         continue
-                    
+
                     if done[env_i] or (terminate_on_success and success["task"][env_i]):
                         end_step[env_i] = step_i
             else:
@@ -453,14 +453,14 @@ def run_rollout(
             end_step_env_i = end_step[env_i] or step_i
             total_reward[env_i] = np.sum(rews[:end_step_env_i+1, env_i])
             end_step[env_i] = end_step_env_i
-        
+
         results["Return"] = total_reward
         results["Horizon"] = np.array(end_step) + 1
         results["Success_Rate"] = success["task"].astype(float)
     else:
         end_step = end_step or step_i
         total_reward = np.sum(rews[:end_step + 1])
-        
+
         results["Return"] = total_reward
         results["Horizon"] = end_step + 1
         results["Success_Rate"] = float(success["task"])
@@ -522,10 +522,10 @@ def rollout_with_stats(
         terminate_on_success (bool): if True, terminate episode early as soon as a success is encountered
 
         verbose (bool): if True, print results of each rollout
-    
+
     Returns:
-        all_rollout_logs (dict): dictionary of rollout statistics (e.g. return, success rate, ...) 
-            averaged across all rollouts 
+        all_rollout_logs (dict): dictionary of rollout statistics (e.g. return, success rate, ...)
+            averaged across all rollouts
 
         video_paths (dict): path to rollout videos for each environment
     """
@@ -545,7 +545,7 @@ def rollout_with_stats(
         video_writers = { k : video_writer for k in envs }
     if video_dir is not None:
         # video is written per env
-        video_str = "_epoch_{}.mp4".format(epoch) if epoch is not None else ".mp4" 
+        video_str = "_epoch_{}.mp4".format(epoch) if epoch is not None else ".mp4"
         video_paths = { k : os.path.join(video_dir, "{}{}".format(k, video_str)) for k in envs }
         video_writers = { k : imageio.get_writer(video_paths[k], fps=20) for k in envs }
 
@@ -597,7 +597,7 @@ def rollout_with_stats(
 
                 rollout_logs.append(rollout_info)
                 num_success += rollout_info["Success_Rate"]
-            
+
             if verbose:
                 if batched:
                     raise NotImplementedError
@@ -648,10 +648,10 @@ def should_save_from_rollout_logs(
         epoch_ckpt_name (str): what to name the checkpoint file - this name might be modified
             by this function
 
-        save_on_best_rollout_return (bool): if True, should save checkpoints that achieve a 
+        save_on_best_rollout_return (bool): if True, should save checkpoints that achieve a
             new best rollout return
 
-        save_on_best_rollout_success_rate (bool): if True, should save checkpoints that achieve a 
+        save_on_best_rollout_success_rate (bool): if True, should save checkpoints that achieve a
             new best rollout success rate
 
     Returns:
@@ -821,9 +821,9 @@ def run_epoch(model, data_loader, epoch, validate=False, num_steps=None, obs_nor
 
 def is_every_n_steps(interval, current_step, skip_zero=False):
     """
-    Convenient function to check whether current_step is at the interval. 
+    Convenient function to check whether current_step is at the interval.
     Returns True if current_step % interval == 0 and asserts a few corner cases (e.g., interval <= 0)
-    
+
     Args:
         interval (int): target interval
         current_step (int): current step
