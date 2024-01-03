@@ -138,6 +138,7 @@ def train(config, device):
                     # seed=config.train.seed * 1000 + env_i # TODO: add seeding across environments
                 )
                 if env_meta["env_name"].startswith("Furniture"):
+                    abs_action = "abs" in config.train.action_keys[0]
                     import gymnasium as gym
                     env = gym.make(
                         env_meta['env_name'],
@@ -148,7 +149,8 @@ def train(config, device):
                         robot_state_as_dict=False,
                         compute_device_id=args.compute_device_id,
                         graphics_device_id=args.graphics_device_id,
-                        act_rot_repr='quat',
+                        act_rot_repr="rot_6d" if abs_action else "quat",
+                        abs_action=abs_action,
                         squeeze_batch_dim=True,
                         np_step_out=True,
                         render_mode='rgb_array',

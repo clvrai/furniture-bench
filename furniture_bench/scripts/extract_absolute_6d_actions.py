@@ -18,7 +18,7 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, help="dataset name")
     args = parser.parse_args()
 
-    with h5py.File(args.dataset, "r") as f:
+    with h5py.File(args.dataset, "r+") as f:
         # Extract absolute actions.
         demos = sorted(list(f["data"].keys()), key=lambda x: int(x[5:]))
         for ep in tqdm(demos):
@@ -58,6 +58,8 @@ if __name__ == "__main__":
             )
 
             f.create_dataset(f"data/{ep}/absolute_actions", data=absolute_actions)
+            f.create_dataset(f"data/{ep}/action_dict/abs_pos", data=absolute_pos_action)
+            f.create_dataset(f"data/{ep}/action_dict/gripper", data=actions[:, 7:])
 
         demos = sorted(list(f["data"].keys()), key=lambda x: int(x[5:]))
         for ep in tqdm(demos):
@@ -84,12 +86,14 @@ if __name__ == "__main__":
                 )
                 actions2 = actions2.numpy()
                 if not np.allclose(np.abs(org_actions), np.abs(actions2)):
+                    print("max difference:", (np.abs(org_actions) - np.abs(actions2)).max())
                     import pdb
 
                     pdb.set_trace()
 
                 if data_path == f"data/{ep}/absolute_actions":
                     action_path = f"data/{ep}/absolute_actions_6d"
+                    f.create_dataset(f"data/{ep}/action_dict/abs_rot_6d", data=rot_6d.numpy())
                 else:
                     action_path = f"data/{ep}/actions_6d"
 

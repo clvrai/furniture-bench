@@ -71,6 +71,7 @@ class FurnitureSimEnv(gym.Env):
         record: bool = False,
         max_env_steps: int = 3000,
         act_rot_repr: str = "quat",
+        abs_action: bool = False,
         **kwargs,
     ):
         """
@@ -94,6 +95,7 @@ class FurnitureSimEnv(gym.Env):
             record (bool): If true, videos of the wrist and front cameras' RGB inputs are recorded.
             max_env_steps (int): Maximum number of steps per episode (default: 3000).
             act_rot_repr (str): Representation of rotation for action space. Options are 'quat', 'axis', or 'rot_6d'.
+            abs_action (bool): If true, the action is the absolute pose of the agent.
         """
         super(FurnitureSimEnv, self).__init__()
         self.device = torch.device("cuda", compute_device_id)
@@ -185,6 +187,7 @@ class FurnitureSimEnv(gym.Env):
         ):
             raise ValueError(f"Invalid rotation representation: {act_rot_repr}")
         self.act_rot_repr = act_rot_repr
+        self.abs_action = abs_action
 
         self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
         self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
@@ -765,10 +768,13 @@ class FurnitureSimEnv(gym.Env):
             else:
                 action_quat = C.axisangle2quat(action[env_idx][3:6])
 
-            self.osc_ctrls[env_idx].set_goal(
-                action[env_idx][:3] + ee_pos[env_idx],
-                C.quat_multiply(ee_quat[env_idx], action_quat).to(self.device),
-            )
+            if self.abs_action:
+                self.osc_ctrls[env_idx].set_goal(action[env_idx][:3], action_quat)
+            else:
+                self.osc_ctrls[env_idx].set_goal(
+                    action[env_idx][:3] + ee_pos[env_idx],
+                    C.quat_multiply(ee_quat[env_idx], action_quat).to(self.device),
+                )
 
         for _ in range(sim_steps):
             self.refresh()
