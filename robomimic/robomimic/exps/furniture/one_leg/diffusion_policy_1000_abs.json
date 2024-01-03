@@ -1,7 +1,7 @@
 {
     "algo_name": "diffusion_policy",
     "experiment": {
-        "name": "furniture-one_leg-diffusion-test_1000",
+        "name": "furniture-one_leg-diffusion-test_1000_abs",
         "validate": true,
         "logging": {
             "terminal_output_to_txt": true,
@@ -55,6 +55,11 @@
         "dataset_keys": [
             "actions"
         ],
+        "action_keys": [
+            "action_dict/abs_pos",
+            "action_dict/abs_rot_6d",
+            "action_dict/gripper"
+        ],
         "action_config": {
             "actions": {
                 "normalization": null
@@ -67,8 +72,7 @@
                 "format": "rot_axis_angle"
             },
             "action_dict/abs_rot_6d": {
-                "normalization": null,
-                "format": "rot_6d"
+                "normalization": null
             },
             "action_dict/rel_pos": {
                 "normalization": null

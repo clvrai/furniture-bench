@@ -1,7 +1,7 @@
 {
-    "algo_name": "diffusion_policy",
+    "algo_name": "act",
     "experiment": {
-        "name": "furniture-one_leg-diffusion-test_1000",
+        "name": "furniture-cabinet-act-test_100_abs",
         "validate": true,
         "logging": {
             "terminal_output_to_txt": true,
@@ -31,29 +31,34 @@
             "enabled": true,
             "n": 10,
             "horizon": 1000,
-            "rate": 10,
+            "rate": 50,
             "warmstart": 0,
             "terminate_on_success": true
         }
     },
     "train": {
         "data": [{
-            "path": "/global/scratch/users/youngwoon/furniture/demos/one_leg_all.hdf5"
+            "path": "/global/scratch/users/youngwoon/furniture/demos/cabinet_all.hdf5"
         }],
-        "output_dir": "/global/scratch/users/youngwoon/furniture/logs/diffusion_policy_trained_models",
-        "num_data_workers": 0,
+        "output_dir": "/global/scratch/users/youngwoon/furniture/logs/act_trained_models",
+        "num_data_workers": 4,
         "hdf5_cache_mode": "low_dim",
         "hdf5_use_swmr": true,
         "hdf5_load_next_obs": false,
         "hdf5_normalize_obs": false,
-        "hdf5_filter_key": "train_1000",
-        "hdf5_validation_filter_key": "valid_1000",
-        "seq_length": 16,
+        "hdf5_filter_key": "train_100",
+        "hdf5_validation_filter_key": "valid_100",
+        "seq_length": 10,
         "pad_seq_length": true,
         "frame_stack": 1,
         "pad_frame_stack": true,
         "dataset_keys": [
             "actions"
+        ],
+        "action_keys": [
+            "action_dict/abs_pos",
+            "action_dict/abs_rot_6d",
+            "action_dict/gripper"
         ],
         "action_config": {
             "actions": {
@@ -67,8 +72,7 @@
                 "format": "rot_axis_angle"
             },
             "action_dict/abs_rot_6d": {
-                "normalization": null,
-                "format": "rot_6d"
+                "normalization": null
             },
             "action_dict/rel_pos": {
                 "normalization": null
@@ -92,54 +96,40 @@
         "cuda": true,
         "batch_size": 64,
         "num_epochs": 1000,
-        "seed": 1
+        "seed": 1,
+        "max_grad_norm": 100
     },
     "algo": {
         "optim_params": {
             "policy": {
+                "optimizer_type": "adamw",
                 "learning_rate": {
-                    "initial": 0.0001,
-                    "decay_factor": 0.1,
-                    "epoch_schedule": []
+                    "initial": 0.00005,
+                    "decay_factor": 1,
+                    "epoch_schedule": [
+                        100
+                    ],
+                    "scheduler_type": "linear"
                 },
                 "regularization": {
-                    "L2": 0.0
+                    "L2": 0.0001
                 }
             }
         },
-        "horizon": {
-            "observation_horizon": 1,
-            "action_horizon": 8,
-            "prediction_horizon": 16
+        "loss": {
+            "l2_weight": 0.0,
+            "l1_weight": 1.0,
+            "cos_weight": 0.0
         },
-        "unet": {
-            "enabled": true,
-            "diffusion_step_embed_dim": 256,
-            "down_dims": [256,512,1024],
-            "kernel_size": 5,
-            "n_groups": 8
-        },
-        "ema": {
-            "enabled": true,
-            "power": 0.75
-        },
-        "ddpm": {
-            "enabled": true,
-            "num_train_timesteps": 100,
-            "num_inference_timesteps": 100,
-            "beta_schedule": "squaredcos_cap_v2",
-            "clip_sample": true,
-            "prediction_type": "epsilon"
-        },
-        "ddim": {
-            "enabled": false,
-            "num_train_timesteps": 100,
-            "num_inference_timesteps": 16,
-            "beta_schedule": "squaredcos_cap_v2",
-            "clip_sample": true,
-            "set_alpha_to_one": true,
-            "steps_offset": 0,
-            "prediction_type": "epsilon"
+        "act": {
+            "hidden_dim": 512,
+            "dim_feedforward": 3200,
+            "backbone": "resnet18",
+            "enc_layers": 4,
+            "dec_layers": 7,
+            "nheads": 8,
+            "latent_dim": 32,
+            "kl_weight": 20
         }
     },
     "observation": {

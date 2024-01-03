@@ -1,7 +1,7 @@
 {
     "algo_name": "diffusion_policy",
     "experiment": {
-        "name": "furniture-one_leg-diffusion-test_1000",
+        "name": "furniture-cabinet-diffusion-test_100_abs",
         "validate": true,
         "logging": {
             "terminal_output_to_txt": true,
@@ -38,7 +38,7 @@
     },
     "train": {
         "data": [{
-            "path": "/global/scratch/users/youngwoon/furniture/demos/one_leg_all.hdf5"
+            "path": "/global/scratch/users/youngwoon/furniture/demos/cabinet_all.hdf5"
         }],
         "output_dir": "/global/scratch/users/youngwoon/furniture/logs/diffusion_policy_trained_models",
         "num_data_workers": 0,
@@ -46,14 +46,19 @@
         "hdf5_use_swmr": true,
         "hdf5_load_next_obs": false,
         "hdf5_normalize_obs": false,
-        "hdf5_filter_key": "train_1000",
-        "hdf5_validation_filter_key": "valid_1000",
+        "hdf5_filter_key": "train_100",
+        "hdf5_validation_filter_key": "valid_100",
         "seq_length": 16,
         "pad_seq_length": true,
         "frame_stack": 1,
         "pad_frame_stack": true,
         "dataset_keys": [
             "actions"
+        ],
+        "action_keys": [
+            "action_dict/abs_pos",
+            "action_dict/abs_rot_6d",
+            "action_dict/gripper"
         ],
         "action_config": {
             "actions": {
@@ -67,8 +72,7 @@
                 "format": "rot_axis_angle"
             },
             "action_dict/abs_rot_6d": {
-                "normalization": null,
-                "format": "rot_6d"
+                "normalization": null
             },
             "action_dict/rel_pos": {
                 "normalization": null
