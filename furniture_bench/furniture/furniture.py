@@ -473,8 +473,8 @@ class Furniture(ABC):
             if is_similar_pose(
                 assembled_rel_pose,
                 rel_pose,
-                ori_bound=0.98,
-                pos_threshold=[0.005, 0.005, 0.005],
+                ori_bound=self.ori_bound,
+                pos_threshold=self.assembled_pos_threshold
             ):
                 return True
 

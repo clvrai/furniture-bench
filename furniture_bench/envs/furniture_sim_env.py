@@ -1446,9 +1446,9 @@ class FurnitureSimEnv(gym.Env):
             Tuple (action for the assembly task, skill complete mask)
         """
         assert self.num_envs == 1  # Only support one environment for now.
-        if self.furniture_name not in ["one_leg", "cabinet"]:
+        if self.furniture_name not in ["one_leg", "cabinet", "lamp", "round_table"]:
             raise NotImplementedError(
-                "[one_leg, cabinet] are supported for scripted agent"
+                "[one_leg, cabinet, lamp, round_table] are supported for scripted agent"
             )
 
         if self.assemble_idx > len(self.furniture.should_be_assembled):
