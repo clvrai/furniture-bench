@@ -1,7 +1,7 @@
 {
-    "algo_name": "act",
+    "algo_name": "diffusion_policy",
     "experiment": {
-        "name": "furniture-one_leg-act-test_100_abs",
+        "name": "furniture-lamp-diffusion-test_100_abs",
         "validate": true,
         "logging": {
             "terminal_output_to_txt": true,
@@ -13,7 +13,7 @@
         "save": {
             "enabled": true,
             "every_n_seconds": null,
-            "every_n_epochs": 50,
+            "every_n_epochs": 10,
             "epochs": [],
             "on_best_validation": false,
             "on_best_rollout_return": false,
@@ -30,25 +30,25 @@
         "rollout": {
             "enabled": true,
             "n": 10,
-            "horizon": 600,
-            "rate": 50,
+            "horizon": 1000,
+            "rate": 10,
             "warmstart": 0,
             "terminate_on_success": true
         }
     },
     "train": {
         "data": [{
-            "path": "/global/scratch/users/youngwoon/furniture/demos/one_leg_all.hdf5"
+            "path": "/global/scratch/users/youngwoon/furniture/demos/lamp_all.hdf5"
         }],
-        "output_dir": "/global/scratch/users/youngwoon/furniture/logs/act_trained_models",
-        "num_data_workers": 4,
+        "output_dir": "/global/scratch/users/youngwoon/furniture/logs/diffusion_policy_trained_models",
+        "num_data_workers": 0,
         "hdf5_cache_mode": "low_dim",
         "hdf5_use_swmr": true,
         "hdf5_load_next_obs": false,
         "hdf5_normalize_obs": false,
         "hdf5_filter_key": "train_100",
         "hdf5_validation_filter_key": "valid_100",
-        "seq_length": 10,
+        "seq_length": 16,
         "pad_seq_length": true,
         "frame_stack": 1,
         "pad_frame_stack": true,
@@ -96,40 +96,54 @@
         "cuda": true,
         "batch_size": 64,
         "num_epochs": 1000,
-        "seed": 1,
-        "max_grad_norm": 100
+        "seed": 1
     },
     "algo": {
         "optim_params": {
             "policy": {
-                "optimizer_type": "adamw",
                 "learning_rate": {
                     "initial": 0.0001,
-                    "decay_factor": 1,
-                    "epoch_schedule": [
-                        100
-                    ],
-                    "scheduler_type": "linear"
+                    "decay_factor": 0.1,
+                    "epoch_schedule": []
                 },
                 "regularization": {
-                    "L2": 0.0001
+                    "L2": 0.0
                 }
             }
         },
-        "loss": {
-            "l2_weight": 0.0,
-            "l1_weight": 1.0,
-            "cos_weight": 0.0
+        "horizon": {
+            "observation_horizon": 1,
+            "action_horizon": 8,
+            "prediction_horizon": 16
         },
-        "act": {
-            "hidden_dim": 512,
-            "dim_feedforward": 3200,
-            "backbone": "resnet18",
-            "enc_layers": 4,
-            "dec_layers": 7,
-            "nheads": 8,
-            "latent_dim": 32,
-            "kl_weight": 20
+        "unet": {
+            "enabled": true,
+            "diffusion_step_embed_dim": 256,
+            "down_dims": [256,512,1024],
+            "kernel_size": 5,
+            "n_groups": 8
+        },
+        "ema": {
+            "enabled": true,
+            "power": 0.75
+        },
+        "ddpm": {
+            "enabled": true,
+            "num_train_timesteps": 100,
+            "num_inference_timesteps": 100,
+            "beta_schedule": "squaredcos_cap_v2",
+            "clip_sample": true,
+            "prediction_type": "epsilon"
+        },
+        "ddim": {
+            "enabled": false,
+            "num_train_timesteps": 100,
+            "num_inference_timesteps": 16,
+            "beta_schedule": "squaredcos_cap_v2",
+            "clip_sample": true,
+            "set_alpha_to_one": true,
+            "steps_offset": 0,
+            "prediction_type": "epsilon"
         }
     },
     "observation": {

@@ -1,7 +1,7 @@
 {
     "algo_name": "act",
     "experiment": {
-        "name": "furniture-one_leg-act-test_100_abs",
+        "name": "furniture-one_leg-act-test_500_abs",
         "validate": true,
         "logging": {
             "terminal_output_to_txt": true,
@@ -46,8 +46,8 @@
         "hdf5_use_swmr": true,
         "hdf5_load_next_obs": false,
         "hdf5_normalize_obs": false,
-        "hdf5_filter_key": "train_100",
-        "hdf5_validation_filter_key": "valid_100",
+        "hdf5_filter_key": "train_500",
+        "hdf5_validation_filter_key": "valid_500",
         "seq_length": 10,
         "pad_seq_length": true,
         "frame_stack": 1,

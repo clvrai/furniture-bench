@@ -1,7 +1,7 @@
 {
     "algo_name": "act",
     "experiment": {
-        "name": "furniture-one_leg-act-test_100_abs",
+        "name": "furniture-lamp-act-test_1000_abs",
         "validate": true,
         "logging": {
             "terminal_output_to_txt": true,
@@ -30,7 +30,7 @@
         "rollout": {
             "enabled": true,
             "n": 10,
-            "horizon": 600,
+            "horizon": 1000,
             "rate": 50,
             "warmstart": 0,
             "terminate_on_success": true
@@ -38,7 +38,7 @@
     },
     "train": {
         "data": [{
-            "path": "/global/scratch/users/youngwoon/furniture/demos/one_leg_all.hdf5"
+            "path": "/global/scratch/users/youngwoon/furniture/demos/lamp_all.hdf5"
         }],
         "output_dir": "/global/scratch/users/youngwoon/furniture/logs/act_trained_models",
         "num_data_workers": 4,
@@ -46,8 +46,8 @@
         "hdf5_use_swmr": true,
         "hdf5_load_next_obs": false,
         "hdf5_normalize_obs": false,
-        "hdf5_filter_key": "train_100",
-        "hdf5_validation_filter_key": "valid_100",
+        "hdf5_filter_key": "train_1000",
+        "hdf5_validation_filter_key": "valid_1000",
         "seq_length": 10,
         "pad_seq_length": true,
         "frame_stack": 1,
