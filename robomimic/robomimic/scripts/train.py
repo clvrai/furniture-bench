@@ -372,6 +372,11 @@ def train(config, device):
                 print(rollout_logs)
                 ### YW
 
+            ### YW: log video to wandb
+            for env_name, video_path in video_paths.items():
+                data_logger.record("Rollout/Video/{}".format(env_name), video_path, epoch, data_type="video")
+            ### YW
+
             # checkpoint and video saving logic
             updated_stats = TrainUtils.should_save_from_rollout_logs(
                 all_rollout_logs=all_rollout_logs,

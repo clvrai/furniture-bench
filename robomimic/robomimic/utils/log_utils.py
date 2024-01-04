@@ -60,7 +60,7 @@ class DataLogger(object):
         if log_wandb:
             import wandb
             import robomimic.macros as Macros
-            
+
             # set up wandb api key if specified in macros
             if Macros.WANDB_API_KEY is not None:
                 os.environ["WANDB_API_KEY"] = Macros.WANDB_API_KEY
@@ -68,7 +68,7 @@ class DataLogger(object):
             assert Macros.WANDB_ENTITY is not None, "WANDB_ENTITY macro is set to None." \
                     "\nSet this macro in {base_path}/macros_private.py" \
                     "\nIf this file does not exist, first run python {base_path}/scripts/setup_macros.py".format(base_path=robomimic.__path__[0])
-            
+
             # attempt to set up wandb 10 times. If unsuccessful after these trials, don't use wandb
             num_attempts = 10
             for attempt in range(num_attempts):
@@ -105,11 +105,13 @@ class DataLogger(object):
             k (str): key string
             v (float or image): value to store
             epoch: current epoch number
-            data_type (str): the type of data. either 'scalar' or 'image'
+            data_type (str): the type of data. either 'scalar', 'image', 'video'
             log_stats (bool): whether to store the mean/max/min/std for all data logged so far with key k
         """
 
-        assert data_type in ['scalar', 'image']
+        ### YW: allow logging video to wandb.
+        assert data_type in ['scalar', 'image', 'video']
+        ### YW
 
         if data_type == 'scalar':
             # maybe update internal cache if logging stats for this key
@@ -143,6 +145,12 @@ class DataLogger(object):
                 elif data_type == 'image':
                     import wandb
                     self._wandb_logger.log({k: wandb.Image(v)}, step=epoch)
+                ### YW: allow logging videos to wandb.
+                elif data_type == 'video':
+                    import wandb
+                    self._wandb_logger.log({k: wandb.Video(v)}, step=epoch)
+                ### YW
+
             except Exception as e:
                 log_warning("wandb logging: {}".format(e))
 
