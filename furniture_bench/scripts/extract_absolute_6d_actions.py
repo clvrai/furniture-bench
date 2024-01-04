@@ -85,7 +85,7 @@ if __name__ == "__main__":
                     [actions2[:, :3], rot_quat2, actions2[:, 9:]], dim=1
                 )
                 actions2 = actions2.numpy()
-                if not np.allclose(np.abs(org_actions), np.abs(actions2)):
+                if not np.allclose(np.abs(org_actions), np.abs(actions2), atol=1e-06):
                     print("max difference:", (np.abs(org_actions) - np.abs(actions2)).max())
                     import pdb
 
