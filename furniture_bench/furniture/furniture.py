@@ -354,7 +354,7 @@ class Furniture(ABC):
             pair = (part_idx1, part_idx2)
             if self.is_assembled_idx(part_idx1, part_idx2, parts_poses, founds):
                 if pair not in self.assembled_set:
-                    print(
+                    logger.info(
                         f"{self.parts[pair[0]].name} (id: {pair[0]}), {self.parts[pair[1]].name} (id: {pair[1]}) are assembled."
                     )
                     self.assembled_set.add(pair)
@@ -364,16 +364,15 @@ class Furniture(ABC):
         return ret
 
     def _log_assemble_set(self):
-        print("Assembled Set")
+        log_messages = ["Assembled Set"]
         for i, assembled in enumerate(self.assembled_set):
-            print(
-                f"[{self.parts[assembled[0]].name} (id: {assembled[0]}), {self.parts[assembled[1]].name} (id: {assembled[1]})]",
-                end=" ",
-            )
+            log_message = f"[{self.parts[assembled[0]].name} (id: {assembled[0]}), {self.parts[assembled[1]].name} (id: {assembled[1]})]"
             # Not last element of the set
             if not i == len(self.assembled_set) - 1:
-                print("/", end=" ")
-        print()
+                log_message += " / "
+            log_messages.append(log_message)
+        full_log_message = " ".join(log_messages)
+        logger.info(full_log_message)
 
     def manual_assemble_label(self, part_idx):
         """Manually label assembled with keyboard input."""
@@ -385,7 +384,7 @@ class Furniture(ABC):
             ) and pair not in self.assembled_set:
                 self._log_assemble_set()
                 self.assembled_set.add(pair)
-                print(f"{pair} assembled")
+                logger.info(f"{pair} assembled")
                 return 1
         return 0
 
@@ -399,8 +398,8 @@ class Furniture(ABC):
         for part_idx in range(len(self.parts)):
             part_pose = parts_poses[7 * part_idx : 7 * (part_idx + 1)]
             if not self.is_in_pos_lim(part_pose):
-                print(
-                    f"[env] part {self.parts[part_idx]} {[part_idx]} out positinoal limits."
+                logger.warn(
+                    f"[env] part {self.parts[part_idx]} {[part_idx]} out of positional limits."
                 )
                 return True
         return False
@@ -473,7 +472,7 @@ class Furniture(ABC):
                 assembled_rel_pose,
                 rel_pose,
                 ori_bound=self.ori_bound,
-                pos_threshold=self.assembled_pos_threshold
+                pos_threshold=self.assembled_pos_threshold,
             ):
                 return True
 
