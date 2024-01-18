@@ -791,6 +791,8 @@ class FurnitureSimEnv(gym.Env):
                 state_dict["ee_pose"] = C.pose2mat(
                     ee_pos[env_idx], ee_quat[env_idx], self.device
                 ).t()  # OSC expect column major
+                state_dict['ee_pos'] = ee_pos[env_idx]
+                state_dict['ee_quat'] = ee_quat[env_idx]
                 state_dict["joint_positions"] = self.dof_pos[env_idx][:7]
                 state_dict["joint_velocities"] = self.dof_vel[env_idx][:7]
                 state_dict["mass_matrix"] = self.mm[env_idx][
