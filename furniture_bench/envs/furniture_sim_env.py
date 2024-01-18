@@ -29,6 +29,7 @@ import furniture_bench.utils.transform as T
 import furniture_bench.controllers.control_utils as C
 from furniture_bench.envs.initialization_mode import Randomness, str_to_enum
 from furniture_bench.controllers.osc import osc_factory
+from furniture_bench.controllers.diffik import diffik_factory
 from furniture_bench.furniture import furniture_factory
 from furniture_bench.sim_config import sim_config
 from furniture_bench.config import ROBOT_HEIGHT, config
@@ -69,6 +70,7 @@ class FurnitureSimEnv(gym.Env):
         record: bool = False,
         max_env_steps: int = 3000,
         act_rot_repr: str = "quat",
+        ctrl_mode: str = 'diffik',
         **kwargs,
     ):
         """
@@ -92,6 +94,7 @@ class FurnitureSimEnv(gym.Env):
             record (bool): If true, videos of the wrist and front cameras' RGB inputs are recorded.
             max_env_steps (int): Maximum number of steps per episode (default: 3000).
             act_rot_repr (str): Representation of rotation for action space. Options are 'quat', 'axis', or 'rot_6d'.
+            ctrl_mode (str): 'osc' (joint torque, with operation space control) or 'diffik' (joint impedance, with differential inverse kinematics control)
         """
         super(FurnitureSimEnv, self).__init__()
         self.device = torch.device("cuda", compute_device_id)
@@ -148,6 +151,10 @@ class FurnitureSimEnv(gym.Env):
             gymapi.SimType.SIM_PHYSX,
             sim_config["sim_params"],
         )
+
+        # our flags 
+        self.ctrl_mode = ctrl_mode
+
         self._create_ground_plane()
         self._setup_lights()
         self.import_assets()
@@ -237,6 +244,7 @@ class FurnitureSimEnv(gym.Env):
         self.ee_idxs = []
         self.ee_handles = []
         self.osc_ctrls = []
+        self.diffik_ctrls = []
 
         self.base_idxs = []
         self.part_idxs = {}
@@ -347,10 +355,15 @@ class FurnitureSimEnv(gym.Env):
             franka_dof_props = self.isaac_gym.get_asset_dof_properties(
                 self.franka_asset
             )
-            franka_dof_props["driveMode"][:7].fill(gymapi.DOF_MODE_EFFORT)
-            franka_dof_props["stiffness"][:7].fill(0.0)
-            franka_dof_props["damping"][:7].fill(0.0)
-            franka_dof_props["friction"][:7] = sim_config["robot"]["arm_frictions"]
+            if self.ctrl_mode == 'osc':
+                franka_dof_props["driveMode"][:7].fill(gymapi.DOF_MODE_EFFORT)
+                franka_dof_props["stiffness"][:7].fill(0.0)
+                franka_dof_props["damping"][:7].fill(0.0)
+                franka_dof_props["friction"][:7] = sim_config["robot"]["arm_frictions"]
+            else:
+                franka_dof_props["driveMode"][:7].fill(gymapi.DOF_MODE_POS)
+                franka_dof_props["stiffness"][:7].fill(1000.0)
+                franka_dof_props["damping"][:7].fill(200.0)
             # Grippers
             franka_dof_props["driveMode"][7:].fill(gymapi.DOF_MODE_EFFORT)
             franka_dof_props["stiffness"][7:].fill(0)
@@ -741,7 +754,11 @@ class FurnitureSimEnv(gym.Env):
             else:
                 action_quat = C.axisangle2quat(action[env_idx][3:6])
 
-            self.osc_ctrls[env_idx].set_goal(
+            if self.ctrl_mode == 'osc':
+                step_ctrl = self.osc_ctrls[env_idx]
+            else:
+                step_ctrl = self.diffik_ctrls[env_idx]
+            step_ctrl.set_goal(
                 action[env_idx][:3] + ee_pos[env_idx],
                 C.quat_multiply(ee_quat[env_idx], action_quat).to(self.device),
             )
@@ -782,18 +799,25 @@ class FurnitureSimEnv(gym.Env):
                 state_dict["jacobian"] = self.jacobian_eef[
                     env_idx
                 ].t()  # OSC expect column major
-                torque_action[env_idx, :7] = self.osc_ctrls[env_idx](state_dict)[
-                    "joint_torques"
-                ]
+                state_dict["jacobian_diffik"] = self.jacobian_eef[env_idx]
+                if self.ctrl_mode == 'osc':
+                    torque_action[env_idx, :7] = self.osc_ctrls[env_idx](state_dict)["joint_torques"]
+                else:
+                    pos_action[env_idx, :7] = self.diffik_ctrls[env_idx](state_dict)["joint_positions"]
 
                 if grip_sep > 0:
                     torque_action[env_idx, 7:9] = sim_config["robot"]["gripper_torque"]
+                    # pos_action[env_idx, 7:9] = sim_config["robot"]["gripper_open"]
+                    pos_action[env_idx, 7:9] = self.max_gripper_width / 2 
                 else:
                     torque_action[env_idx, 7:9] = -sim_config["robot"]["gripper_torque"]
-
-            self.isaac_gym.set_dof_actuation_force_tensor(
-                self.sim, gymtorch.unwrap_tensor(torque_action)
-            )
+                    pos_action[env_idx, 7:9] = 0.0
+            
+            if self.ctrl_mode == 'osc':
+                self.isaac_gym.set_dof_actuation_force_tensor(self.sim, gymtorch.unwrap_tensor(torque_action))
+            else:
+                self.isaac_gym.set_dof_position_target_tensor(self.sim, gymtorch.unwrap_tensor(pos_action))
+                self.isaac_gym.set_dof_actuation_force_tensor(self.sim, gymtorch.unwrap_tensor(torque_action))
 
             # Update viewer
             if not self.headless:
@@ -979,6 +1003,8 @@ class FurnitureSimEnv(gym.Env):
                     joint_kp=10,
                 )
             )
+
+            self.diffik_ctrls.append(diffik_factory(real_robot=False))
         self.ctrl_started = True
 
     def get_ee_pose(self):
@@ -1143,11 +1169,10 @@ class FurnitureSimEnv(gym.Env):
             # if using ._reset_*_all(), can set reset_franka=False and reset_parts=False in .reset_env
             self.reset_env(i)  
 
-            # apply zero torque across the board and refresh in between each env reset (not needed if using ._reset_*_all())
-            torque_action = torch.zeros_like(self.dof_pos)
-            self.isaac_gym.set_dof_actuation_force_tensor(
-                self.sim, gymtorch.unwrap_tensor(torque_action)
-            )
+            if self.ctrl_mode == 'osc':
+                # apply zero torque across the board and refresh in between each env reset (not needed if using ._reset_*_all())
+                torque_action = torch.zeros_like(self.dof_pos)
+                self.isaac_gym.set_dof_actuation_force_tensor(self.sim, gymtorch.unwrap_tensor(torque_action))
             self.refresh()
         
         self.furniture.reset()
