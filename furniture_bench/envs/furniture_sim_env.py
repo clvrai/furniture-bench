@@ -30,6 +30,7 @@ import furniture_bench.controllers.control_utils as C
 from furniture_bench.envs.initialization_mode import Randomness, str_to_enum
 from furniture_bench.controllers.osc import osc_factory
 from furniture_bench.controllers.diffik import diffik_factory
+# from furniture_bench.controllers.diffik_qp import diffik_factory
 from furniture_bench.furniture import furniture_factory
 from furniture_bench.sim_config import sim_config
 from furniture_bench.config import ROBOT_HEIGHT, config
@@ -735,7 +736,7 @@ class FurnitureSimEnv(gym.Env):
             / sim_config["sim_params"].dt
             / sim_config["sim_params"].substeps
             + 0.1
-        )
+        ) 
         if not self.ctrl_started:
             self.init_ctrl()
         # Set the goal

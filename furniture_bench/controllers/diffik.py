@@ -50,8 +50,14 @@ def diffik_factory(real_robot=True, *args, **kwargs):
             ee_mat = C.quat2mat(ee_quat).to(joint_pos_current.device)
             goal_mat = C.quat2mat(self.goal_ori).to(joint_pos_current.device)
             mat_error = torch.matmul(goal_mat, torch.inverse(ee_mat))
+
             if self.scale_errors:
-                position_error = torch.clamp(position_error, min=-0.01, max=0.01)
+                # position_error = torch.clamp(position_error, min=-0.01, max=0.01)
+                max_pos_value = torch.abs(position_error).max()
+                clip_pos_value = 0.01
+                if max_pos_value > clip_pos_value:
+                    pos_error_scalar = clip_pos_value / max_pos_value
+                    position_error = position_error * pos_error_scalar
 
                 # rotvec_error = R.from_quat(quat_error.cpu().numpy()).as_rotvec()
                 rotvec_error = R.from_matrix(mat_error.cpu().numpy()).as_rotvec()
