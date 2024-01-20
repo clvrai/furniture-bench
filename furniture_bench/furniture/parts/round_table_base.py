@@ -87,7 +87,11 @@ class RoundTableBase(Part):
             target_ori = ee_pose[:3, :3]
             target = C.to_homogeneous(target_pos, target_ori)
             if self.satisfy(
-                ee_pose, target, pos_error_threshold=0.00, ori_error_threshold=0.0
+                ee_pose,
+                target,
+                pos_error_threshold=0.00,
+                ori_error_threshold=0.0,
+                max_len=20,
             ):
                 self.prev_pose = target
                 next_state = "move_center"
@@ -271,7 +275,11 @@ class RoundTableBase(Part):
             )
             target = C.to_homogeneous(target_pos, target_ori)
             if self.satisfy(
-                ee_pose, target, pos_error_threshold=0.0, ori_error_threshold=0.0
+                ee_pose,
+                target,
+                pos_error_threshold=0.0,
+                ori_error_threshold=0.0,
+                max_len=30,
             ):
                 self.prev_pose = target
                 next_state = "release_screw_gripper"
@@ -371,7 +379,7 @@ class RoundTableBase(Part):
                 target_pos = (april_to_robot @ pos)[:3]
                 target_pos[2] += 0.02  # Margin.
                 target = C.to_homogeneous(target_pos, target_ori)
-            if self.satisfy(ee_pose, target, pos_error_threshold=0.01):
+            if self.satisfy(ee_pose, target, pos_error_threshold=0.005, max_len=40):
                 self.prev_pose = target
                 next_state = "screw_grasp"
         elif self._state == "screw_grasp":
@@ -386,7 +394,7 @@ class RoundTableBase(Part):
             target[:3, :3] = torch.tensor(
                 get_mat([0, 0, 0], [np.pi, 0, 1 / 4 * np.pi])
             )[:3, :3]
-            if self.satisfy(ee_pose, target):
+            if self.satisfy(ee_pose, target, max_len=30):
                 self.prev_pose = target
                 next_state = "screw_gripper"
         skill_complete = self.may_transit_state(next_state)

@@ -268,7 +268,7 @@ class RoundTableLeg(Leg):
             target_pos = (april_to_robot @ leg_pose[:4, 3])[:3]
             target_pos[2] += self.grasp_margin_z
             target = C.to_homogeneous(target_pos, target_ori)
-            if self.satisfy(ee_pose, target):
+            if self.satisfy(ee_pose, target, max_len=30):
                 self.prev_pose = target
                 next_state = "screw_grasp"
         elif self._state == "screw_grasp":
@@ -284,6 +284,7 @@ class RoundTableLeg(Leg):
             target_pos = (ee_pos)[:3]
             target_pos[2] -= 0.005
             target = C.to_homogeneous(target_pos, target_ori)
+
             if self.satisfy(ee_pose, target, ori_error_threshold=0.3):
                 self.prev_pose = target
                 next_state = "release"
