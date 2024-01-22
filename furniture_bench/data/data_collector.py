@@ -124,7 +124,8 @@ class DataCollector:
             else:
                 action, collect_enum = self.device_interface.get_action()
                 skill_complete = int(collect_enum == CollectEnum.SKILL)
-                if skill_complete == 1:
+                if skill_complete in [1, -1]:
+                    # 1: success, -1: fail
                     self.skill_set.append(skill_complete)
 
             if collect_enum == CollectEnum.TERMINATE:

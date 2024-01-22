@@ -228,6 +228,7 @@ class Part(ABC):
         return False
 
     def gripper_less(self, gripper_width, target_width, cnt_max=10):
+        self.gripper_target = target_width  # Save it to check the gripper failure.
         if gripper_width <= target_width:
             return True
         if self.curr_cnt - self.prev_cnt >= cnt_max:
@@ -242,6 +243,10 @@ class Part(ABC):
         return False
 
     def may_transit_state(self, next_state):
+        """
+        Always return skill_complete 1 if the next state is in skill_complete_next_states.
+        Although the skill_complete is set to be 1, if the next skill_complete is -1, then it means the skill is failed.
+        """
         skill_complete = 0
         if next_state != self._state:
             print(f"Changing state from {self._state} to {next_state}")
@@ -252,6 +257,42 @@ class Part(ABC):
             self.prev_cnt = self.curr_cnt
         self.curr_cnt += 1
         return skill_complete
+
+    def detect_skill_failure(
+        self,
+        gripper_width,
+        part1_pose=None,
+        part_idx1=None,
+        part2_pose=None,
+        part_idx2=None,
+        furniture=None,
+        pos_threshold=None,
+    ):
+        """
+        Check the failure of the execution of the skill (i.e. phase defined in the original paper).
+        """
+        if not self._state in self.skill_complete_next_states:
+            # The failure is checked in the next state of the executed skill.
+            return 0
+        # Check grasping failure.
+        if self.gripper_action == 1:
+            if gripper_width <= self.gripper_target - 0.01:  # Margin.
+                # Gripper width is too small, which means that the gripper missed the object.
+                return -1
+        # Check the placement failure (e.g. insertion).
+        elif self._state == "insert":
+            # Check insertion failure.
+            rel_pose = torch.linalg.inv(part1_pose) @ part2_pose
+            assembled_rel_poses = furniture.assembled_rel_poses[(part_idx1, part_idx2)]
+            if not furniture.assembled(
+                rel_pose.cpu().numpy(),
+                assembled_rel_poses,
+                ori_bound=-1,
+                pos_threshold=pos_threshold,
+            ):
+                # Do not check the orientation, but only the position.
+                return -1
+        return 0
 
     def add_noise_first_target(self, target, pos_noise=None, ori_noise=None):
         if self.state_no_noise():

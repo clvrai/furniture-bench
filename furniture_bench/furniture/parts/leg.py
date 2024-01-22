@@ -77,6 +77,7 @@ class Leg(Part):
         sim_to_april_mat,
         april_to_robot,
         assemble_to,
+        furniture,
     ):
         def rot_mat_tensor(x, y, z, device):
             return torch.tensor(rot_mat([x, y, z], hom=True), device=device).float()
@@ -322,6 +323,15 @@ class Leg(Part):
                 next_state = "release"
 
         skill_complete = self.may_transit_state(next_state)
+        skill_complete = self.detect_skill_failure(
+            gripper_width,
+            table_pose,
+            0, # Always 0 for the top.
+            leg_pose,
+            self.part_idx,
+            furniture,
+            pos_threshold=[0.01, 0.025, 0.01]
+        )
 
         return (
             target[:3, 3],

@@ -67,6 +67,7 @@ class LampHood(Part):
         part_idxs,
         sim_to_april_mat,
         april_to_robot,
+        furniture
     ):
         next_state = self._state
 
@@ -124,6 +125,7 @@ class LampHood(Part):
         sim_to_april_mat,
         april_to_robot,
         assemble_to,
+        furniture
     ):
         next_state = self._state
 

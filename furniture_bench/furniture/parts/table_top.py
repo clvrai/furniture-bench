@@ -57,6 +57,7 @@ class TableTop(Part):
         part_idxs,
         sim_to_april_mat,
         april_to_robot,
+        furniture,
     ):
         next_state = self._state
 
@@ -171,6 +172,8 @@ class TableTop(Part):
             target = self.prev_pose
 
         skill_complete = self.may_transit_state(next_state)
+        skill_complete = self.detect_skill_failure(gripper_width)
+
         return (
             target[:3, 3],
             C.mat2quat(target[:3, :3]),

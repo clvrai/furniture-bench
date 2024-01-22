@@ -44,6 +44,7 @@ class CabinetDoor(Part):
         sim_to_april_mat,
         april_to_robot,
         assemble_to,
+        furniture
     ):
         next_state = self._state
 
