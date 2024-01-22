@@ -240,6 +240,7 @@ class Leg(Part):
             )
             rel = rel_rot_mat(leg_pose_robot, target_leg_pose_robot)
             target = rel @ ee_pose
+            target[0, 2] += 0.03
             if self.satisfy(
                 ee_pose, target, pos_error_threshold=0.007, ori_error_threshold=0.15
             ):
@@ -267,6 +268,7 @@ class Leg(Part):
             )
             rel = rel_rot_mat(leg_pose_robot, target_leg_pose_robot)
             target = rel @ ee_pose
+            target[0, 2] += 0.03
             if self.satisfy(
                 ee_pose,
                 target,
@@ -324,6 +326,7 @@ class Leg(Part):
 
         skill_complete = self.may_transit_state(next_state)
         skill_complete = self.detect_skill_failure(
+            skill_complete,
             gripper_width,
             table_pose,
             0, # Always 0 for the top.

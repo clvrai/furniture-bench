@@ -172,7 +172,7 @@ class TableTop(Part):
             target = self.prev_pose
 
         skill_complete = self.may_transit_state(next_state)
-        skill_complete = self.detect_skill_failure(gripper_width)
+        skill_complete = self.detect_skill_failure(skill_complete, gripper_width)
 
         return (
             target[:3, 3],

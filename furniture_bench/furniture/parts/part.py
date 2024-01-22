@@ -260,6 +260,7 @@ class Part(ABC):
 
     def detect_skill_failure(
         self,
+        skill_complete,
         gripper_width,
         part1_pose=None,
         part_idx1=None,
@@ -273,7 +274,7 @@ class Part(ABC):
         """
         if not self._state in self.skill_complete_next_states:
             # The failure is checked in the next state of the executed skill.
-            return 0
+            return skill_complete
         # Check grasping failure.
         if self.gripper_action == 1:
             if gripper_width <= self.gripper_target - 0.01:  # Margin.
@@ -292,7 +293,7 @@ class Part(ABC):
             ):
                 # Do not check the orientation, but only the position.
                 return -1
-        return 0
+        return skill_complete
 
     def add_noise_first_target(self, target, pos_noise=None, ori_noise=None):
         if self.state_no_noise():
