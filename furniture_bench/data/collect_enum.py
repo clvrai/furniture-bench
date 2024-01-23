@@ -11,3 +11,4 @@ class CollectEnum(Enum):
     SKILL = 6  # Annotate new skill.
     RESET = 7  # Reset environment.
     TERMINATE = 8  # Terminate data collection.
+    UNDO = 9  # Undo last 10 actions.

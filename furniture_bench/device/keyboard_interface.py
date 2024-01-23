@@ -23,10 +23,12 @@ class KeyboardInterface(DeviceInterface):
 
     # INIT_POS_DELTA = 0.02
     INIT_POS_DELTA = 0.01
-    INIT_ROT_DELTA = 0.13  # Radian.
+    INIT_ROT_DELTA = 0.2  # Radian.
 
     MAX_POS_DELTA = 0.1
     MAX_ROT_DELTA = 0.2  # Radian.
+
+    intr_z_limit = (-15, 17)
 
     def __init__(self):
         self.reset()
@@ -77,6 +79,16 @@ class KeyboardInterface(DeviceInterface):
             elif k == "r":
                 gym.logger.info("Reset pressed")
                 self.key_enum = CollectEnum.RESET
+            elif k == "p":
+                gym.logger.info("Pause pressed")
+                self.key_enum = CollectEnum.PAUSE
+            elif k == "c":
+                gym.logger.info("Continue pressed")
+                self.key_enum = CollectEnum.CONTINUE
+                # Add undo action.
+            elif k == "b":
+                gym.logger.info("Undo pressed")
+                self.key_enum = CollectEnum.UNDO
         except AttributeError as e:
             pass
 
@@ -119,6 +131,12 @@ class KeyboardInterface(DeviceInterface):
             self.ori[2] -= self.rot_delta
         elif k == "u":
             self.ori[2] += self.rot_delta
+
+    @property
+    def rot_fraction(self):
+        return (self.ori[2] - self.intr_z_limit[0]) / (
+            self.intr_z_limit[1] - self.intr_z_limit[0]
+        )
 
     def _adjust_delta(self, k):
         if k == "]":
