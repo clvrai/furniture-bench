@@ -289,7 +289,9 @@ class Leg(Part):
         elif self._state == "insert":
             # Dummy transition state for skill complete.
             target = self.prev_pose
-            next_state = "pre_grasp"
+            # Some dummy steps.
+            if self.curr_cnt - self.prev_cnt > 3: # Dummy steps for failure detection.
+                next_state = "pre_grasp"
         elif self._state == "release":
             target = self.prev_pose
             self.gripper_action = -1
@@ -333,7 +335,7 @@ class Leg(Part):
             leg_pose,
             self.part_idx,
             furniture,
-            pos_threshold=[0.01, 0.025, 0.01]
+            pos_threshold=[0.02, 0.025, 0.02]
         )
 
         return (

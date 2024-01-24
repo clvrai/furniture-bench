@@ -275,13 +275,15 @@ class Part(ABC):
         if not self._state in self.skill_complete_next_states:
             # The failure is checked in the next state of the executed skill.
             return skill_complete
+        if skill_complete == 1:
+            return skill_complete # The first transition is always success.
         # Check grasping failure.
         if self.gripper_action == 1:
-            if gripper_width <= self.gripper_target - 0.01:  # Margin.
+            if gripper_width <= self.gripper_target - 0.01 or gripper_width < 0.001:  # 1cm Margin or missed the object.
                 # Gripper width is too small, which means that the gripper missed the object.
                 return -1
         # Check the placement failure (e.g. insertion).
-        elif self._state == "insert":
+        if self._state in ["insert", "insert_body"]:
             # Check insertion failure.
             rel_pose = torch.linalg.inv(part1_pose) @ part2_pose
             assembled_rel_poses = furniture.assembled_rel_poses[(part_idx1, part_idx2)]
@@ -293,6 +295,12 @@ class Part(ABC):
             ):
                 # Do not check the orientation, but only the position.
                 return -1
+        elif self._state == "release_gripper_stand":
+            # Make sure it is standing.
+            # Inner product of the z-axis of the AprilTag and the y-axis of cabinet.
+            if not part1_pose[2, 1] > 0.9:
+                return -1
+
         return skill_complete
 
     def add_noise_first_target(self, target, pos_noise=None, ori_noise=None):

@@ -33,7 +33,7 @@ class CabinetTop(Part):
         self._state = "reach_body_grasp_xy"
         
         self.skill_complete_next_states = [
-            "release_gripper",
+            "release_gripper_stand",
             "lift_up_top",
             "insert_body",
             "done",
@@ -117,8 +117,8 @@ class CabinetTop(Part):
                 ee_pose, org_target, pos_error_threshold=0.00, ori_error_threshold=0.0
             ):
                 self.prev_pose = target
-                next_state = "release_gripper"
-        elif self._state == "release_gripper":
+                next_state = "release_gripper_stand"
+        elif self._state == "release_gripper_stand":
             target = self.prev_pose
             self.gripper_action = -1
             if self.gripper_greater(
@@ -156,6 +156,11 @@ class CabinetTop(Part):
             target = self.prev_pose
         
         skill_complete = self.may_transit_state(next_state)
+        skill_complete = self.detect_skill_failure(
+            skill_complete,
+            gripper_width,
+            body_pose,
+        )
 
         return (
             target[:3, 3],
@@ -285,7 +290,8 @@ class CabinetTop(Part):
         elif self._state == "insert_body": # Transition for skill labeling.
             target = self.prev_pose
             self.prev_pose = target
-            next_state = "screw_gripper"
+            if self.curr_cnt - self.prev_cnt > 3: # Dummy step for failure detection.
+                next_state = "screw_gripper"
         elif self._state == "screw_gripper":
             target_pos = self.prev_pose[:3, 3]
             target_ori = (
@@ -373,6 +379,16 @@ class CabinetTop(Part):
                 self.prev_pose = target
                 next_state = "screw_gripper"
         skill_complete = self.may_transit_state(next_state)
+        skill_complete = self.detect_skill_failure(
+            skill_complete,
+            gripper_width,
+            body_pose,
+            0, # Always 0 for the top.
+            top_pose,
+            self.part_idx,
+            furniture,
+            pos_threshold=[0.01, 0.025, 0.01]
+        )
 
         return (
             target[:3, 3],
