@@ -79,13 +79,13 @@ class KeyboardInterface(DeviceInterface):
             elif k == "r":
                 gym.logger.info("Reset pressed")
                 self.key_enum = CollectEnum.RESET
-            elif k == "p":
-                gym.logger.info("Pause pressed")
-                self.key_enum = CollectEnum.PAUSE
-            elif k == "c":
-                gym.logger.info("Continue pressed")
-                self.key_enum = CollectEnum.CONTINUE
-                # Add undo action.
+            # elif k == "p":
+            #     gym.logger.info("Pause pressed")
+            #     self.key_enum = CollectEnum.PAUSE
+            # elif k == "c":
+            #     gym.logger.info("Continue pressed")
+            #     self.key_enum = CollectEnum.CONTINUE
+            # Add undo action.
             elif k == "b":
                 gym.logger.info("Undo pressed")
                 self.key_enum = CollectEnum.UNDO
