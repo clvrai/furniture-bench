@@ -35,7 +35,9 @@ def diffik_factory(real_robot=True, *args, **kwargs):
 
             self.scale_errors = True
 
-        def forward(self, state_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+        def forward(
+            self, state_dict: Dict[str, torch.Tensor]
+        ) -> Dict[str, torch.Tensor]:
             # Get states.
             joint_pos_current = state_dict["joint_positions"]
 
@@ -66,10 +68,14 @@ def diffik_factory(real_robot=True, *args, **kwargs):
 
                 # one way to do it, manually
                 delta_axis = rotvec_error / delta_norm
-                delta_norm_clipped = np.clip(delta_norm, a_min=0.0, a_max=max_rot_radians)
+                delta_norm_clipped = np.clip(
+                    delta_norm, a_min=0.0, a_max=max_rot_radians
+                )
                 delta_rotvec_scaled = delta_axis * delta_norm_clipped
-                delta_mat = R.from_rotvec(delta_rotvec_scaled).as_matrix() # * -1.0
-                mat_error = torch.from_numpy(delta_mat).float().to(joint_pos_current.device)
+                delta_mat = R.from_rotvec(delta_rotvec_scaled).as_matrix()  # * -1.0
+                mat_error = (
+                    torch.from_numpy(delta_mat).float().to(joint_pos_current.device)
+                )
 
                 # # another way to do it with slerp
                 # delta_quat = R.from_rotvec(delta_rotvec_scaled).as_quat() # * -1.0
@@ -82,18 +88,24 @@ def diffik_factory(real_robot=True, *args, **kwargs):
             # position_error = self.ee_pos_error
             # rot_error = self.ee_rot_error
 
-            ee_delta_axis_angle = torch.from_numpy(rot_error.as_rotvec()).float().to(position_error.device)
+            ee_delta_axis_angle = (
+                torch.from_numpy(rot_error.as_rotvec())
+                .float()
+                .to(position_error.device)
+            )
 
             dt = 1.0
             ee_pos_vel = position_error * self.pos_scalar / dt
             ee_rot_vel = ee_delta_axis_angle * self.rot_scalar / dt
 
             ee_velocity_desired = torch.cat((ee_pos_vel, ee_rot_vel), dim=-1)
-            joint_vel_desired = torch.linalg.lstsq(jacobian, ee_velocity_desired).solution
-            joint_pos_desired = joint_pos_current + joint_vel_desired*dt
+            joint_vel_desired = torch.linalg.lstsq(
+                jacobian, ee_velocity_desired
+            ).solution
+            joint_pos_desired = joint_pos_current + joint_vel_desired * dt
 
             return {"joint_positions": joint_pos_desired}
-        
+
         def set_goal(self, goal_pos, goal_ori):
             self.goal_pos = goal_pos
             self.goal_ori = goal_ori
