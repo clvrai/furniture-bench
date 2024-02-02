@@ -72,6 +72,7 @@ class FurnitureSimEnv(gym.Env):
         record: bool = False,
         max_env_steps: int = 3000,
         act_rot_repr: str = "quat",
+        action_type: str = "delta",  # "delta" or "pos"
         ctrl_mode: str = "osc",
         ee_laser: bool = False,
         **kwargs,
@@ -194,6 +195,18 @@ class FurnitureSimEnv(gym.Env):
         ):
             raise ValueError(f"Invalid rotation representation: {act_rot_repr}")
         self.act_rot_repr = act_rot_repr
+        self.action_type = action_type
+
+        # Create the action space limits on device here to save computation.
+        self.act_low = torch.from_numpy(self.action_space.low).to(device=self.device)
+        self.act_high = torch.from_numpy(self.action_space.high).to(device=self.device)
+        self.sim_steps = int(
+            1.0
+            / config["robot"]["hz"]
+            / sim_config["sim_params"].dt
+            / sim_config["sim_params"].substeps
+            + 0.1
+        )
 
         self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
         self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
@@ -747,52 +760,69 @@ class FurnitureSimEnv(gym.Env):
             action = action.unsqueeze(0)
 
         # Clip the action to be within the action space.
-        low = torch.from_numpy(self.action_space.low).to(device=self.device)
-        high = torch.from_numpy(self.action_space.high).to(device=self.device)
-        action = torch.clamp(action, low, high)
+        action = torch.clamp(action, self.act_low, self.act_high)
 
-        sim_steps = int(
-            1.0
-            / config["robot"]["hz"]
-            / sim_config["sim_params"].dt
-            / sim_config["sim_params"].substeps
-            + 0.1
-        )
         if not self.ctrl_started:
             self.init_ctrl()
         # Set the goal
         ee_pos, ee_quat = self.get_ee_pose()
 
         for env_idx in range(self.num_envs):
-            if self.act_rot_repr == "quat":
-                action_quat = action[env_idx][3:7]
-            elif self.act_rot_repr == "rot_6d":
-                import pytorch3d.transforms as pt
+            if self.action_type == "delta":
+                if self.act_rot_repr == "quat":
+                    action_quat = action[env_idx][3:7]
+                elif self.act_rot_repr == "rot_6d":
+                    import pytorch3d.transforms as pt
 
-                # Create "actions" dataset.
-                rot_6d = action[:, 3:9]
-                rot_mat = pt.rotation_6d_to_matrix(rot_6d)
+                    # Create "actions" dataset.
+                    rot_6d = action[:, 3:9]
+                    rot_mat = pt.rotation_6d_to_matrix(rot_6d)
 
-                # pytorch3d has the real part first (w, x, y, z)
-                quat = pt.matrix_to_quaternion(rot_mat)
-                action_quat = quat[env_idx]
+                    # pytorch3d has the real part first (w, x, y, z)
+                    quat = pt.matrix_to_quaternion(rot_mat)
+                    action_quat = quat[env_idx]
 
-                # IsaacGym expects the real part last (w, x, y, z) -> (x, y, z, w)
-                action_quat = torch.cat([action_quat[1:], action_quat[:1]])
+                    # IsaacGym expects the real part last (w, x, y, z) -> (x, y, z, w)
+                    action_quat = torch.cat([action_quat[1:], action_quat[:1]])
 
-            else:
-                action_quat = C.axisangle2quat(action[env_idx][3:6])
+                else:
+                    action_quat = C.axisangle2quat(action[env_idx][3:6])
 
-            if self.ctrl_mode == "osc":
-                step_ctrl = self.osc_ctrls[env_idx]
-            else:
-                step_ctrl = self.diffik_ctrls[env_idx]
-            step_ctrl.set_goal(
-                action[env_idx][:3] + ee_pos[env_idx],
-                C.quat_multiply(ee_quat[env_idx], action_quat).to(self.device),
-            )
+                if self.ctrl_mode == "osc":
+                    step_ctrl = self.osc_ctrls[env_idx]
+                else:
+                    step_ctrl = self.diffik_ctrls[env_idx]
+                step_ctrl.set_goal(
+                    action[env_idx][:3] + ee_pos[env_idx],
+                    C.quat_multiply(ee_quat[env_idx], action_quat).to(self.device),
+                )
+            elif self.action_type == "pos":
+                if self.act_rot_repr == "quat":
+                    action_quat = action[env_idx][3:7]
+                elif self.act_rot_repr == "rot_6d":
+                    import pytorch3d.transforms as pt
 
-        for _ in range(sim_steps):
+                    # Create "actions" dataset.
+                    rot_6d = action[:, 3:9]
+                    rot_mat = pt.rotation_6d_to_matrix(rot_6d)
+
+                    # pytorch3d has the real part first (w, x, y, z)
+                    quat = pt.matrix_to_quaternion(rot_mat)
+                    action_quat = quat[env_idx]
+
+                    # IsaacGym expects the real part last (w, x, y, z) -> (x, y, z, w)
+                    action_quat = torch.cat([action_quat[1:], action_quat[:1]])
+
+                else:
+                    action_quat = C.axisangle2quat(action[env_idx][3:6])
+
+                if self.ctrl_mode == "osc":
+                    step_ctrl = self.osc_ctrls[env_idx]
+                else:
+                    step_ctrl = self.diffik_ctrls[env_idx]
+                step_ctrl.set_goal(action[env_idx][:3], action_quat.to(self.device))
+
+        for _ in range(self.sim_steps):
             self.refresh()
 
             if self.ee_laser:
