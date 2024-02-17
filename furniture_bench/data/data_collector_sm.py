@@ -1,4 +1,5 @@
 """Define data collection class that rollout the environment, get action from the interface (e.g., teleoperation, automatic scripts), and save data."""
+
 import time
 import pickle
 from datetime import datetime
@@ -89,7 +90,7 @@ class DataCollectorSpaceMouse:
         encoder_type: str = "vip",
         ctrl_mode: str = "osc",
         ee_laser: bool = True,
-        right_multiply_rot: bool = True
+        right_multiply_rot: bool = True,
     ):
         """
         Args:
@@ -215,12 +216,22 @@ class DataCollectorSpaceMouse:
         self.verbose_print("[data collection] Start collecting the data!")
 
         from collections import namedtuple
-        args = namedtuple('Args', ['frequency', 'command_latency', 'deadzone', 'max_pos_speed', 'max_rot_speed'])
+
+        args = namedtuple(
+            "Args",
+            [
+                "frequency",
+                "command_latency",
+                "deadzone",
+                "max_pos_speed",
+                "max_rot_speed",
+            ],
+        )
 
         args.frequency = 10
         args.command_latency = 0.01
         args.deadzone = 0.05
-        if self.env.ctrl_mode == 'diffik':
+        if self.env.ctrl_mode == "diffik":
             args.max_pos_speed = 0.3
             args.max_rot_speed = 0.7
         else:
@@ -237,7 +248,10 @@ class DataCollectorSpaceMouse:
 
         translation, quat_xyzw = self.env.get_ee_pose()
         env_device = self.env.device
-        translation, quat_xyzw = translation.cpu().numpy().squeeze(), quat_xyzw.cpu().numpy().squeeze()
+        translation, quat_xyzw = (
+            translation.cpu().numpy().squeeze(),
+            quat_xyzw.cpu().numpy().squeeze(),
+        )
         rotvec = st.Rotation.from_quat(quat_xyzw).as_rotvec()
         target_pose_rv = np.array([*translation, *rotvec])
         grasp_flag = torch.from_numpy(np.array([-1])).to(env_device)
@@ -249,7 +263,9 @@ class DataCollectorSpaceMouse:
             pose_mat[:-1, :-1] = st.Rotation.from_rotvec(pose_rv[3:]).as_matrix()
             return pose_mat
 
-        def to_isaac_dpose_from_abs(current_pose_mat, goal_pose_mat, grasp_flag, device, rm=True):
+        def to_isaac_dpose_from_abs(
+            current_pose_mat, goal_pose_mat, grasp_flag, device, rm=True
+        ):
             """
             Convert from absolute current and desired pose to delta pose
 
@@ -257,19 +273,25 @@ class DataCollectorSpaceMouse:
                 rm (bool): 'rm' stands for 'right multiplication' - If True, assume commands send as right multiply (local rotations)
             """
             if rm:
-                delta_rot_mat = np.linalg.inv(current_pose_mat[:-1, :-1]) @ goal_pose_mat[:-1, :-1]
+                delta_rot_mat = (
+                    np.linalg.inv(current_pose_mat[:-1, :-1]) @ goal_pose_mat[:-1, :-1]
+                )
             else:
-                delta_rot_mat = goal_pose_mat[:-1 :-1] @ np.linalg.inv(current_pose_mat[:-1, :-1])
-            
+                delta_rot_mat = goal_pose_mat[:-1:-1] @ np.linalg.inv(
+                    current_pose_mat[:-1, :-1]
+                )
+
             dpos = goal_pose_mat[:-1, -1] - current_pose_mat[:-1, -1]
             target_translation = torch.from_numpy(dpos).float().to(device)
-            
+
             target_rot = st.Rotation.from_matrix(delta_rot_mat)
             target_quat_xyzw = torch.from_numpy(target_rot.as_quat()).float().to(device)
-            target_dpose = torch.cat((target_translation, target_quat_xyzw, grasp_flag), dim=-1).reshape(1, -1)
+            target_dpose = torch.cat(
+                (target_translation, target_quat_xyzw, grasp_flag), dim=-1
+            ).reshape(1, -1)
             return target_dpose
 
-        ready_to_grasp = True 
+        ready_to_grasp = True
         steps_since_grasp = 0
         with SharedMemoryManager() as shm_manager:
             with Spacemouse(shm_manager=shm_manager, deadzone=args.deadzone) as sm:
@@ -279,7 +301,7 @@ class DataCollectorSpaceMouse:
 
                 while self.num_success < self.num_demos:
                     if self.scripted:
-                        raise ValueError('Not using scripted with spacemouse')
+                        raise ValueError("Not using scripted with spacemouse")
 
                     # Get an action.
 
@@ -295,7 +317,9 @@ class DataCollectorSpaceMouse:
                     drot_xyz = sm_state[3:] * (args.max_rot_speed / frequency)
                     drot = st.Rotation.from_euler("xyz", drot_xyz)
 
-                    keyboard_action, collect_enum = self.device_interface.get_action()  # from the keyboard
+                    keyboard_action, collect_enum = (
+                        self.device_interface.get_action()
+                    )  # from the keyboard
 
                     if np.allclose(dpos, 0.0) and np.allclose(drot_xyz, 0.0):
                         action_taken = False
@@ -308,8 +332,10 @@ class DataCollectorSpaceMouse:
                     if steps_since_grasp < 10:
                         action_taken = True
 
-                    kb_grasp = (prev_keyboard_gripper != keyboard_action[-1])
-                    sm_grasp = (sm.is_button_pressed(0) or sm.is_button_pressed(1)) and ready_to_grasp
+                    kb_grasp = prev_keyboard_gripper != keyboard_action[-1]
+                    sm_grasp = (
+                        sm.is_button_pressed(0) or sm.is_button_pressed(1)
+                    ) and ready_to_grasp
                     if kb_grasp or sm_grasp:
                         # env.gripper_close() if gripper_open else env.gripper_open()
                         grasp_flag = -1 * grasp_flag
@@ -321,11 +347,13 @@ class DataCollectorSpaceMouse:
 
                     new_target_pose_rv = target_pose_rv.copy()
                     new_target_pose_rv[:3] += dpos
-                    new_target_pose_rv[3:] = (drot * st.Rotation.from_rotvec(target_pose_rv[3:])).as_rotvec()
+                    new_target_pose_rv[3:] = (
+                        drot * st.Rotation.from_rotvec(target_pose_rv[3:])
+                    ).as_rotvec()
 
                     target_pose_mat = pose_rv2mat(target_pose_rv)
                     new_target_pose_mat = pose_rv2mat(new_target_pose_rv)
-                    
+
                     # convert this into the furniture bench info we need
                     # action, collect_enum = to_isaac_pose(new_target_pose), CollectEnum.DONE_FALSE  # TODO
                     action = to_isaac_dpose_from_abs(
@@ -333,19 +361,26 @@ class DataCollectorSpaceMouse:
                         goal_pose_mat=new_target_pose_mat,
                         grasp_flag=grasp_flag,
                         device=env_device,
-                        rm=self.right_multiply_rot
-                    ) 
-                    pos_bounds_m = 0.02 if self.env.ctrl_mode == 'diffik' else 0.025
-                    ori_bounds_deg = 15 if self.env.ctrl_mode == 'diffik' else 20
+                        rm=self.right_multiply_rot,
+                    )
+                    pos_bounds_m = 0.02 if self.env.ctrl_mode == "diffik" else 0.025
+                    ori_bounds_deg = 15 if self.env.ctrl_mode == "diffik" else 20
+
+                    if not (np.allclose(keyboard_action[:6], 0.0)):
+                        action[0, :7] = (
+                            torch.from_numpy(keyboard_action[:7])
+                            .float()
+                            .to(action.device)
+                        )
+                        action_taken = True
+
+                    # Make sure the action is within the bounds.
                     action = scale_scripted_action(
                         action.detach().cpu().clone(),
                         pos_bounds_m=pos_bounds_m,
                         ori_bounds_deg=ori_bounds_deg,
-                        device=self.env.device)
-
-                    if not (np.allclose(keyboard_action[:6], 0.0)):
-                        action[0, :7] = torch.from_numpy(keyboard_action[:7]).float().to(action.device)
-                        action_taken = True
+                        device=self.env.device,
+                    )
 
                     skill_complete = int(collect_enum == CollectEnum.SKILL)
                     if skill_complete == 1:
@@ -374,13 +409,17 @@ class DataCollectorSpaceMouse:
 
                         self.obs.append(n_ob)
 
-                        if (done and not self.env.furnitures[0].all_assembled()) or collect_enum is CollectEnum.FAIL:
+                        if (
+                            done and not self.env.furnitures[0].all_assembled()
+                        ) or collect_enum is CollectEnum.FAIL:
                             collect_enum = CollectEnum.FAIL
                             if self.save_failure:
                                 self.verbose_print("Saving failure trajectory.")
                                 obs = self.save_and_reset(collect_enum, {})
                             else:
-                                self.verbose_print("Failed to assemble the furniture, reset without saving.")
+                                self.verbose_print(
+                                    "Failed to assemble the furniture, reset without saving."
+                                )
                                 obs = self.reset()
                             self.num_fail += 1
                         else:
@@ -392,7 +431,9 @@ class DataCollectorSpaceMouse:
                             self.update_pbar()
 
                         self.traj_counter += 1
-                        self.verbose_print(f"Success: {self.num_success}, Fail: {self.num_fail}")
+                        self.verbose_print(
+                            f"Success: {self.num_success}, Fail: {self.num_fail}"
+                        )
 
                         done = False
 
@@ -408,7 +449,9 @@ class DataCollectorSpaceMouse:
 
                     # Label reward.
                     if collect_enum == CollectEnum.REWARD:
-                        rew = self.env.furniture.manual_assemble_label(self.device_interface.rew_key)
+                        rew = self.env.furniture.manual_assemble_label(
+                            self.device_interface.rew_key
+                        )
                         if rew == 0:
                             # Correction the label.
                             self.rews[self.last_reward_idx] = 0
@@ -416,7 +459,9 @@ class DataCollectorSpaceMouse:
 
                     # Error handling.
                     if not info["obs_success"]:
-                        self.verbose_print("Getting observation failed, save trajectory.")
+                        self.verbose_print(
+                            "Getting observation failed, save trajectory."
+                        )
                         # Pop the last reward and action so that obs has length plus 1 then those of actions and rewards.
                         self.rews.pop()
                         self.acts.pop()
@@ -460,7 +505,10 @@ class DataCollectorSpaceMouse:
 
                     # target_pose = new_target_pose
                     translation, quat_xyzw = self.env.get_ee_pose()
-                    translation, quat_xyzw = translation.cpu().numpy().squeeze(), quat_xyzw.cpu().numpy().squeeze()
+                    translation, quat_xyzw = (
+                        translation.cpu().numpy().squeeze(),
+                        quat_xyzw.cpu().numpy().squeeze(),
+                    )
                     rotvec = st.Rotation.from_quat(quat_xyzw).as_rotvec()
                     target_pose_rv = np.array([*translation, *rotvec])
 
@@ -468,7 +516,9 @@ class DataCollectorSpaceMouse:
                     precise_wait(t_cycle_end)
                     iter_idx += 1
 
-                self.verbose_print(f"Collected {self.traj_counter} / {self.num_demos} successful trajectories!")
+                self.verbose_print(
+                    f"Collected {self.traj_counter} / {self.num_demos} successful trajectories!"
+                )
 
     def save_and_reset(self, collect_enum: CollectEnum, info):
         """Saves the collected data and reset the environment."""

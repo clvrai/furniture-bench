@@ -68,6 +68,7 @@ class Part(ABC):
 
     def is_collision(self, part2):
         """Check if the part is collided with another part without considering rotation."""
+        # return False
         p_x1 = -(self.reset_x_len / 2)
         p_y1 = self.reset_y_len / 2
         p1_p1 = self.mut_ori @ np.array([p_x1, p_y1, 0, 1])
@@ -133,6 +134,7 @@ class Part(ABC):
             or part1_y2 < part2_y1 - self.collision_margin
         ):
             return False
+        print(f"Collision between {self} and {part2}")
         return True
 
     def in_boundary(self, pos_lim, from_skill):

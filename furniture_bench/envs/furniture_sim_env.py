@@ -1010,6 +1010,9 @@ class FurnitureSimEnv(gym.Env):
                 ] = part_pose
         return parts_poses, founds
 
+    def get_parts_poses(self, sim_coord=False):
+        return self._get_parts_poses(sim_coord=sim_coord)
+
     def _save_camera_input(self):
         """Saves camera images to png files for debugging."""
         root = "sim_camera"

@@ -49,6 +49,7 @@ sim_config["asset"] = {}
 sim_config["robot"].update(
     {
         "kp": [90, 90, 90, 70.0, 60.0, 80.0],  # Default positional gains.
+        # "kp": [270, 270, 270, 210, 180, 240],  # Cranked up gains
         "kv": None,  # Default velocity gains.
         "arm_frictions": [
             0.05,
