@@ -72,6 +72,12 @@ def main():
         help="GPU device ID used for rendering.",
     )
 
+    parser.add_argument(
+        "--enable-device-interface",
+        action="store_true",
+        help="Enable device interface for scripted function.",
+    )
+
     parser.add_argument("--num-demos", default=100, type=int)
 
     parser.add_argument("--resize-sim-img", action="store_true")
@@ -80,7 +86,10 @@ def main():
 
     if args.scripted:
         assert args.is_sim
-        device_interface = None
+        if args.enable_device_interface:
+            device_interface = make_device(args.input_device)
+        else:
+            device_interface = None
     else:
         device_interface = make_device(args.input_device)
 
@@ -104,6 +113,7 @@ def main():
         save_failure=args.save_failure,
         num_demos=args.num_demos,
         resize_sim_img=args.resize_sim_img,
+        enable_device_interface=args.enable_device_interface,
     )
     data_collector.collect()
 

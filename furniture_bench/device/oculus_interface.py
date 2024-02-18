@@ -34,6 +34,11 @@ class OculusInterface(DeviceInterface):
         self.prev_oculus_pos = None
         self.prev_oculus_quat = None
 
+    @property
+    def interruption(self):
+        _, buttons = self.oculus.get_transformations_and_buttons()
+        return buttons.get("RTr", False)
+
     def get_pose_and_button(self):
         poses, buttons = self.oculus.get_transformations_and_buttons()
 

@@ -1,4 +1,5 @@
 """Define data collection class that rollout the environment, get action from the interface (e.g., teleoperation, automatic scripts), and save data."""
+
 import time
 import pickle
 from datetime import datetime
@@ -39,6 +40,7 @@ class DataCollector:
         save_failure: bool = False,
         num_demos: int = 100,
         resize_sim_img: bool = False,
+        enable_device_interface: bool = False,
     ):
         """
         Args:
@@ -57,14 +59,15 @@ class DataCollector:
             save_failure (bool): Whether to save failure trajectories.
             num_demos (int): The maximum number of demonstrations to collect in this run. Internal loop will be terminated when this number is reached.
             resize_sim_img (bool): Read resized image
+            enable_device_interface (bool): Whether to enable device interface for scripted function.
         """
         if is_sim:
             self.env = gym.make(
                 "FurnitureSimFull-v0",
                 furniture=furniture,
-                max_env_steps=sim_config["scripted_timeout"][furniture]
-                if scripted
-                else 3000,
+                max_env_steps=(
+                    sim_config["scripted_timeout"][furniture] if scripted else 3000
+                ),
                 headless=headless,
                 num_envs=1,  # Only support 1 for now.
                 manual_done=False if scripted else True,
@@ -73,7 +76,7 @@ class DataCollector:
                 channel_first=False,
                 randomness=randomness,
                 compute_device_id=compute_device_id,
-                graphics_device_id=graphics_device_id
+                graphics_device_id=graphics_device_id,
             )
         else:
             if randomness == "med":
@@ -107,6 +110,7 @@ class DataCollector:
         self.pkl_only = pkl_only
         self.save_failure = save_failure
         self.resize_sim_img = resize_sim_img
+        self.enable_device_interface = enable_device_interface
 
         self._reset_collector_buffer()
 
@@ -119,8 +123,12 @@ class DataCollector:
         while self.num_success < self.num_demos:
             # Get an action.
             if self.scripted:
-                action, skill_complete = self.env.get_assembly_action()
-                collect_enum = CollectEnum.DONE_FALSE
+                if self.enable_device_interface and self.device_interface.interruption:
+                    action, collect_enum = self.device_interface.get_action()
+                    skill_complete = 0  # Zero as dummy value.
+                else:
+                    action, skill_complete = self.env.get_assembly_action()
+                    collect_enum = CollectEnum.DONE_FALSE
             else:
                 action, collect_enum = self.device_interface.get_action()
                 skill_complete = int(collect_enum == CollectEnum.SKILL)

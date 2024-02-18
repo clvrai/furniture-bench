@@ -14,6 +14,12 @@ class KeyboardOculusInterface(DeviceInterface):
         self.keyboard_interface = KeyboardInterface()
         self.oculus_interface = OculusInterface()
 
+    @property
+    def interruption(self):
+        return (
+            self.keyboard_interface.interruption or self.oculus_interface.interruption
+        )
+
     def get_action(self, use_quat=True):
         keyboard_action, keyboard_done = self.keyboard_interface.get_action()
         oculus_action, oculus_done = self.oculus_interface.get_action()

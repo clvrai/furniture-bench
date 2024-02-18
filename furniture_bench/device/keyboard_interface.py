@@ -35,6 +35,8 @@ class KeyboardInterface(DeviceInterface):
         self.listener = Listener(on_press=self.on_press, on_release=self.on_release)
         self.listener.start()
 
+        self.interruption = False
+
     def reset(self):
         self.pos_delta = KeyboardInterface.INIT_POS_DELTA
         self.rot_delta = KeyboardInterface.INIT_ROT_DELTA
@@ -77,12 +79,14 @@ class KeyboardInterface(DeviceInterface):
             elif k == "r":
                 gym.logger.info("Reset pressed")
                 self.key_enum = CollectEnum.RESET
+            self.interruption = True
         except AttributeError as e:
             pass
 
     def on_release(self, k):
         try:
             # Terminates keyboard monitoring.
+            self.interruption = False
             if k == Key.esc:
                 return False
         except AttributeError as e:
