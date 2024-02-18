@@ -77,6 +77,7 @@ class Leg(Part):
         sim_to_april_mat,
         april_to_robot,
         assemble_to,
+        add_phase_noise,
     ):
         def rot_mat_tensor(x, y, z, device):
             return torch.tensor(rot_mat([x, y, z], hom=True), device=device).float()
@@ -128,6 +129,7 @@ class Leg(Part):
             target = self.add_noise_first_target(
                 C.to_homogeneous(target_pos, target_ori),
                 ori_noise=torch.tensor([0, 0, 0, 1], device=device),
+                add_phase_noise=add_phase_noise,
             )
             if self.satisfy(ee_pose, target, pos_error_threshold=0.02):
                 self.prev_pose = target.clone()

@@ -253,10 +253,14 @@ class Part(ABC):
         self.curr_cnt += 1
         return skill_complete
 
-    def add_noise_first_target(self, target, pos_noise=None, ori_noise=None):
+    def add_noise_first_target(self, target, pos_noise=None, ori_noise=None, add_phase_noise=None):
         if self.state_no_noise():
             return target
         if self.first_setting_target:
+            if add_phase_noise:
+                pos_noise = torch.normal(
+                        mean=torch.zeros((3,)), std=torch.ones((3,)) * 0.030
+                ).to(target.device)
             if pos_noise is not None:
                 target[:3, 3] += pos_noise
             else:

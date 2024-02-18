@@ -182,6 +182,9 @@ class FurnitureSimEnv(gym.Env):
 
         self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
         self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
+        # Give noise to a given phase in order to collect failure trajectories at specific phase.
+        self.phase_noise = kwargs.get("phase_noise", -1)
+        self.phase_counter = 0
 
     def _create_ground_plane(self):
         """Creates ground plane."""
@@ -412,7 +415,7 @@ class FurnitureSimEnv(gym.Env):
                 self.parts_handles[part.name] = self.isaac_gym.find_actor_index(
                     env, part.name, gymapi.DOMAIN_ENV
                 )
-        
+
         # print(f'Getting the separate actor indices for the frankas and the furniture parts (not the handles)')
         self.franka_actor_idx_all = []
         self.part_actor_idx_all = []  # global list of indices, when resetting all parts
@@ -658,7 +661,7 @@ class FurnitureSimEnv(gym.Env):
         high = np.tile(high, (self.num_envs, 1))
 
         return gym.spaces.Box(low, high, (self.num_envs, pose_dim + 1))
-    
+
     @property
     def action_dimension(self):
         return self.action_space.shape[-1]
@@ -823,7 +826,7 @@ class FurnitureSimEnv(gym.Env):
             return rewards
 
         # Don't have to convert to AprilTag coordinate since the reward is computed with relative poses.
-        parts_poses, founds = self._get_parts_poses(sim_coord=True) 
+        parts_poses, founds = self._get_parts_poses(sim_coord=True)
         for env_idx in range(self.num_envs):
             env_parts_poses = parts_poses[env_idx].cpu().numpy()
             env_founds = founds[env_idx].cpu().numpy()
@@ -838,7 +841,7 @@ class FurnitureSimEnv(gym.Env):
 
     def _get_parts_poses(self, sim_coord=False):
         """Get furniture parts poses in the AprilTag frame.
-        
+
         Args:
             sim_coord: If True, return the poses in the simulator coordinate. Otherwise, return the poses in the AprilTag coordinate.
 
@@ -1141,7 +1144,7 @@ class FurnitureSimEnv(gym.Env):
         # self._reset_parts_all()
         for i in range(self.num_envs):
             # if using ._reset_*_all(), can set reset_franka=False and reset_parts=False in .reset_env
-            self.reset_env(i)  
+            self.reset_env(i)
 
             # apply zero torque across the board and refresh in between each env reset (not needed if using ._reset_*_all())
             torque_action = torch.zeros_like(self.dof_pos)
@@ -1149,11 +1152,12 @@ class FurnitureSimEnv(gym.Env):
                 self.sim, gymtorch.unwrap_tensor(torque_action)
             )
             self.refresh()
-        
+
         self.furniture.reset()
 
         self.refresh()
         self.assemble_idx = 0
+        self.phase_counter = 0
 
         if self.save_camera_input:
             self._save_camera_input()
@@ -1190,7 +1194,7 @@ class FurnitureSimEnv(gym.Env):
             self.furnitures[env_idx].randomize_init_pose(self.from_skill)
         elif self.randomness == Randomness.HIGH:
             self.furnitures[env_idx].randomize_high(self.high_random_idx)
-        
+
         if reset_franka:
             self._reset_franka(env_idx)
         if reset_parts:
@@ -1222,7 +1226,7 @@ class FurnitureSimEnv(gym.Env):
 
     def _update_franka_dof_state_buffer(self, dof_pos=None):
         """
-        Sets internal tensor state buffer for Franka actor 
+        Sets internal tensor state buffer for Franka actor
         """
         # Low randomness only.
         if self.from_skill >= 1:
@@ -1236,7 +1240,7 @@ class FurnitureSimEnv(gym.Env):
             dof_pos = self.robot_model.inverse_kinematics(ee_pos, ee_quat)
         else:
             dof_pos = self.default_dof_pos if dof_pos is None else dof_pos
-        
+
         # Views for self.dof_states (used with set_dof_state_tensor* function)
         self.dof_pos[:, 0 : self.franka_num_dofs] = torch.tensor(
             dof_pos, device=self.device, dtype=torch.float32
@@ -1248,13 +1252,13 @@ class FurnitureSimEnv(gym.Env):
     def _reset_franka(self, env_idx, dof_pos=None):
         """
         Resets Franka actor within a single env. If calling multiple times,
-        need to refresh in between calls to properly register individual env changes, 
+        need to refresh in between calls to properly register individual env changes,
         and set zero torques on frankas across all envs to prevent the reset arms
         from moving while others are still being reset
         """
         self._update_franka_dof_state_buffer(dof_pos=dof_pos)
-        
-        # Update a single actor 
+
+        # Update a single actor
         actor_idx = self.franka_actor_idxs_all_t[env_idx].reshape(1, 1)
         self.isaac_gym.set_dof_state_tensor_indexed(
             self.sim,
@@ -1455,6 +1459,7 @@ class FurnitureSimEnv(gym.Env):
                 ).unsqueeze(0),
                 1,
             )  # Skill complete is always 1 when assembled.
+        add_phase_noise = self.phase_counter == self.phase_noise
         if not part1.pre_assemble_done:
             goal_pos, goal_ori, gripper, skill_complete = part1.pre_assemble(
                 ee_pos,
@@ -1464,6 +1469,7 @@ class FurnitureSimEnv(gym.Env):
                 self.part_idxs,
                 self.sim_to_april_mat,
                 self.april_to_robot_mat,
+                add_phase_noise,
             )
         elif not part2.pre_assemble_done:
             goal_pos, goal_ori, gripper, skill_complete = part2.pre_assemble(
@@ -1474,6 +1480,7 @@ class FurnitureSimEnv(gym.Env):
                 self.part_idxs,
                 self.sim_to_april_mat,
                 self.april_to_robot_mat,
+                add_phase_noise,
             )
         else:
             goal_pos, goal_ori, gripper, skill_complete = self.furniture.parts[
@@ -1487,10 +1494,13 @@ class FurnitureSimEnv(gym.Env):
                 self.sim_to_april_mat,
                 self.april_to_robot_mat,
                 self.furniture.parts[part_idx1].name,
+                add_phase_noise,
             )
 
         delta_pos = goal_pos - ee_pos
 
+        if skill_complete == 1:
+            self.phase_counter += 1
         # Scale translational action.
         delta_pos_sign = delta_pos.sign()
         delta_pos = torch.abs(delta_pos) * 2
@@ -1507,7 +1517,8 @@ class FurnitureSimEnv(gym.Env):
         delta_quat = C.quat_mul(C.quat_conjugate(ee_quat), goal_ori)
         # Add random noise to the action.
         if (
-            self.furniture.parts[part_idx2].state_no_noise()
+            (add_phase_noise or
+            self.furniture.parts[part_idx2].state_no_noise())
             and np.random.random() < 0.50
         ):
             delta_pos = torch.normal(delta_pos, 0.005)

@@ -57,6 +57,7 @@ class TableTop(Part):
         part_idxs,
         sim_to_april_mat,
         april_to_robot,
+        add_phase_noise=None,
     ):
         next_state = self._state
 
@@ -81,7 +82,8 @@ class TableTop(Part):
             target_ori = (april_to_robot @ rot)[:3, :3]
             target_pos[2] = ee_pos[2]
             target = self.add_noise_first_target(
-                C.to_homogeneous(target_pos, target_ori)
+                C.to_homogeneous(target_pos, target_ori),
+                add_phase_noise=add_phase_noise,
             )
             if self.satisfy(ee_pose, target):
                 self.prev_pose = target
@@ -95,6 +97,7 @@ class TableTop(Part):
                 pos_noise=torch.normal(
                     mean=torch.zeros((3,)), std=torch.tensor([0.01, 0.01, 0.001])
                 ).to(device),
+                add_phase_noise=add_phase_noise,
             )
             if self.satisfy(ee_pose, target):
                 self.prev_pose = target
