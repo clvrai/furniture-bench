@@ -24,6 +24,16 @@ register(
     entry_point="furniture_bench.envs.policy_envs.furniture_bench_image:FurnitureBenchImage",
 )
 
+register(
+    id="FurnitureBenchImageRobomimic-v0",
+    entry_point="furniture_bench.envs.policy_envs.furniture_bench_image_robomimic:FurnitureBenchImageRobomimic",
+)
+
+register(
+    id="FurnitureBenchImageFeatureRobomimic-v0",
+    entry_point="furniture_bench.envs.policy_envs.furniture_bench_image_feature_robomimic:FurnitureBenchImageFeatureRobomimic",
+)
+
 # FurnitureBench with R3M or VIP image feature observation.
 register(
     id="FurnitureBenchImageFeature-v0",
