@@ -225,7 +225,9 @@ sim_config["asset"]["lamp_base"] = lamp_base_asset_options
 # Volume: 70576 mm^3
 # Mass: 38.47g
 lamp_bulb_asset_options = default_asset_options()
-lamp_bulb_asset_options.density = 545.09
+# lamp_bulb_asset_options.density = 545.09
+# lamp_bulb_asset_options.density = 369.98
+lamp_bulb_asset_options.density = 100
 sim_config["asset"]["lamp_bulb"] = lamp_bulb_asset_options
 
 # Stool
