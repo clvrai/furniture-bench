@@ -21,6 +21,8 @@ class Panda:
         self,
         robot_config,
         max_gripper_width: float = 0.065,
+        abs_action: bool = False,
+        act_rot_repr: bool = False
     ):
         """
         Args:
@@ -64,6 +66,8 @@ class Panda:
         # Count how many times the robot has stopped moving in a row.
         # This is used to declare "done" when the robot stopped moving.
         self.motion_stopped_counter = 0
+        self.abs_action = abs_action
+        self.act_rot_repr = act_rot_repr
 
     def init_controller(self, kp: torch.Tensor, kv: torch.Tensor):
         """Initialize the OSC controller.
@@ -125,24 +129,36 @@ class Panda:
         """
         # Setup frequencly.
         arm_action, grasp = action[:-1], action[-1]
+        # if self.act_rot_repr == "rot_6d":
+        #     import pytorch3d.transforms as pt
+        #     # Create "actions" dataset.
+        #     rot_6d = torch.tensor(arm_action[3:9])
+        #     rot_mat = pt.rotation_6d_to_matrix(rot_6d)
+        #     quat = pt.matrix_to_quaternion(rot_mat).numpy()
+        #     arm_action = np.concatenate([arm_action[:3], quat], axis=0)
 
-        if np.abs(arm_action[:3]).max() > 0.11:  # 11 cm.
-            if action_filtering:
-                print(f"[env] Position action too big: {arm_action[:3]}, skipping it.")
-                return False
-            else:
-                # Clip the action to be within the range.
-                arm_action[:3] = np.clip(arm_action[:3], -0.10, 0.10)
+        if not self.abs_action:
+            if np.abs(arm_action[:3]).max() > 0.11:  # 11 cm.
+                if action_filtering:
+                    print(f"[env] Position action too big: {arm_action[:3]}, skipping it.")
+                    return False
+                else:
+                    # Clip the action to be within the range.
+                    arm_action[:3] = np.clip(arm_action[:3], -0.10, 0.10)
         # Arm action.
         ee_pos, ee_quat = self.get_ee_pose()
-        goal_ee_pos = torch.tensor(ee_pos, dtype=torch.float32) + torch.tensor(
-            arm_action[:3], dtype=torch.float32
-        )
-        act_quat = arm_action[3:]
+        if not self.abs_action: # Delta action.
+            goal_ee_pos = torch.tensor(ee_pos, dtype=torch.float32) + torch.tensor(
+                arm_action[:3], dtype=torch.float32
+            )
+            act_quat = arm_action[3:]
 
-        goal_ee_quat = torch.tensor(
-            T.quat_multiply(ee_quat, act_quat), dtype=torch.float32
-        )
+            goal_ee_quat = torch.tensor(
+                T.quat_multiply(ee_quat, act_quat), dtype=torch.float32
+            )
+        else:
+            goal_ee_pos = torch.tensor(arm_action[:3], dtype=torch.float32)
+            goal_ee_quat = torch.tensor(arm_action[3:], dtype=torch.float32)
         self.arm.update_desired_ee_pose(position=goal_ee_pos, orientation=goal_ee_quat)
         # Gripper action.
 
