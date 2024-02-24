@@ -744,6 +744,14 @@ class FurnitureSimEnv(gym.Env):
 
         return gym.spaces.Dict(obs_dict)
 
+    def step_noop(self):
+        """Take a no-op step."""
+        for _ in range(self.sim_steps):
+            self.refresh()
+
+        # Return the observation.
+        return self._get_observation()
+
     @torch.no_grad()
     def step(self, action):
         """Robot takes an action.
