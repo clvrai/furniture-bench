@@ -746,11 +746,26 @@ class FurnitureSimEnv(gym.Env):
 
     def step_noop(self):
         """Take a no-op step."""
-        for _ in range(self.sim_steps):
-            self.refresh()
 
-        # Return the observation.
-        return self._get_observation()
+        # If we're doing delta control, we can simply apply a noop action:
+        if self.action_type == "delta":
+            noop = {
+                "quat": torch.tensor(
+                    [0, 0, 0, 1, 0, 0, 0, 0], dtype=torch.float32, device=self.device
+                ),
+                "rot_6d": torch.tensor(
+                    [0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+                    dtype=torch.float32,
+                    device=self.device,
+                ),
+            }[self.act_rot_repr]
+            return self.step(noop)
+
+        # Otherwise, we apply a noop action by setting temporily changing the control mode to delta control
+        self.action_type = "delta"
+        obs = self.step_noop()
+        self.action_type = "pos"
+        return obs
 
     @torch.no_grad()
     def step(self, action):

@@ -213,7 +213,8 @@ sim_config["asset"]["chair_nut2"] = chair_nut1_asset_options
 # Volume:  78694 mm^3
 # Mass: 59.99g
 lamp_hood_asset_options = default_asset_options()
-lamp_hood_asset_options.density = 762.31
+# lamp_hood_asset_options.density = 762.31
+lamp_hood_asset_options.density = 200
 sim_config["asset"]["lamp_hood"] = lamp_hood_asset_options
 
 # Volume:  174649 mm^3
