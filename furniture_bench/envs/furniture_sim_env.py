@@ -69,6 +69,7 @@ class FurnitureSimEnv(gym.Env):
         record: bool = False,
         max_env_steps: int = 3000,
         act_rot_repr: str = "quat",
+        from_skill: int = 0,
         **kwargs,
     ):
         """
@@ -126,9 +127,8 @@ class FurnitureSimEnv(gym.Env):
         self.init_assembled = init_assembled
         self.np_step_out = np_step_out
         self.channel_first = channel_first
-        self.from_skill = (
-            0  # TODO: Skill benchmark should be implemented in FurnitureSim.
-        )
+
+        self.from_skill = from_skill
         self.randomness = str_to_enum(randomness)
         self.high_random_idx = high_random_idx
         self.last_grasp = torch.tensor([-1.0] * num_envs, device=self.device)
@@ -176,7 +176,11 @@ class FurnitureSimEnv(gym.Env):
                 (self.img_size[1] * 2, self.img_size[0]),  # Wrist and front cameras.
             )
 
-        if act_rot_repr != "quat" and act_rot_repr != "axis" and act_rot_repr != "rot_6d":
+        if (
+            act_rot_repr != "quat"
+            and act_rot_repr != "axis"
+            and act_rot_repr != "rot_6d"
+        ):
             raise ValueError(f"Invalid rotation representation: {act_rot_repr}")
         self.act_rot_repr = act_rot_repr
 
@@ -412,21 +416,33 @@ class FurnitureSimEnv(gym.Env):
                 self.parts_handles[part.name] = self.isaac_gym.find_actor_index(
                     env, part.name, gymapi.DOMAIN_ENV
                 )
-        
+
         # print(f'Getting the separate actor indices for the frankas and the furniture parts (not the handles)')
         self.franka_actor_idx_all = []
         self.part_actor_idx_all = []  # global list of indices, when resetting all parts
-        self.part_actor_idx_by_env = {}  # allow to access part indices based on environment indices
+        self.part_actor_idx_by_env = (
+            {}
+        )  # allow to access part indices based on environment indices
         for env_idx in range(self.num_envs):
-            self.franka_actor_idx_all.append(self.isaac_gym.find_actor_index(self.envs[env_idx], 'franka', gymapi.DOMAIN_SIM))
+            self.franka_actor_idx_all.append(
+                self.isaac_gym.find_actor_index(
+                    self.envs[env_idx], "franka", gymapi.DOMAIN_SIM
+                )
+            )
             self.part_actor_idx_by_env[env_idx] = []
             for part in self.furnitures[env_idx].parts:
-                part_actor_idx = self.isaac_gym.find_actor_index(self.envs[env_idx], part.name, gymapi.DOMAIN_SIM)
+                part_actor_idx = self.isaac_gym.find_actor_index(
+                    self.envs[env_idx], part.name, gymapi.DOMAIN_SIM
+                )
                 self.part_actor_idx_all.append(part_actor_idx)
                 self.part_actor_idx_by_env[env_idx].append(part_actor_idx)
 
-        self.franka_actor_idxs_all_t = torch.tensor(self.franka_actor_idx_all, device=self.device, dtype=torch.int32)
-        self.part_actor_idxs_all_t = torch.tensor(self.part_actor_idx_all, device=self.device, dtype=torch.int32)
+        self.franka_actor_idxs_all_t = torch.tensor(
+            self.franka_actor_idx_all, device=self.device, dtype=torch.int32
+        )
+        self.part_actor_idxs_all_t = torch.tensor(
+            self.part_actor_idx_all, device=self.device, dtype=torch.int32
+        )
 
     def _get_reset_pose(self, part: Part):
         """Get the reset pose of the part.
@@ -470,11 +486,13 @@ class FurnitureSimEnv(gym.Env):
                     )
                 part.reset_pos[0] = pos
                 part.reset_ori[0] = ori
-            pos = part.reset_pos[self.from_skill]
-            ori = part.reset_ori[self.from_skill]
+            # Always zero since the reset will be done with the scripted agent.
+            pos = part.reset_pos[0]
+            ori = part.reset_ori[0]
         else:
-            pos = part.reset_pos[self.from_skill]
-            ori = part.reset_ori[self.from_skill]
+            # Always zero since the reset will be done with the scripted agent.
+            pos = part.reset_pos[0]
+            ori = part.reset_ori[0]
         return pos, ori
 
     def set_viewer(self):
@@ -557,7 +575,9 @@ class FurnitureSimEnv(gym.Env):
                     self.camera_handles[camera_name] = []
                 # Only when the camera handle for the current environment does not exist.
                 if len(self.camera_handles[camera_name]) <= env_idx:
-                    self.camera_handles[camera_name].append(create_camera(camera_name, env_idx))
+                    self.camera_handles[camera_name].append(
+                        create_camera(camera_name, env_idx)
+                    )
                 handle = self.camera_handles[camera_name][env_idx]
                 tensor = gymtorch.wrap_tensor(
                     self.isaac_gym.get_camera_image_gpu_tensor(
@@ -648,7 +668,7 @@ class FurnitureSimEnv(gym.Env):
             pose_dim = 7
         elif self.act_rot_repr == "rot_6d":
             pose_dim = 9
-        else: # axis
+        else:  # axis
             pose_dim = 6
 
         low = np.array([-1] * pose_dim + [-1], dtype=np.float32)
@@ -658,7 +678,7 @@ class FurnitureSimEnv(gym.Env):
         high = np.tile(high, (self.num_envs, 1))
 
         return gym.spaces.Box(low, high, (self.num_envs, pose_dim + 1))
-    
+
     @property
     def action_dimension(self):
         return self.action_space.shape[-1]
@@ -733,6 +753,7 @@ class FurnitureSimEnv(gym.Env):
                 action_quat = action[env_idx][3:7]
             elif self.act_rot_repr == "rot_6d":
                 import pytorch3d.transforms as pt
+
                 # Create "actions" dataset.
                 rot_6d = action[:, 3:9]
                 rot_mat = pt.rotation_6d_to_matrix(rot_6d)
@@ -823,7 +844,7 @@ class FurnitureSimEnv(gym.Env):
             return rewards
 
         # Don't have to convert to AprilTag coordinate since the reward is computed with relative poses.
-        parts_poses, founds = self._get_parts_poses(sim_coord=True) 
+        parts_poses, founds = self._get_parts_poses(sim_coord=True)
         for env_idx in range(self.num_envs):
             env_parts_poses = parts_poses[env_idx].cpu().numpy()
             env_founds = founds[env_idx].cpu().numpy()
@@ -838,7 +859,7 @@ class FurnitureSimEnv(gym.Env):
 
     def _get_parts_poses(self, sim_coord=False):
         """Get furniture parts poses in the AprilTag frame.
-        
+
         Args:
             sim_coord: If True, return the poses in the simulator coordinate. Otherwise, return the poses in the AprilTag coordinate.
 
@@ -1106,7 +1127,9 @@ class FurnitureSimEnv(gym.Env):
                 obs.update(robot_state)  # Flatten the dict.
         for k in self.obs_keys:
             if k == "parts_poses":
-                parts_poses, _ = self._get_parts_poses()  # Part poses in AprilTag coordinate.
+                parts_poses, _ = (
+                    self._get_parts_poses()
+                )  # Part poses in AprilTag coordinate.
                 if self.np_step_out:
                     parts_poses = parts_poses.cpu().numpy()
                 obs["parts_poses"] = parts_poses
@@ -1133,7 +1156,10 @@ class FurnitureSimEnv(gym.Env):
         return self._get_observation()["color_image2"]
 
     def is_success(self):
-        return [{"task": self.furnitures[env_idx].all_assembled()} for env_idx in range(self.num_envs)]
+        return [
+            {"task": self.furnitures[env_idx].all_assembled()}
+            for env_idx in range(self.num_envs)
+        ]
 
     def reset(self):
         # can also reset the full set of robots/parts, without applying torques and refreshing
@@ -1141,7 +1167,7 @@ class FurnitureSimEnv(gym.Env):
         # self._reset_parts_all()
         for i in range(self.num_envs):
             # if using ._reset_*_all(), can set reset_franka=False and reset_parts=False in .reset_env
-            self.reset_env(i)  
+            self.reset_env(i)
 
             # apply zero torque across the board and refresh in between each env reset (not needed if using ._reset_*_all())
             torque_action = torch.zeros_like(self.dof_pos)
@@ -1149,16 +1175,46 @@ class FurnitureSimEnv(gym.Env):
                 self.sim, gymtorch.unwrap_tensor(torque_action)
             )
             self.refresh()
-        
+
         self.furniture.reset()
 
         self.refresh()
         self.assemble_idx = 0
 
+        if self.from_skill >= 1:  # Run scripted agent to find the reset pose.
+            assert self.num_envs == 1  # Only support single env for now.
+            skill_counter = 0
+            for i in range(self.furniture.max_env_steps):
+                action, skill_complete = self.get_assembly_action()
+                self.step(action)
+                if skill_complete == -1:
+                    gym.logger.warn("Skill reset failed.")
+                    self.reset()  # Reset the environment since the reset has failed.
+                    break
+                if skill_complete == 1:
+                    skill_counter += 1
+                if skill_counter == self.from_skill:  # Done with the skill reset.
+                    break  # Reset done.
+            if i == self.furniture.max_env_steps - 1:
+                gym.logger.warn("Skill reset failed.")
+                self.reset()  # Reset the environment since the reset has failed.
+
         if self.save_camera_input:
             self._save_camera_input()
 
         return self._get_observation()
+
+    def _get_assembly_script_part(self):
+        """Get the part to assemble in the assembly script."""
+        part_idx1, part_idx2 = self.furniture.should_be_assembled[self.assemble_idx]
+        part1 = self.furniture.parts[part_idx1]
+        part2 = self.furniture.parts[part_idx2]
+        if not part1.pre_assemble_done:
+            return part1
+        elif not part2.pre_assemble_done:
+            return part2
+        else:
+            return part2
 
     def reset_to(self, state):
         """Reset to a specific state.
@@ -1190,7 +1246,7 @@ class FurnitureSimEnv(gym.Env):
             self.furnitures[env_idx].randomize_init_pose(self.from_skill)
         elif self.randomness == Randomness.HIGH:
             self.furnitures[env_idx].randomize_high(self.high_random_idx)
-        
+
         if reset_franka:
             self._reset_franka(env_idx)
         if reset_parts:
@@ -1222,21 +1278,9 @@ class FurnitureSimEnv(gym.Env):
 
     def _update_franka_dof_state_buffer(self, dof_pos=None):
         """
-        Sets internal tensor state buffer for Franka actor 
+        Sets internal tensor state buffer for Franka actor
         """
-        # Low randomness only.
-        if self.from_skill >= 1:
-            dof_pos = torch.from_numpy(self.default_dof_pos)
-            ee_pos = torch.from_numpy(
-                self.furniture.furniture_conf["ee_pos"][self.from_skill]
-            )
-            ee_quat = torch.from_numpy(
-                self.furniture.furniture_conf["ee_quat"][self.from_skill]
-            )
-            dof_pos = self.robot_model.inverse_kinematics(ee_pos, ee_quat)
-        else:
-            dof_pos = self.default_dof_pos if dof_pos is None else dof_pos
-        
+        dof_pos = self.default_dof_pos if dof_pos is None else dof_pos
         # Views for self.dof_states (used with set_dof_state_tensor* function)
         self.dof_pos[:, 0 : self.franka_num_dofs] = torch.tensor(
             dof_pos, device=self.device, dtype=torch.float32
@@ -1248,13 +1292,13 @@ class FurnitureSimEnv(gym.Env):
     def _reset_franka(self, env_idx, dof_pos=None):
         """
         Resets Franka actor within a single env. If calling multiple times,
-        need to refresh in between calls to properly register individual env changes, 
+        need to refresh in between calls to properly register individual env changes,
         and set zero torques on frankas across all envs to prevent the reset arms
         from moving while others are still being reset
         """
         self._update_franka_dof_state_buffer(dof_pos=dof_pos)
-        
-        # Update a single actor 
+
+        # Update a single actor
         actor_idx = self.franka_actor_idxs_all_t[env_idx].reshape(1, 1)
         self.isaac_gym.set_dof_state_tensor_indexed(
             self.sim,
@@ -1320,7 +1364,9 @@ class FurnitureSimEnv(gym.Env):
             return
 
         # Reset root state for actors in a single env
-        part_actor_idxs = torch.tensor(self.part_actor_idx_by_env[env_idx], device=self.device, dtype=torch.int32)
+        part_actor_idxs = torch.tensor(
+            self.part_actor_idx_by_env[env_idx], device=self.device, dtype=torch.int32
+        )
         self.isaac_gym.get_sim_actor_count(self.sim)
         self.isaac_gym.set_actor_root_state_tensor_indexed(
             self.sim,
@@ -1409,7 +1455,9 @@ class FurnitureSimEnv(gym.Env):
         """
         assert self.num_envs == 1  # Only support one environment for now.
         if self.furniture_name not in ["one_leg", "cabinet", "lamp", "round_table"]:
-            raise NotImplementedError("[one_leg, cabinet, lamp, round_table] are supported for scripted agent")
+            raise NotImplementedError(
+                "[one_leg, cabinet, lamp, round_table] are supported for scripted agent"
+            )
 
         if self.assemble_idx > len(self.furniture.should_be_assembled):
             return torch.tensor([0, 0, 0, 0, 0, 0, 1, -1], device=self.device)

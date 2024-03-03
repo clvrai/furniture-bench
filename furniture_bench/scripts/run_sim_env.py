@@ -88,6 +88,13 @@ def main():
         help="GPU device ID used for rendering.",
     )
 
+    parser.add_argument(
+        "--from-skill",
+        type=int,
+        default=0,
+        help="Skill benchmark to start from.",
+    )
+
     parser.add_argument("--num-envs", type=int, default=1)
     args = parser.parse_args()
 
@@ -106,6 +113,7 @@ def main():
         act_rot_repr=args.act_rot_repr,
         compute_device_id=args.compute_device_id,
         graphics_device_id=args.graphics_device_id,
+        from_skill=args.from_skill,
     )
 
     # Initialize FurnitureSim.
