@@ -77,6 +77,7 @@ class Leg(Part):
         sim_to_april_mat,
         april_to_robot,
         assemble_to,
+        furniture,
     ):
         def rot_mat_tensor(x, y, z, device):
             return torch.tensor(rot_mat([x, y, z], hom=True), device=device).float()
@@ -239,6 +240,7 @@ class Leg(Part):
             )
             rel = rel_rot_mat(leg_pose_robot, target_leg_pose_robot)
             target = rel @ ee_pose
+            target[0, 2] += 0.03
             if self.satisfy(
                 ee_pose, target, pos_error_threshold=0.007, ori_error_threshold=0.15
             ):
@@ -266,6 +268,7 @@ class Leg(Part):
             )
             rel = rel_rot_mat(leg_pose_robot, target_leg_pose_robot)
             target = rel @ ee_pose
+            target[0, 2] += 0.03
             if self.satisfy(
                 ee_pose,
                 target,
@@ -286,7 +289,9 @@ class Leg(Part):
         elif self._state == "insert":
             # Dummy transition state for skill complete.
             target = self.prev_pose
-            next_state = "pre_grasp"
+            # Some dummy steps.
+            if self.curr_cnt - self.prev_cnt > 3: # Dummy steps for failure detection.
+                next_state = "pre_grasp"
         elif self._state == "release":
             target = self.prev_pose
             self.gripper_action = -1
@@ -322,6 +327,16 @@ class Leg(Part):
                 next_state = "release"
 
         skill_complete = self.may_transit_state(next_state)
+        skill_complete = self.detect_skill_failure(
+            skill_complete,
+            gripper_width,
+            table_pose,
+            0, # Always 0 for the top.
+            leg_pose,
+            self.part_idx,
+            furniture,
+            pos_threshold=[0.02, 0.025, 0.02]
+        )
 
         return (
             target[:3, 3],

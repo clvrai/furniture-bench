@@ -1464,6 +1464,7 @@ class FurnitureSimEnv(gym.Env):
                 self.part_idxs,
                 self.sim_to_april_mat,
                 self.april_to_robot_mat,
+                self.furniture,
             )
         elif not part2.pre_assemble_done:
             goal_pos, goal_ori, gripper, skill_complete = part2.pre_assemble(
@@ -1474,6 +1475,7 @@ class FurnitureSimEnv(gym.Env):
                 self.part_idxs,
                 self.sim_to_april_mat,
                 self.april_to_robot_mat,
+                self.furniture,
             )
         else:
             goal_pos, goal_ori, gripper, skill_complete = self.furniture.parts[
@@ -1487,6 +1489,7 @@ class FurnitureSimEnv(gym.Env):
                 self.sim_to_april_mat,
                 self.april_to_robot_mat,
                 self.furniture.parts[part_idx1].name,
+                self.furniture,
             )
 
         delta_pos = goal_pos - ee_pos

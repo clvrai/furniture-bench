@@ -47,6 +47,7 @@ class LampBulb(Leg):
         sim_to_april_mat,
         april_to_robot,
         assemble_to,
+        furntiure
     ):
         def rot_mat_tensor(x, y, z, device):
             return torch.tensor(rot_mat([x, y, z], hom=True), device=device).float()

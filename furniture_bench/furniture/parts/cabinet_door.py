@@ -26,7 +26,7 @@ class CabinetDoor(Part):
 
         self.skill_complete_next_states = [
             "lift_up",
-            "done",
+            "insert",
         ]  # Specificy next state after skill is complete. Screw done is handle in `get_assembly_action`
 
     def reset(self):
@@ -44,6 +44,7 @@ class CabinetDoor(Part):
         sim_to_april_mat,
         april_to_robot,
         assemble_to,
+        furniture
     ):
         next_state = self._state
 
@@ -165,16 +166,26 @@ class CabinetDoor(Part):
             if self.satisfy(
                 ee_pose,
                 org_target,
-                max_len=300,
+                max_len=150,
                 pos_error_threshold=0.0, ori_error_threshold=0.0
             ):
                 self.prev_pose = target
-                next_state = "done"
-        if self._state == "done":
+                next_state = "insert"
+        if self._state == "insert":
             self.gripper_action = -1
             target = self.prev_pose
 
         skill_complete = self.may_transit_state(next_state)
+        skill_complete = self.detect_skill_failure(
+            skill_complete,
+            gripper_width,
+            body_pose,
+            0, # Always 0 for the top.
+            door_pose,
+            self.part_idx,
+            furniture,
+            pos_threshold=[0.005, 0.005, 0.005] # Same as assembled threshold.
+        )
 
         return (
             target[:3, 3],

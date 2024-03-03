@@ -42,7 +42,7 @@ class CabinetBody(Part):
         self.prev_pose = None
         self.pre_assemble_done = False
 
-        self.body_grip_width = 0.01
+        self.body_grip_width = 0.007
         
         self.skill_complete_next_states = [
             "push",
@@ -63,6 +63,7 @@ class CabinetBody(Part):
         part_idxs,
         sim_to_april_mat,
         april_to_robot,
+        furniture
     ):
         next_state = self._state
 
@@ -176,6 +177,7 @@ class CabinetBody(Part):
             target = self.prev_pose
         
         skill_complete = self.may_transit_state(next_state)
+        skill_complete = self.detect_skill_failure(skill_complete, gripper_width)
 
         return (
             target[:3, 3],
