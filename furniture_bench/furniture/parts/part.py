@@ -277,6 +277,10 @@ class Part(ABC):
             return skill_complete
         if skill_complete == 1:
             return skill_complete # The first transition is always success.
+        # Check place failure for the table top.
+        if self._state == "done_place":
+            if part1_pose[2, 3] < -0.05: # 5cm from the ground.
+                return -1
         # Check grasping failure.
         if self.gripper_action == 1:
             if gripper_width <= self.gripper_target - 0.01 or gripper_width < 0.001:  # 1cm Margin or missed the object.

@@ -19,7 +19,7 @@ class TableTop(Part):
 
         self.skill_complete_next_states = [
             "push",
-            "go_up",
+            "done_place",
         ]  # Specificy next state after skill is complete.
         self.reset()
 
@@ -165,14 +165,20 @@ class TableTop(Part):
             )
             if self.satisfy(ee_pose, target):
                 self.prev_pose = target
-                next_state = "done"
-        if self._state == "done":
+                next_state = "done_place"
+        if self._state == "done_place":
             self.gripper_action = -1
             self.pre_assemble_done = True
             target = self.prev_pose
 
         skill_complete = self.may_transit_state(next_state)
-        skill_complete = self.detect_skill_failure(skill_complete, gripper_width)
+        # skill_complete = self.detect_skill_failure(skill_complete, gripper_width)
+
+        skill_complete = self.detect_skill_failure(
+            skill_complete,
+            gripper_width,
+            body_pose,
+        )
 
         return (
             target[:3, 3],
