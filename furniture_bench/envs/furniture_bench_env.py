@@ -40,6 +40,8 @@ class FurnitureBenchEnv(gym.Env):
         visualize_init_pose: bool = True,
         record: bool = False,
         manual_reset: bool = True,
+        abs_action: bool = False,
+        act_rot_repr="quat"
     ):
         """
         Args:
@@ -56,6 +58,8 @@ class FurnitureBenchEnv(gym.Env):
             visualize_init_pose (bool): If true, the initial pose of furniture parts is visualized.
             record (bool): If true, the video of the agent's observation is recorded.
             manual_reset (bool): If true, a manual reset of the environment is allowed.
+            abs_action (bool): If true, the action space is absolute (i.e. the action is the absolute pose of the end-effector).
+            act_rot_repr (str): Representation of the action rotation. Options are 'quat' and 'rot_6d'.
         """
         super(FurnitureBenchEnv, self).__init__()
 
@@ -89,6 +93,9 @@ class FurnitureBenchEnv(gym.Env):
         self.draw_marker = draw_marker
         self.manual_label = manual_label
         self.manual_reset = manual_reset
+        self.abs_action = abs_action
+        self.act_rot_repr = act_rot_repr
+
         if self.manual_reset:
             self.device_interface = make_device("keyboard")
 
@@ -105,7 +112,10 @@ class FurnitureBenchEnv(gym.Env):
         max_gripper_width = config["robot"]["max_gripper_width"][self.furniture_name]
 
         self.robot = Panda(
-            robot_config=config["robot"], max_gripper_width=max_gripper_width
+            robot_config=config["robot"],
+            max_gripper_width=max_gripper_width,
+            abs_action=self.abs_action,
+            act_rot_repr=self.act_rot_repr
         )
         self.robot.init_reset()  # Move to robot to original position.
 
@@ -182,7 +192,7 @@ class FurnitureBenchEnv(gym.Env):
 
         Args:
             action:
-                np.ndarray of size 8 (dx, dy, dz, x, y, z, w, grip)
+                np.ndarray of size 8 (dx, dy, dz, x, y, z, w, grip) if act_rot_repr is "quat".
         """
         obs, obs_error = self._get_observation()
         action_success = self.robot.execute(action)
@@ -194,7 +204,7 @@ class FurnitureBenchEnv(gym.Env):
             obs,
             self._reward(),
             self._done(),
-            {"action_success": action_success, "obs_success": True},
+            {"action_success": action_success, "obs_success": True, "is_success": self.is_success()},
         ]
 
         self.env_steps += 1
@@ -209,6 +219,11 @@ class FurnitureBenchEnv(gym.Env):
         """Reward is 1 if two parts are assembled."""
         # If manual_label is True, return 0 since the reward is manually labeled by data_collector.py.
         return 0 if self.manual_label else self.furniture.compute_assemble()
+
+    def is_success(self):
+        return [
+            {"task": self.furniture.all_assembled()}
+        ]
 
     def _done(self) -> bool:
         if self.manual_done:  # Done will be manually labeled by data_collector.py.
