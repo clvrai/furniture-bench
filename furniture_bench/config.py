@@ -1,4 +1,5 @@
 """Configuration for environment, robot, furniture, and camera."""
+
 import os
 from typing import Any, Dict
 
@@ -90,7 +91,11 @@ config: Dict[str, Any] = {
             [-0.21, 0.21],
             [0.07, 0.37],
         ],  # Furniture parts position limits.
-        "assembled_pos_threshold": [0.010, 0.005, 0.010], # Positional threshold for declaring the furniture assembled.
+        "assembled_pos_threshold": [
+            0.010,
+            0.005,
+            0.010,
+        ],  # Positional threshold for declaring the furniture assembled.
         "rel_pose_from_coordinate": {
             0: get_mat([-0.03, -0.03, 0], [0, 0, 0]),
             1: get_mat([0.03, -0.03, 0], [0, 0, 0]),
@@ -1390,7 +1395,8 @@ config: Dict[str, Any] = {
                 "name": "lamp_hood",
                 "asset_file": "furniture/urdf/lamp/lamp_hood.urdf",
                 "ids": [163, 164, 165, 166, 167, 168],
-                "reset_pos": [[-0.12, 0.16, -0.048583]] * 5,
+                # "reset_pos": [[-0.12, 0.16, -0.048583]] * 5,
+                "reset_pos": [[-0.08, 0.13, -0.048583]] * 5,
                 "reset_ori": [rot_mat(np.array([np.pi / 2, 0, 0]), hom=True)] * 5,
                 "default_assembled_pose": get_mat([0, -0.088324, 0], [0, 0, 0]),
                 "high_rand_reset_pos": [
@@ -1480,11 +1486,18 @@ config: Dict[str, Any] = {
                 "name": "lamp_bulb",
                 "asset_file": "furniture/urdf/lamp/lamp_bulb.urdf",
                 "ids": [174, 177, 176, 175],
-                "reset_pos": [[0.18, 0.13, -0.016]] * 4 + [[0.12, 0.31, -0.09]],
-                "reset_ori": [rot_mat(np.array([-np.arctan2(7.6, 52), 0, 0]), hom=True)] * 4
+                # "position_limits": [
+                #     [-0.21, 0.21],
+                #     [0.07, 0.37],
+                # ],  # Furniture parts position limits.
+                # "reset_pos": [[0.18, 0.13, -0.016]] * 4 + [[0.12, 0.31, -0.09]],
+                "reset_pos": [[-0.05, 0.27, -0.016]] * 4 + [[0.12, 0.31, -0.09]],
+                "reset_ori": [rot_mat(np.array([-np.arctan2(7.6, 52), 0, 0]), hom=True)]
+                * 4
                 + [rot_mat([-np.pi / 2, 0, 0], hom=True)],
                 "default_assembled_pose": get_mat(
-                    [0, -0.0678, 0], [0, 0, np.pi],
+                    [0, -0.0678, 0],
+                    [0, 0, np.pi],
                 ),
                 "high_rand_reset_pos": [
                     [np.array([0.07429203, 0.29051307, -0.0336427])],
@@ -1880,7 +1893,9 @@ config: Dict[str, Any] = {
                         )
                     ],
                 ],
-                "default_assembled_pose": get_mat([-0.02275, -0.0375, 0.025], [0, np.pi / 2, 0])
+                "default_assembled_pose": get_mat(
+                    [-0.02275, -0.0375, 0.025], [0, np.pi / 2, 0]
+                ),
             },
             "cabinet_door_right": {
                 "name": "cabinet_door_right",
@@ -1925,7 +1940,9 @@ config: Dict[str, Any] = {
                         )
                     ],
                 ],
-                "default_assembled_pose": get_mat([-0.0275, -0.0375, -0.025], [0, np.pi / 2, 0])
+                "default_assembled_pose": get_mat(
+                    [-0.0275, -0.0375, -0.025], [0, np.pi / 2, 0]
+                ),
             },
             "cabinet_top": {
                 "name": "cabinet_top",
@@ -1971,7 +1988,9 @@ config: Dict[str, Any] = {
                         )
                     ],
                 ],
-                "default_assembled_pose": get_mat([0.0, -0.07750, 0], [0, -np.pi / 2, 0])
+                "default_assembled_pose": get_mat(
+                    [0.0, -0.07750, 0], [0, -np.pi / 2, 0]
+                ),
             },
         },
     },

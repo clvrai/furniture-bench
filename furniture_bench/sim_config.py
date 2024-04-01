@@ -14,7 +14,14 @@ sim_config["furniture"]["assembled_pos_threshold"] = [0.005, 0.005, 0.005]
 
 
 # Timeout for # environment steps for each furniture model.
-sim_config["scripted_timeout"] = {"one_leg": 600, "cabinet": 1500, "lamp": 1000, "round_table": 1300}
+sim_config["scripted_timeout"] = {
+    "one_leg": 700,  # Increased from 600
+    "cabinet": 1500,
+    "lamp": 1100,  # Increased from 1000
+    "round_table": 1500,  # Increased from 1300
+    "drawer": 1_000,  # Increased from 1300
+    "stool": 1_000,  # Increased from 1300
+}
 
 # Simulator options.
 sim_params = gymapi.SimParams()
@@ -42,6 +49,7 @@ sim_config["asset"] = {}
 sim_config["robot"].update(
     {
         "kp": [90, 90, 90, 70.0, 60.0, 80.0],  # Default positional gains.
+        # "kp": [270, 270, 270, 210, 180, 240],  # Cranked up gains
         "kv": None,  # Default velocity gains.
         "arm_frictions": [
             0.05,
@@ -205,7 +213,8 @@ sim_config["asset"]["chair_nut2"] = chair_nut1_asset_options
 # Volume:  78694 mm^3
 # Mass: 59.99g
 lamp_hood_asset_options = default_asset_options()
-lamp_hood_asset_options.density = 762.31
+# lamp_hood_asset_options.density = 762.31
+lamp_hood_asset_options.density = 200
 sim_config["asset"]["lamp_hood"] = lamp_hood_asset_options
 
 # Volume:  174649 mm^3
@@ -217,7 +226,9 @@ sim_config["asset"]["lamp_base"] = lamp_base_asset_options
 # Volume: 70576 mm^3
 # Mass: 38.47g
 lamp_bulb_asset_options = default_asset_options()
-lamp_bulb_asset_options.density = 545.09
+# lamp_bulb_asset_options.density = 545.09
+# lamp_bulb_asset_options.density = 369.98
+lamp_bulb_asset_options.density = 100
 sim_config["asset"]["lamp_bulb"] = lamp_bulb_asset_options
 
 # Stool

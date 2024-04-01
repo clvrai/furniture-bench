@@ -4,9 +4,8 @@ from furniture_bench.furniture.furniture import Furniture
 from furniture_bench.furniture.parts.round_table_top import RoundTableTop
 from furniture_bench.furniture.parts.round_table_leg import RoundTableLeg
 from furniture_bench.furniture.parts.round_table_base import RoundTableBase
-from furniture_bench.utils.pose import get_mat, rot_mat
+from furniture_bench.utils.pose import get_mat
 from furniture_bench.config import config
-import furniture_bench.utils.transform as T
 
 
 class RoundTable(Furniture):

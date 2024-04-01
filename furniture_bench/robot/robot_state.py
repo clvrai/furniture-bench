@@ -1,4 +1,5 @@
 """Define the types of robot state"""
+
 from dataclasses import dataclass
 from enum import Enum
 

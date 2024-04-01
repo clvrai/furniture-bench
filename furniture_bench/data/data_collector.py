@@ -15,6 +15,7 @@ from furniture_bench.config import config
 from furniture_bench.sim_config import sim_config
 from furniture_bench.perception.image_utils import resize, resize_crop
 from furniture_bench.envs.initialization_mode import Randomness
+from furniture_bench.utils.scripted_demo_mod import scale_scripted_action
 
 
 class DataCollector:
@@ -39,6 +40,7 @@ class DataCollector:
         save_failure: bool = False,
         num_demos: int = 100,
         resize_sim_img: bool = False,
+        ctrl_mode: str = 'osc'
     ):
         """
         Args:
@@ -57,6 +59,7 @@ class DataCollector:
             save_failure (bool): Whether to save failure trajectories.
             num_demos (int): The maximum number of demonstrations to collect in this run. Internal loop will be terminated when this number is reached.
             resize_sim_img (bool): Read resized image
+            ctrl_mode (str): 'osc' (joint torque, with operation space control) or 'diffik' (joint impedance, with differential inverse kinematics control)
         """
         if is_sim:
             self.env = gym.make(
@@ -73,7 +76,8 @@ class DataCollector:
                 channel_first=False,
                 randomness=randomness,
                 compute_device_id=compute_device_id,
-                graphics_device_id=graphics_device_id
+                graphics_device_id=graphics_device_id,
+                ctrl_mode=ctrl_mode
             )
         else:
             if randomness == "med":
@@ -120,6 +124,13 @@ class DataCollector:
             # Get an action.
             if self.scripted:
                 action, skill_complete = self.env.get_assembly_action()
+                pos_bounds_m = 0.02 if self.env.ctrl_mode == 'diffik' else 0.025
+                ori_bounds_deg = 15 if self.env.ctrl_mode == 'diffik' else 20
+                action = scale_scripted_action(
+                    action.detach().cpu().clone(),
+                    pos_bounds_m=pos_bounds_m,
+                    ori_bounds_deg=ori_bounds_deg,
+                    device=self.env.device)
                 collect_enum = CollectEnum.DONE_FALSE
             else:
                 action, collect_enum = self.device_interface.get_action()

@@ -184,7 +184,11 @@ class LampHood(Part):
                 C.to_homogeneous(target_pos, target_ori)
             )
             if self.satisfy(
-                ee_pose, target, pos_error_threshold=0.01, ori_error_threshold=0.3
+                ee_pose,
+                target,
+                pos_error_threshold=0.01,
+                ori_error_threshold=0.3,
+                max_len=35,
             ):
                 self.prev_pose = target
                 next_state = "move_center"
