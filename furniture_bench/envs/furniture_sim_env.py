@@ -103,6 +103,10 @@ class FurnitureSimEnv(gym.Env):
         super(FurnitureSimEnv, self).__init__()
         self.device = torch.device("cuda", compute_device_id)
 
+        assert (
+            ctrl_mode == "diffik"
+        ), "Only 'diffik' controller is supported for now (parallization)."
+
         self.assemble_idx = 0
         # Furniture for each environment (reward, reset).
         self.furnitures = [furniture_factory(furniture) for _ in range(num_envs)]
@@ -265,7 +269,7 @@ class FurnitureSimEnv(gym.Env):
         self.ee_idxs = []
         self.ee_handles = []
         self.osc_ctrls = []
-        self.diffik_ctrls = []
+        # self.diffik_ctrls = []
 
         self.base_idxs = []
         self.part_idxs = {}
@@ -789,141 +793,125 @@ class FurnitureSimEnv(gym.Env):
             self.init_ctrl()
         # Set the goal
         ee_pos, ee_quat = self.get_ee_pose()
+        import pytorch3d.transforms as pt
 
-        for env_idx in range(self.num_envs):
-            if self.action_type == "delta":
-                if self.act_rot_repr == "quat":
-                    action_quat = action[env_idx][3:7]
-                elif self.act_rot_repr == "rot_6d":
-                    import pytorch3d.transforms as pt
+        # Move ee_quat real to the first element.
+        ee_quat = torch.cat([ee_quat[:, -1:], ee_quat[:, :-1]], dim=1)
 
-                    # Create "actions" dataset.
-                    rot_6d = action[:, 3:9]
-                    rot_mat = pt.rotation_6d_to_matrix(rot_6d)
+        if self.act_rot_repr == "quat":
+            # Real part is the last element in the quaternion.
+            action_quat = action[:, 3:7]
 
-                    # pytorch3d has the real part first (w, x, y, z)
-                    quat = pt.matrix_to_quaternion(rot_mat)
-                    action_quat = quat[env_idx]
+            # Move the real part to the first element.
+            action_quat = torch.cat([action_quat[:, -1:], action_quat[:, :-1]], dim=1)
+        elif self.act_rot_repr == "rot_6d":
+            rot_6d = action[:, 3:9]
+            rot_mat = pt.rotation_6d_to_matrix(rot_6d)
+            # Real part is the first element in the quaternion.
+            action_quat = pt.matrix_to_quaternion(rot_mat)
+        else:
+            # Convert axis angle to quaternion.
+            action_quat = pt.matrix_to_quaternion(
+                pt.axis_angle_to_matrix(action[:, 3:6])
+            )
 
-                    # IsaacGym expects the real part last (w, x, y, z) -> (x, y, z, w)
-                    action_quat = torch.cat([action_quat[1:], action_quat[:1]])
+        step_ctrl = self.osc_ctrls if self.ctrl_mode == "osc" else self.diffik_ctrls
 
-                else:
-                    action_quat = C.axisangle2quat(action[env_idx][3:6])
+        if self.action_type == "delta":
+            goals_pos = action[:, :3] + ee_pos
+            goals_quat = pt.quaternion_multiply(ee_quat, action_quat)
+        elif self.action_type == "pos":
+            goals_pos = action[:, :3]
+            goals_quat = action_quat
 
-                if self.ctrl_mode == "osc":
-                    step_ctrl = self.osc_ctrls[env_idx]
-                else:
-                    step_ctrl = self.diffik_ctrls[env_idx]
-                step_ctrl.set_goal(
-                    action[env_idx][:3] + ee_pos[env_idx],
-                    C.quat_multiply(ee_quat[env_idx], action_quat).to(self.device),
-                )
-            elif self.action_type == "pos":
-                if self.act_rot_repr == "quat":
-                    action_quat = action[env_idx][3:7]
-                elif self.act_rot_repr == "rot_6d":
-                    import pytorch3d.transforms as pt
+        goals_quat = torch.cat([goals_quat[:, 1:], goals_quat[:, :1]], dim=1)
 
-                    # Create "actions" dataset.
-                    rot_6d = action[:, 3:9]
-                    rot_mat = pt.rotation_6d_to_matrix(rot_6d)
-
-                    # pytorch3d has the real part first (w, x, y, z)
-                    quat = pt.matrix_to_quaternion(rot_mat)
-                    action_quat = quat[env_idx]
-
-                    # IsaacGym expects the real part last (w, x, y, z) -> (x, y, z, w)
-                    action_quat = torch.cat([action_quat[1:], action_quat[:1]])
-
-                else:
-                    action_quat = C.axisangle2quat(action[env_idx][3:6])
-
-                if self.ctrl_mode == "osc":
-                    step_ctrl = self.osc_ctrls[env_idx]
-                else:
-                    step_ctrl = self.diffik_ctrls[env_idx]
-                step_ctrl.set_goal(action[env_idx][:3], action_quat.to(self.device))
+        # TODO: Make the ctrl accept batched goals.
+        # for env_idx in range(self.num_envs):
+        step_ctrl.set_goal(goals_pos, goals_quat)
 
         for _ in range(self.sim_steps):
             self.refresh()
 
-            if self.ee_laser:
-                # draw lines
-                for _ in range(3):
-                    noise = (np.random.random(3) - 0.5).astype(np.float32).reshape(
-                        1, 3
-                    ) * 0.001
-                    offset = self.franka_from_origin_mat[:-1, -1].reshape(1, 3)
-                    ee_z_axis = (
-                        C.quat2mat(ee_quat[env_idx]).cpu().numpy()[:, 2].reshape(1, 3)
-                    )
-                    line_start = (
-                        ee_pos[env_idx].cpu().numpy().reshape(1, 3) + offset + noise
-                    )
+            # NOTE: I wonder if it was just an accident that this worked (i.e., this was only true
+            # whenever we only used one environment anyway).
+            # if self.ee_laser:
+            #     # draw lines
+            #     for _ in range(3):
+            #         noise = (np.random.random(3) - 0.5).astype(np.float32).reshape(
+            #             1, 3
+            #         ) * 0.001
+            #         offset = self.franka_from_origin_mat[:-1, -1].reshape(1, 3)
+            #         ee_z_axis = (
+            #             C.quat2mat(ee_quat[env_idx]).cpu().numpy()[:, 2].reshape(1, 3)
+            #         )
+            #         line_start = (
+            #             ee_pos[env_idx].cpu().numpy().reshape(1, 3) + offset + noise
+            #         )
 
-                    # Move the start point higher
-                    line_start = line_start - ee_z_axis * 0.019
+            #         # Move the start point higher
+            #         line_start = line_start - ee_z_axis * 0.019
 
-                    line_end = line_start + ee_z_axis
-                    lines = np.concatenate([line_start, line_end], axis=0)
-                    colors = np.array([[1.0, 0.0, 0.0]], dtype=np.float32)
-                    self.isaac_gym.add_lines(
-                        self.viewer, self.envs[env_idx], 1, lines, colors
-                    )
+            #         line_end = line_start + ee_z_axis
+            #         lines = np.concatenate([line_start, line_end], axis=0)
+            #         colors = np.array([[1.0, 0.0, 0.0]], dtype=np.float32)
+            #         self.isaac_gym.add_lines(
+            #             self.viewer, self.envs[env_idx], 1, lines, colors
+            #         )
 
             pos_action = torch.zeros_like(self.dof_pos)
             torque_action = torch.zeros_like(self.dof_pos)
             grip_action = torch.zeros((self.num_envs, 1))
-            for env_idx in range(self.num_envs):
-                grasp = action[env_idx, -1]
-                if (
-                    torch.sign(grasp) != torch.sign(self.last_grasp[env_idx])
-                    and torch.abs(grasp) > self.grasp_margin
-                ):
-                    grip_sep = self.max_gripper_width if grasp < 0 else 0.0
-                    self.last_grasp[env_idx] = grasp
-                else:
-                    # Keep the gripper open if the grasp has not changed
-                    if self.last_grasp[env_idx] < 0:
-                        grip_sep = self.max_gripper_width
-                    else:
-                        grip_sep = 0.0
 
-                grip_action[env_idx, -1] = grip_sep
+            grasp = action[:, -1]
+            grip_sep = torch.where(
+                (torch.sign(grasp) != torch.sign(self.last_grasp))
+                & (torch.abs(grasp) > self.grasp_margin),
+                torch.where(grasp < 0, self.max_gripper_width, torch.zeros_like(grasp)),
+                torch.where(
+                    self.last_grasp < 0,
+                    self.max_gripper_width,
+                    torch.zeros_like(self.last_grasp),
+                ),
+            )
+            self.last_grasp = grasp
+            grip_action[:, -1] = grip_sep
 
-                state_dict = {}
-                ee_pos, ee_quat = self.get_ee_pose()
-                state_dict["ee_pose"] = C.pose2mat(
-                    ee_pos[env_idx], ee_quat[env_idx], self.device
-                ).t()  # OSC expect column major
-                state_dict["ee_pos"] = ee_pos[env_idx]
-                state_dict["ee_quat"] = ee_quat[env_idx]
-                state_dict["joint_positions"] = self.dof_pos[env_idx][:7]
-                state_dict["joint_velocities"] = self.dof_vel[env_idx][:7]
-                state_dict["mass_matrix"] = self.mm[env_idx][
-                    :7, :7
-                ].t()  # OSC expect column major
-                state_dict["jacobian"] = self.jacobian_eef[
-                    env_idx
-                ].t()  # OSC expect column major
-                state_dict["jacobian_diffik"] = self.jacobian_eef[env_idx]
-                if self.ctrl_mode == "osc":
-                    torque_action[env_idx, :7] = self.osc_ctrls[env_idx](state_dict)[
-                        "joint_torques"
-                    ]
-                else:
-                    pos_action[env_idx, :7] = self.diffik_ctrls[env_idx](state_dict)[
-                        "joint_positions"
-                    ]
+            ee_pos, ee_quat = self.get_ee_pose()
+            state_dict = {
+                # "ee_pose": C.pose2mat(ee_pos, ee_quat, self.device).transpose(
+                #     -1, -2
+                # ),  # OSC expect column major
+                "ee_pos": ee_pos,
+                "ee_quat": ee_quat,
+                "joint_positions": self.dof_pos[:, :7],
+                # "joint_velocities": self.dof_vel[:, :7],
+                # "mass_matrix": self.mm[:, :7, :7].transpose(
+                #     -1, -2
+                # ),  # OSC expect column major
+                # "jacobian": self.jacobian_eef.transpose(
+                #     -1, -2
+                # ),  # OSC expect column major
+                "jacobian_diffik": self.jacobian_eef,
+            }
 
-                if grip_sep > 0:
-                    torque_action[env_idx, 7:9] = sim_config["robot"]["gripper_torque"]
-                    # pos_action[env_idx, 7:9] = sim_config["robot"]["gripper_open"]
-                    pos_action[env_idx, 7:9] = self.max_gripper_width / 2
-                else:
-                    torque_action[env_idx, 7:9] = -sim_config["robot"]["gripper_torque"]
-                    pos_action[env_idx, 7:9] = 0.0
+            if self.ctrl_mode == "osc":
+                torque_action[:, :7] = self.osc_ctrls(state_dict)["joint_torques"]
+            else:
+                pos_action[:, :7] = self.diffik_ctrls(state_dict)["joint_positions"]
+
+            gripper_action_mask = (grip_sep > 0).unsqueeze(1)
+
+            torque_action[:, 7:9] = torch.where(
+                gripper_action_mask,
+                sim_config["robot"]["gripper_torque"],
+                -sim_config["robot"]["gripper_torque"],
+            )
+            pos_action[:, 7:9] = torch.where(
+                gripper_action_mask,
+                self.max_gripper_width / 2,
+                torch.zeros_like(pos_action[:, 7:9]),
+            )
 
             if self.ctrl_mode == "osc":
                 self.isaac_gym.set_dof_actuation_force_tensor(
@@ -1106,27 +1094,27 @@ class FurnitureSimEnv(gym.Env):
             else torch.sqrt(kp) * 2.0
         )
 
-        ee_pos, ee_quat = self.get_ee_pose()
-        for env_idx in range(self.num_envs):
-            self.osc_ctrls.append(
-                osc_factory(
-                    real_robot=False,
-                    ee_pos_current=ee_pos[env_idx],
-                    ee_quat_current=ee_quat[env_idx],
-                    init_joints=torch.tensor(
-                        config["robot"]["reset_joints"], device=self.device
-                    ),
-                    kp=kp,
-                    kv=kv,
-                    mass_matrix_offset_val=[0.0, 0.0, 0.0],
-                    position_limits=torch.tensor(
-                        config["robot"]["position_limits"], device=self.device
-                    ),
-                    joint_kp=10,
-                )
-            )
+        # ee_pos, ee_quat = self.get_ee_pose()
+        # for env_idx in range(self.num_envs):
+        #     self.osc_ctrls.append(
+        #         osc_factory(
+        #             real_robot=False,
+        #             ee_pos_current=ee_pos[env_idx],
+        #             ee_quat_current=ee_quat[env_idx],
+        #             init_joints=torch.tensor(
+        #                 config["robot"]["reset_joints"], device=self.device
+        #             ),
+        #             kp=kp,
+        #             kv=kv,
+        #             mass_matrix_offset_val=[0.0, 0.0, 0.0],
+        #             position_limits=torch.tensor(
+        #                 config["robot"]["position_limits"], device=self.device
+        #             ),
+        #             joint_kp=10,
+        #         )
+        #     )
 
-            self.diffik_ctrls.append(diffik_factory(real_robot=False))
+        self.diffik_ctrls = diffik_factory(real_robot=False)
         self.ctrl_started = True
 
     def get_ee_pose(self):
