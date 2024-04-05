@@ -102,6 +102,7 @@ class FurnitureSimEnv(gym.Env):
         """
         super(FurnitureSimEnv, self).__init__()
         self.device = torch.device("cuda", compute_device_id)
+        print("1")
 
         assert (
             ctrl_mode == "diffik"
@@ -111,6 +112,7 @@ class FurnitureSimEnv(gym.Env):
         # Furniture for each environment (reward, reset).
         self.furnitures = [furniture_factory(furniture) for _ in range(num_envs)]
 
+        print("2")
         if num_envs == 1:
             self.furniture = self.furnitures[0]
         else:
@@ -143,9 +145,10 @@ class FurnitureSimEnv(gym.Env):
         self.randomness = str_to_enum(randomness)
         self.high_random_idx = high_random_idx
         self.last_grasp = torch.tensor([-1.0] * num_envs, device=self.device)
-        self.grasp_margin = 0.02 - 0.001  # To prevent repeating open an close actions.
+        self.grasp_margin = 0.02 - 0.001  # To prevent repeating open and close actions.
         self.max_gripper_width = config["robot"]["max_gripper_width"][furniture]
 
+        print("3")
         self.save_camera_input = save_camera_input
         self.img_size = sim_config["camera"][
             "resized_img_size" if resize_img else "color_img_size"
@@ -165,15 +168,25 @@ class FurnitureSimEnv(gym.Env):
         self.ee_laser = ee_laser
 
         self._create_ground_plane()
+        print("3.1")
         self._setup_lights()
+        print("3.2")
         self.import_assets()
+        print("3.3")
         self.create_envs()
+        print("3.4")
         self.set_viewer()
+        print("3.5")
         self.set_camera()
+        print("3.6")
         self.acquire_base_tensors()
+
+        print("4")
 
         self.isaac_gym.prepare_sim(self.sim)
         self.refresh()
+
+        print("5")
 
         self.isaac_gym.refresh_actor_root_state_tensor(self.sim)
 
@@ -949,6 +962,8 @@ class FurnitureSimEnv(gym.Env):
             (self.num_envs, 1), dtype=torch.float32, device=self.device
         )
 
+        # return rewards
+
         if self.manual_label:
             # Return zeros since the reward is manually labeled by data_collector.py.
             return rewards
@@ -987,6 +1002,7 @@ class FurnitureSimEnv(gym.Env):
             dtype=torch.float32,
             device=self.device,
         )
+        # return parts_poses, founds
         if sim_coord:
             # Return the poses in the simulator coordinate.
             for part_idx in range(len(self.furniture.parts)):
@@ -999,26 +1015,74 @@ class FurnitureSimEnv(gym.Env):
 
             return parts_poses, founds
 
-        for env_idx in range(self.num_envs):
-            for part_idx in range(len(self.furniture.parts)):
-                part = self.furniture.parts[part_idx]
-                rb_idx = self.part_idxs[part.name][env_idx]
-                part_pose = self.rb_states[rb_idx, :7]
-                # To AprilTag coordinate.
-                part_pose = torch.concat(
-                    [
-                        *C.mat2pose(
-                            self.sim_coord_to_april_coord(
-                                C.pose2mat(
-                                    part_pose[:3], part_pose[3:7], device=self.device
-                                )
-                            )
-                        )
-                    ]
-                )
-                parts_poses[
-                    env_idx, part_idx * self.pose_dim : (part_idx + 1) * self.pose_dim
-                ] = part_pose
+        # for env_idx in range(self.num_envs):
+        #     for part_idx in range(len(self.furniture.parts)):
+        #         part = self.furniture.parts[part_idx]
+        #         rb_idx = self.part_idxs[part.name][env_idx]
+        #         part_pose = self.rb_states[rb_idx, :7]
+        #         # To AprilTag coordinate.
+        #         part_pose = torch.concat(
+        #             [
+        #                 *C.mat2pose(
+        #                     self.sim_coord_to_april_coord(
+        #                         C.pose2mat(
+        #                             part_pose[:3], part_pose[3:7], device=self.device
+        #                         )
+        #                     )
+        #                 )
+        #             ]
+        #         )
+        #         parts_poses[
+        #             env_idx, part_idx * self.pose_dim : (part_idx + 1) * self.pose_dim
+        #         ] = part_pose
+
+        # parts_poses_cmp = parts_poses.clone()
+
+        # Convert poses to AprilTag coordinate.
+        # TODO: Debug this part.
+        print("[NB] This part is not fully correct right now.")
+        rb_indices = torch.stack(
+            [torch.tensor(self.part_idxs[part.name]) for part in self.furniture.parts],
+            dim=0,
+        ).T
+        part_poses = self.rb_states[rb_indices, :7]
+        # Check the devices of all the tensors
+        part_poses_mat = C.pose2mat_batched(
+            part_poses[:, :, :3], part_poses[:, :, 3:7], device=self.device
+        )
+        # print(
+        #     "rb_indices",
+        #     rb_indices.shape,
+        #     "self.rb_states",
+        #     self.rb_states.shape,
+        #     "parts_poses",
+        #     part_poses.shape,
+        #     "part_poses_mat",
+        #     part_poses_mat.shape,
+        # )
+        april_coord_poses_mat = self.sim_coord_to_april_coord(part_poses_mat)
+        april_coord_poses = torch.cat(C.mat2pose_batched(april_coord_poses_mat), dim=-1)
+        parts_poses = april_coord_poses.view(self.num_envs, -1)
+
+        # print(
+        #     "parts_poses",
+        #     parts_poses.shape,
+        #     "parts_poses_cmp",
+        #     parts_poses_cmp.shape,
+        # )
+        # Compute the difference between the two methods.
+        # diff = parts_poses - parts_poses_cmp
+        # diff_norm = torch.norm(diff, dim=-1)
+        # print(f"diff_norm: {diff_norm.max()}")
+        # print(diff)
+
+        # for a, b in zip(parts_poses, parts_poses_cmp):
+        #     for i, (aa, bb) in enumerate(zip(a, b), start=0):
+        #         aa, bb = aa.item(), bb.item()
+        #         print(f"{(i % 7) + 1}: {aa:.4f} {bb:.4f} {aa - bb:.4f}")
+
+        #     print()
+
         return parts_poses, founds
 
     def get_parts_poses(self, sim_coord=False):
@@ -1052,9 +1116,11 @@ class FurnitureSimEnv(gym.Env):
         joint_velocities = self.dof_vel[:, :7]
         joint_torques = self.forces
         ee_pos, ee_quat = self.get_ee_pose()
-        for q in ee_quat:
-            if q[3] < 0:
-                q *= -1
+
+        # Make sure the real part of the quaternion is positive.
+        negative_mask = ee_quat[:, 3] < 0
+        ee_quat[negative_mask] *= -1
+
         ee_pos_vel = self.rb_states[self.ee_idxs, 7:10]
         ee_ori_vel = self.rb_states[self.ee_idxs, 10:]
         gripper_width = self.gripper_width()
@@ -1245,7 +1311,9 @@ class FurnitureSimEnv(gym.Env):
                 (
                     parts_poses,
                     _,
-                ) = self._get_parts_poses()  # Part poses in AprilTag coordinate.
+                ) = self._get_parts_poses(
+                    sim_coord=False
+                )  # Part poses in AprilTag.
                 if self.np_step_out:
                     parts_poses = parts_poses.cpu().numpy()
                 obs["parts_poses"] = parts_poses
