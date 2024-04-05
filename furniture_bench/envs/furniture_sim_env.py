@@ -25,6 +25,8 @@ import cv2
 import gym
 import numpy as np
 
+import pytorch3d.transforms as pt
+
 import furniture_bench.utils.transform as T
 import furniture_bench.controllers.control_utils as C
 from furniture_bench.envs.initialization_mode import Randomness, str_to_enum
@@ -102,7 +104,6 @@ class FurnitureSimEnv(gym.Env):
         """
         super(FurnitureSimEnv, self).__init__()
         self.device = torch.device("cuda", compute_device_id)
-        print("1")
 
         assert (
             ctrl_mode == "diffik"
@@ -112,7 +113,6 @@ class FurnitureSimEnv(gym.Env):
         # Furniture for each environment (reward, reset).
         self.furnitures = [furniture_factory(furniture) for _ in range(num_envs)]
 
-        print("2")
         if num_envs == 1:
             self.furniture = self.furnitures[0]
         else:
@@ -148,7 +148,6 @@ class FurnitureSimEnv(gym.Env):
         self.grasp_margin = 0.02 - 0.001  # To prevent repeating open and close actions.
         self.max_gripper_width = config["robot"]["max_gripper_width"][furniture]
 
-        print("3")
         self.save_camera_input = save_camera_input
         self.img_size = sim_config["camera"][
             "resized_img_size" if resize_img else "color_img_size"
@@ -168,25 +167,15 @@ class FurnitureSimEnv(gym.Env):
         self.ee_laser = ee_laser
 
         self._create_ground_plane()
-        print("3.1")
         self._setup_lights()
-        print("3.2")
         self.import_assets()
-        print("3.3")
         self.create_envs()
-        print("3.4")
         self.set_viewer()
-        print("3.5")
         self.set_camera()
-        print("3.6")
         self.acquire_base_tensors()
-
-        print("4")
 
         self.isaac_gym.prepare_sim(self.sim)
         self.refresh()
-
-        print("5")
 
         self.isaac_gym.refresh_actor_root_state_tensor(self.sim)
 
@@ -804,12 +793,12 @@ class FurnitureSimEnv(gym.Env):
 
         if not self.ctrl_started:
             self.init_ctrl()
+
         # Set the goal
-        ee_pos, ee_quat = self.get_ee_pose()
-        import pytorch3d.transforms as pt
+        ee_pos, ee_quat_xyzw = self.get_ee_pose()
 
         # Move ee_quat real to the first element.
-        ee_quat = torch.cat([ee_quat[:, -1:], ee_quat[:, :-1]], dim=1)
+        ee_quat = C.quat_xyzw_to_wxyz(ee_quat_xyzw)
 
         if self.act_rot_repr == "quat":
             # Real part is the last element in the quaternion.
@@ -992,11 +981,6 @@ class FurnitureSimEnv(gym.Env):
             parts_poses: (num_envs, num_parts * pose_dim). The poses of all parts in the AprilTag frame.
             founds: (num_envs, num_parts). Always 1 since we don't use AprilTag for detection in simulation.
         """
-        parts_poses = torch.zeros(
-            (self.num_envs, len(self.furniture.parts) * self.pose_dim),
-            dtype=torch.float32,
-            device=self.device,
-        )
         founds = torch.ones(
             (self.num_envs, len(self.furniture.parts)),
             dtype=torch.float32,
@@ -1004,6 +988,11 @@ class FurnitureSimEnv(gym.Env):
         )
         # return parts_poses, founds
         if sim_coord:
+            parts_poses = torch.zeros(
+                (self.num_envs, len(self.furniture.parts) * self.pose_dim),
+                dtype=torch.float32,
+                device=self.device,
+            )
             # Return the poses in the simulator coordinate.
             for part_idx in range(len(self.furniture.parts)):
                 part = self.furniture.parts[part_idx]
@@ -1038,9 +1027,9 @@ class FurnitureSimEnv(gym.Env):
 
         # parts_poses_cmp = parts_poses.clone()
 
-        # Convert poses to AprilTag coordinate.
-        # TODO: Debug this part.
-        print("[NB] This part is not fully correct right now.")
+        # # Convert poses to AprilTag coordinate.
+        # # TODO: Debug this part.
+        # print("[NB] This part is not fully correct right now.")
         rb_indices = torch.stack(
             [torch.tensor(self.part_idxs[part.name]) for part in self.furniture.parts],
             dim=0,
