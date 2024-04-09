@@ -22,7 +22,11 @@ def diffik_factory(real_robot=True, *args, **kwargs):
     class DiffIKController(base):
         """Differential Inverse Kinematics Controller"""
 
-        def __init__(self):
+        def __init__(
+            self,
+            pos_scalar=4.0,
+            rot_scalar=9.0,
+        ):
             """Initialize Differential Inverse Kinematics Controller.
 
             Args:
@@ -33,10 +37,14 @@ def diffik_factory(real_robot=True, *args, **kwargs):
             self.ee_pos_error = None
             self.ee_rot_error = None
 
-            self.pos_scalar = 4.0 / 4
-            self.rot_scalar = 9.0 / 4
+            self.pos_scalar = pos_scalar
+            self.rot_scalar = rot_scalar
 
             self.scale_errors = True
+
+            # print(
+            #     f"Making DiffIK controller with pos_scalar: {pos_scalar}, rot_scalar: {rot_scalar}"
+            # )
 
         def forward(
             self, state_dict: Dict[str, torch.Tensor]

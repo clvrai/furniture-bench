@@ -109,6 +109,12 @@ class FurnitureSimEnv(gym.Env):
             ctrl_mode == "diffik"
         ), "Only 'diffik' controller is supported for now (parallization)."
 
+        # NOTE: This is solely for the grid search
+        self.pos_scalar = kwargs.get("pos_scalar", 4.0)
+        self.rot_scalar = kwargs.get("rot_scalar", 9.0)
+        self.stiffness = kwargs.get("stiffness", 1000.0)
+        self.damping = kwargs.get("damping", 200.0)
+
         self.assemble_idx = 0
         # Furniture for each environment (reward, reset).
         self.furnitures = [furniture_factory(furniture) for _ in range(num_envs)]
@@ -389,8 +395,9 @@ class FurnitureSimEnv(gym.Env):
                 franka_dof_props["friction"][:7] = sim_config["robot"]["arm_frictions"]
             else:
                 franka_dof_props["driveMode"][:7].fill(gymapi.DOF_MODE_POS)
-                franka_dof_props["stiffness"][:7].fill(1000.0)
-                franka_dof_props["damping"][:7].fill(200.0)
+                franka_dof_props["stiffness"][:7].fill(self.stiffness)
+                franka_dof_props["damping"][:7].fill(self.damping)
+                # print(f"Stiffness: {self.stiffness}, Damping: {self.damping}")
             # Grippers
             franka_dof_props["driveMode"][7:].fill(gymapi.DOF_MODE_EFFORT)
             franka_dof_props["stiffness"][7:].fill(0)
@@ -1169,7 +1176,11 @@ class FurnitureSimEnv(gym.Env):
         #         )
         #     )
 
-        self.diffik_ctrls = diffik_factory(real_robot=False)
+        self.diffik_ctrls = diffik_factory(
+            real_robot=False,
+            pos_scalar=self.pos_scalar,
+            rot_scalar=self.rot_scalar,
+        )
         self.ctrl_started = True
 
     def get_ee_pose(self):
