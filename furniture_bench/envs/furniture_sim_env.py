@@ -115,6 +115,11 @@ class FurnitureSimEnv(gym.Env):
         self.stiffness = kwargs.get("stiffness", 1000.0)
         self.damping = kwargs.get("damping", 200.0)
 
+        print(
+            f"Making DiffIK controller with pos_scalar: {self.pos_scalar}, rot_scalar: {self.rot_scalar}"
+        )
+        print(f"Stiffness: {self.stiffness}, Damping: {self.damping}")
+
         self.assemble_idx = 0
         # Furniture for each environment (reward, reset).
         self.furnitures = [furniture_factory(furniture) for _ in range(num_envs)]
