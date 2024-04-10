@@ -745,7 +745,7 @@ class FurnitureSimEnv(gym.Env):
             elif k.startswith("depth"):
                 obs_dict[k] = gym.spaces.Box(0, 255, img_size)
             elif k == "parts_poses":
-                obs_dict[k] = gym.spaces.Box(low, high, parts_poses)
+                obs_dict[k] = gym.spaces.Box(low, high, (parts_poses,))
             else:
                 raise ValueError(f"FurnitureSim does not support observation ({k}).")
 
