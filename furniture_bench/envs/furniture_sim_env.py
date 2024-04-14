@@ -853,63 +853,63 @@ class FurnitureSimEnv(gym.Env):
             #         self.isaac_gym.add_lines(
             #             self.viewer, self.envs[env_idx], 1, lines, colors
             #         )
-            # point_np = np.array([0.5934, -0.2813, 0.5098])
-            # size = 0.05
-            # color = (1.0, 0.0, 0.0)
-            # base_pos = self.rb_states[self.base_idxs, :3].cpu().numpy()
+            point_np = np.array([0.5934, -0.2813, 0.5098])
+            size = 0.05
+            color = (1.0, 0.0, 0.0)
+            base_pos = self.rb_states[self.base_idxs, :3].cpu().numpy()
 
-            # # Define the vertices of the lines forming the X
-            # vertices = np.array(
-            #     [
-            #         # Line 1 start
-            #         point_np[0] - size,
-            #         point_np[1] - size,
-            #         point_np[2],
-            #         # Line 1 end
-            #         point_np[0] + size,
-            #         point_np[1] + size,
-            #         point_np[2],
-            #         # Line 2 start
-            #         point_np[0] - size,
-            #         point_np[1] + size,
-            #         point_np[2],
-            #         # Line 2 end
-            #         point_np[0] + size,
-            #         point_np[1] - size,
-            #         point_np[2],
-            #         # Line 3 start
-            #         point_np[0],
-            #         point_np[1],
-            #         point_np[2] - size,
-            #         # Line 3 end
-            #         point_np[0],
-            #         point_np[1],
-            #         point_np[2] + size,
-            #     ],
-            #     dtype=np.float32,
-            # )
+            # Define the vertices of the lines forming the X
+            vertices = np.array(
+                [
+                    # Line 1 start
+                    point_np[0] - size,
+                    point_np[1] - size,
+                    point_np[2],
+                    # Line 1 end
+                    point_np[0] + size,
+                    point_np[1] + size,
+                    point_np[2],
+                    # Line 2 start
+                    point_np[0] - size,
+                    point_np[1] + size,
+                    point_np[2],
+                    # Line 2 end
+                    point_np[0] + size,
+                    point_np[1] - size,
+                    point_np[2],
+                    # Line 3 start
+                    point_np[0],
+                    point_np[1],
+                    point_np[2] - size,
+                    # Line 3 end
+                    point_np[0],
+                    point_np[1],
+                    point_np[2] + size,
+                ],
+                dtype=np.float32,
+            )
 
-            # # Define the colors for each line (same color for all 3 lines)
-            # colors = np.array(
-            #     [
-            #         color[0],
-            #         color[1],
-            #         color[2],
-            #         color[0],
-            #         color[1],
-            #         color[2],
-            #         color[0],
-            #         color[1],
-            #         color[2],
-            #     ],
-            #     dtype=np.float32,
-            # )
+            # Define the colors for each line (same color for all 3 lines)
+            colors = np.array(
+                [
+                    color[0],
+                    color[1],
+                    color[2],
+                    color[0],
+                    color[1],
+                    color[2],
+                    color[0],
+                    color[1],
+                    color[2],
+                ],
+                dtype=np.float32,
+            )
 
-            # # Add the lines to the viewer
-            # for env, base in zip(self.envs, base_pos):
-            #     # Shift the vertices to the base frame
-            #     env_line = (vertices.reshape(-1, 3) + base).reshape(-1)
-            #     self.isaac_gym.add_lines(self.viewer, env, 3, env_line, colors)
+            # Add the lines to the viewer
+            for env, base in zip(self.envs, base_pos):
+                # Shift the vertices to the base frame
+                env_line = (vertices.reshape(-1, 3) + base).reshape(-1)
+                self.isaac_gym.add_lines(self.viewer, env, 3, env_line, colors)
 
             pos_action = torch.zeros_like(self.dof_pos)
             torque_action = torch.zeros_like(self.dof_pos)
@@ -1471,15 +1471,6 @@ class FurnitureSimEnv(gym.Env):
 
         return self._get_observation()
 
-    def reset_to(self, state):
-        """Reset to a specific state.
-
-        Args:
-            state: List of observation dictionary for each environment.
-        """
-        for i in range(self.num_envs):
-            self.reset_env_to(i, state[i])
-
     def reset_env(self, env_idx, reset_franka=True, reset_parts=True):
         """Resets the environment. **MUST refresh in between multiple calls
         to this function to have changes properly reflected in each environment.
@@ -1509,6 +1500,15 @@ class FurnitureSimEnv(gym.Env):
             self._reset_parts(env_idx)
         self.env_steps[env_idx] = 0
         self.move_neutral = False
+
+    def reset_to(self, state):
+        """Reset to a specific state.
+
+        Args:
+            state: List of observation dictionary for each environment.
+        """
+        for i in range(self.num_envs):
+            self.reset_env_to(i, state[i])
 
     def reset_env_to(self, env_idx, state):
         """Reset to a specific state. **MUST refresh in between multiple calls
@@ -1868,3 +1868,55 @@ class FurnitureSimStateEnv(FurnitureSimEnv):
     def __init__(self, **kwargs):
         obs_keys = DEFAULT_STATE_OBS
         super().__init__(obs_keys=obs_keys, concat_robot_state=True, **kwargs)
+
+
+class FurnitureRLSimEnv(FurnitureSimEnv):
+    """FurnitureSim environment for Reinforcement Learning."""
+
+    def reset(self, env_idxs: torch.tensor = None):
+        # can also reset the full set of robots/parts, without applying torques and refreshing
+        if env_idxs is None:
+            env_idxs = torch.arange(self.num_envs)
+
+        assert env_idxs.numel() > 0, "env_idxs must have at least one element"
+
+        self._reset_frankas(env_idxs)
+        # self._reset_parts_all()
+
+        self.refresh()
+
+        return self._get_observation()
+
+    def _reset_frankas(self, env_idxs: torch.Tensor):
+        dof_pos = self.default_dof_pos
+
+        # Views for self.dof_states (used with set_dof_state_tensor* function)
+        self.dof_pos[:, 0 : self.franka_num_dofs] = torch.tensor(
+            dof_pos, device=self.device, dtype=torch.float32
+        )
+        self.dof_vel[:, 0 : self.franka_num_dofs] = torch.tensor(
+            [0] * len(self.default_dof_pos), device=self.device, dtype=torch.float32
+        )
+
+        # Update a single actor
+        actor_idx = self.franka_actor_idxs_all_t[env_idxs].reshape(-1, 1)
+        self.isaac_gym.set_dof_state_tensor_indexed(
+            self.sim,
+            gymtorch.unwrap_tensor(self.dof_states),
+            gymtorch.unwrap_tensor(actor_idx),
+            len(actor_idx),
+        )
+
+    def _reset_franka_all(self, dof_pos=None):
+        """
+        Resets all Franka actors across all envs
+        """
+        self._update_franka_dof_state_buffer(dof_pos=dof_pos)
+
+        # Update all actors across envs at once
+        self.isaac_gym.set_dof_state_tensor_indexed(
+            self.sim,
+            gymtorch.unwrap_tensor(self.dof_states),
+            gymtorch.unwrap_tensor(self.franka_actor_idxs_all_t),
+            len(self.franka_actor_idxs_all_t),
+        )
