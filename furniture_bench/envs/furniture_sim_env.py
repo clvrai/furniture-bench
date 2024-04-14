@@ -16,10 +16,12 @@ except ImportError as e:
     raise ImportError(e)
 
 
+import time
 from typing import Union
 from datetime import datetime
 from pathlib import Path
 
+from furniture_bench.furniture.furniture import Furniture
 import torch
 import cv2
 import gym
@@ -45,6 +47,8 @@ from furniture_bench.envs.observation import (
 )
 from furniture_bench.robot.robot_state import ROBOT_STATE_DIMS
 from furniture_bench.furniture.parts.part import Part
+
+from ipdb import set_trace as bp
 
 
 ASSET_ROOT = str(Path(__file__).parent.parent.absolute() / "assets")
@@ -762,29 +766,6 @@ class FurnitureSimEnv(gym.Env):
 
         return gym.spaces.Dict(obs_dict)
 
-    def step_noop(self):
-        """Take a no-op step."""
-
-        # If we're doing delta control, we can simply apply a noop action:
-        if self.action_type == "delta":
-            noop = {
-                "quat": torch.tensor(
-                    [0, 0, 0, 1, 0, 0, 0, 0], dtype=torch.float32, device=self.device
-                ),
-                "rot_6d": torch.tensor(
-                    [0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
-                    dtype=torch.float32,
-                    device=self.device,
-                ),
-            }[self.act_rot_repr]
-            return self.step(noop)
-
-        # Otherwise, we apply a noop action by setting temporily changing the control mode to delta control
-        self.action_type = "delta"
-        obs = self.step_noop()
-        self.action_type = "pos"
-        return obs
-
     @torch.no_grad()
     def step(self, action):
         """Robot takes an action.
@@ -872,6 +853,63 @@ class FurnitureSimEnv(gym.Env):
             #         self.isaac_gym.add_lines(
             #             self.viewer, self.envs[env_idx], 1, lines, colors
             #         )
+            # point_np = np.array([0.5934, -0.2813, 0.5098])
+            # size = 0.05
+            # color = (1.0, 0.0, 0.0)
+            # base_pos = self.rb_states[self.base_idxs, :3].cpu().numpy()
+
+            # # Define the vertices of the lines forming the X
+            # vertices = np.array(
+            #     [
+            #         # Line 1 start
+            #         point_np[0] - size,
+            #         point_np[1] - size,
+            #         point_np[2],
+            #         # Line 1 end
+            #         point_np[0] + size,
+            #         point_np[1] + size,
+            #         point_np[2],
+            #         # Line 2 start
+            #         point_np[0] - size,
+            #         point_np[1] + size,
+            #         point_np[2],
+            #         # Line 2 end
+            #         point_np[0] + size,
+            #         point_np[1] - size,
+            #         point_np[2],
+            #         # Line 3 start
+            #         point_np[0],
+            #         point_np[1],
+            #         point_np[2] - size,
+            #         # Line 3 end
+            #         point_np[0],
+            #         point_np[1],
+            #         point_np[2] + size,
+            #     ],
+            #     dtype=np.float32,
+            # )
+
+            # # Define the colors for each line (same color for all 3 lines)
+            # colors = np.array(
+            #     [
+            #         color[0],
+            #         color[1],
+            #         color[2],
+            #         color[0],
+            #         color[1],
+            #         color[2],
+            #         color[0],
+            #         color[1],
+            #         color[2],
+            #     ],
+            #     dtype=np.float32,
+            # )
+
+            # # Add the lines to the viewer
+            # for env, base in zip(self.envs, base_pos):
+            #     # Shift the vertices to the base frame
+            #     env_line = (vertices.reshape(-1, 3) + base).reshape(-1)
+            #     self.isaac_gym.add_lines(self.viewer, env, 3, env_line, colors)
 
             pos_action = torch.zeros_like(self.dof_pos)
             torque_action = torch.zeros_like(self.dof_pos)
@@ -945,7 +983,7 @@ class FurnitureSimEnv(gym.Env):
                 self.isaac_gym.sync_frame_time(self.sim)
                 self.isaac_gym.clear_lines(self.viewer)
 
-        self.isaac_gym.end_access_image_tensors(self.sim)
+        # self.isaac_gym.end_access_image_tensors(self.sim)
 
         obs = self._get_observation()
         self.env_steps += 1
@@ -962,8 +1000,40 @@ class FurnitureSimEnv(gym.Env):
         rewards = torch.zeros(
             (self.num_envs, 1), dtype=torch.float32, device=self.device
         )
+        # NOTE: Using simplified reward function for now.
+        return rewards
 
-        # return rewards
+        self.joint_limits_low = torch.tensor(
+            [-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973],
+            device=self.device,
+        )
+        self.joint_limits_high = torch.tensor(
+            [2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973],
+            device=self.device,
+        )
+
+        # Get the current joint positions
+        joint_positions = self.dof_pos[:, :7]
+
+        # Calculate the distance to the joint limits
+        distance_to_limits_low = joint_positions - self.joint_limits_low
+        distance_to_limits_high = self.joint_limits_high - joint_positions
+        print(f"Distance to low limits: {distance_to_limits_low[0]}")
+        print(f"Distance to high limits: {distance_to_limits_high[0]}")
+        time.sleep(0.5)
+
+        # Define a threshold for penalizing close to joint limits
+        threshold = 0.1
+
+        # Create a penalty based on the distance to the joint limits
+        penalty_low = torch.exp(-distance_to_limits_low / threshold)
+        penalty_high = torch.exp(-distance_to_limits_high / threshold)
+        penalty = torch.sum(penalty_low + penalty_high, dim=1, keepdim=True)
+
+        print(f"Penalty: {penalty}")
+
+        # Subtract the penalty from the rewards
+        rewards -= penalty
 
         if self.manual_label:
             # Return zeros since the reward is manually labeled by data_collector.py.
@@ -982,6 +1052,29 @@ class FurnitureSimEnv(gym.Env):
             return rewards.cpu().numpy()
 
         return rewards
+
+    def step_noop(self):
+        """Take a no-op step."""
+
+        # If we're doing delta control, we can simply apply a noop action:
+        if self.action_type == "delta":
+            noop = {
+                "quat": torch.tensor(
+                    [0, 0, 0, 1, 0, 0, 0, 0], dtype=torch.float32, device=self.device
+                ),
+                "rot_6d": torch.tensor(
+                    [0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+                    dtype=torch.float32,
+                    device=self.device,
+                ),
+            }[self.act_rot_repr]
+            return self.step(noop)
+
+        # Otherwise, we apply a noop action by setting temporily changing the control mode to delta control
+        self.action_type = "delta"
+        obs = self.step_noop()
+        self.action_type = "pos"
+        return obs
 
     def _get_parts_poses(self, sim_coord=False):
         """Get furniture parts poses in the AprilTag frame.
@@ -1141,7 +1234,9 @@ class FurnitureSimEnv(gym.Env):
     def refresh(self):
         self.isaac_gym.simulate(self.sim)
         self.isaac_gym.fetch_results(self.sim, True)
-        self.isaac_gym.step_graphics(self.sim)
+
+        if not self.headless:
+            self.isaac_gym.step_graphics(self.sim)
 
         # Refresh tensors.
         self.isaac_gym.refresh_dof_state_tensor(self.sim)
@@ -1149,8 +1244,8 @@ class FurnitureSimEnv(gym.Env):
         self.isaac_gym.refresh_rigid_body_state_tensor(self.sim)
         self.isaac_gym.refresh_jacobian_tensors(self.sim)
         self.isaac_gym.refresh_mass_matrix_tensors(self.sim)
-        self.isaac_gym.render_all_camera_sensors(self.sim)
-        self.isaac_gym.start_access_image_tensors(self.sim)
+        # self.isaac_gym.render_all_camera_sensors(self.sim)
+        # self.isaac_gym.start_access_image_tensors(self.sim)
 
     def init_ctrl(self):
         # Positional and velocity gains for robot control.
@@ -1199,7 +1294,7 @@ class FurnitureSimEnv(gym.Env):
     def gripper_width(self):
         return self.dof_pos[:, 7:8] + self.dof_pos[:, 8:9]
 
-    def _done(self) -> bool:
+    def _done(self) -> torch.Tensor:
         dones = torch.zeros((self.num_envs, 1), dtype=torch.bool, device=self.device)
         if self.manual_done:
             return dones
@@ -1207,8 +1302,8 @@ class FurnitureSimEnv(gym.Env):
             timeout = self.env_steps[env_idx] > self.furniture.max_env_steps
             if self.furnitures[env_idx].all_assembled() or timeout:
                 dones[env_idx] = 1
-                if timeout:
-                    gym.logger.warn(f"[env] env_idx: {env_idx} timeout")
+                # if timeout:
+                #     gym.logger.warn(f"[env] env_idx: {env_idx} timeout")
         if self.np_step_out:
             dones = dones.cpu().numpy().astype(bool)
         return dones
@@ -1271,14 +1366,14 @@ class FurnitureSimEnv(gym.Env):
 
     def _get_observation(self):
         robot_state = self._read_robot_state()
-        color_obs = {
-            k: self._get_color_obs(v)
-            for k, v in self.camera_obs.items()
-            if "color" in k
-        }
-        depth_obs = {
-            k: torch.stack(v) for k, v in self.camera_obs.items() if "depth" in k
-        }
+        # color_obs = {
+        #     k: self._get_color_obs(v)
+        #     for k, v in self.camera_obs.items()
+        #     if "color" in k
+        # }
+        # depth_obs = {
+        #     k: torch.stack(v) for k, v in self.camera_obs.items() if "depth" in k
+        # }
 
         if self.np_step_out:
             robot_state = {k: v.cpu().numpy() for k, v in robot_state.items()}
@@ -1322,10 +1417,10 @@ class FurnitureSimEnv(gym.Env):
                 if self.np_step_out:
                     parts_poses = parts_poses.cpu().numpy()
                 obs["parts_poses"] = parts_poses
-            elif k.startswith("color"):
-                obs[k] = color_obs[k]
-            elif k.startswith("depth"):
-                obs[k] = depth_obs[k]
+            # elif k.startswith("color"):
+            #     obs[k] = color_obs[k]
+            # elif k.startswith("depth"):
+            #     obs[k] = depth_obs[k]
 
         if self.squeeze_batch_dim:
             for k, v in obs.items():
@@ -1358,12 +1453,12 @@ class FurnitureSimEnv(gym.Env):
             # if using ._reset_*_all(), can set reset_franka=False and reset_parts=False in .reset_env
             self.reset_env(i)
 
-            if self.ctrl_mode == "osc":
-                # apply zero torque across the board and refresh in between each env reset (not needed if using ._reset_*_all())
-                torque_action = torch.zeros_like(self.dof_pos)
-                self.isaac_gym.set_dof_actuation_force_tensor(
-                    self.sim, gymtorch.unwrap_tensor(torque_action)
-                )
+            # if self.ctrl_mode == "osc":
+            #     # apply zero torque across the board and refresh in between each env reset (not needed if using ._reset_*_all())
+            #     torque_action = torch.zeros_like(self.dof_pos)
+            #     self.isaac_gym.set_dof_actuation_force_tensor(
+            #         self.sim, gymtorch.unwrap_tensor(torque_action)
+            #     )
             self.refresh()
 
         self.furniture.reset()
@@ -1396,16 +1491,17 @@ class FurnitureSimEnv(gym.Env):
             reset_franka: If True, then reset the franka for this env
             reset_parts: If True, then reset the part poses for this env
         """
-        self.furnitures[env_idx].reset()
+        furniture: Furniture = self.furnitures[env_idx]
+        furniture.reset()
         if self.randomness == Randomness.LOW and not self.init_assembled:
-            self.furnitures[env_idx].randomize_init_pose(
+            furniture.randomize_init_pose(
                 self.from_skill, pos_range=[-0.015, 0.015], rot_range=15
             )
 
         if self.randomness == Randomness.MEDIUM:
-            self.furnitures[env_idx].randomize_init_pose(self.from_skill)
+            furniture.randomize_init_pose(self.from_skill)
         elif self.randomness == Randomness.HIGH:
-            self.furnitures[env_idx].randomize_high(self.high_random_idx)
+            furniture.randomize_high(self.high_random_idx)
 
         if reset_franka:
             self._reset_franka(env_idx)
