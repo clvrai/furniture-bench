@@ -821,8 +821,7 @@ class FurnitureSimEnv(gym.Env):
 
         goals_quat = torch.cat([goals_quat[:, 1:], goals_quat[:, :1]], dim=1)
 
-        # TODO: Make the ctrl accept batched goals.
-        # for env_idx in range(self.num_envs):
+        # TODO: See if it makes sense to implement batching for the OSC controller.
         step_ctrl.set_goal(goals_pos, goals_quat)
 
         for _ in range(self.sim_steps):
@@ -947,11 +946,6 @@ class FurnitureSimEnv(gym.Env):
                 "jacobian_diffik": self.jacobian_eef,
             }
 
-            if self.ctrl_mode == "osc":
-                torque_action[:, :7] = self.osc_ctrls(state_dict)["joint_torques"]
-            else:
-                pos_action[:, :7] = self.diffik_ctrls(state_dict)["joint_positions"]
-
             gripper_action_mask = (grip_sep > 0).unsqueeze(1)
 
             torque_action[:, 7:9] = torch.where(
@@ -959,17 +953,19 @@ class FurnitureSimEnv(gym.Env):
                 sim_config["robot"]["gripper_torque"],
                 -sim_config["robot"]["gripper_torque"],
             )
-            pos_action[:, 7:9] = torch.where(
-                gripper_action_mask,
-                self.max_gripper_width / 2,
-                torch.zeros_like(pos_action[:, 7:9]),
-            )
 
             if self.ctrl_mode == "osc":
+                torque_action[:, :7] = self.osc_ctrls(state_dict)["joint_torques"]
                 self.isaac_gym.set_dof_actuation_force_tensor(
                     self.sim, gymtorch.unwrap_tensor(torque_action)
                 )
             else:
+                pos_action[:, :7] = self.diffik_ctrls(state_dict)["joint_positions"]
+                pos_action[:, 7:9] = torch.where(
+                    gripper_action_mask,
+                    self.max_gripper_width / 2,
+                    torch.zeros_like(pos_action[:, 7:9]),
+                )
                 self.isaac_gym.set_dof_position_target_tensor(
                     self.sim, gymtorch.unwrap_tensor(pos_action)
                 )
@@ -1881,8 +1877,6 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
         assert env_idxs.numel() > 0, "env_idxs must have at least one element"
 
         self._reset_frankas(env_idxs)
-        # self._reset_parts_all()
-
         self.refresh()
 
         return self._get_observation()
@@ -1905,18 +1899,4 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
             gymtorch.unwrap_tensor(self.dof_states),
             gymtorch.unwrap_tensor(actor_idx),
             len(actor_idx),
-        )
-
-    def _reset_franka_all(self, dof_pos=None):
-        """
-        Resets all Franka actors across all envs
-        """
-        self._update_franka_dof_state_buffer(dof_pos=dof_pos)
-
-        # Update all actors across envs at once
-        self.isaac_gym.set_dof_state_tensor_indexed(
-            self.sim,
-            gymtorch.unwrap_tensor(self.dof_states),
-            gymtorch.unwrap_tensor(self.franka_actor_idxs_all_t),
-            len(self.franka_actor_idxs_all_t),
         )
