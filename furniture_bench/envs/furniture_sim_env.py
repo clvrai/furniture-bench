@@ -1622,8 +1622,6 @@ class FurnitureSimEnv(gym.Env):
                 device=self.device,
             )
 
-            print(self.root_pos[env_idx, idxs])
-
         if skip_set_state:
             # Set the value for the root state tensor, but don't call isaac gym function yet (useful when resetting all at once)
             # If skip_set_state == True, then must self.refresh() to register the isaac set_actor_root_state* function
@@ -1882,6 +1880,11 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
             device=self.device,
             dtype=torch.int32,
         )
+        self.part_actor_idx_all = torch.tensor(
+            [self.part_actor_idx_by_env[i] for i in range(self.num_envs)],
+            device=self.device,
+            dtype=torch.int32,
+        )
 
         self.initial_pos = torch.zeros((len(self.parts_handles), 3), device=self.device)
         self.initial_ori = torch.zeros((len(self.parts_handles), 4), device=self.device)
@@ -1915,7 +1918,9 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
     def reset(self, env_idxs: torch.tensor = None):
         # can also reset the full set of robots/parts, without applying torques and refreshing
         if env_idxs is None:
-            env_idxs = torch.arange(self.num_envs)
+            env_idxs = torch.arange(
+                self.num_envs, device=self.device, dtype=torch.int32
+            )
 
         assert env_idxs.numel() > 0, "env_idxs must have at least one element"
 
@@ -1937,7 +1942,7 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
             [0] * len(self.default_dof_pos), device=self.device, dtype=torch.float32
         )
 
-        # Update a single actor
+        # Update a list of actors
         actor_idx = self.franka_actor_idxs_all_t[env_idxs].reshape(-1, 1)
         self.isaac_gym.set_dof_state_tensor_indexed(
             self.sim,
@@ -1950,6 +1955,8 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
         """Resets furniture parts to the initial pose."""
         self.root_pos[env_idxs.unsqueeze(1), self.parts_idx_list] = self.initial_pos
         self.root_quat[env_idxs.unsqueeze(1), self.parts_idx_list] = self.initial_ori
+
+        part_actor_idxs = self.part_actor_idx_all[env_idxs]
 
         # # Apply random forces to the parts
         # force_magnitude = 10.0
@@ -1978,10 +1985,9 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
         # )
 
         # Update the sim state tensors
-        self.isaac_gym.get_sim_actor_count(self.sim)
         self.isaac_gym.set_actor_root_state_tensor_indexed(
             self.sim,
             gymtorch.unwrap_tensor(self.root_tensor),
-            gymtorch.unwrap_tensor(self.part_actor_idxs_all_t),
-            len(self.part_actor_idxs_all_t),
+            gymtorch.unwrap_tensor(part_actor_idxs),
+            len(part_actor_idxs),
         )
