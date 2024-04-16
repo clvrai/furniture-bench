@@ -1622,6 +1622,8 @@ class FurnitureSimEnv(gym.Env):
                 device=self.device,
             )
 
+            print(self.root_pos[env_idx, idxs])
+
         if skip_set_state:
             # Set the value for the root state tensor, but don't call isaac gym function yet (useful when resetting all at once)
             # If skip_set_state == True, then must self.refresh() to register the isaac set_actor_root_state* function
@@ -1869,6 +1871,47 @@ class FurnitureSimStateEnv(FurnitureSimEnv):
 class FurnitureRLSimEnv(FurnitureSimEnv):
     """FurnitureSim environment for Reinforcement Learning."""
 
+    def __init__(self, *args, **kwargs):
+        #     print("FurnitureRLSimEnv")
+
+        super().__init__(*args, **kwargs)
+
+        # Store the default initialization pose for the parts in a convenient tensor
+        self.parts_idx_list = torch.tensor(
+            [self.parts_handles[part.name] for part in self.furniture.parts],
+            device=self.device,
+            dtype=torch.int32,
+        )
+
+        self.initial_pos = torch.zeros((len(self.parts_handles), 3), device=self.device)
+        self.initial_ori = torch.zeros((len(self.parts_handles), 4), device=self.device)
+
+        for i, part in enumerate(self.furniture.parts):
+            pos, ori = self._get_reset_pose(part)
+            part_pose_mat = self.april_coord_to_sim_coord(get_mat(pos, [0, 0, 0]))
+            part_pose = gymapi.Transform()
+            part_pose.p = gymapi.Vec3(
+                part_pose_mat[0, 3], part_pose_mat[1, 3], part_pose_mat[2, 3]
+            )
+            reset_ori = self.april_coord_to_sim_coord(ori)
+            part_pose.r = gymapi.Quat(*T.mat2quat(reset_ori[:3, :3]))
+            idxs = self.parts_handles[part.name]
+            idxs = torch.tensor(idxs, device=self.device, dtype=torch.int32)
+
+            self.initial_pos[i] = torch.tensor(
+                [part_pose.p.x, part_pose.p.y, part_pose.p.z], device=self.device
+            )
+            self.initial_ori[i] = torch.tensor(
+                [part_pose.r.x, part_pose.r.y, part_pose.r.z, part_pose.r.w],
+                device=self.device,
+            )
+
+        # Lift the initial z position of the parts by 1 cm
+        # self.initial_pos[:, 2] += 0.01
+
+        self.initial_pos = self.initial_pos.unsqueeze(0)
+        self.initial_ori = self.initial_ori.unsqueeze(0)
+
     def reset(self, env_idxs: torch.tensor = None):
         # can also reset the full set of robots/parts, without applying torques and refreshing
         if env_idxs is None:
@@ -1877,6 +1920,8 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
         assert env_idxs.numel() > 0, "env_idxs must have at least one element"
 
         self._reset_frankas(env_idxs)
+        self._reset_parts(env_idxs)
+
         self.refresh()
 
         return self._get_observation()
@@ -1899,4 +1944,44 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
             gymtorch.unwrap_tensor(self.dof_states),
             gymtorch.unwrap_tensor(actor_idx),
             len(actor_idx),
+        )
+
+    def _reset_parts(self, env_idxs):
+        """Resets furniture parts to the initial pose."""
+        self.root_pos[env_idxs.unsqueeze(1), self.parts_idx_list] = self.initial_pos
+        self.root_quat[env_idxs.unsqueeze(1), self.parts_idx_list] = self.initial_ori
+
+        # # Apply random forces to the parts
+        # force_magnitude = 10.0
+        # num_parts = len(self.furniture.parts)
+
+        # # Generate random forces in the xy plane for all parts across all environments
+        # force_xy = (
+        #     2
+        #     * (torch.rand((self.num_envs, num_parts, 2), device=self.device) - 0.5)
+        #     * force_magnitude
+        # )
+        # force_z = torch.zeros((self.num_envs, num_parts, 1), device=self.device)
+        # forces = torch.cat((force_xy, force_z), dim=-1)
+
+        # # Create a tensor to hold forces for all rigid bodies
+        # num_bodies = self.isaac_gym.get_sim_rigid_body_count(self.sim)
+        # all_forces = torch.zeros((num_bodies, 3), device=self.device)
+
+        # # Fill the appropriate indices with the generated forces
+        # part_indices = torch.tensor(self.part_actor_idx_all, device=self.device)
+        # all_forces[part_indices] = forces.view(-1, 3)
+
+        # # Apply the forces to the rigid bodies
+        # self.isaac_gym.apply_rigid_body_force_tensors(
+        #     self.sim, gymtorch.unwrap_tensor(all_forces), None, gymapi.ENV_SPACE
+        # )
+
+        # Update the sim state tensors
+        self.isaac_gym.get_sim_actor_count(self.sim)
+        self.isaac_gym.set_actor_root_state_tensor_indexed(
+            self.sim,
+            gymtorch.unwrap_tensor(self.root_tensor),
+            gymtorch.unwrap_tensor(self.part_actor_idxs_all_t),
+            len(self.part_actor_idxs_all_t),
         )
