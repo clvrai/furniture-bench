@@ -1442,6 +1442,7 @@ class FurnitureSimEnv(gym.Env):
         ]
 
     def reset(self):
+        print("In orignal reset")
         # can also reset the full set of robots/parts, without applying torques and refreshing
         # self._reset_franka_all()
         # self._reset_parts_all()
@@ -1916,6 +1917,7 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
         self.initial_ori = self.initial_ori.unsqueeze(0)
 
     def reset(self, env_idxs: torch.tensor = None):
+        # return super().reset()
         # can also reset the full set of robots/parts, without applying torques and refreshing
         if env_idxs is None:
             env_idxs = torch.arange(
@@ -1925,7 +1927,8 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
         assert env_idxs.numel() > 0, "env_idxs must have at least one element"
 
         self._reset_frankas(env_idxs)
-        self._reset_parts(env_idxs)
+        self._reset_parts_multiple(env_idxs)
+        self.env_steps[env_idxs] = 0
 
         self.refresh()
 
@@ -1944,19 +1947,24 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
 
         # Update a list of actors
         actor_idx = self.franka_actor_idxs_all_t[env_idxs].reshape(-1, 1)
-        self.isaac_gym.set_dof_state_tensor_indexed(
+        success = self.isaac_gym.set_dof_state_tensor_indexed(
             self.sim,
             gymtorch.unwrap_tensor(self.dof_states),
             gymtorch.unwrap_tensor(actor_idx),
             len(actor_idx),
         )
+        assert success, "Failed to set franka state"
 
-    def _reset_parts(self, env_idxs):
+    def _reset_parts_multiple(self, env_idxs):
         """Resets furniture parts to the initial pose."""
-        self.root_pos[env_idxs.unsqueeze(1), self.parts_idx_list] = self.initial_pos
-        self.root_quat[env_idxs.unsqueeze(1), self.parts_idx_list] = self.initial_ori
+        self.root_pos[env_idxs.unsqueeze(1), self.parts_idx_list] = (
+            self.initial_pos.clone()
+        )
+        self.root_quat[env_idxs.unsqueeze(1), self.parts_idx_list] = (
+            self.initial_ori.clone()
+        )
 
-        part_actor_idxs = self.part_actor_idx_all[env_idxs]
+        part_actor_idxs = self.part_actor_idx_all[env_idxs].reshape(-1, 1)
 
         # # Apply random forces to the parts
         # force_magnitude = 10.0
@@ -1985,9 +1993,11 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
         # )
 
         # Update the sim state tensors
-        self.isaac_gym.set_actor_root_state_tensor_indexed(
+        success = self.isaac_gym.set_actor_root_state_tensor_indexed(
             self.sim,
             gymtorch.unwrap_tensor(self.root_tensor),
             gymtorch.unwrap_tensor(part_actor_idxs),
             len(part_actor_idxs),
         )
+
+        assert success, "Failed to set part state"
