@@ -58,15 +58,13 @@ def diffik_factory(real_robot=True, *args, **kwargs):
 
             # Shape of ee_pos: (batch_size, 3)
             # Shape of ee_quat: (batch_size, 4) with real part at the end
-            ee_pos, ee_quat = state_dict["ee_pos"], state_dict["ee_quat"]
+            ee_pos, ee_quat_xyzw = state_dict["ee_pos"], state_dict["ee_quat"]
 
             position_error = self.goal_pos - ee_pos
 
             # Move the real part of the quaternion to the front
-            ee_quat_wxyz = torch.cat([ee_quat[..., 3:], ee_quat[..., :3]], dim=-1)
-            goal_ori_wxyz = torch.cat(
-                [self.goal_ori[..., 3:], self.goal_ori[..., :3]], dim=-1
-            )
+            ee_quat_wxyz = C.quat_xyzw_to_wxyz(ee_quat_xyzw)
+            goal_ori_wxyz = C.quat_xyzw_to_wxyz(self.goal_ori)
 
             # Convert quaternions to rotation matrices
             ee_mat = pt.quaternion_to_matrix(ee_quat_wxyz)

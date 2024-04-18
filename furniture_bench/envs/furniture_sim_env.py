@@ -791,22 +791,22 @@ class FurnitureSimEnv(gym.Env):
         ee_pos, ee_quat_xyzw = self.get_ee_pose()
 
         # Move ee_quat real to the first element.
-        ee_quat = C.quat_xyzw_to_wxyz(ee_quat_xyzw)
+        ee_quat_wxyz = C.quat_xyzw_to_wxyz(ee_quat_xyzw)
 
         if self.act_rot_repr == "quat":
             # Real part is the last element in the quaternion.
-            action_quat = action[:, 3:7]
+            action_quat_xyzw = action[:, 3:7]
 
             # Move the real part to the first element.
-            action_quat = torch.cat([action_quat[:, -1:], action_quat[:, :-1]], dim=1)
+            action_quat_wxyz = C.quat_xyzw_to_wxyz(action_quat_xyzw)
         elif self.act_rot_repr == "rot_6d":
             rot_6d = action[:, 3:9]
             rot_mat = pt.rotation_6d_to_matrix(rot_6d)
             # Real part is the first element in the quaternion.
-            action_quat = pt.matrix_to_quaternion(rot_mat)
+            action_quat_wxyz = pt.matrix_to_quaternion(rot_mat)
         else:
             # Convert axis angle to quaternion.
-            action_quat = pt.matrix_to_quaternion(
+            action_quat_wxyz = pt.matrix_to_quaternion(
                 pt.axis_angle_to_matrix(action[:, 3:6])
             )
 
@@ -814,15 +814,15 @@ class FurnitureSimEnv(gym.Env):
 
         if self.action_type == "delta":
             goals_pos = action[:, :3] + ee_pos
-            goals_quat = pt.quaternion_multiply(ee_quat, action_quat)
+            goals_quat_wxyz = pt.quaternion_multiply(ee_quat_wxyz, action_quat_wxyz)
         elif self.action_type == "pos":
             goals_pos = action[:, :3]
-            goals_quat = action_quat
+            goals_quat_wxyz = action_quat_wxyz
 
-        goals_quat = torch.cat([goals_quat[:, 1:], goals_quat[:, :1]], dim=1)
+        goals_quat_xyzw = C.quat_wxyz_to_xyzw(goals_quat_wxyz)
 
         # TODO: See if it makes sense to implement batching for the OSC controller.
-        step_ctrl.set_goal(goals_pos, goals_quat)
+        step_ctrl.set_goal(goals_pos, goals_quat_xyzw)
 
         for _ in range(self.sim_steps):
             self.refresh()
@@ -852,63 +852,6 @@ class FurnitureSimEnv(gym.Env):
             #         self.isaac_gym.add_lines(
             #             self.viewer, self.envs[env_idx], 1, lines, colors
             #         )
-            point_np = np.array([0.5934, -0.2813, 0.5098])
-            size = 0.05
-            color = (1.0, 0.0, 0.0)
-            base_pos = self.rb_states[self.base_idxs, :3].cpu().numpy()
-
-            # Define the vertices of the lines forming the X
-            vertices = np.array(
-                [
-                    # Line 1 start
-                    point_np[0] - size,
-                    point_np[1] - size,
-                    point_np[2],
-                    # Line 1 end
-                    point_np[0] + size,
-                    point_np[1] + size,
-                    point_np[2],
-                    # Line 2 start
-                    point_np[0] - size,
-                    point_np[1] + size,
-                    point_np[2],
-                    # Line 2 end
-                    point_np[0] + size,
-                    point_np[1] - size,
-                    point_np[2],
-                    # Line 3 start
-                    point_np[0],
-                    point_np[1],
-                    point_np[2] - size,
-                    # Line 3 end
-                    point_np[0],
-                    point_np[1],
-                    point_np[2] + size,
-                ],
-                dtype=np.float32,
-            )
-
-            # Define the colors for each line (same color for all 3 lines)
-            colors = np.array(
-                [
-                    color[0],
-                    color[1],
-                    color[2],
-                    color[0],
-                    color[1],
-                    color[2],
-                    color[0],
-                    color[1],
-                    color[2],
-                ],
-                dtype=np.float32,
-            )
-
-            # Add the lines to the viewer
-            for env, base in zip(self.envs, base_pos):
-                # Shift the vertices to the base frame
-                env_line = (vertices.reshape(-1, 3) + base).reshape(-1)
-                self.isaac_gym.add_lines(self.viewer, env, 3, env_line, colors)
 
             pos_action = torch.zeros_like(self.dof_pos)
             torque_action = torch.zeros_like(self.dof_pos)
