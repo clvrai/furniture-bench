@@ -1859,6 +1859,20 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
         self.initial_pos = self.initial_pos.unsqueeze(0)
         self.initial_ori = self.initial_ori.unsqueeze(0)
 
+        self.rigid_body_count = self.isaac_gym.get_sim_rigid_body_count(self.sim)
+        self.rigid_body_index_by_env = torch.zeros(
+            (self.num_envs, len(self.furniture.parts)),
+            dtype=torch.int32,
+            device=self.device,
+        )
+
+        for i, part in enumerate(self.furniture.parts):
+            for env_idx in range(self.num_envs):
+                part_idxs = self.part_idxs[part.name]
+                self.rigid_body_index_by_env[env_idx, i] = part_idxs[env_idx]
+
+        print("Init done")
+
     def reset(self, env_idxs: torch.tensor = None):
         # return super().reset()
         # can also reset the full set of robots/parts, without applying torques and refreshing
@@ -1907,33 +1921,46 @@ class FurnitureRLSimEnv(FurnitureSimEnv):
             self.initial_ori.clone()
         )
 
-        part_actor_idxs = self.part_actor_idx_all[env_idxs].reshape(-1, 1)
+        part_rigid_body_idxs = self.rigid_body_index_by_env[env_idxs]
+        part_actor_idxs = self.part_actor_idx_all[env_idxs].view(-1)
 
-        # # Apply random forces to the parts
-        # force_magnitude = 10.0
-        # num_parts = len(self.furniture.parts)
+        # Apply random forces to the parts
+        force_magnitude = 0.0
 
-        # # Generate random forces in the xy plane for all parts across all environments
-        # force_xy = (
-        #     2
-        #     * (torch.rand((self.num_envs, num_parts, 2), device=self.device) - 0.5)
-        #     * force_magnitude
-        # )
-        # force_z = torch.zeros((self.num_envs, num_parts, 1), device=self.device)
-        # forces = torch.cat((force_xy, force_z), dim=-1)
+        # Generate random forces in the xy plane for all parts across all environments
+        force_theta = (
+            torch.rand(part_rigid_body_idxs.shape + (1,), device=self.device)
+            * 2
+            * np.pi
+        )
+        force_xy = force_magnitude * torch.cat(
+            (torch.cos(force_theta), torch.sin(force_theta)), dim=-1
+        )
+        force_z = torch.zeros(part_rigid_body_idxs.shape + (1,), device=self.device)
+        forces = torch.cat((force_xy, force_z), dim=-1)
 
-        # # Create a tensor to hold forces for all rigid bodies
-        # num_bodies = self.isaac_gym.get_sim_rigid_body_count(self.sim)
-        # all_forces = torch.zeros((num_bodies, 3), device=self.device)
+        # Scale the forces by the mass of the parts
+        masses = torch.tensor([15, 1, 1, 1, 1], device=self.device).unsqueeze(-1)
+        forces *= masses
 
-        # # Fill the appropriate indices with the generated forces
-        # part_indices = torch.tensor(self.part_actor_idx_all, device=self.device)
-        # all_forces[part_indices] = forces.view(-1, 3)
+        forces = forces.view(-1, 3)
+        part_rigid_body_idxs = part_rigid_body_idxs.view(-1)
 
-        # # Apply the forces to the rigid bodies
-        # self.isaac_gym.apply_rigid_body_force_tensors(
-        #     self.sim, gymtorch.unwrap_tensor(all_forces), None, gymapi.ENV_SPACE
-        # )
+        # Create a tensor to hold forces for all rigid bodies
+        all_forces = torch.zeros((self.rigid_body_count, 3), device=self.device)
+
+        # Fill the appropriate indices with the generated forces
+        all_forces[part_rigid_body_idxs] = forces.view(-1, 3)
+
+        # Apply the forces to the rigid bodies
+        success = self.isaac_gym.apply_rigid_body_force_tensors(
+            self.sim,
+            gymtorch.unwrap_tensor(all_forces),
+            None,  # Set torques to None if you only want to apply forces
+            gymapi.GLOBAL_SPACE,  # Apply forces in the world space
+        )
+
+        assert success, "Failed to apply forces to parts"
 
         # Update the sim state tensors
         success = self.isaac_gym.set_actor_root_state_tensor_indexed(
