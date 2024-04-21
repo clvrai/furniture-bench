@@ -940,39 +940,7 @@ class FurnitureSimEnv(gym.Env):
             (self.num_envs, 1), dtype=torch.float32, device=self.device
         )
         # NOTE: Using simplified reward function for now.
-        return rewards
-
-        self.joint_limits_low = torch.tensor(
-            [-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973],
-            device=self.device,
-        )
-        self.joint_limits_high = torch.tensor(
-            [2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973],
-            device=self.device,
-        )
-
-        # Get the current joint positions
-        joint_positions = self.dof_pos[:, :7]
-
-        # Calculate the distance to the joint limits
-        distance_to_limits_low = joint_positions - self.joint_limits_low
-        distance_to_limits_high = self.joint_limits_high - joint_positions
-        print(f"Distance to low limits: {distance_to_limits_low[0]}")
-        print(f"Distance to high limits: {distance_to_limits_high[0]}")
-        time.sleep(0.5)
-
-        # Define a threshold for penalizing close to joint limits
-        threshold = 0.1
-
-        # Create a penalty based on the distance to the joint limits
-        penalty_low = torch.exp(-distance_to_limits_low / threshold)
-        penalty_high = torch.exp(-distance_to_limits_high / threshold)
-        penalty = torch.sum(penalty_low + penalty_high, dim=1, keepdim=True)
-
-        print(f"Penalty: {penalty}")
-
-        # Subtract the penalty from the rewards
-        rewards -= penalty
+        # return rewards
 
         if self.manual_label:
             # Return zeros since the reward is manually labeled by data_collector.py.
@@ -1048,73 +1016,21 @@ class FurnitureSimEnv(gym.Env):
 
             return parts_poses, founds
 
-        # for env_idx in range(self.num_envs):
-        #     for part_idx in range(len(self.furniture.parts)):
-        #         part = self.furniture.parts[part_idx]
-        #         rb_idx = self.part_idxs[part.name][env_idx]
-        #         part_pose = self.rb_states[rb_idx, :7]
-        #         # To AprilTag coordinate.
-        #         part_pose = torch.concat(
-        #             [
-        #                 *C.mat2pose(
-        #                     self.sim_coord_to_april_coord(
-        #                         C.pose2mat(
-        #                             part_pose[:3], part_pose[3:7], device=self.device
-        #                         )
-        #                     )
-        #                 )
-        #             ]
-        #         )
-        #         parts_poses[
-        #             env_idx, part_idx * self.pose_dim : (part_idx + 1) * self.pose_dim
-        #         ] = part_pose
-
-        # parts_poses_cmp = parts_poses.clone()
-
-        # # Convert poses to AprilTag coordinate.
-        # # TODO: Debug this part.
-        # print("[NB] This part is not fully correct right now.")
+        # Convert poses to AprilTag coordinate.
+        # TODO: This can be optimized by not using Python list comprehension.
         rb_indices = torch.stack(
             [torch.tensor(self.part_idxs[part.name]) for part in self.furniture.parts],
             dim=0,
         ).T
         part_poses = self.rb_states[rb_indices, :7]
-        # Check the devices of all the tensors
+
         part_poses_mat = C.pose2mat_batched(
             part_poses[:, :, :3], part_poses[:, :, 3:7], device=self.device
         )
-        # print(
-        #     "rb_indices",
-        #     rb_indices.shape,
-        #     "self.rb_states",
-        #     self.rb_states.shape,
-        #     "parts_poses",
-        #     part_poses.shape,
-        #     "part_poses_mat",
-        #     part_poses_mat.shape,
-        # )
+
         april_coord_poses_mat = self.sim_coord_to_april_coord(part_poses_mat)
         april_coord_poses = torch.cat(C.mat2pose_batched(april_coord_poses_mat), dim=-1)
         parts_poses = april_coord_poses.view(self.num_envs, -1)
-
-        # print(
-        #     "parts_poses",
-        #     parts_poses.shape,
-        #     "parts_poses_cmp",
-        #     parts_poses_cmp.shape,
-        # )
-        # Compute the difference between the two methods.
-        # diff = parts_poses - parts_poses_cmp
-        # diff_norm = torch.norm(diff, dim=-1)
-        # print(f"diff_norm: {diff_norm.max()}")
-        # print(diff)
-
-        # for a, b in zip(parts_poses, parts_poses_cmp):
-        #     for i, (aa, bb) in enumerate(zip(a, b), start=0):
-        #         aa, bb = aa.item(), bb.item()
-        #         print(f"{(i % 7) + 1}: {aa:.4f} {bb:.4f} {aa - bb:.4f}")
-
-        #     print()
 
         return parts_poses, founds
 
@@ -1808,209 +1724,3 @@ class FurnitureSimStateEnv(FurnitureSimEnv):
     def __init__(self, **kwargs):
         obs_keys = DEFAULT_STATE_OBS
         super().__init__(obs_keys=obs_keys, concat_robot_state=True, **kwargs)
-
-
-class FurnitureRLSimEnv(FurnitureSimEnv):
-    """FurnitureSim environment for Reinforcement Learning."""
-
-    def __init__(self, *args, **kwargs):
-        #     print("FurnitureRLSimEnv")
-
-        super().__init__(*args, **kwargs)
-
-        # Store the default initialization pose for the parts in a convenient tensor
-        self.parts_idx_list = torch.tensor(
-            [self.parts_handles[part.name] for part in self.furniture.parts],
-            device=self.device,
-            dtype=torch.int32,
-        )
-        self.part_actor_idx_all = torch.tensor(
-            [self.part_actor_idx_by_env[i] for i in range(self.num_envs)],
-            device=self.device,
-            dtype=torch.int32,
-        )
-
-        self.initial_pos = torch.zeros((len(self.parts_handles), 3), device=self.device)
-        self.initial_ori = torch.zeros((len(self.parts_handles), 4), device=self.device)
-
-        for i, part in enumerate(self.furniture.parts):
-            pos, ori = self._get_reset_pose(part)
-            part_pose_mat = self.april_coord_to_sim_coord(get_mat(pos, [0, 0, 0]))
-            part_pose = gymapi.Transform()
-            part_pose.p = gymapi.Vec3(
-                part_pose_mat[0, 3], part_pose_mat[1, 3], part_pose_mat[2, 3]
-            )
-            reset_ori = self.april_coord_to_sim_coord(ori)
-            part_pose.r = gymapi.Quat(*T.mat2quat(reset_ori[:3, :3]))
-            idxs = self.parts_handles[part.name]
-            idxs = torch.tensor(idxs, device=self.device, dtype=torch.int32)
-
-            self.initial_pos[i] = torch.tensor(
-                [part_pose.p.x, part_pose.p.y, part_pose.p.z], device=self.device
-            )
-            self.initial_ori[i] = torch.tensor(
-                [part_pose.r.x, part_pose.r.y, part_pose.r.z, part_pose.r.w],
-                device=self.device,
-            )
-
-        # Lift the initial z position of the parts by 1 cm
-        # self.initial_pos[:, 2] += 0.01
-
-        self.initial_pos = self.initial_pos.unsqueeze(0)
-        self.initial_ori = self.initial_ori.unsqueeze(0)
-
-        self.rigid_body_count = self.isaac_gym.get_sim_rigid_body_count(self.sim)
-        self.rigid_body_index_by_env = torch.zeros(
-            (self.num_envs, len(self.furniture.parts)),
-            dtype=torch.int32,
-            device=self.device,
-        )
-
-        for i, part in enumerate(self.furniture.parts):
-            for env_idx in range(self.num_envs):
-                part_idxs = self.part_idxs[part.name]
-                self.rigid_body_index_by_env[env_idx, i] = part_idxs[env_idx]
-
-        self.force_multiplier = torch.tensor(
-            [20, 1, 1, 1, 1], device=self.device
-        ).unsqueeze(-1)
-        self.torque_multiplier = torch.tensor(
-            [65, 1, 1, 1, 1], device=self.device
-        ).unsqueeze(-1)
-
-        self.max_force_magnitude = 0.2
-        self.max_torque_magnitude = 0.005
-
-    def reset(self, env_idxs: torch.tensor = None):
-        # return super().reset()
-        # can also reset the full set of robots/parts, without applying torques and refreshing
-        if env_idxs is None:
-            env_idxs = torch.arange(
-                self.num_envs, device=self.device, dtype=torch.int32
-            )
-
-        assert env_idxs.numel() > 0, "env_idxs must have at least one element"
-
-        self._reset_frankas(env_idxs)
-        self._reset_parts_multiple(env_idxs)
-        self.env_steps[env_idxs] = 0
-
-        self.refresh()
-
-        return self._get_observation()
-
-    def increment_randomness(self):
-        force_magnitude_limit = 1
-        torque_magnitude_limit = 0.05
-
-        self.max_force_magnitude = min(
-            self.max_force_magnitude + 0.01, force_magnitude_limit
-        )
-        self.max_torque_magnitude = min(
-            self.max_torque_magnitude + 0.0005, torque_magnitude_limit
-        )
-        print(
-            f"Increased randomness: F->{self.max_force_magnitude:.4f}, "
-            f"T->{self.max_torque_magnitude:.4f}"
-        )
-
-    def _reset_frankas(self, env_idxs: torch.Tensor):
-        dof_pos = self.default_dof_pos
-
-        # Views for self.dof_states (used with set_dof_state_tensor* function)
-        self.dof_pos[:, 0 : self.franka_num_dofs] = torch.tensor(
-            dof_pos, device=self.device, dtype=torch.float32
-        )
-        self.dof_vel[:, 0 : self.franka_num_dofs] = torch.tensor(
-            [0] * len(self.default_dof_pos), device=self.device, dtype=torch.float32
-        )
-
-        # Update a list of actors
-        actor_idx = self.franka_actor_idxs_all_t[env_idxs].reshape(-1, 1)
-        success = self.isaac_gym.set_dof_state_tensor_indexed(
-            self.sim,
-            gymtorch.unwrap_tensor(self.dof_states),
-            gymtorch.unwrap_tensor(actor_idx),
-            len(actor_idx),
-        )
-        assert success, "Failed to set franka state"
-
-    def _reset_parts_multiple(self, env_idxs):
-        """Resets furniture parts to the initial pose."""
-
-        # Reset the parts to the initial pose
-        self.root_pos[env_idxs.unsqueeze(1), self.parts_idx_list] = (
-            self.initial_pos.clone()
-        )
-        self.root_quat[env_idxs.unsqueeze(1), self.parts_idx_list] = (
-            self.initial_ori.clone()
-        )
-
-        # Get the actor and rigid body indices for the parts in question
-        part_rigid_body_idxs = self.rigid_body_index_by_env[env_idxs]
-        part_actor_idxs = self.part_actor_idx_all[env_idxs].view(-1)
-
-        ## Random forces
-        # Generate random forces in the xy plane for all parts across all environments
-        force_theta = (
-            torch.rand(part_rigid_body_idxs.shape + (1,), device=self.device)
-            * 2
-            * np.pi
-        )
-        force_magnitude = (
-            torch.rand(part_rigid_body_idxs.shape + (1,), device=self.device)
-            * self.max_force_magnitude
-        )
-        forces = torch.cat(
-            [
-                force_magnitude * torch.cos(force_theta),
-                force_magnitude * torch.sin(force_theta),
-                torch.zeros_like(force_magnitude),
-            ],
-            dim=-1,
-        )
-        # Scale the forces by the mass of the parts
-        forces = (forces * self.force_multiplier).view(-1, 3)
-
-        ## Random torques
-
-        # Generate random torques for all parts across all environments in the z direction
-        z_torques = self.max_torque_magnitude * (
-            torch.rand(part_rigid_body_idxs.shape + (1,), device=self.device) * 2 - 1
-        )
-        torques = torch.cat(
-            [
-                torch.zeros_like(z_torques),
-                torch.zeros_like(z_torques),
-                z_torques,
-            ],
-            dim=-1,
-        )
-
-        # Create a tensor to hold forces for all rigid bodies
-        all_forces = torch.zeros((self.rigid_body_count, 3), device=self.device)
-        all_torques = torch.zeros((self.rigid_body_count, 3), device=self.device)
-        part_rigid_body_idxs = part_rigid_body_idxs.view(-1)
-        all_torques[part_rigid_body_idxs] = torques.view(-1, 3)
-        all_forces[part_rigid_body_idxs] = forces.view(-1, 3)
-
-        # Fill the appropriate indices with the generated forces
-        # Apply the forces to the rigid bodies
-        success = self.isaac_gym.apply_rigid_body_force_tensors(
-            self.sim,
-            gymtorch.unwrap_tensor(all_forces),
-            gymtorch.unwrap_tensor(all_torques),
-            gymapi.GLOBAL_SPACE,  # Apply forces in the world space
-        )
-
-        assert success, "Failed to apply forces to parts"
-
-        # Update the sim state tensors
-        success = self.isaac_gym.set_actor_root_state_tensor_indexed(
-            self.sim,
-            gymtorch.unwrap_tensor(self.root_tensor),
-            gymtorch.unwrap_tensor(part_actor_idxs),
-            len(part_actor_idxs),
-        )
-
-        assert success, "Failed to set part state"
