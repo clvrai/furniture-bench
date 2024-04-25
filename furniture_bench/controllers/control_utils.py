@@ -112,7 +112,10 @@ def orientation_error(desired, current):
 
 @torch.jit.script
 def quat_conjugate(a):
-    """Compute the conjugate of a quaternion"""
+    """
+    Compute the conjugate of a quaternion
+    Quaternions are represented as (x, y, z, w)
+    """
     shape = a.shape
     a = a.reshape(-1, 4)
     return torch.cat((-a[:, :3], a[:, -1:]), dim=-1).view(shape)
@@ -120,6 +123,10 @@ def quat_conjugate(a):
 
 @torch.jit.script
 def quat_mul(a, b):
+    """
+    Multiply two quaternions
+    Quaternions are represented as (x, y, z, w)
+    """
     assert a.shape == b.shape
     shape = a.shape
     a = a.reshape(-1, 4)
