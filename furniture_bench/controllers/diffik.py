@@ -24,8 +24,8 @@ def diffik_factory(real_robot=True, *args, **kwargs):
 
         def __init__(
             self,
-            pos_scalar=4.0,
-            rot_scalar=9.0,
+            pos_scalar=1.0,
+            rot_scalar=1.0,
         ):
             """Initialize Differential Inverse Kinematics Controller.
 
