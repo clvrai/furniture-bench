@@ -42,9 +42,9 @@ def diffik_factory(real_robot=True, *args, **kwargs):
 
             self.scale_errors = True
 
-            # print(
-            #     f"Making DiffIK controller with pos_scalar: {pos_scalar}, rot_scalar: {rot_scalar}"
-            # )
+            print(
+                f"Making DiffIK controller with pos_scalar: {pos_scalar}, rot_scalar: {rot_scalar}"
+            )
 
         def forward(
             self, state_dict: Dict[str, torch.Tensor]
