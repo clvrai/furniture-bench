@@ -75,6 +75,8 @@ def main():
     parser.add_argument("--num-demos", default=100, type=int)
 
     parser.add_argument("--resize-sim-img", action="store_true")
+    parser.add_argument("--gripper-pos-control", action="store_true")
+
 
     args = parser.parse_args()
 
@@ -104,6 +106,7 @@ def main():
         save_failure=args.save_failure,
         num_demos=args.num_demos,
         resize_sim_img=args.resize_sim_img,
+        gripper_pos_control=args.gripper_pos_control,
     )
     data_collector.collect()
 

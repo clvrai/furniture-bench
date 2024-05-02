@@ -39,6 +39,7 @@ class DataCollector:
         save_failure: bool = False,
         num_demos: int = 100,
         resize_sim_img: bool = False,
+        gripper_pos_control: bool = False,
     ):
         """
         Args:
@@ -73,7 +74,8 @@ class DataCollector:
                 channel_first=False,
                 randomness=randomness,
                 compute_device_id=compute_device_id,
-                graphics_device_id=graphics_device_id
+                graphics_device_id=graphics_device_id,
+                gripper_pos_control=gripper_pos_control,
             )
         else:
             if randomness == "med":
