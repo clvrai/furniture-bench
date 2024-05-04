@@ -696,3 +696,21 @@ table.dataTable td {
     padding-left: 2px;
     padding-right: 2px;
 }
+
+.authors {
+    color: "#777777";
+    font-size: 0.8em;
+}
+
+.h-\[1em\] {
+    height: 1em
+}
+
+.inline {
+    display: inline
+}
+
+
+.align-\[-0\.1em\] {
+    vertical-align: -.1em
+}
