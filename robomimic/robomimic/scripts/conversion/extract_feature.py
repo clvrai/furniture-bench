@@ -20,9 +20,10 @@ def feature_extractor_factory(feature_extractor):
         r3m = r3m.cuda()
         r3m.eval()
 
-        transforms = v2.Compose(
-            [v2.Resize(256), v2.CenterCrop(224)]
-        )  # ToTensor() divides by 255
+        # transforms = v2.Compose(
+        #     [v2.Resize(256), v2.CenterCrop(224)]
+        # )  # ToTensor() divides by 255
+        transforms = lambda x: x
 
         return r3m, transforms
     elif feature_extractor == "liv":
