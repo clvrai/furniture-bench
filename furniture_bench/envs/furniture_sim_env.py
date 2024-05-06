@@ -183,6 +183,8 @@ class FurnitureSimEnv(gym.Env):
 
         self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
         self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
+        if not self.ctrl_started:
+            self.init_ctrl()
 
     def _create_ground_plane(self):
         """Creates ground plane."""
@@ -965,7 +967,7 @@ class FurnitureSimEnv(gym.Env):
         self.isaac_gym.render_all_camera_sensors(self.sim)
         self.isaac_gym.start_access_image_tensors(self.sim)
 
-    def init_ctrl(self):
+    def create_ctrl(self, env_idx):
         # Positional and velocity gains for robot control.
         kp = torch.tensor(sim_config["robot"]["kp"], device=self.device)
         kv = (
@@ -973,26 +975,22 @@ class FurnitureSimEnv(gym.Env):
             if sim_config["robot"]["kv"] is not None
             else torch.sqrt(kp) * 2.0
         )
-
         ee_pos, ee_quat = self.get_ee_pose()
+        return osc_factory(
+            real_robot=False,
+            ee_pos_current=ee_pos[env_idx],
+            ee_quat_current=ee_quat[env_idx],
+            init_joints=torch.tensor(config["robot"]["reset_joints"], device=self.device),
+            kp=kp,
+            kv=kv,
+            mass_matrix_offset_val=[0.0, 0.0, 0.0],
+            position_limits=torch.tensor(config["robot"]["position_limits"], device=self.device),
+            joint_kp=10,
+        )
+
+    def init_ctrl(self):
         for env_idx in range(self.num_envs):
-            self.osc_ctrls.append(
-                osc_factory(
-                    real_robot=False,
-                    ee_pos_current=ee_pos[env_idx],
-                    ee_quat_current=ee_quat[env_idx],
-                    init_joints=torch.tensor(
-                        config["robot"]["reset_joints"], device=self.device
-                    ),
-                    kp=kp,
-                    kv=kv,
-                    mass_matrix_offset_val=[0.0, 0.0, 0.0],
-                    position_limits=torch.tensor(
-                        config["robot"]["position_limits"], device=self.device
-                    ),
-                    joint_kp=10,
-                )
-            )
+            self.osc_ctrls.append(self.create_ctrl(env_idx))
         self.ctrl_started = True
 
     def get_ee_pose(self):
@@ -1276,6 +1274,9 @@ class FurnitureSimEnv(gym.Env):
             gymtorch.unwrap_tensor(actor_idx),
             len(actor_idx),
         )
+        self.refresh()
+        # Reset controller.
+        self.osc_ctrls[env_idx] = self.create_ctrl(env_idx)
 
     def _reset_franka_all(self, dof_pos=None):
         """
@@ -1290,6 +1291,10 @@ class FurnitureSimEnv(gym.Env):
             gymtorch.unwrap_tensor(self.franka_actor_idxs_all_t),
             len(self.franka_actor_idxs_all_t),
         )
+        self.refresh()
+        # Reset controller.
+        for env_idx in range(self.num_envs):
+            self.osc_ctrls[env_idx] = self.create_ctrl(env_idx)
 
     def _reset_parts(self, env_idx, parts_poses=None, skip_set_state=False):
         """Resets furniture parts to the initial pose.
