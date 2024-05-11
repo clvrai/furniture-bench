@@ -69,6 +69,7 @@ class FurnitureSimEnv(gym.Env):
         record: bool = False,
         max_env_steps: int = 3000,
         act_rot_repr: str = "quat",
+        phase: int = -1,
         **kwargs,
     ):
         """
@@ -105,9 +106,17 @@ class FurnitureSimEnv(gym.Env):
         else:
             self.furniture = furniture_factory(furniture)
 
+        if phase == 2:
+            max_env_steps = 100
+        elif phase == 3:
+            max_env_steps = 150
+        elif phase == 4:
+            max_env_steps = 300
+
         self.furniture.max_env_steps = max_env_steps
         for furn in self.furnitures:
             furn.max_env_steps = max_env_steps
+        self.max_env_steps = max_env_steps
 
         self.furniture_name = furniture
         self.num_envs = num_envs
@@ -129,6 +138,7 @@ class FurnitureSimEnv(gym.Env):
         self.from_skill = (
             0  # TODO: Skill benchmark should be implemented in FurnitureSim.
         )
+        self.phase = phase
         self.randomness = str_to_enum(randomness)
         self.high_random_idx = high_random_idx
         self.last_grasp = torch.tensor([-1.0] * num_envs, device=self.device)
@@ -183,6 +193,15 @@ class FurnitureSimEnv(gym.Env):
 
         self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
         self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
+        
+        # Give noise to a given phase in order to collect failure trajectories at specific phase.
+        self.phase_noise = kwargs.get("phase_noise", -1)
+        self.phase_counter = 0
+        self.grasp_counter = [0] * self.num_envs
+        self.lift_counter = [0] * self.num_envs
+        self.insertion_counter = [0] * self.num_envs
+        if not self.ctrl_started:
+            self.init_ctrl()
 
     def _create_ground_plane(self):
         """Creates ground plane."""
@@ -816,7 +835,24 @@ class FurnitureSimEnv(gym.Env):
 
         obs = self._get_observation()
         self.env_steps += 1
-
+        
+        for env_idx in range(self.num_envs):
+            # Hard-coded done to check whether gripper maintain the grasp.
+            if self.phase == 0:
+                if self.gripper_width()[env_idx] > 0.01 and self.gripper_width()[env_idx] < 0.015:
+                    self.grasp_counter[env_idx] += 1
+            elif self.phase == 2:  # Pick up the leg.
+                part_idx = 4
+                part_poses = self._get_parts_poses(sim_coord=True)[0]
+                # Check if the leg is lifted.
+                curr_leg_height = part_poses[env_idx][7 * part_idx + 2]  # Z
+                reset_leg_height = self.reset_poses[env_idx][7 * part_idx + 2]
+                if curr_leg_height - reset_leg_height > 0.01:
+                    self.lift_counter[env_idx] += 1
+            elif self.phase == 3:
+                if self._insertion_success():
+                    self.insertion_counter[env_idx] += 1
+        
         return (
             obs,
             self._reward(),
@@ -826,23 +862,29 @@ class FurnitureSimEnv(gym.Env):
 
     def _reward(self):
         """Reward is 1 if two parts are assembled."""
-        rewards = torch.zeros(
-            (self.num_envs, 1), dtype=torch.float32, device=self.device
-        )
+        rewards = torch.zeros((self.num_envs, 1), dtype=torch.float32, device=self.device)
 
         if self.manual_label:
             # Return zeros since the reward is manually labeled by data_collector.py.
             return rewards
 
         # Don't have to convert to AprilTag coordinate since the reward is computed with relative poses.
-        parts_poses, founds = self._get_parts_poses(sim_coord=True) 
+        parts_poses, founds = self._get_parts_poses(sim_coord=True)
         for env_idx in range(self.num_envs):
             env_parts_poses = parts_poses[env_idx].cpu().numpy()
             env_founds = founds[env_idx].cpu().numpy()
-            rewards[env_idx] = self.furnitures[env_idx].compute_assemble(
-                env_parts_poses, env_founds
-            )
+            rewards[env_idx] = self.furnitures[env_idx].compute_assemble(env_parts_poses, env_founds)
 
+            if self.phase == 0:
+                done_phase = self.done_with_grasp(env_idx)
+            elif self.phase == 2:
+                done_phase = self.done_with_lift(env_idx)
+            elif self.phase == 3:
+                done_phase = self.done_with_insertion(env_idx)
+            else:
+                done_phase = False
+            if done_phase:
+                rewards[env_idx] = 1.0
         if self.np_step_out:
             return rewards.cpu().numpy()
 
@@ -1000,16 +1042,64 @@ class FurnitureSimEnv(gym.Env):
     def gripper_width(self):
         return self.dof_pos[:, 7:8] + self.dof_pos[:, 8:9]
 
+    def done_with_grasp(self, env_idx):
+        if self.grasp_counter[env_idx] > 5:
+            return True
+        return False
+
+    def done_with_lift(self, env_idx):
+        if self.lift_counter[env_idx] > 5:
+            return True
+        return False
+
+    def _insertion_success(self):
+        # Check insertion failure.
+        part1_name = "square_table_top"
+        part2_name = "square_table_leg4"
+        part1_pose = C.to_homogeneous(
+            self.rb_states[self.part_idxs[part1_name]][0][:3],
+            C.quat2mat(self.rb_states[self.part_idxs[part1_name]][0][3:7]),
+        )
+        part2_pose = C.to_homogeneous(
+            self.rb_states[self.part_idxs[part2_name]][0][:3],
+            C.quat2mat(self.rb_states[self.part_idxs[part2_name]][0][3:7]),
+        )
+        part_idx1 = 0
+        part_idx2 = 4
+        rel_pose = torch.linalg.inv(part1_pose) @ part2_pose
+        assembled_rel_poses = self.furniture.assembled_rel_poses[(part_idx1, part_idx2)]
+        # Do not check the orientation, but only the position.
+        if self.furniture.assembled(
+            rel_pose.cpu().numpy(), assembled_rel_poses, ori_bound=-1, pos_threshold=[0.015, 0.015, 0.02]
+        ):
+            return True
+        return False
+
+    def done_with_insertion(self, env_idx):
+        if self.insertion_counter[env_idx] > 5:
+            return True
+        return False
+
     def _done(self) -> bool:
         dones = torch.zeros((self.num_envs, 1), dtype=torch.bool, device=self.device)
         if self.manual_done:
             return dones
         for env_idx in range(self.num_envs):
             timeout = self.env_steps[env_idx] > self.furniture.max_env_steps
-            if self.furnitures[env_idx].all_assembled() or timeout:
-                dones[env_idx] = 1
-                if timeout:
-                    gym.logger.warn(f"[env] env_idx: {env_idx} timeout")
+            done = False
+            if timeout:
+                done = True
+            elif self.phase == -1 or self.phase == 4:  # Until done.
+                done = self.furnitures[env_idx].all_assembled()
+            elif self.phase == 0:
+                done = self.done_with_grasp(env_idx)
+            elif self.phase == 2:  # Pick up the leg.
+                done = self.done_with_lift(env_idx)
+            elif self.phase == 3:
+                done = self.done_with_insertion(env_idx)
+            # To Tensor
+            done = torch.tensor(done, dtype=torch.bool, device=self.device)
+            dones[env_idx] = done
         if self.np_step_out:
             dones = dones.cpu().numpy().astype(bool)
         return dones
@@ -1167,7 +1257,14 @@ class FurnitureSimEnv(gym.Env):
         if self.save_camera_input:
             self._save_camera_input()
 
+        self._save_reset_pose()
         return self._get_observation()
+
+    def _save_reset_pose(self):
+        parts_poses = self._get_parts_poses(sim_coord=True)[0].cpu().numpy()
+        self.reset_poses = []
+        for env_idx in range(self.num_envs):
+            self.reset_poses.append(parts_poses[env_idx])
 
     def reset_to(self, state):
         """Reset to a specific state.
@@ -1177,6 +1274,7 @@ class FurnitureSimEnv(gym.Env):
         """
         for i in range(self.num_envs):
             self.reset_env_to(i, state[i])
+        self._save_reset_pose()
 
     def reset_env(self, env_idx, reset_franka=True, reset_parts=True):
         """Resets the environment. **MUST refresh in between multiple calls
@@ -1206,6 +1304,7 @@ class FurnitureSimEnv(gym.Env):
             self._reset_parts(env_idx)
         self.env_steps[env_idx] = 0
         self.move_neutral = False
+        self._save_reset_pose()
 
     def reset_env_to(self, env_idx, state):
         """Reset to a specific state. **MUST refresh in between multiple calls
@@ -1232,6 +1331,7 @@ class FurnitureSimEnv(gym.Env):
         self.refresh()
         # Reset controller.
         self.osc_ctrls[env_idx] = self.create_ctrl(env_idx)
+        self._save_reset_pose()
 
     def _update_franka_dof_state_buffer(self, dof_pos=None):
         """
