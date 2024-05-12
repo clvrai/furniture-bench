@@ -252,6 +252,7 @@ class FurnitureSimEnv(gym.Env):
         env_upper = gymapi.Vec3(spacing, spacing, spacing)
         self.envs = []
         self.env_steps = torch.zeros(self.num_envs, dtype=torch.int, device=self.device)
+        self.episode_cnts = np.zeros(self.num_envs, dtype=np.int32)
 
         self.handles = {}
         self.ee_idxs = []
@@ -1005,6 +1006,13 @@ class FurnitureSimEnv(gym.Env):
         self.isaac_gym.render_all_camera_sensors(self.sim)
         self.isaac_gym.start_access_image_tensors(self.sim)
 
+    def refresh_cam(self):
+        self.isaac_gym.simulate(self.sim)
+        self.isaac_gym.fetch_results(self.sim, True)
+        self.isaac_gym.step_graphics(self.sim)
+        self.isaac_gym.render_all_camera_sensors(self.sim)
+        self.isaac_gym.start_access_image_tensors(self.sim)
+
     def create_ctrl(self, env_idx):
         # Positional and velocity gains for robot control.
         kp = torch.tensor(sim_config["robot"]["kp"], device=self.device)
@@ -1225,10 +1233,20 @@ class FurnitureSimEnv(gym.Env):
     def get_observation(self):
         return self._get_observation()
 
+    def _get_front_cam_image(self):
+        self.refresh_cam()
+        color_obs = {k: self._get_color_obs(v) for k, v in self.camera_obs.items() if "color" in k}
+        obs = color_obs["color_image2"]
+        obs = obs.detach().cpu().numpy()
+        if self.channel_first:
+            obs = np.transpose(obs, (0, 2, 3, 1))
+        # Check if it is the framestack env.
+        return obs
+
     def render(self, mode="rgb_array"):
         if mode != "rgb_array":
             raise NotImplementedError
-        return self._get_observation()["color_image2"]
+        return self._get_front_cam_image()
 
     def is_success(self):
         return [{"task": self.furnitures[env_idx].all_assembled()} for env_idx in range(self.num_envs)]
@@ -1253,6 +1271,10 @@ class FurnitureSimEnv(gym.Env):
         self.furniture.reset()
 
         self.assemble_idx = 0
+        self.phase_counter = 0
+        self.grasp_counter = [0] * self.num_envs
+        self.lift_counter = [0] * self.num_envs
+        self.insertion_counter = [0] * self.num_envs
 
         if self.save_camera_input:
             self._save_camera_input()
@@ -1303,6 +1325,10 @@ class FurnitureSimEnv(gym.Env):
         if reset_parts:
             self._reset_parts(env_idx)
         self.env_steps[env_idx] = 0
+        self.grasp_counter[env_idx] = 0
+        self.lift_counter[env_idx] = 0
+        self.insertion_counter[env_idx] = 0
+        self.episode_cnts[env_idx] += 1
         self.move_neutral = False
         self._save_reset_pose()
 
