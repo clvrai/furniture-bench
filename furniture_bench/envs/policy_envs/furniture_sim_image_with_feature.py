@@ -11,7 +11,7 @@ from furniture_bench.robot.robot_state import filter_and_concat_robot_state
 class FurnitureSimImageWithFeature(FurnitureSimEnv):
     def __init__(self, **kwargs):
         super().__init__(
-            concat_robot_state=True,
+            concat_robot_state=False,
             np_step_out=False,
             channel_first=True,
             **kwargs,
@@ -34,7 +34,7 @@ class FurnitureSimImageWithFeature(FurnitureSimEnv):
 
     @property
     def observation_space(self):
-        robot_state_dim = 14
+        robot_state_dim = 14 - 6
         return spaces.Dict(
             dict(
                 robot_state=spaces.Box(-np.inf, np.inf, (robot_state_dim,)),

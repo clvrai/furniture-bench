@@ -3,14 +3,15 @@ from dataclasses import dataclass
 from enum import Enum
 
 import numpy as np
+import torch
 
 
 # List of robot state we are going to use during training and testing.
 ROBOT_STATES = [
     "ee_pos",
     "ee_quat",
-    "ee_pos_vel",
-    "ee_ori_vel",
+    # "ee_pos_vel",
+    # "ee_ori_vel",
     "gripper_width",
 ]
 
@@ -25,14 +26,24 @@ ROBOT_STATE_DIMS = {
     "gripper_width": 1,
 }
 
-
 def filter_and_concat_robot_state(robot_state):
     current_robot_state = []
+    using_torch = None  # To keep track of whether we're using torch or numpy
+
     for rs in ROBOT_STATES:
-        if rs == "gripper_width" and robot_state[rs].shape == ():
-            robot_state[rs] = np.array([robot_state[rs]])
-        current_robot_state.append(robot_state[rs])
-    return np.concatenate(current_robot_state, axis=-1)
+        state_item = robot_state[rs]
+        # Determine if we are using torch or numpy
+        if using_torch is None:
+            using_torch = isinstance(state_item, torch.Tensor)
+        # Handle scalar case for gripper_width or any other single-value state
+        if rs == "gripper_width" and (torch.is_tensor(state_item) and state_item.dim() == 0) or (isinstance(state_item, np.ndarray) and state_item.shape == ()):
+            state_item = torch.tensor([state_item.item()]) if using_torch else np.array([state_item])
+        current_robot_state.append(state_item)
+    # Concatenate using the appropriate library
+    if using_torch:
+        return torch.cat(current_robot_state, dim=-1)
+    else:
+        return np.concatenate(current_robot_state, axis=-1)
 
 
 @dataclass

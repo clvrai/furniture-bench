@@ -466,17 +466,18 @@ class Furniture(ABC):
 
         return False
 
-    def assembled(self, rel_pose, assembled_rel_poses):
+
+    def assembled(self, rel_pose, assembled_rel_poses, ori_bound=None, pos_threshold=None):
+        if ori_bound is None:
+            ori_bound = self.ori_bound
+        if pos_threshold is None:
+            pos_threshold = self.assembled_pos_threshold
         for assembled_rel_pose in assembled_rel_poses:
-            if is_similar_pose(
-                assembled_rel_pose,
-                rel_pose,
-                ori_bound=self.ori_bound,
-                pos_threshold=self.assembled_pos_threshold,
-            ):
+            if is_similar_pose(assembled_rel_pose, rel_pose, ori_bound=ori_bound, pos_threshold=pos_threshold):
                 return True
 
         return False
+
 
     def _init_obstacle(self):
         """Initialize the obstacle."""
