@@ -36,6 +36,7 @@ config: Dict[str, Any] = {
             "square_table": 0.065,
             "one_leg": 0.065,
             "desk": 0.065,
+            "one_leg_desk": 0.065,
             "stool": 0.065,
             "chair": 0.065,
             "drawer": 0.065,
@@ -425,6 +426,9 @@ config: Dict[str, Any] = {
             },
         },
         "one_leg": {
+            "total_reward": 1.0,
+        },
+        "one_leg_desk": {
             "total_reward": 1.0,
         },
         "desk": {

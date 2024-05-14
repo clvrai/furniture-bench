@@ -23,6 +23,7 @@ class DeskTableTop(TableTop):
 
         self.reset_x_len = 0.21
         self.reset_y_len = 0.15
+        self.half_width = 0.07375
 
     def randomize_init_pose(self, from_skill=0, pos_range=[-0.05, 0.05], rot_range=45):
         # Too big, so we need to reduce the range.

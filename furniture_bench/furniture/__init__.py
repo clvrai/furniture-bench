@@ -1,6 +1,7 @@
 from furniture_bench.furniture.cabinet import Cabinet
 from furniture_bench.furniture.furniture import Furniture
 from furniture_bench.furniture.one_leg import OneLeg
+from furniture_bench.furniture.one_leg_desk import OneLegDesk
 from furniture_bench.furniture.stool import Stool
 from furniture_bench.furniture.square_table import SquareTable
 from furniture_bench.furniture.round_table import RoundTable
@@ -29,5 +30,7 @@ def furniture_factory(furniture: str) -> Furniture:
         return Stool()
     elif furniture == "one_leg":
         return OneLeg()
+    elif furniture == "one_leg_desk":
+        return OneLegDesk()
     else:
         raise ValueError(f"Unknown furniture type: {furniture}")

@@ -13,3 +13,5 @@ class DeskLeg(Leg):
         self.reset_y_len = 0.125
 
         self.reset_gripper_width = 0.06
+        self.grasp_margin_x = 0.03
+        self.grasp_margin_z = 0.03
