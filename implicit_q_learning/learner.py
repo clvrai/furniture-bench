@@ -65,7 +65,7 @@ class Learner(object):
         actor_lr: float = 3e-4,
         value_lr: float = 3e-4,
         critic_lr: float = 3e-4,
-        hidden_dims: Sequence[int] = (256, 256),
+        hidden_dims: Sequence[int] = (512, 256, 256),
         discount: float = 0.99,
         tau: float = 0.005,
         expectile: float = 0.8,
