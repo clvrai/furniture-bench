@@ -37,6 +37,19 @@ def main():
         help="Use scripted function for getting action.",
     )
     parser.add_argument(
+        "--env",
+        type=str,
+    )
+    parser.add_argument(
+        "--ckpt-dir",
+        type=str,
+        help="Use learned policy to collect the data.",
+    )
+    parser.add_argument(
+        "--ckpt-step",
+        type=int,
+    )
+    parser.add_argument(
         "--pkl-only",
         action="store_true",
         help="Only save the pickle file, not .mp4 and .pngs",
@@ -91,6 +104,7 @@ def main():
         os.makedirs(data_path)
 
     data_collector = DataCollector(
+        env=args.env,
         is_sim=args.is_sim,
         data_path=data_path,
         device_interface=device_interface,
@@ -107,6 +121,8 @@ def main():
         num_demos=args.num_demos,
         resize_sim_img=args.resize_sim_img,
         gripper_pos_control=args.gripper_pos_control,
+        ckpt_dir=args.ckpt_dir,
+        ckpt_step=args.ckpt_step
     )
     data_collector.collect()
 

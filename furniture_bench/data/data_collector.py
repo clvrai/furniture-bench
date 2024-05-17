@@ -7,6 +7,7 @@ from pathlib import Path
 import cv2
 import gym
 import torch
+import numpy as np
 from joblib import Parallel, delayed
 
 from furniture_bench.device.device_interface import DeviceInterface
@@ -24,6 +25,7 @@ class DataCollector:
 
     def __init__(
         self,
+        env: str,
         is_sim: bool,
         data_path: str,
         device_interface: DeviceInterface,
@@ -40,6 +42,8 @@ class DataCollector:
         num_demos: int = 100,
         resize_sim_img: bool = False,
         gripper_pos_control: bool = False,
+        ckpt_dir: bool = False,
+        ckpt_step: int = None,
     ):
         """
         Args:
@@ -60,15 +64,18 @@ class DataCollector:
             resize_sim_img (bool): Read resized image
         """
         if is_sim:
+            if env is None:
+                env = "FurnitureSimFull-v0"
+            manual_done = False if scripted else True
             self.env = gym.make(
-                "FurnitureSimFull-v0",
+                env,
                 furniture=furniture,
                 max_env_steps=sim_config["scripted_timeout"][furniture]
                 if scripted
                 else 3000,
                 headless=headless,
                 num_envs=1,  # Only support 1 for now.
-                manual_done=False if scripted else True,
+                manual_done=manual_done,
                 resize_img=resize_sim_img,
                 np_step_out=False,  # Always output Tensor in this setting. Will change to numpy in this code.
                 channel_first=False,
@@ -83,15 +90,31 @@ class DataCollector:
             elif randomness == "high":
                 randomness = Randomness.HIGH_COLLECT
 
+            manual_done = True
             self.env = gym.make(
                 "FurnitureBench-v0",
                 furniture=furniture,
                 resize_img=False,
-                manual_done=True,
+                manual_done=manual_done,
                 with_display=not headless,
                 draw_marker=draw_marker,
                 randomness=randomness,
             )
+        self.manual_done = manual_done
+        if ckpt_dir:
+            # Initialize the policy
+            # Refer: implicit_q_learning/test_offline.py
+            assert not scripted
+            from learner import Learner
+            self.agent = Learner(
+                42, # Random number for seed
+                self.env.observation_space.sample(),
+                self.env.action_space.sample()[np.newaxis],
+                max_steps=1000000,
+                use_encoder=False
+            )
+            self.agent.load(ckpt_dir, ckpt_step)
+        self.ckpt_dir = ckpt_dir
 
         self.is_sim = is_sim
         self.data_path = Path(data_path)
@@ -125,6 +148,9 @@ class DataCollector:
                 collect_enum = CollectEnum.DONE_FALSE
             else:
                 action, collect_enum = self.device_interface.get_action()
+                if self.ckpt_dir: # Use policy.
+                    obs_without_image = {k: v for k, v in obs.items() if k != "color_image1" and k != "color_image2"}
+                    action = self.agent.sample_actions(obs_without_image, temperature=0.00)
                 skill_complete = int(collect_enum == CollectEnum.SKILL)
                 if skill_complete == 1:
                     self.skill_set.append(skill_complete)
@@ -135,23 +161,29 @@ class DataCollector:
 
             # An episode is done.
             if done or collect_enum in [CollectEnum.SUCCESS, CollectEnum.FAIL]:
-                if self.is_sim:
-                    # Convert it to numpy.
-                    for k, v in next_obs.items():
-                        if isinstance(v, dict):
-                            for k1, v1 in v.items():
-                                v[k1] = v1.squeeze().cpu().numpy()
-                        else:
-                            next_obs[k] = v.squeeze().cpu().numpy()
+                ## Do not save the next obs. ##
+                # if self.is_sim:
+                #     # Convert it to numpy.
+                #     for k, v in next_obs.items():
+                #         if isinstance(v, dict):
+                #             for k1, v1 in v.items():
+                #                 v[k1] = v1.squeeze().cpu().numpy()
+                #         else:
+                #             if isinstance(v, torch.Tensor):
+                #                 next_obs[k] = v.squeeze().cpu().numpy()
 
-                self.org_obs.append(next_obs)
+                # self.org_obs.append(next_obs)
 
-                n_ob = {}
-                n_ob["color_image1"] = resize(next_obs["color_image1"])
-                n_ob["color_image2"] = resize_crop(next_obs["color_image2"])
-                n_ob["robot_state"] = next_obs["robot_state"]
-                n_ob["parts_poses"] = next_obs["parts_poses"]
-                self.obs.append(n_ob)
+                # n_ob = {}
+                # n_ob["color_image1"] = resize(next_obs["color_image1"])
+                # n_ob["color_image2"] = resize_crop(next_obs["color_image2"])
+                # if "image1" in next_obs:
+                #     n_ob["image1"] = next_obs["image1"]
+                #     n_ob["image2"] = next_obs["image2"]
+                # n_ob["robot_state"] = next_obs["robot_state"]
+                # if "parts_poses" in next_obs:
+                #     n_ob["parts_poses"] = next_obs["parts_poses"]
+                # self.obs.append(n_ob)
 
                 if done and not self.env.furnitures[0].all_assembled():
                     if self.save_failure:
@@ -164,11 +196,16 @@ class DataCollector:
                         collect_enum = CollectEnum.SUCCESS
                     self.num_fail += 1
                 else:
-                    if done:
+                    if self.manual_done and collect_enum == CollectEnum.FAIL:
+                        print("Failed to assemble the furniture, reset without saving.")
+                        obs = self.reset()
                         collect_enum = CollectEnum.SUCCESS
+                    else:
+                        if done:
+                            collect_enum = CollectEnum.SUCCESS
 
-                    obs = self.save_and_reset(collect_enum, {})
-                    self.num_success += 1
+                        obs = self.save_and_reset(collect_enum, {})
+                        self.num_success += 1
                 self.traj_counter += 1
                 print(f"Success: {self.num_success}, Fail: {self.num_fail}")
                 done = False
@@ -213,7 +250,8 @@ class DataCollector:
                             for k1, v1 in v.items():
                                 v[k1] = v1.squeeze().cpu().numpy()
                         else:
-                            obs[k] = v.squeeze().cpu().numpy()
+                            if isinstance(v, torch.Tensor):
+                                obs[k] = v.squeeze().cpu().numpy()
                     if isinstance(rew, torch.Tensor):
                         rew = float(rew.squeeze().cpu())
 
@@ -226,8 +264,12 @@ class DataCollector:
                 else:
                     ob["color_image1"] = obs["color_image1"]
                     ob["color_image2"] = obs["color_image2"]
+                    if "image1" in obs:
+                        ob["image1"] = obs["image1"]
+                        ob["image2"] = obs["image2"]
                 ob["robot_state"] = obs["robot_state"]
-                ob["parts_poses"] = obs["parts_poses"]
+                if "parts_poses" in obs:
+                    ob["parts_poses"] = obs["parts_poses"]
                 self.obs.append(ob)
                 if self.is_sim:
                     if isinstance(action, torch.Tensor):
