@@ -37,6 +37,7 @@ def main(_):
     next_obs_ = []
     action_ = []
     reward_ = []
+    red_reward_ = []
     done_ = []
 
     if FLAGS.use_r3m:
@@ -117,6 +118,8 @@ def main(_):
 
                 action_.append(x["actions"][i])
                 reward_.append(x["rewards"][i])
+                if "reds_rewards" in x:
+                    red_reward_.append(x["reds_rewards"][i])
                 done_.append(1 if i == l - 2 else 0)
 
     dataset = {
@@ -126,6 +129,8 @@ def main(_):
         "rewards": np.array(reward_),
         "terminals": np.array(done_),
     }
+    if len(red_reward_) > 0:
+        dataset["red_rewards"] = np.array(red_reward_)
 
     path = f'data/{env_type}/{furniture}.pkl' if FLAGS.out_file_path is None else FLAGS.out_file_path
     path = Path(path)

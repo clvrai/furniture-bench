@@ -209,7 +209,8 @@ class FurnitureDataset(Dataset):
                  data_path: str,
                  clip_to_eps: bool = True,
                  eps: float = 1e-5,
-                 use_encoder: bool = False):
+                 use_encoder: bool = False,
+                 red_reward: bool = False):
         with open(data_path, "rb") as f:
             dataset = pickle.load(f)
 
@@ -240,10 +241,12 @@ class FurnitureDataset(Dataset):
                 dones_float[i] = 0
 
         dones_float[-1] = 1
+        
+        rewards = dataset['reds_rewards'] if red_reward else dataset['rewards']
 
         super().__init__(dataset["observations"],
                          actions=dataset["actions"],
-                         rewards=dataset["rewards"],
+                         rewards=rewards,
                          masks=1.0 - dataset["terminals"],
                          dones_float=dones_float,
                          next_observations=dataset["next_observations"],

@@ -27,6 +27,7 @@ flags.DEFINE_integer("ckpt_interval", 100000, "Ckpt interval.")
 flags.DEFINE_integer("batch_size", 256, "Mini batch size.")
 flags.DEFINE_integer("max_steps", int(1e6), "Number of training steps.")
 flags.DEFINE_boolean("tqdm", True, "Use tqdm progress bar.")
+flags.DEFINE_boolean("red_reward", True, "Use learned reward")
 flags.DEFINE_string("data_path", '', "Path to data.")
 config_flags.DEFINE_config_file(
     "config",
@@ -66,7 +67,7 @@ def normalize(dataset):
 
 
 def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: bool,
-                         encoder_type: str) -> Tuple[gym.Env, D4RLDataset]:
+                         encoder_type: str, red_reward: bool=False) -> Tuple[gym.Env, D4RLDataset]:
     if "Furniture" in env_name:
         import furniture_bench
 
@@ -89,7 +90,7 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
     print("Action space", env.action_space)
 
     if "Furniture" in env_name:
-        dataset = FurnitureDataset(data_path, use_encoder=use_encoder)
+        dataset = FurnitureDataset(data_path, use_encoder=use_encoder, red_reward=red_reward)
     else:
         dataset = D4RLDataset(env)
 
@@ -109,7 +110,7 @@ def main(_):
     ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}.{FLAGS.seed}")
 
     env, dataset = make_env_and_dataset(FLAGS.env_name, FLAGS.seed, FLAGS.data_path,
-                                        FLAGS.use_encoder, FLAGS.encoder_type)
+                                        FLAGS.use_encoder, FLAGS.encoder_type, FLAGS.red_reward)
 
     kwargs = dict(FLAGS.config)
     if FLAGS.wandb:
