@@ -66,7 +66,8 @@ class DataCollector:
         if is_sim:
             if env is None:
                 env = "FurnitureSimFull-v0"
-            manual_done = False if scripted else True
+            # manual_done = False if scripted else True
+            manual_done = False
             self.env = gym.make(
                 env,
                 furniture=furniture,
@@ -200,6 +201,7 @@ class DataCollector:
                         if self.save_failure:
                             print("Saving failure trajectory.")
                             obs = self.save_and_reset(collect_enum, {})
+                            self.num_success += 1
 
                         print("Failed to assemble the furniture, reset without saving.")
                         obs = self.reset()
