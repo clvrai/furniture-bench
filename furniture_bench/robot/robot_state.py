@@ -10,8 +10,8 @@ import torch
 ROBOT_STATES = [
     "ee_pos",
     "ee_quat",
-    # "ee_pos_vel",
-    # "ee_ori_vel",
+    "ee_pos_vel",
+    "ee_ori_vel",
     "gripper_width",
 ]
 

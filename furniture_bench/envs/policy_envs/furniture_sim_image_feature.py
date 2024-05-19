@@ -18,6 +18,7 @@ class FurnitureSimImageFeature(FurnitureSimEnv):
             np_step_out=True,
             channel_first=True,
             gripper_pos_control=True,
+            max_env_steps=600,
             **kwargs,
         )
 
