@@ -197,6 +197,10 @@ class DataCollector:
                     self.num_fail += 1
                 else:
                     if self.manual_done and collect_enum == CollectEnum.FAIL:
+                        if self.save_failure:
+                            print("Saving failure trajectory.")
+                            obs = self.save_and_reset(collect_enum, {})
+
                         print("Failed to assemble the furniture, reset without saving.")
                         obs = self.reset()
                         collect_enum = CollectEnum.SUCCESS
@@ -317,9 +321,15 @@ class DataCollector:
 
     def save(self, collect_enum: CollectEnum, info):
         print(f"Length of trajectory: {len(self.obs)}")
-
+        
         data_name = datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
-        demo_path = self.data_path / data_name
+        if collect_enum == CollectEnum.SUCCESS:
+            data_name = f"{data_name}_success"
+        elif collect_enum == CollectEnum.FAIL:
+            data_name = f"{data_name}_failure"
+
+        success_failure_path = Path("success") if collect_enum == CollectEnum.SUCCESS else Path("failure")
+        demo_path = self.data_path / success_failure_path
         demo_path.mkdir(parents=True, exist_ok=True)
 
         # Color data paths.
