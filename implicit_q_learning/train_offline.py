@@ -1,3 +1,4 @@
+import isaacgym
 import os
 from typing import Tuple
 
@@ -23,6 +24,7 @@ flags.DEFINE_integer("seed", 42, "Random seed.")
 flags.DEFINE_integer("eval_episodes", 10, "Number of episodes used for evaluation.")
 flags.DEFINE_integer("log_interval", 1000, "Logging interval.")
 flags.DEFINE_integer("eval_interval", 5000000, "Eval interval.")
+flags.DEFINE_integer("min_eval_step", 600000, "Eval interval.")
 flags.DEFINE_integer("ckpt_interval", 100000, "Ckpt interval.")
 flags.DEFINE_integer("batch_size", 256, "Mini batch size.")
 flags.DEFINE_integer("max_steps", int(1e6), "Number of training steps.")
@@ -44,7 +46,6 @@ flags.DEFINE_string('normalization', '', '')
 
 
 def normalize(dataset):
-
     trajs = split_into_trajectories(
         dataset.observations,
         dataset.actions,
@@ -71,18 +72,20 @@ def min_max_normalize(dataset):
     max_val = np.max(dataset.rewards)
     min_val = np.min(dataset.rewards)
 
-    normalized_data = np.array([(x - min_val) / (max_val - min_val) for x in dataset.rewards])
-    normalized_data -= 1 # (0, 1) -> (-1, 0)
-    
+    normalized_data = np.array(
+        [(x - min_val) / (max_val - min_val) for x in dataset.rewards]
+    )
+    normalized_data -= 1  # (0, 1) -> (-1, 0)
+
     dataset.rewards = normalized_data
-    
-    
+
+
 def max_normalize(dataset):
-    """Divide the rewards by the maximum value. """
+    """Divide the rewards by the maximum value."""
     max_val = np.max(dataset.rewards)
 
     normalized_data = np.array([x / max_val for x in dataset.rewards])
-    
+
     dataset.rewards = normalized_data
 
 
@@ -93,11 +96,27 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
         import furniture_bench
 
         env_id, furniture_name = env_name.split("/")
-        env = gym.make(env_id,
-                       furniture=furniture_name,
-                       data_path=data_path,
-                       use_encoder=use_encoder,
-                       encoder_type=encoder_type)
+        # env = gym.make(env_id,
+        #                furniture=furniture_name,
+        #                data_path=data_path,
+        #                use_encoder=use_encoder,
+        #    encoder_type=encoder_type)
+        env = gym.make(
+            env_id,
+            furniture=furniture_name,
+            # max_env_steps=600,
+            headless=True,
+            num_envs=1,  # Only support 1 for now.
+            manual_done=False,
+            # resize_img=True,
+            # np_step_out=False,  # Always output Tensor in this setting. Will change to numpy in this code.
+            # channel_first=False,
+            randomness="low",
+            compute_device_id=0,
+            graphics_device_id=0,
+            # gripper_pos_control=True,
+            encoder_type="r3m"
+        )
     else:
         env = gym.make(env_name)
 
@@ -111,7 +130,9 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
     print("Action space", env.action_space)
 
     if "Furniture" in env_name:
-        dataset = FurnitureDataset(data_path, use_encoder=use_encoder, red_reward=red_reward)
+        dataset = FurnitureDataset(
+            data_path, use_encoder=use_encoder, red_reward=red_reward
+        )
     else:
         dataset = D4RLDataset(env)
 
@@ -121,10 +142,10 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
         # but I found no difference between (x - 0.5) * 4 and x - 1.0
     elif "halfcheetah" in env_name or "walker2d" in env_name or "hopper" in env_name:
         normalize(dataset)
-    
-    if normalization == 'min_max':
+
+    if normalization == "min_max":
         min_max_normalize(dataset)
-    if normalization == 'max':
+    if normalization == "max":
         max_normalize(dataset)
 
     return env, dataset
@@ -168,19 +189,19 @@ def main(_):
                     summary_writer.add_histogram(f"training/{k}", np.array(v), i)
             summary_writer.flush()
 
-        if i % FLAGS.eval_interval == 0:
+        if i > FLAGS.min_eval_step and i % FLAGS.eval_interval == 0:
             eval_stats = evaluate(agent, env, FLAGS.eval_episodes)
 
             for k, v in eval_stats.items():
                 summary_writer.add_scalar(f"evaluation/average_{k}s", v, i)
             summary_writer.flush()
 
-            eval_returns.append((i, eval_stats["return"]))
-            np.savetxt(
-                os.path.join(FLAGS.save_dir, f"{FLAGS.seed}.txt"),
-                eval_returns,
-                fmt=["%d", "%.1f"],
-            )
+            # eval_returns.append((i, eval_stats["sum_of_reward"]))
+            # np.savetxt(
+            #     os.path.join(FLAGS.save_dir, f"{FLAGS.seed}.txt"),
+            #     eval_returns,
+            #     fmt=["%d", "%.1f"],
+            # )
 
         if i % FLAGS.ckpt_interval == 0:
             agent.save(ckpt_dir, i)
