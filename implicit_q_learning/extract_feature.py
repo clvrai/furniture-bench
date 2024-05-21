@@ -37,7 +37,6 @@ def main(_):
     next_obs_ = []
     action_ = []
     reward_ = []
-    red_reward_ = []
     done_ = []
 
     if FLAGS.use_r3m:
@@ -59,6 +58,15 @@ def main(_):
 
     files = list(dir_path.glob('*.pkl'))
     len_files = len(files)
+    
+    # Create reds rewards keys
+    # Read the first file to get the keys
+    with open(files[0], "rb") as f:
+        reds_rewards = {}
+        x = pickle.load(f)
+        for key in x.keys():
+            if "reds_rewards_iter" in key:
+                reds_rewards[key] = []
 
     if len_files == 0:
         raise ValueError(f"No pkl files found in {dir_path}")
@@ -122,8 +130,9 @@ def main(_):
 
                 action_.append(x["actions"][i])
                 reward_.append(x["rewards"][i])
-                if "reds_rewards" in x:
-                    red_reward_.append(x["reds_rewards"][i])
+                for kew, rews in reds_rewards.items():
+                    rews.append(x[kew][i])
+                    # red_reward_.append(x["reds_rewards"][i])
                 done_.append(1 if i == l - 2 else 0)
 
     dataset = {
@@ -133,8 +142,9 @@ def main(_):
         "rewards": np.array(reward_),
         "terminals": np.array(done_),
     }
-    if len(red_reward_) > 0:
-        dataset["red_rewards"] = np.array(red_reward_)
+    for key, rews in reds_rewards.items():
+        # Update the dataset with reds rewards
+        dataset[key] = np.array(rews)
 
     path = f'data/{env_type}/{furniture}.pkl' if FLAGS.out_file_path is None else FLAGS.out_file_path
     path = Path(path)
