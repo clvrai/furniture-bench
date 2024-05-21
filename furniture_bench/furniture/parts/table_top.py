@@ -106,7 +106,7 @@ class TableTop(Part):
             # if gripper_width <= self.body_grip_width + 0.005:
             #     self.prev_pose = target
             #     next_state = "push"
-            if self.gripper_less(gripper_width, self.body_grip_width):
+            if self.gripper_less(gripper_width, self.body_grip_width, cnt_max=15):
                 self.prev_pose = target
                 next_state = "push"
         if self._state == "push":
