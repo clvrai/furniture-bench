@@ -75,6 +75,12 @@ parser.add_argument(
     help="Normalization factor of z position.",
     default=0.1001,
 )
+
+parser.add_argument(
+    "--no-flat-robot-state",
+    action="store_true",
+)
+
 args = parser.parse_args()
 
 
@@ -195,14 +201,24 @@ def main():
                     for o in new_traj["observations"]
                 ]
             else:
-                new_traj["observations"] = [
-                    {
-                        "color_image1": o["color_image1"],  # Wrist cam
-                        "color_image2": o["color_image2"],  # Front cam
-                        "robot_state": filter_and_concat_robot_state(o["robot_state"]),
-                    }
-                    for o in new_traj["observations"]
-                ]
+                if args.no_flat_robot_state:
+                    new_traj["observations"] = [
+                        {
+                            "color_image1": o["color_image1"],  # Wrist cam
+                            "color_image2": o["color_image2"],  # Front cam
+                            "robot_state": o["robot_state"],
+                        }
+                        for o in new_traj["observations"]
+                    ]
+                else:
+                    new_traj["observations"] = [
+                        {
+                            "color_image1": o["color_image1"],  # Wrist cam
+                            "color_image2": o["color_image2"],  # Front cam
+                            "robot_state": filter_and_concat_robot_state(o["robot_state"]),
+                        }
+                        for o in new_traj["observations"]
+                    ]
 
             if args.no_robot_state:
                 for obs in new_traj["observations"]:
