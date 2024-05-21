@@ -95,7 +95,8 @@ class DataCollector:
 
             manual_done = True
             self.env = gym.make(
-                "FurnitureBench-v0",
+                # "FurnitureBench-v0",
+                env,
                 furniture=furniture,
                 resize_img=False,
                 manual_done=manual_done,
@@ -154,7 +155,8 @@ class DataCollector:
                 action, collect_enum = self.device_interface.get_action()
                 if self.ckpt_dir: # Use policy.
                     obs_without_image = {k: v for k, v in obs.items() if k != "color_image1" and k != "color_image2"}
-                    action = self.agent.sample_actions(obs_without_image, temperature=0.00)
+                    # action = self.agent.sample_actions(obs_without_image, temperature=0.00)
+                    action = self.agent.sample_actions(obs_without_image, temperature=0.05)
                 skill_complete = int(collect_enum == CollectEnum.SKILL)
                 if skill_complete == 1:
                     self.skill_set.append(skill_complete)
@@ -189,6 +191,7 @@ class DataCollector:
                 #     n_ob["parts_poses"] = next_obs["parts_poses"]
                 # self.obs.append(n_ob)
 
+                done = False
                 if done and not self.env.furnitures[0].all_assembled():
                     if self.save_failure:
                         print("Saving failure trajectory.")

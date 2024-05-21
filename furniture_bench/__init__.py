@@ -29,6 +29,12 @@ register(
     entry_point="furniture_bench.envs.policy_envs.furniture_bench_image_feature:FurnitureBenchImageFeature",
 )
 
+# FurnitureBench with R3M or VIP image feature observation.
+register(
+    id="FurnitureBenchImageFeatureCollect-v0",
+    entry_point="furniture_bench.envs.policy_envs.furniture_bench_image_feature_collect:FurnitureBenchImageFeatureCollect",
+)
+
 # FurnitureSim environment.
 register(
     id="FurnitureSim-v0",

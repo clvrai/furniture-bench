@@ -30,7 +30,8 @@ flags.DEFINE_integer("batch_size", 256, "Mini batch size.")
 flags.DEFINE_integer("max_steps", int(1e6), "Number of training steps.")
 flags.DEFINE_boolean("tqdm", True, "Use tqdm progress bar.")
 flags.DEFINE_boolean("red_reward", False, "Use learned reward")
-flags.DEFINE_string("data_path", '', "Path to data.")
+# flags.DEFINE_string("data_path", '', "Path to data.")
+flags.DEFINE_multi_string("data_path", '', "Path to data.")
 config_flags.DEFINE_config_file(
     "config",
     "default.py",

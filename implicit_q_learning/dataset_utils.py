@@ -253,7 +253,7 @@ class FurnitureDataset(Dataset):
 
         dones_float[-1] = 1
         
-        rewards = dataset['reds_rewards'] if red_reward else dataset['rewards']
+        rewards = dataset['red_rewards'] if red_reward else dataset['rewards']
 
         super().__init__(dataset["observations"],
                          actions=dataset["actions"],
