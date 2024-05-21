@@ -137,6 +137,7 @@ class DataCollector:
         self.resize_sim_img = resize_sim_img
 
         self._reset_collector_buffer()
+        self.failure_phase_counter = 0
 
     def collect(self):
         print("[data collection] Start collecting the data!")
@@ -212,8 +213,12 @@ class DataCollector:
                         if done:
                             collect_enum = CollectEnum.SUCCESS
 
-                        obs = self.save_and_reset(collect_enum, {})
-                        self.num_success += 1
+                        if sum(self.rews) != 4:
+                            self.failure_phase_counter += 1
+                            print("Failure phase counter: ", self.failure_phase_counter)
+                        else:
+                            obs = self.save_and_reset(collect_enum, {})
+                            self.num_success += 1
                 self.traj_counter += 1
                 print(f"Success: {self.num_success}, Fail: {self.num_fail}")
                 done = False
@@ -293,10 +298,13 @@ class DataCollector:
             f"Collected {self.traj_counter} / {self.num_demos} successful trajectories!"
         )
 
+
     def save_and_reset(self, collect_enum: CollectEnum, info):
         """Saves the collected data and reset the environment."""
         self.save(collect_enum, info)
         print(f"Saved {self.traj_counter} trajectories in this run.")
+        print("Failure phase counter: ", self.failure_phase_counter)
+        
         return self.reset()
 
     def reset(self):
