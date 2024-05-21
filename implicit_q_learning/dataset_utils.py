@@ -206,13 +206,24 @@ class D4RLDataset(Dataset):
 class FurnitureDataset(Dataset):
 
     def __init__(self,
-                 data_path: str,
+                 data_path,
                  clip_to_eps: bool = True,
                  eps: float = 1e-5,
                  use_encoder: bool = False,
                  red_reward: bool = False):
-        with open(data_path, "rb") as f:
-            dataset = pickle.load(f)
+        if isinstance(data_path, list):
+            datasets = []
+            for path in data_path:
+                with open(path, 'rb') as f:
+                    datasets.append(pickle.load(f))
+            # Merge the dataset.
+            dataset = {}
+            for key in datasets[0].keys():
+                dataset[key] = np.concatenate([d[key] for d in datasets], axis=0)
+        else:
+            with open(data_path, "rb") as f:
+                dataset = pickle.load(f)
+        print(f"Loaded data from {data_path}")
 
         # if clip_to_eps:
         #     lim = 1 - eps
