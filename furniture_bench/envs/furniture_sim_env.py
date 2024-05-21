@@ -70,6 +70,7 @@ class FurnitureSimEnv(gym.Env):
         max_env_steps: int = 3000,
         act_rot_repr: str = "quat",
         phase: int = -1,
+        phase_reward: bool = False,
         **kwargs,
     ):
         """
@@ -200,6 +201,10 @@ class FurnitureSimEnv(gym.Env):
         self.grasp_counter = [0] * self.num_envs
         self.lift_counter = [0] * self.num_envs
         self.insertion_counter = [0] * self.num_envs
+        self.curr_phase = 0
+        self.phase_reward = phase_reward
+        if self.phase_reward:
+            assert self.num_envs == 1, "Phase reward is only supported for single environment."
         if not self.ctrl_started:
             self.init_ctrl()
 
@@ -839,24 +844,25 @@ class FurnitureSimEnv(gym.Env):
         
         for env_idx in range(self.num_envs):
             # Hard-coded done to check whether gripper maintain the grasp.
-            if self.phase == 0:
-                if self.gripper_width()[env_idx] > 0.01 and self.gripper_width()[env_idx] < 0.015:
+            if self.curr_phase == 0:
+                if self.gripper_width()[env_idx] > 0.005 and self.gripper_width()[env_idx] < 0.02:
                     self.grasp_counter[env_idx] += 1
-            elif self.phase == 2:  # Pick up the leg.
+            elif self.curr_phase == 2:  # Pick up the leg.
                 part_idx = 4
                 part_poses = self._get_parts_poses(sim_coord=True)[0]
                 # Check if the leg is lifted.
                 curr_leg_height = part_poses[env_idx][7 * part_idx + 2]  # Z
                 reset_leg_height = self.reset_poses[env_idx][7 * part_idx + 2]
-                if curr_leg_height - reset_leg_height > 0.01:
+                if curr_leg_height - reset_leg_height > 0.02:
                     self.lift_counter[env_idx] += 1
-            elif self.phase == 3:
+            elif self.curr_phase == 3:
                 if self._insertion_success():
                     self.insertion_counter[env_idx] += 1
-        
+        reward = self._reward()
+
         return (
             obs,
-            self._reward(),
+            reward,
             self._done(),
             {"obs_success": True, "action_success": True},
         )
@@ -876,16 +882,17 @@ class FurnitureSimEnv(gym.Env):
             env_founds = founds[env_idx].cpu().numpy()
             rewards[env_idx] = self.furnitures[env_idx].compute_assemble(env_parts_poses, env_founds)
 
-            if self.phase == 0:
-                done_phase = self.done_with_grasp(env_idx)
-            elif self.phase == 2:
-                done_phase = self.done_with_lift(env_idx)
-            elif self.phase == 3:
-                done_phase = self.done_with_insertion(env_idx)
-            else:
-                done_phase = False
-            if done_phase:
-                rewards[env_idx] = 1.0
+            if self.phase_reward:
+                if self.curr_phase == 0:
+                    done_phase = self.done_with_grasp(env_idx)
+                elif self.curr_phase == 2:
+                    done_phase = self.done_with_lift(env_idx)
+                elif self.curr_phase == 3:
+                    done_phase = self.done_with_insertion(env_idx)
+                else:
+                    done_phase = False
+                if done_phase:
+                    rewards[env_idx] = 1.0
         if self.np_step_out:
             return rewards.cpu().numpy()
 
@@ -1051,19 +1058,26 @@ class FurnitureSimEnv(gym.Env):
         return self.dof_pos[:, 7:8] + self.dof_pos[:, 8:9]
 
     def done_with_grasp(self, env_idx):
-        if self.grasp_counter[env_idx] > 5:
+        if self.grasp_counter[env_idx] > 3:
+            # We don't have place phase.
+            self.curr_phase += 2
             return True
         return False
 
     def done_with_lift(self, env_idx):
         if self.lift_counter[env_idx] > 5:
+            self.curr_phase += 1
             return True
         return False
 
     def _insertion_success(self):
         # Check insertion failure.
-        part1_name = "square_table_top"
-        part2_name = "square_table_leg4"
+        if self.furniture_name == "one_leg":
+            part1_name = "square_table_top"
+            part2_name = "square_table_leg4"
+        elif self.furniture_name == "one_leg_desk":
+            part1_name = "desk_top"
+            part2_name = "desk_leg4"
         part1_pose = C.to_homogeneous(
             self.rb_states[self.part_idxs[part1_name]][0][:3],
             C.quat2mat(self.rb_states[self.part_idxs[part1_name]][0][3:7]),
@@ -1077,14 +1091,13 @@ class FurnitureSimEnv(gym.Env):
         rel_pose = torch.linalg.inv(part1_pose) @ part2_pose
         assembled_rel_poses = self.furniture.assembled_rel_poses[(part_idx1, part_idx2)]
         # Do not check the orientation, but only the position.
-        if self.furniture.assembled(
-            rel_pose.cpu().numpy(), assembled_rel_poses, ori_bound=-1, pos_threshold=[0.015, 0.015, 0.02]
-        ):
+        if self.furniture.assembled(rel_pose.cpu().numpy(), assembled_rel_poses, ori_bound=-1, pos_threshold=[0.015, 0.015, 0.02]):
             return True
         return False
 
     def done_with_insertion(self, env_idx):
         if self.insertion_counter[env_idx] > 5:
+            self.curr_phase += 1
             return True
         return False
 
@@ -1276,6 +1289,7 @@ class FurnitureSimEnv(gym.Env):
         self.grasp_counter = [0] * self.num_envs
         self.lift_counter = [0] * self.num_envs
         self.insertion_counter = [0] * self.num_envs
+        self.curr_phase = 0
 
         if self.save_camera_input:
             self._save_camera_input()
@@ -1329,6 +1343,7 @@ class FurnitureSimEnv(gym.Env):
         self.grasp_counter[env_idx] = 0
         self.lift_counter[env_idx] = 0
         self.insertion_counter[env_idx] = 0
+        self.curr_phase = 0
         self.episode_cnts[env_idx] += 1
         self.move_neutral = False
         self._save_reset_pose()

@@ -89,6 +89,7 @@ def main():
 
     parser.add_argument("--resize-sim-img", action="store_true")
     parser.add_argument("--gripper-pos-control", action="store_true")
+    parser.add_argument("--phase-reward", action="store_true")
 
 
     args = parser.parse_args()
@@ -122,7 +123,8 @@ def main():
         resize_sim_img=args.resize_sim_img,
         gripper_pos_control=args.gripper_pos_control,
         ckpt_dir=args.ckpt_dir,
-        ckpt_step=args.ckpt_step
+        ckpt_step=args.ckpt_step,
+        phase_reward=args.phase_reward,
     )
     data_collector.collect()
 
