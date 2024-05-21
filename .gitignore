@@ -1,4 +1,6 @@
 isaacgym
+bimanual_point
+local_one_leg_desk_500_zero_vel_torque
 
 # macOS
 *.DS_Store

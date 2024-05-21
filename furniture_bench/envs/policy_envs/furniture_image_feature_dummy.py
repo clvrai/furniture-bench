@@ -11,7 +11,7 @@ class FurnitureImageFeatureDummy(FurnitureDummyBase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.robot_state_dim = 8 + 6
+        self.robot_state_dim = 14
         self.img_shape = (*config["furniture"]["env_img_size"], 3)
         self.embedding_dim = (
             2048 if kwargs["encoder_type"] == "r3m" else 1024

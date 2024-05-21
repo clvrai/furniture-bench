@@ -178,6 +178,9 @@ class Learner(object):
         self.target_critic = new_target_critic
 
         info['mse'] = jnp.mean((batch.actions - self.sample_actions(batch.observations, temperature=0.0)) ** 2)
+        import numpy as np
+        if np.isnan(info['mse']):
+            import pdb; pdb.set_trace()
 
         return info
 

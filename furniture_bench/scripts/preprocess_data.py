@@ -141,6 +141,7 @@ def main():
                 new_traj["observations"] = new_traj["observations"][: done_idx + 1]
                 new_traj["actions"] = new_traj["actions"][:done_idx]
                 new_traj["rewards"] = new_traj["rewards"][:done_idx]
+                new_traj["skills"] = new_traj["skills"][:done_idx]
 
             # Skill benchmark.
             if args.from_skill is not None:
@@ -236,6 +237,10 @@ def main():
                     act[1] /= args.norm_pos_y
                     act[2] /= args.norm_pos_z
                     act = np.clip(act, -1 + norm_eps, 1 - norm_eps)
+        
+        assert len(new_traj["observations"]) == len(new_traj["actions"])
+        assert len(new_traj["observations"]) == len(new_traj["rewards"])
+        assert len(new_traj["observations"]) == len(new_traj["skills"])
 
         if args.norm_pos_acts:
             print(

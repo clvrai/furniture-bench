@@ -88,8 +88,12 @@ def main(_):
                 with torch.no_grad():
                     # Use batch size.
                     for i in range(0, l, FLAGS.batch_size):
-                        img1_feature[i:i+FLAGS.batch_size] = encoder(img1[i:i+FLAGS.batch_size].to(device).reshape(-1, 3, 224, 224)).cpu().detach().numpy()
-                        img2_feature[i:i+FLAGS.batch_size] = encoder(img2[i:i+FLAGS.batch_size].to(device).reshape(-1, 3, 224, 224)).cpu().detach().numpy()
+                        if img1.shape[1] != 3:
+                            img1 = img1.permute(0, 3, 1, 2)
+                        if img2.shape[1] != 3:
+                            img2 = img2.permute(0, 3, 1, 2)
+                        img1_feature[i:i+FLAGS.batch_size] = encoder(img1[i:i+FLAGS.batch_size].to(device)).cpu().detach().numpy()
+                        img2_feature[i:i+FLAGS.batch_size] = encoder(img2[i:i+FLAGS.batch_size].to(device)).cpu().detach().numpy()
 
             for i in range(l - 1):
                 if FLAGS.use_r3m or FLAGS.use_vip:

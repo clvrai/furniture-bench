@@ -306,8 +306,8 @@ class FurnitureBenchEnv(gym.Env):
                     resize_crop(cv2.cvtColor(color_img2, cv2.COLOR_RGB2BGR)),
                 ]
             )
-            cv2.imshow("Resized", img)
-            cv2.waitKey(1)
+            # cv2.imshow("Resized", img)
+            # cv2.waitKey(1)
             if self.record:
                 self.video_writer.write(img)
 
@@ -483,9 +483,8 @@ class FurnitureBenchEnv(gym.Env):
         time.sleep(0.1)
         k = input("Press 'enter' to start")
         time.sleep(2.0)
-
-        if self.visualize_init_pose:
-            cv2.destroyAllWindows()
+        # if self.visualize_init_pose:
+        #     cv2.destroyAllWindows()
 
         # Move the robot to the initial pose when starting from skill.
         if self.from_skill >= 1:

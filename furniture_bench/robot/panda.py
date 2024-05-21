@@ -211,9 +211,10 @@ class Panda:
         self.ctrl.reset()
 
     def reset(self, randomness=Randomness.LOW):
-        self.open_gripper()
-        self.arm.go_home(blocking=True)
-        self.init_controller(self.kp, self.kv)
+        self.init_reset()
+        # self.open_gripper()
+        # self.arm.go_home(blocking=True)
+        # self.init_controller(self.kp, self.kv)
         if randomness in [
             Randomness.MEDIUM,
             Randomness.MEDIUM_COLLECT,
@@ -248,8 +249,8 @@ class Panda:
                 ]
             )
             self.go_delta(pos_noise, quat_noise)
-        self.last_grasp = -1
-        self.motion_stopped_counter = 0
+        # self.last_grasp = -1
+        # self.motion_stopped_counter = 0
 
         # TODO: Add failure checking.
         return True

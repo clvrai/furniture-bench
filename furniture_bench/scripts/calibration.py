@@ -163,9 +163,36 @@ avg_pose["setup_front"] = avg_pose["one_leg"]
 avg_pose["obstacle"] = avg_pose["one_leg"]
 
 
+def adjust_brightness_contrast(image, brightness=0, contrast=0):
+    if brightness != 0:
+        if brightness > 0:
+            shadow = brightness
+            highlight = 255
+        else:
+            shadow = 0
+            highlight = 255 + brightness
+        alpha_b = (highlight - shadow) / 255
+        gamma_b = shadow
+
+        buf = cv2.addWeighted(image, alpha_b, image, 0, gamma_b)
+    else:
+        buf = image.copy()
+
+    if contrast != 0:
+        f = 131 * (contrast + 127) / (127 * (131 - contrast))
+        alpha_c = f
+        gamma_c = 127 * (1 - f)
+
+        buf = cv2.addWeighted(buf, alpha_c, buf, 0, gamma_c)
+
+    return buf
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--target", default="one_leg")
+
+    toggle_color_diff = False
 
     args = parser.parse_args()
     cam2 = RealsenseCam(
@@ -173,16 +200,24 @@ def main():
         config["camera"]["color_img_size"],
         config["camera"]["depth_img_size"],
         config["camera"]["frame_rate"],
+        # config["camera"][2]["roi"]
         None,
         disable_auto_exposure=True,
     )
 
+    show_index = 0
     april_tag = AprilTag(config["furniture"]["base_tag_size"])
     prev_img = cv2.imread(f"{ASSET_ROOT}/calibration/{args.target}.png")
     while True:
         color_img, _ = cam2.get_image()
         cam2_to_base = get_cam_to_base(cam2, 2, april_tag=april_tag)
         dst = cv2.addWeighted(color_img, 0.5, prev_img, 0.3, 0)
+
+        # # Compute the absolute difference
+        if toggle_color_diff:
+            dst = cv2.absdiff(prev_img, color_img)
+            dst = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
+            dst = cv2.equalizeHist(dst)
 
         if cam2_to_base is None:
             cv2.imshow(
@@ -324,17 +359,30 @@ def main():
             cam_intr,
             0.05,
             5,
-            text_label=True,
-            draw_arrow=True,
+            # text_label=True,
+            # draw_arrow=True,
         )
+        imgs = [
+            cv2.cvtColor(cv2.resize(dst, (1280, 720)), cv2.COLOR_BGR2RGB),
+            cv2.cvtColor(color_img, cv2.COLOR_RGB2BGR),
+            prev_img,
+        ]
 
-        cv2.imshow(
-            "calibration", cv2.cvtColor(cv2.resize(dst, (1280, 720)), cv2.COLOR_BGR2RGB)
-        )
+        cv2.imshow("calibration", imgs[show_index])
+        # cv2.imwrite('IJRR_calibration/cabinet.png', imgs[0])
 
         time.sleep(0.001)
 
         k = cv2.waitKey(1)
+
+        # If key is enter, move to other image
+        if k == 13:
+            show_index += 1
+            show_index %= len(imgs)
+        # 'c' key is pressed
+        if k == 99:
+            toggle_color_diff = not toggle_color_diff
+
         if k == 27:
             cv2.destroyAllWindows()
             break
