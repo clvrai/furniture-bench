@@ -44,6 +44,7 @@ flags.DEFINE_boolean('wandb', False, 'Use wandb')
 flags.DEFINE_string('wandb_project', '', 'wandb project')
 flags.DEFINE_string('wandb_entity', '', 'wandb entity')
 flags.DEFINE_string('normalization', '', '')
+flags.DEFINE_integer('iter_n', -1, 'Reward relabeling iteration')
 
 
 def normalize(dataset):
@@ -92,7 +93,8 @@ def max_normalize(dataset):
 
 def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: bool,
                          encoder_type: str, red_reward: bool=False,
-                         normalization:str = None) -> Tuple[gym.Env, D4RLDataset]:
+                         normalization:str = None,
+                         iter_n: int = -1) -> Tuple[gym.Env, D4RLDataset]:
     if "Furniture" in env_name:
         import furniture_bench
 
@@ -132,7 +134,7 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
 
     if "Furniture" in env_name:
         dataset = FurnitureDataset(
-            data_path, use_encoder=use_encoder, red_reward=red_reward
+            data_path, use_encoder=use_encoder, red_reward=red_reward, iter_n=iter_n
         )
     else:
         dataset = D4RLDataset(env)
@@ -158,7 +160,8 @@ def main(_):
     ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}.{FLAGS.seed}")
 
     env, dataset = make_env_and_dataset(FLAGS.env_name, FLAGS.seed, FLAGS.data_path,
-                                        FLAGS.use_encoder, FLAGS.encoder_type, FLAGS.red_reward, FLAGS.normalization)
+                                        FLAGS.use_encoder, FLAGS.encoder_type,
+                                        FLAGS.red_reward, FLAGS.normalization, FLAGS.iter_n)
 
     kwargs = dict(FLAGS.config)
     if FLAGS.wandb:

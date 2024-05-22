@@ -210,7 +210,8 @@ class FurnitureDataset(Dataset):
                  clip_to_eps: bool = True,
                  eps: float = 1e-5,
                  use_encoder: bool = False,
-                 red_reward: bool = False):
+                 red_reward: bool = False,
+                 iter_n: int = -1):
         if isinstance(data_path, list):
             datasets = []
             for path in data_path:
@@ -253,7 +254,11 @@ class FurnitureDataset(Dataset):
 
         dones_float[-1] = 1
         
-        rewards = dataset['red_rewards'] if red_reward else dataset['rewards']
+        if red_reward:
+            assert iter_n != -1, "Need to specify the relabeling iteration for red_reward."
+            rewards = dataset[f'reds_rewards_iter_{iter_n}']
+        else:
+            rewards = dataset['rewards']
 
         super().__init__(dataset["observations"],
                          actions=dataset["actions"],
