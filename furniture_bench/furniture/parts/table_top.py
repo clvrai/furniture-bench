@@ -3,6 +3,7 @@ import numpy.typing as npt
 import torch
 from numpy.linalg import inv
 
+import furniture_bench
 import furniture_bench.utils.transform as T
 import furniture_bench.controllers.control_utils as C
 from furniture_bench.utils.pose import get_mat, is_similar_rot, rot_mat
@@ -106,7 +107,13 @@ class TableTop(Part):
             # if gripper_width <= self.body_grip_width + 0.005:
             #     self.prev_pose = target
             #     next_state = "push"
-            if self.gripper_less(gripper_width, self.body_grip_width, cnt_max=15):
+
+            if isinstance(self, furniture_bench.furniture.parts.desk_table_top.DeskTableTop):
+                cnt_max = 25
+            else:
+                cnt_max = 15
+            
+            if self.gripper_less(gripper_width, self.body_grip_width, cnt_max=cnt_max):
                 self.prev_pose = target
                 next_state = "push"
         if self._state == "push":
