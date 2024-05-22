@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import numpy.typing as npt
 
+import furniture_bench
 from furniture_bench.furniture.parts.part import Part
 from furniture_bench.utils.pose import get_mat, is_similar_rot, is_similar_xz, rot_mat
 from furniture_bench.config import config
@@ -228,15 +229,26 @@ class Leg(Part):
                     device=device,
                 )
             )
-            target_leg_pose_robot = torch.tensor(
-                [
-                    [1.0, 0.0, 0.0, table_hole_pose_robot[0, 3]],
-                    [0.0, 0.0, -1.0, table_hole_pose_robot[1, 3]],
-                    [0.0, 1.0, 0.0, table_pose[2, 3] + 0.09],
-                    [0.0, 0.0, 0.0, 1.0],
-                ],
-                device=device,
-            )
+            if isinstance(self, furniture_bench.furniture.parts.desk_leg.DeskLeg):
+                target_leg_pose_robot = torch.tensor(
+                    [
+                        [1.0, 0.0, 0.0, table_hole_pose_robot[0, 3]],
+                        [0.0, 0.0, -1.0, table_hole_pose_robot[1, 3]],
+                        [0.0, 1.0, 0.0, table_pose[2, 3] + 0.09 + 0.02],
+                        [0.0, 0.0, 0.0, 1.0],
+                    ],
+                    device=device,
+                )
+            else:
+                target_leg_pose_robot = torch.tensor(
+                    [
+                        [1.0, 0.0, 0.0, table_hole_pose_robot[0, 3]],
+                        [0.0, 0.0, -1.0, table_hole_pose_robot[1, 3]],
+                        [0.0, 1.0, 0.0, table_pose[2, 3] + 0.09],
+                        [0.0, 0.0, 0.0, 1.0],
+                    ],
+                    device=device,
+                )
             rel = rel_rot_mat(leg_pose_robot, target_leg_pose_robot)
             target = rel @ ee_pose
             if self.satisfy(
@@ -255,15 +267,26 @@ class Leg(Part):
                     device=device,
                 )
             )
-            target_leg_pose_robot = torch.tensor(
+            if isinstance(self, furniture_bench.furniture.parts.desk_leg.DeskLeg):
+                target_leg_pose_robot = torch.tensor(
                 [
                     [1.0, 0.0, 0.0, table_hole_pose_robot[0, 3]],
                     [0.0, 0.0, -1.0, table_hole_pose_robot[1, 3]],
-                    [0.0, 1.0, 0.0, table_pose[2, 3] + 0.084],
+                    [0.0, 1.0, 0.0, table_pose[2, 3] + 0.084 + 0.02],
                     [0.0, 0.0, 0.0, 1.0],
                 ],
                 device=device,
-            )
+                )
+            else:
+                target_leg_pose_robot = torch.tensor(
+                    [
+                        [1.0, 0.0, 0.0, table_hole_pose_robot[0, 3]],
+                        [0.0, 0.0, -1.0, table_hole_pose_robot[1, 3]],
+                        [0.0, 1.0, 0.0, table_pose[2, 3] + 0.084],
+                        [0.0, 0.0, 0.0, 1.0],
+                    ],
+                    device=device,
+                )
             rel = rel_rot_mat(leg_pose_robot, target_leg_pose_robot)
             target = rel @ ee_pose
             if self.satisfy(
