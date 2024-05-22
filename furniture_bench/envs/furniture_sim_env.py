@@ -860,7 +860,6 @@ class FurnitureSimEnv(gym.Env):
                     self.insertion_counter[env_idx] += 1
         reward = self._reward()
 
-        print(self.curr_phase)
         return (
             obs,
             reward,
