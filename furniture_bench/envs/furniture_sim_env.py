@@ -1058,7 +1058,7 @@ class FurnitureSimEnv(gym.Env):
         return self.dof_pos[:, 7:8] + self.dof_pos[:, 8:9]
 
     def done_with_grasp(self, env_idx):
-        if self.grasp_counter[env_idx] >= 5:
+        if self.grasp_counter[env_idx] >= 4:
             # We don't have place phase.
             self.curr_phase += 2
             return True
