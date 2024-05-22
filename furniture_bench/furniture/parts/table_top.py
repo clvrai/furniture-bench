@@ -90,9 +90,7 @@ class TableTop(Part):
         if self._state == "reach_body_grasp_z":
             target_pos = self.prev_pose[:3, 3]
             target_pos[2] = (april_to_robot @ body_pose)[2, 3]
-            if isinstance(self, furniture_bench.furniture.parts.desk_table_top.DeskTableTop):
-                # If desk, grasp little higher portion to avoid collision with the table top.
-                target_pos[2] = target_pos[2] + 0.01
+            target_pos[2] = target_pos[2] + 0.01
             target_ori = self.prev_pose[:3, :3]
             target = self.add_noise_first_target(
                 C.to_homogeneous(target_pos, target_ori),
