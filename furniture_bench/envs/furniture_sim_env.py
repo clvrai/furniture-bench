@@ -845,7 +845,7 @@ class FurnitureSimEnv(gym.Env):
         for env_idx in range(self.num_envs):
             # Hard-coded done to check whether gripper maintain the grasp.
             if self.curr_phase == 0:
-                if self.gripper_width()[env_idx] > 0.005 and self.gripper_width()[env_idx] < 0.02:
+                if self.gripper_width()[env_idx] > 0.015 and self.gripper_width()[env_idx] < 0.025:
                     self.grasp_counter[env_idx] += 1
             elif self.curr_phase == 2:  # Pick up the leg.
                 part_idx = 4
@@ -1058,7 +1058,7 @@ class FurnitureSimEnv(gym.Env):
         return self.dof_pos[:, 7:8] + self.dof_pos[:, 8:9]
 
     def done_with_grasp(self, env_idx):
-        if self.grasp_counter[env_idx] > 3:
+        if self.grasp_counter[env_idx] >= 5:
             # We don't have place phase.
             self.curr_phase += 2
             return True

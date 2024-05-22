@@ -14,6 +14,7 @@ class FurnitureSimImageFeatureCollect(FurnitureSimEnv):
     def __init__(self, **kwargs):
         super().__init__(
             concat_robot_state=True,
+            resize_image=True,
             **kwargs,
         )
 
