@@ -1,3 +1,4 @@
+import isaacgym
 import os
 from typing import Tuple
 
@@ -17,25 +18,34 @@ from learner import Learner
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string('env_name', 'halfcheetah-expert-v2', 'Environment name.')
-flags.DEFINE_string('save_dir', './tmp/', 'Tensorboard logging dir.')
+flags.DEFINE_string("save_dir", "./checkpoints/", "Tensorboard logging dir.")
+flags.DEFINE_string("run_name", "debug", "Run specific name")
 flags.DEFINE_integer('seed', 42, 'Random seed.')
 flags.DEFINE_integer('eval_episodes', 100, 'Number of episodes used for evaluation.')
-flags.DEFINE_integer('log_interval', 1000, 'Logging interval.')
-flags.DEFINE_integer('eval_interval', 100000, 'Eval interval.')
+flags.DEFINE_integer('log_interval', 10, 'Logging interval.')
+# flags.DEFINE_integer('eval_interval', 100000, 'Eval interval.')
+flags.DEFINE_integer('eval_interval', 10000, 'Eval interval.')
 flags.DEFINE_integer('batch_size', 256, 'Mini batch size.')
+flags.DEFINE_string("ckpt_step", None, "Specific checkpoint step")
 flags.DEFINE_integer('max_steps', int(1e6), 'Number of training steps.')
-flags.DEFINE_integer('num_pretraining_steps', int(1e6), 'Number of pretraining steps.')
 flags.DEFINE_integer('replay_buffer_size', 2000000,
                      'Replay buffer size (=max_steps if unspecified).')
 flags.DEFINE_integer('init_dataset_size', None, 'Offline data size (uses all data if unspecified).')
 flags.DEFINE_boolean('tqdm', True, 'Use tqdm progress bar.')
+flags.DEFINE_boolean("red_reward", False, "Use learned reward")
+flags.DEFINE_boolean("use_encoder", False, "Use ResNet18 for the image encoder.")
+flags.DEFINE_string("encoder_type", '', 'vip or r3m')
 flags.DEFINE_boolean('wandb', True, 'Use wandb')
-flags.DEFINE_STRING('wandb_project', 'furniture-bench', 'wandb project')
-flags.DEFINE_STRING('wandb_entity', 'clvr', 'wandb entity')
+flags.DEFINE_string('wandb_project', 'furniture-bench', 'wandb project')
+flags.DEFINE_string('wandb_entity', 'clvr', 'wandb entity')
 config_flags.DEFINE_config_file('config',
                                 'configs/antmaze_finetune_config.py',
                                 'File path to the training hyperparameter configuration.',
                                 lock_config=False)
+
+flags.DEFINE_multi_string("data_path", '', "Path to data.")
+flags.DEFINE_string('normalization', '', '')
+flags.DEFINE_integer('iter_n', -1, 'Reward relabeling iteration')
 
 
 def normalize(dataset):
@@ -56,22 +66,60 @@ def normalize(dataset):
     dataset.rewards *= 1000.0
 
 
+def min_max_normalize(dataset):
+    max_val = np.max(dataset.rewards)
+    min_val = np.min(dataset.rewards)
+
+    normalized_data = np.array(
+        [(x - min_val) / (max_val - min_val) for x in dataset.rewards]
+    )
+    normalized_data -= 1  # (0, 1) -> (-1, 0)
+
+    dataset.rewards = normalized_data
+
+
+def max_normalize(dataset):
+    """Divide the rewards by the maximum value."""
+    max_val = np.max(dataset.rewards)
+
+    normalized_data = np.array([x / max_val for x in dataset.rewards])
+
+    dataset.rewards = normalized_data
+
+
 def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: bool,
-                         trained_encoder: str) -> Tuple[gym.Env, D4RLDataset]:
+                         encoder_type: str, red_reward: bool=False,
+                         normalization:str = None,
+                         iter_n: int = -1) -> Tuple[gym.Env, D4RLDataset]:
     if "Furniture" in env_name:
         import furniture_bench
 
         env_id, furniture_name = env_name.split("/")
-        env = gym.make(env_id,
-                       furniture=furniture_name,
-                       data_path=data_path,
-                       use_encoder=use_encoder,
-                       trained_encoder=trained_encoder)
-        # env = wrappers.Flatten(env)
+        # env = gym.make(env_id,
+        #                furniture=furniture_name,
+        #                data_path=data_path,
+        #                use_encoder=use_encoder,
+        #    encoder_type=encoder_type)
+        env = gym.make(
+            env_id,
+            furniture=furniture_name,
+            # max_env_steps=600,
+            headless=True,
+            num_envs=1,  # Only support 1 for now.
+            manual_done=False,
+            # resize_img=True,
+            # np_step_out=False,  # Always output Tensor in this setting. Will change to numpy in this code.
+            # channel_first=False,
+            randomness="low",
+            compute_device_id=0,
+            graphics_device_id=0,
+            # gripper_pos_control=True,
+            encoder_type="r3m",
+            squeeze_done_reward=True,
+        )
     else:
         env = gym.make(env_name)
 
-    # env = wrappers.EpisodMonitor(env)
     env = wrappers.SinglePrecision(env)
 
     env.seed(seed)
@@ -82,8 +130,9 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
     print("Action space", env.action_space)
 
     if "Furniture" in env_name:
-        dataset = FurnitureDataset(data_path, use_encoder=use_encoder)
-        # normalize(dataset)
+        dataset = FurnitureDataset(
+            data_path, use_encoder=use_encoder, red_reward=red_reward, iter_n=iter_n
+        )
     else:
         dataset = D4RLDataset(env)
 
@@ -94,6 +143,11 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
     elif "halfcheetah" in env_name or "walker2d" in env_name or "hopper" in env_name:
         normalize(dataset)
 
+    if normalization == "min_max":
+        min_max_normalize(dataset)
+    if normalization == "max":
+        max_normalize(dataset)
+
     return env, dataset
 
 
@@ -102,13 +156,8 @@ def main(_):
     os.makedirs(FLAGS.save_dir, exist_ok=True)
 
     env, dataset = make_env_and_dataset(FLAGS.env_name, FLAGS.seed, FLAGS.data_path,
-                                        FLAGS.use_encoder, FLAGS.trained_encoder)
-
-
-    action_dim = env.action_space.shape[0]
-    replay_buffer = ReplayBuffer(env.observation_space, action_dim, FLAGS.replay_buffer_size
-                                 or FLAGS.max_steps)
-    replay_buffer.initialize_with_dataset(dataset, FLAGS.init_dataset_size)
+                                        FLAGS.use_encoder, FLAGS.encoder_type,
+                                        FLAGS.red_reward, FLAGS.normalization, FLAGS.iter_n)
 
     kwargs = dict(FLAGS.config)
     if FLAGS.wandb:
@@ -116,59 +165,84 @@ def main(_):
         wandb.tensorboard.patch(root_logdir=root_logdir)
         wandb.init(project=FLAGS.wandb_project,
                    entity=FLAGS.wandb_entity,
-                   name=FLAGS.env_name + '-' + str(FLAGS.seed) + '-' + FLAGS.data,
-                   config=kwargs)
+                   name=FLAGS.env_name + '-' + str(FLAGS.seed) + '-' + str(FLAGS.run_name) + '-finetune',
+                   config=kwargs,
+                   sync_tensorboard=True)
 
     summary_writer = SummaryWriter(root_logdir, write_to_disk=True)
 
+    # agent = Learner(FLAGS.seed,
+    #                 env.observation_space.sample()[np.newaxis],
+    #                 env.action_space.sample()[np.newaxis], **kwargs)
     agent = Learner(FLAGS.seed,
-                    env.observation_space.sample()[np.newaxis],
-                    env.action_space.sample()[np.newaxis], **kwargs)
+                env.observation_space.sample(),
+                env.action_space.sample()[np.newaxis],
+                max_steps=FLAGS.max_steps,
+                **kwargs,
+                use_encoder=FLAGS.use_encoder)
+    ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}.{FLAGS.seed}")
+    agent.load(ckpt_dir, FLAGS.ckpt_step or FLAGS.max_steps)
+
 
     eval_returns = []
     observation, done = env.reset(), False
+    
+    observations = []
+    actions = []
+    rewards = []
+    done_floats = []
+    masks = []
+    next_observations = []
 
-    # Use negative indices for pretraining steps.
-    for i in tqdm.tqdm(range(1 - FLAGS.num_pretraining_steps, FLAGS.max_steps + 1),
+    for i in tqdm.tqdm(range(FLAGS.max_steps + 1),
                        smoothing=0.1,
                        disable=not FLAGS.tqdm):
-        if i >= 1:
-            action = agent.sample_actions(observation, )
+        while not done:
+            action = agent.sample_actions(observation)
             action = np.clip(action, -1, 1)
             next_observation, reward, done, info = env.step(action)
-
             if not done or 'TimeLimit.truncated' in info:
                 mask = 1.0
             else:
                 mask = 0.0
+            observations.append(observation)
+            actions.append(action)
+            rewards.append(reward)
+            done_floats.append(float(done))
+            masks.append(mask)
+            next_observations.append(next_observation)
 
-            replay_buffer.insert(observation, action, reward, mask, float(done), next_observation)
             observation = next_observation
+        len_curr_traj = len(observations)
+        assert len_curr_traj == len(actions) == len(rewards) == len(masks) == len(next_observations)
+        assert done_floats[-1] == 1.0
+    
+        # Append to dataset.
+        dataset.add_trajectory(observations, actions, rewards, masks, done_floats, next_observations)
 
-            if done:
-                observation, done = env.reset(), False
-                for k, v in info['episode'].items():
-                    summary_writer.add_scalar(f'training/{k}', v, info['total']['timesteps'])
-        else:
-            info = {}
-            info['total'] = {'timesteps': i}
+        observations = []
+        actions = []
+        rewards = []
+        done_floats = []
+        masks = []
+        next_observations = []
 
-        batch = replay_buffer.sample(FLAGS.batch_size)
-        if 'antmaze' in FLAGS.env_name:
-            batch = Batch(observations=batch.observations,
-                          actions=batch.actions,
-                          rewards=batch.rewards - 1,
-                          masks=batch.masks,
-                          next_observations=batch.next_observations)
-        update_info = agent.update(batch)
+        observation, done = env.reset(), False
+        # for k, v in info['episode'].items():
+        #     summary_writer.add_scalar(f'training/{k}', v, info['total']['timesteps'])
+        
+        # Update as the length of the current trajectory.
+        for update_idx in range(len_curr_traj):
+            batch = dataset.sample(FLAGS.batch_size)
+            update_info = agent.update(batch)
 
-        if i % FLAGS.log_interval == 0:
-            for k, v in update_info.items():
-                if v.ndim == 0:
-                    summary_writer.add_scalar(f'training/{k}', v, i)
-                else:
-                    summary_writer.add_histogram(f'training/{k}', v, i)
-            summary_writer.flush()
+            if update_idx % FLAGS.log_interval == 0:
+                for k, v in update_info.items():
+                    if v.ndim == 0:
+                        summary_writer.add_scalar(f'training/{k}', v, i)
+                    else:
+                        summary_writer.add_histogram(f'training/{k}', v, i)
+                summary_writer.flush()
 
         if i % FLAGS.eval_interval == 0:
             eval_stats = evaluate(agent, env, FLAGS.eval_episodes)

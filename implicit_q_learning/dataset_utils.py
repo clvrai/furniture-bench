@@ -76,6 +76,15 @@ class Dataset(object):
         self.next_observations = next_observations
         self.size = size
         self.use_encoder = use_encoder
+    
+    def add_trajectory(self, observations, actions, rewards, masks, dones_float, next_observations):
+        self.observations = np.concatenate([self.observations, observations], axis=0)
+        self.actions = np.concatenate([self.actions, actions], axis=0)
+        self.rewards = np.concatenate([self.rewards, rewards], axis=0)
+        self.masks = np.concatenate([self.masks, masks], axis=0)
+        self.dones_float = np.concatenate([self.dones_float, dones_float], axis=0)
+        self.next_observations = np.concatenate([self.next_observations, next_observations], axis=0)
+        self.size += len(observations)
 
     def sample(self, batch_size: int) -> Batch:
         indx = np.random.randint(self.size, size=batch_size)
