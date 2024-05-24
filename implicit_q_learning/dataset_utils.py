@@ -228,7 +228,14 @@ class FurnitureDataset(Dataset):
                     datasets.append(pickle.load(f))
             # Merge the dataset.
             dataset = {}
-            for key in datasets[0].keys():
+            # Find the joint keys.
+            joint_keys = []
+            for dataset in datasets:
+                keys = set(dataset.keys())                
+                joint_keys.append(keys)
+            joint_keys = set.intersection(*joint_keys)
+
+            for key in joint_keys:
                 dataset[key] = np.concatenate([d[key] for d in datasets], axis=0)
         else:
             with open(data_path, "rb") as f:
