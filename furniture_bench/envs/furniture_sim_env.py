@@ -194,6 +194,7 @@ class FurnitureSimEnv(gym.Env):
 
         self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
         self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
+        self.squeeze_done_reward = kwargs.get("squeeze_done_reward", False)
         
         # Give noise to a given phase in order to collect failure trajectories at specific phase.
         self.phase_noise = kwargs.get("phase_noise", -1)
@@ -858,12 +859,21 @@ class FurnitureSimEnv(gym.Env):
             elif self.curr_phase == 3:
                 if self._insertion_success():
                     self.insertion_counter[env_idx] += 1
+        done = self._done()
         reward = self._reward()
+        if self.squeeze_done_reward:
+            done = done.squeeze()
+            reward = reward.squeeze()
+            # Make it scalar.
+            if done.shape == ():
+                done = done.item()
+            if reward.shape == ():
+                reward = reward.item()
 
         return (
             obs,
             reward,
-            self._done(),
+            done,
             {"obs_success": True, "action_success": True},
         )
 

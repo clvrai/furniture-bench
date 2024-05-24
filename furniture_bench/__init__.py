@@ -59,6 +59,11 @@ register(
 )
 
 register(
+    id="FurnitureSimImageFeatureWithImage-v0",
+    entry_point="furniture_bench.envs.policy_envs.furniture_sim_image_feature_with_image:FurnitureSimImageFeatureWithImage",
+)
+
+register(
     id="FurnitureSimImageFeatureCollect-v0",
     entry_point="furniture_bench.envs.policy_envs.furniture_sim_image_feature_collect:FurnitureSimImageFeatureCollect",
 )

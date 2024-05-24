@@ -48,6 +48,15 @@ flags.DEFINE_string('normalization', '', '')
 flags.DEFINE_integer('iter_n', -1, 'Reward relabeling iteration')
 
 
+# REDS
+flags.DEFINE_string("task_name", "furniture_one_leg", "Name of task name.")
+flags.DEFINE_string("ckpt_path", "", "ckpt path of reward model.")
+flags.DEFINE_string("image_keys", "color_image2|color_image1", "image keys.")
+flags.DEFINE_string("rm_type", "RFE", "reward model type.")
+flags.DEFINE_integer("window_size", 4, "window size")
+flags.DEFINE_integer("skip_frame", 1, "skip frame")
+
+
 def normalize(dataset):
 
     trajs = split_into_trajectories(dataset.observations, dataset.actions, dataset.rewards,
@@ -78,18 +87,54 @@ def min_max_normalize(dataset):
     dataset.rewards = normalized_data
 
 
-def max_normalize(dataset):
+def max_normalize(rewards, max_rew):
     """Divide the rewards by the maximum value."""
-    max_val = np.max(dataset.rewards)
+    normalized_data = np.array([x / max_rew for x in rewards])
 
-    normalized_data = np.array([x / max_val for x in dataset.rewards])
+    return normalized_data
 
-    dataset.rewards = normalized_data
+
+def replay_chunk_to_seq(trajectories):
+    """From: BPref-v2/bpref_v2/utils/reds_extract_reward.py"""
+    seq = []
+
+    for i in range(FLAGS.window_size - 1):
+        elem = {}
+        elem["is_first"] = i == 0
+        for key in ["observations", "rewards"]:
+            if key == "observations":
+                for _key, _val in trajectories[key][0].items():
+                    elem[_key] = _val
+            elif key == "rewards":
+                try:
+                    elem["reward"] = trajectories[key][0].squeeze()
+                except:
+                    elem['reward'] = trajectories[key][0]
+            elif isinstance(trajectories[key], np.ndarray):
+                elem[key] = trajectories[key][0]
+        seq.append(elem)
+
+    for i in range(len(trajectories["observations"])):
+        elem = {}
+        elem["is_first"] = i == -1
+        for key in ["observations", "rewards"]:
+            if key == "observations":
+                for _key, _val in trajectories[key][i].items():
+                    elem[_key] = _val
+            elif key == "rewards":
+                try:
+                    elem["reward"] = trajectories[key][i].squeeze()
+                except:
+                    elem['reward'] = trajectories[key][i]
+            elif isinstance(trajectories[key], np.ndarray):
+                elem[key] = trajectories[key][i]
+        seq.append(elem)
+
+    return seq
 
 
 def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: bool,
                          encoder_type: str, red_reward: bool=False,
-                         normalization:str = None,
                          iter_n: int = -1) -> Tuple[gym.Env, D4RLDataset]:
     if "Furniture" in env_name:
         import furniture_bench
@@ -143,10 +188,6 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
     elif "halfcheetah" in env_name or "walker2d" in env_name or "hopper" in env_name:
         normalize(dataset)
 
-    if normalization == "min_max":
-        min_max_normalize(dataset)
-    if normalization == "max":
-        max_normalize(dataset)
 
     return env, dataset
 
@@ -157,7 +198,13 @@ def main(_):
 
     env, dataset = make_env_and_dataset(FLAGS.env_name, FLAGS.seed, FLAGS.data_path,
                                         FLAGS.use_encoder, FLAGS.encoder_type,
-                                        FLAGS.red_reward, FLAGS.normalization, FLAGS.iter_n)
+                                        FLAGS.red_reward, FLAGS.iter_n)
+
+    if FLAGS.normalization == "min_max":
+        min_max_normalize(dataset)
+    if FLAGS.normalization == "max":
+        max_rew = np.max(dataset.rewards)
+        dataset.rewards = max_normalize(dataset.rewards, max_rew)
 
     kwargs = dict(FLAGS.config)
     if FLAGS.wandb:
@@ -180,6 +227,24 @@ def main(_):
                 max_steps=FLAGS.max_steps,
                 **kwargs,
                 use_encoder=FLAGS.use_encoder)
+
+    if FLAGS.red_reward:
+        # load reward model.
+        from bpref_v2.reward_model.rfe_reward_model import RFERewardModel
+        reward_model = RFERewardModel(
+            task=FLAGS.task_name,
+            model_name=FLAGS.rm_type,
+            rm_path=FLAGS.ckpt_path,
+            camera_keys=FLAGS.image_keys.split("|"),
+            reward_scale=None,
+            window_size=FLAGS.window_size,
+            skip_frame=FLAGS.skip_frame,
+            reward_model_device=0,
+            encoding_minibatch_size=16,
+            use_task_reward=True,
+            use_scale=False,
+        )
+
     ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}.{FLAGS.seed}")
     agent.load(ckpt_dir, FLAGS.ckpt_step or FLAGS.max_steps)
 
@@ -198,7 +263,8 @@ def main(_):
                        smoothing=0.1,
                        disable=not FLAGS.tqdm):
         while not done:
-            action = agent.sample_actions(observation)
+            obs_without_rgb = {k: v for k, v in observation.items() if k != 'color_image1' and k != 'color_image2'}
+            action = agent.sample_actions(obs_without_rgb)
             action = np.clip(action, -1, 1)
             next_observation, reward, done, info = env.step(action)
             if not done or 'TimeLimit.truncated' in info:
@@ -217,6 +283,23 @@ def main(_):
         assert len_curr_traj == len(actions) == len(rewards) == len(masks) == len(next_observations)
         assert done_floats[-1] == 1.0
     
+        if FLAGS.red_reward:
+            # compute reds reward
+            x = {
+                'observations': observations,
+                'actions': actions,
+                'rewards': rewards,
+            }
+            seq = reward_model(replay_chunk_to_seq(x))
+            rewards = np.asarray([elem[reward_model.PUBLIC_LIKELIHOOD_KEY] for elem in seq])
+            if FLAGS.normalization == "min_max":
+                min_max_normalize(rewards)
+            if FLAGS.normalization == "max":
+                rewards = max_normalize(rewards, max_rew)
+        # Remove RGB from the observations.
+        observations = [{k: v for k, v in obs.items() if k != 'color_image1' and k != 'color_image2'}
+                        for obs in observations]
+
         # Append to dataset.
         dataset.add_trajectory(observations, actions, rewards, masks, done_floats, next_observations)
 
