@@ -9,6 +9,7 @@ from absl import app, flags
 from ml_collections import config_flags
 from tensorboardX import SummaryWriter
 
+from einops import rearrange
 import wrappers
 from dataset_utils import (Batch, D4RLDataset, ReplayBuffer, split_into_trajectories,
                            FurnitureDataset)
@@ -57,6 +58,7 @@ flags.DEFINE_string("rm_type", "RFE", "reward model type.")
 flags.DEFINE_integer("window_size", 4, "window size")
 flags.DEFINE_integer("skip_frame", 1, "skip frame")
 
+flags.DEFINE_boolean("phase_reward", None, "Use phase reward (for logging or training)")
 
 def normalize(dataset):
 
@@ -254,6 +256,7 @@ def main(_):
 
     eval_returns = []
     observation, done = env.reset(), False
+    phase = 0
     
     observations = []
     actions = []
@@ -262,6 +265,7 @@ def main(_):
     masks = []
     next_observations = []
     log_online_avg_reward = []
+    log_phases = []
 
     for i in tqdm.tqdm(range(FLAGS.max_episodes + 1),
                        smoothing=0.1,
@@ -271,6 +275,7 @@ def main(_):
             action = agent.sample_actions(obs_without_rgb)
             action = np.clip(action, -1, 1)
             next_observation, reward, done, info = env.step(action)
+            phase = max(phase, info['phase'])
             if not done or 'TimeLimit.truncated' in info:
                 mask = 1.0
             else:
@@ -310,6 +315,7 @@ def main(_):
         dataset.add_trajectory(observations, actions, rewards, masks, done_floats, next_observations)
         
         log_online_avg_reward.append(np.mean(rewards))
+        log_phases.append(phase)
 
         observations = []
         actions = []
@@ -319,6 +325,7 @@ def main(_):
         next_observations = []
 
         observation, done = env.reset(), False
+        phase = 0
         # for k, v in info['episode'].items():
         #     summary_writer.add_scalar(f'training/{k}', v, info['total']['timesteps'])
         
@@ -333,16 +340,33 @@ def main(_):
             else:
                 summary_writer.add_histogram(f'training/{k}', v, i)
         summary_writer.add_scalar('online_average_reward', np.mean(log_online_avg_reward), i)
+        summary_writer.add_scalar('train_phases', np.mean(log_phases), i)
         summary_writer.flush()
     
         log_online_avg_reward = []
 
         if i % FLAGS.eval_interval == 0:
-            eval_stats = evaluate(agent, env, FLAGS.eval_episodes)
+            if "Sim" in FLAGS.env_name:
+                log_video = True
+
+            eval_stats, log_videos = evaluate(agent, env, FLAGS.eval_episodes, log_video=log_video)
 
             for k, v in eval_stats.items():
                 summary_writer.add_scalar(f'evaluation/average_{k}s', v, i)
             summary_writer.flush()
+
+            if log_video:
+                max_length = max(vid.shape[0] for vid in log_videos)  # Find the maximum sequence length
+                padded_vids = np.array([np.pad(vid, ((0, max_length - vid.shape[0]), (0, 0), (0, 0), (0, 0)), 'constant') for vid in log_videos])
+                # Make it np.int8
+                padded_vids = padded_vids.astype(np.uint8)
+
+                name = "rollout_video"
+                fps = 20
+                vids = rearrange(padded_vids, 'b t c h w -> (b t) c h w')
+                log_dict = {name: wandb.Video(vids, fps=fps, format="mp4")}
+                # log_dict = {name: [wandb.Video(vid, fps=fps, format="mp4") for vid in vids]}
+                wandb.log(log_dict, step=i)
 
             # eval_returns.append((i, eval_stats['return']))
             # np.savetxt(os.path.join(FLAGS.save_dir, f'{FLAGS.seed}.txt'),

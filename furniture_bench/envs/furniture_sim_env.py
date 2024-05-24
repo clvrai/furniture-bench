@@ -874,7 +874,7 @@ class FurnitureSimEnv(gym.Env):
             obs,
             reward,
             done,
-            {"obs_success": True, "action_success": True},
+            {"obs_success": True, "action_success": True, "phase": self.curr_phase},
         )
 
     def _reward(self):
@@ -891,18 +891,27 @@ class FurnitureSimEnv(gym.Env):
             env_parts_poses = parts_poses[env_idx].cpu().numpy()
             env_founds = founds[env_idx].cpu().numpy()
             rewards[env_idx] = self.furnitures[env_idx].compute_assemble(env_parts_poses, env_founds)
-
             if self.phase_reward:
-                if self.curr_phase == 0:
+                if rewards[env_idx] == 1.0: # Assemble reward.
+                    rewards[env_idx] = 5.0
+                elif self.curr_phase == 0:
                     done_phase = self.done_with_grasp(env_idx)
+                    if done_phase:
+                        rewards[env_idx] = 1.0
+                elif self.curr_phase == 1:
+                    done_phase = self.done_with_place(env_idx)
+                    if done_phase:
+                        rewards[env_idx] = 2.0
                 elif self.curr_phase == 2:
                     done_phase = self.done_with_lift(env_idx)
+                    if done_phase:
+                        rewards[env_idx] = 3.0
                 elif self.curr_phase == 3:
                     done_phase = self.done_with_insertion(env_idx)
+                    if done_phase:
+                        rewards[env_idx] = 4.0
                 else:
                     done_phase = False
-                if done_phase:
-                    rewards[env_idx] = 1.0
         if self.np_step_out:
             return rewards.cpu().numpy()
 
@@ -1068,9 +1077,81 @@ class FurnitureSimEnv(gym.Env):
         return self.dof_pos[:, 7:8] + self.dof_pos[:, 8:9]
 
     def done_with_grasp(self, env_idx):
-        if self.grasp_counter[env_idx] >= 5:
-            # We don't have place phase.
-            self.curr_phase += 2
+        """Use scripted as a success detector."""
+        # if self.grasp_counter[env_idx] >= 5:
+        #     # We don't have place phase.
+        #     self.curr_phase += 2
+        #     return True
+        # return False
+        ee_pos, ee_quat = self.get_ee_pose()
+        gripper_width = self.gripper_width()
+        ee_pos, ee_quat = ee_pos.squeeze(), ee_quat.squeeze()
+
+        part_idx1 = 0
+        part1_name = self.furniture.parts[part_idx1].name
+
+        ee_pose = C.to_homogeneous(ee_pos, C.quat2mat(ee_quat))
+        body_pose = C.to_homogeneous(
+            self.rb_states[self.part_idxs[part1_name]][0][:3],
+            C.quat2mat(self.rb_states[self.part_idxs[part1_name]][0][3:7]),
+        )
+        body_pose = self.sim_to_april_mat @ body_pose
+
+        # Table top.
+        body_pose = self.furniture.parts[part_idx1]._find_closest_y(body_pose)
+        rot = body_pose[:4, :4] @ torch.tensor(
+            rot_mat([np.pi / 2, 0, 0], hom=True), device=self.device
+        )
+        pos = body_pose[:3, 3]
+        pos = torch.concat([pos, torch.tensor([1.0], device=self.device)])
+
+        target_pos = (self.april_to_robot_mat @ pos)[:3]
+        target_ori = (self.april_to_robot_mat @ rot)[:3, :3]
+
+        max_gripper_width = 0.03
+        min_gripper_width = 0.005
+
+        if not ee_pos[2] < (target_pos[2] + 0.025):
+            # Height is too high.
+            return False
+
+        if not (min_gripper_width < gripper_width and gripper_width < max_gripper_width):
+            return False
+    
+        target = C.to_homogeneous(target_pos, target_ori)
+
+        pos_error_threshold = 0.03 # 3cm.
+        ori_error_threshold = 0.9
+        if ((ee_pose[:3, 3] - target[:3, 3]).abs().sum() < pos_error_threshold) and (
+            (ee_pose[:3, :3] - target[:3, :3]).abs().sum() < ori_error_threshold
+        ):
+            self.curr_phase += 1
+            return True
+        return False
+    
+    def done_with_place(self, env_idx):
+        parts_poses, _ = self._get_parts_poses()  
+        parts_poses = parts_poses.squeeze()
+        # Check if the part is placed on the table.
+        # Get from scripted data of 1000 episodes for one_leg.
+        if self.furniture_name == "one_leg":
+            margin = 0.001
+            min_x = 0.024 - margin
+            max_x = 0.083 + margin
+            min_y = 0.23 - margin
+            max_y = 0.28 + margin
+        # Get from scripted data of 500 episodes for desk.
+        elif self.furniture_name == "one_leg_desk":
+            margin = 0.001
+            min_x = 0.02 - margin
+            max_x = 0.06 + margin
+            min_y = 0.24 - margin
+            max_y = 0.29 + margin
+
+        part_x = parts_poses[0]
+        part_y = parts_poses[1]
+        if min_x < part_x and part_x < max_x and min_y < part_y and part_y < max_y:
+            self.curr_phase += 1
             return True
         return False
 
