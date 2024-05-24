@@ -21,13 +21,14 @@ flags.DEFINE_string('env_name', 'halfcheetah-expert-v2', 'Environment name.')
 flags.DEFINE_string("save_dir", "./checkpoints/", "Tensorboard logging dir.")
 flags.DEFINE_string("run_name", "debug", "Run specific name")
 flags.DEFINE_integer('seed', 42, 'Random seed.')
-flags.DEFINE_integer('eval_episodes', 100, 'Number of episodes used for evaluation.')
+flags.DEFINE_integer('eval_episodes', 10, 'Number of episodes used for evaluation.')
 flags.DEFINE_integer('log_interval', 10, 'Logging interval.')
 # flags.DEFINE_integer('eval_interval', 100000, 'Eval interval.')
-flags.DEFINE_integer('eval_interval', 10000, 'Eval interval.')
+flags.DEFINE_integer('eval_interval', 20, 'Eval interval.')
 flags.DEFINE_integer('batch_size', 256, 'Mini batch size.')
 flags.DEFINE_string("ckpt_step", None, "Specific checkpoint step")
 flags.DEFINE_integer('max_steps', int(1e6), 'Number of training steps.')
+flags.DEFINE_integer('max_episodes', int(5e3), 'Number of episodes for training')
 flags.DEFINE_integer('replay_buffer_size', 2000000,
                      'Replay buffer size (=max_steps if unspecified).')
 flags.DEFINE_integer('init_dataset_size', None, 'Offline data size (uses all data if unspecified).')
@@ -36,7 +37,7 @@ flags.DEFINE_boolean("red_reward", False, "Use learned reward")
 flags.DEFINE_boolean("use_encoder", False, "Use ResNet18 for the image encoder.")
 flags.DEFINE_string("encoder_type", '', 'vip or r3m')
 flags.DEFINE_boolean('wandb', True, 'Use wandb')
-flags.DEFINE_string('wandb_project', 'furniture-bench', 'wandb project')
+flags.DEFINE_string('wandb_project', 'furniture-reward', 'wandb project')
 flags.DEFINE_string('wandb_entity', 'clvr', 'wandb entity')
 config_flags.DEFINE_config_file('config',
                                 'configs/antmaze_finetune_config.py',
@@ -224,9 +225,10 @@ def main(_):
     agent = Learner(FLAGS.seed,
                 env.observation_space.sample(),
                 env.action_space.sample()[np.newaxis],
-                max_steps=FLAGS.max_steps,
+                max_steps=FLAGS.max_episodes,
                 **kwargs,
-                use_encoder=FLAGS.use_encoder)
+                use_encoder=FLAGS.use_encoder,
+                opt_decay_schedule=None)
 
     if FLAGS.red_reward:
         # load reward model.
@@ -241,12 +243,13 @@ def main(_):
             skip_frame=FLAGS.skip_frame,
             reward_model_device=0,
             encoding_minibatch_size=16,
-            use_task_reward=True,
+            use_task_reward=False,
             use_scale=False,
         )
 
     ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}.{FLAGS.seed}")
-    agent.load(ckpt_dir, FLAGS.ckpt_step or FLAGS.max_steps)
+    ckpt_step = FLAGS.ckpt_step or FLAGS.max_steps
+    agent.load(ckpt_dir, ckpt_step)
 
 
     eval_returns = []
@@ -258,8 +261,9 @@ def main(_):
     done_floats = []
     masks = []
     next_observations = []
+    log_online_avg_reward = []
 
-    for i in tqdm.tqdm(range(FLAGS.max_steps + 1),
+    for i in tqdm.tqdm(range(FLAGS.max_episodes + 1),
                        smoothing=0.1,
                        disable=not FLAGS.tqdm):
         while not done:
@@ -299,9 +303,13 @@ def main(_):
         # Remove RGB from the observations.
         observations = [{k: v for k, v in obs.items() if k != 'color_image1' and k != 'color_image2'}
                         for obs in observations]
+        next_observations = [{k: v for k, v in obs.items() if k != 'color_image1' and k != 'color_image2'}
+                             for obs in next_observations]
 
         # Append to dataset.
         dataset.add_trajectory(observations, actions, rewards, masks, done_floats, next_observations)
+        
+        log_online_avg_reward.append(np.mean(rewards))
 
         observations = []
         actions = []
@@ -319,13 +327,15 @@ def main(_):
             batch = dataset.sample(FLAGS.batch_size)
             update_info = agent.update(batch)
 
-            if update_idx % FLAGS.log_interval == 0:
-                for k, v in update_info.items():
-                    if v.ndim == 0:
-                        summary_writer.add_scalar(f'training/{k}', v, i)
-                    else:
-                        summary_writer.add_histogram(f'training/{k}', v, i)
-                summary_writer.flush()
+        for k, v in update_info.items():
+            if v.ndim == 0:
+                summary_writer.add_scalar(f'training/{k}', v, i)
+            else:
+                summary_writer.add_histogram(f'training/{k}', v, i)
+        summary_writer.add_scalar('online_average_reward', np.mean(log_online_avg_reward), i)
+        summary_writer.flush()
+    
+        log_online_avg_reward = []
 
         if i % FLAGS.eval_interval == 0:
             eval_stats = evaluate(agent, env, FLAGS.eval_episodes)
@@ -334,10 +344,17 @@ def main(_):
                 summary_writer.add_scalar(f'evaluation/average_{k}s', v, i)
             summary_writer.flush()
 
-            eval_returns.append((i, eval_stats['return']))
-            np.savetxt(os.path.join(FLAGS.save_dir, f'{FLAGS.seed}.txt'),
-                       eval_returns,
-                       fmt=['%d', '%.1f'])
+            # eval_returns.append((i, eval_stats['return']))
+            # np.savetxt(os.path.join(FLAGS.save_dir, f'{FLAGS.seed}.txt'),
+            #            eval_returns,
+            #            fmt=['%d', '%.1f'])
+
+        if i % FLAGS.eval_interval == 0:
+            # Save last step if it is not saved.
+            ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}-{ckpt_step}-finetune.{FLAGS.seed}")
+            if not os.path.exists(ckpt_dir):
+                os.makedirs(ckpt_dir)
+            agent.save(ckpt_dir, i)
 
     if FLAGS.wandb:
         wandb.finish()

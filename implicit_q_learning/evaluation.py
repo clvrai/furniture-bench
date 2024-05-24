@@ -17,7 +17,8 @@ def evaluate(
     for _ in tqdm(range(num_episodes)):
         observation, done = env.reset(), False
         while not done:
-            action = agent.sample_actions(observation, temperature=temperature)
+            obs_without_rgb = {k: v for k, v in observation.items() if k != 'color_image1' and k != 'color_image2'}
+            action = agent.sample_actions(obs_without_rgb, temperature=temperature)
             observation, rew, done, info = env.step(action)
             sum_reward += rew
 
