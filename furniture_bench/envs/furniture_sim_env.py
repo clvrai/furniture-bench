@@ -891,27 +891,28 @@ class FurnitureSimEnv(gym.Env):
             env_parts_poses = parts_poses[env_idx].cpu().numpy()
             env_founds = founds[env_idx].cpu().numpy()
             rewards[env_idx] = self.furnitures[env_idx].compute_assemble(env_parts_poses, env_founds)
-            if self.phase_reward:
-                if rewards[env_idx] == 1.0: # Assemble reward.
+
+            if rewards[env_idx] == 1.0: # Assemble reward.
+                if self.phase_reward:
                     rewards[env_idx] = 5.0
-                elif self.curr_phase == 0:
-                    done_phase = self.done_with_grasp(env_idx)
-                    if done_phase:
-                        rewards[env_idx] = 1.0
-                elif self.curr_phase == 1:
-                    done_phase = self.done_with_place(env_idx)
-                    if done_phase:
-                        rewards[env_idx] = 2.0
-                elif self.curr_phase == 2:
-                    done_phase = self.done_with_lift(env_idx)
-                    if done_phase:
-                        rewards[env_idx] = 3.0
-                elif self.curr_phase == 3:
-                    done_phase = self.done_with_insertion(env_idx)
-                    if done_phase:
-                        rewards[env_idx] = 4.0
-                else:
-                    done_phase = False
+            elif self.curr_phase == 0:
+                done_phase = self.done_with_grasp(env_idx)
+                if self.phase_reward and done_phase:
+                    rewards[env_idx] = 1.0
+            elif self.curr_phase == 1:
+                done_phase = self.done_with_place(env_idx)
+                if self.phase_reward and done_phase:
+                    rewards[env_idx] = 2.0
+            elif self.curr_phase == 2:
+                done_phase = self.done_with_lift(env_idx)
+                if self.phase_reward and done_phase:
+                    rewards[env_idx] = 3.0
+            elif self.curr_phase == 3:
+                done_phase = self.done_with_insertion(env_idx)
+                if self.phase_reward and done_phase:
+                    rewards[env_idx] = 4.0
+            else:
+                done_phase = False
         if self.np_step_out:
             return rewards.cpu().numpy()
 

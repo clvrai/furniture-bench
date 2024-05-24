@@ -164,6 +164,7 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
             # gripper_pos_control=True,
             encoder_type="r3m",
             squeeze_done_reward=True,
+            phase_reward=FLAGS.phase_reward,
         )
     else:
         env = gym.make(env_name)
