@@ -45,6 +45,7 @@ class DataCollector:
         ckpt_dir: bool = False,
         ckpt_step: int = None,
         phase_reward: bool = False,
+        fixed_init: bool = False,
     ):
         """
         Args:
@@ -86,6 +87,7 @@ class DataCollector:
                 graphics_device_id=graphics_device_id,
                 gripper_pos_control=gripper_pos_control,
                 phase_reward=phase_reward,
+                fixed_init=fixed_init
             )
         else:
             if randomness == "med":

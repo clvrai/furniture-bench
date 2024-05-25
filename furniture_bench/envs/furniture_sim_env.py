@@ -195,6 +195,7 @@ class FurnitureSimEnv(gym.Env):
         self.robot_state_as_dict = kwargs.get("robot_state_as_dict", True)
         self.squeeze_batch_dim = kwargs.get("squeeze_batch_dim", False)
         self.squeeze_done_reward = kwargs.get("squeeze_done_reward", False)
+        self.fixed_init = kwargs.get("fixed_init", False)
         
         # Give noise to a given phase in order to collect failure trajectories at specific phase.
         self.phase_noise = kwargs.get("phase_noise", -1)
@@ -1418,9 +1419,14 @@ class FurnitureSimEnv(gym.Env):
         """
         self.furnitures[env_idx].reset()
         if self.randomness == Randomness.LOW and not self.init_assembled:
-            self.furnitures[env_idx].randomize_init_pose(
-                self.from_skill, pos_range=[-0.015, 0.015], rot_range=15
-            )
+            if not self.fixed_init:
+                self.furnitures[env_idx].randomize_init_pose(
+                    self.from_skill, pos_range=[-0.015, 0.015], rot_range=15
+                )
+            else:
+                self.furnitures[env_idx].randomize_init_pose(
+                    self.from_skill, pos_range=[-0.0, 0.0], rot_range=0
+                )
 
         if self.randomness == Randomness.MEDIUM:
             self.furnitures[env_idx].randomize_init_pose(self.from_skill)
