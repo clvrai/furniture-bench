@@ -216,7 +216,7 @@ def main(_):
         wandb.tensorboard.patch(root_logdir=root_logdir)
         wandb.init(project=FLAGS.wandb_project,
                    entity=FLAGS.wandb_entity,
-                   name=FLAGS.env_name + '-' + str(FLAGS.seed) + '-' + str(FLAGS.run_name) + '-finetune',
+                   name=FLAGS.env_name + '-' + str(FLAGS.seed) + '-' + str(FLAGS.run_name) + '-finetune' + ('-phase-reward' if FLAGS.phase_reward else ''),
                    config=kwargs,
                    sync_tensorboard=True)
 
@@ -376,7 +376,11 @@ def main(_):
 
         if i % FLAGS.eval_interval == 0:
             # Save last step if it is not saved.
-            ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}-{ckpt_step}-finetune.{FLAGS.seed}")
+            ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}-{ckpt_step}-finetune")
+            if FLAGS.phase_reward:
+                ckpt_dir = ckpt_dir + "-phase-reward"
+            
+            ckpt_dir = ckpt_dir + ".FLAGS.seed"
             if not os.path.exists(ckpt_dir):
                 os.makedirs(ckpt_dir)
             agent.save(ckpt_dir, i)
