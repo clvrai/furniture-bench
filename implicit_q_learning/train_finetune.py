@@ -1,6 +1,9 @@
 import isaacgym
 import os
+import pickle
+from datetime import datetime
 from typing import Tuple
+import glob
 
 import gym
 import numpy as np
@@ -15,6 +18,8 @@ from dataset_utils import (Batch, D4RLDataset, ReplayBuffer, split_into_trajecto
                            FurnitureDataset)
 from evaluation import evaluate
 from learner import Learner
+
+from furniture_bench.data.collect_enum import CollectEnum
 
 FLAGS = flags.FLAGS
 
@@ -59,6 +64,9 @@ flags.DEFINE_integer("window_size", 4, "window size")
 flags.DEFINE_integer("skip_frame", 1, "skip frame")
 
 flags.DEFINE_boolean("phase_reward", None, "Use phase reward (for logging or training)")
+
+flags.DEFINE_boolean("keyboard", None, "Use phase reward (for logging or training)")
+flags.DEFINE_boolean("save_data", None, "Save the training data.")
 
 def normalize(dataset):
 
@@ -152,7 +160,7 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
             env_id,
             furniture=furniture_name,
             # max_env_steps=600,
-            headless=True,
+            headless=False,
             num_envs=1,  # Only support 1 for now.
             manual_done=False,
             # resize_img=True,
@@ -208,6 +216,7 @@ def main(_):
         min_max_normalize(dataset)
     if FLAGS.normalization == "max":
         max_rew = np.max(dataset.rewards)
+        max_rew = np.abs(max_rew) # For DrS negative reward.
         dataset.rewards = max_normalize(dataset.rewards, max_rew)
 
     kwargs = dict(FLAGS.config)
@@ -220,6 +229,11 @@ def main(_):
                    config=kwargs,
                    sync_tensorboard=True)
 
+    if FLAGS.keyboard:
+        from furniture_bench.device import make_device
+        device_interface = make_device("keyboard")
+    else:
+        device_interface = None
     summary_writer = SummaryWriter(root_logdir, write_to_disk=True)
 
     # agent = Learner(FLAGS.seed,
@@ -254,7 +268,6 @@ def main(_):
     ckpt_step = FLAGS.ckpt_step or FLAGS.max_steps
     agent.load(ckpt_dir, ckpt_step)
 
-
     eval_returns = []
     observation, done = env.reset(), False
     phase = 0
@@ -267,15 +280,58 @@ def main(_):
     next_observations = []
     log_online_avg_reward = []
     log_phases = []
+    collected_data = 0
 
-    for i in tqdm.tqdm(range(FLAGS.max_episodes + 1),
+    if "Bench" in FLAGS.env_name:
+        assert FLAGS.save_data
+        assert FLAGS.keyboard
+
+    finetune_ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}-{ckpt_step}-finetune.{FLAGS.seed}")
+    
+    # Load the online data.
+    online_data_dir = os.path.join(finetune_ckpt_dir, "online_dataset")
+    data_files = glob.glob(os.path.join(online_data_dir, "*.pkl"))
+    for data_file in tqdm.tqdm(data_files):
+        with open(data_file, "rb") as f:
+            data = pickle.load(f)
+            # Add to the replay buffer
+            dataset.add_trajectory(
+                data['observations'],
+                data['actions'],
+                data['rewards'],
+                data['masks'],
+                data['done_floats'],
+                data['next_observations']
+            )
+
+    # Load the fine-tune checkpoint if any.
+    ckpt_idx = len(data_files)
+    if ckpt_idx > 0:
+        agent.load(finetune_ckpt_dir, ckpt_idx)
+
+    for i in tqdm.tqdm(range(1, FLAGS.max_episodes + 1),
                        smoothing=0.1,
                        disable=not FLAGS.tqdm):
+        observations = []
+        actions = []
+        rewards = []
+        done_floats = []
+        masks = []
+        next_observations = []
+
+        observation, done = env.reset(), False
+        phase = 0
+
         while not done:
             obs_without_rgb = {k: v for k, v in observation.items() if k != 'color_image1' and k != 'color_image2'}
             action = agent.sample_actions(obs_without_rgb)
             action = np.clip(action, -1, 1)
             next_observation, reward, done, info = env.step(action)
+
+            if device_interface:
+                _, collect_enum = device_interface.get_action()
+                if collect_enum in [CollectEnum.FAIL, CollectEnum.SUCCESS]:
+                    done = True
             phase = max(phase, info['phase'])
             if not done or 'TimeLimit.truncated' in info:
                 mask = 1.0
@@ -289,6 +345,9 @@ def main(_):
             next_observations.append(next_observation)
 
             observation = next_observation
+        if collect_enum == CollectEnum.FAIL:
+            # Skip the data saving, agent update, and evaluation.
+            continue
         len_curr_traj = len(observations)
         assert len_curr_traj == len(actions) == len(rewards) == len(masks) == len(next_observations)
         assert done_floats[-1] == 1.0
@@ -312,21 +371,32 @@ def main(_):
         next_observations = [{k: v for k, v in obs.items() if k != 'color_image1' and k != 'color_image2'}
                              for obs in next_observations]
 
+        if FLAGS.save_data:
+            if not os.path.exists(online_data_dir):
+                os.makedirs(online_data_dir)
+            data_name = datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+            data_path = os.path.join(online_data_dir, f"sample_{data_name}.pkl")
+            with open(data_path, "wb") as f:
+                data = {
+                    "observations": observations,
+                    "actions": actions,
+                    "rewards": rewards,
+                    "masks": masks,
+                    "done_floats": done_floats,
+                    "next_observations": next_observations,
+                }
+                pickle.dump(data, f)
+                collected_data += 1
+            print(f"Data saved at {data_path}")
+            print(f"Total data collected: {collected_data}")
+
+            agent.save(finetune_ckpt_dir, i)
+
         # Append to dataset.
         dataset.add_trajectory(observations, actions, rewards, masks, done_floats, next_observations)
         
         log_online_avg_reward.append(np.mean(rewards))
         log_phases.append(phase)
-
-        observations = []
-        actions = []
-        rewards = []
-        done_floats = []
-        masks = []
-        next_observations = []
-
-        observation, done = env.reset(), False
-        phase = 0
         # for k, v in info['episode'].items():
         #     summary_writer.add_scalar(f'training/{k}', v, info['total']['timesteps'])
         
@@ -346,7 +416,7 @@ def main(_):
     
         log_online_avg_reward = []
 
-        if i % FLAGS.eval_interval == 0:
+        if i % FLAGS.eval_interval == 0 and ("Benchmark" not in FLAGS.env_name):
             if "Sim" in FLAGS.env_name:
                 log_video = True
 
@@ -376,14 +446,11 @@ def main(_):
 
         if i % FLAGS.eval_interval == 0:
             # Save last step if it is not saved.
-            ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}-{ckpt_step}-finetune")
             if FLAGS.phase_reward:
-                ckpt_dir = ckpt_dir + "-phase-reward"
-            
-            ckpt_dir = ckpt_dir + ".FLAGS.seed"
-            if not os.path.exists(ckpt_dir):
-                os.makedirs(ckpt_dir)
-            agent.save(ckpt_dir, i)
+                finetune_ckpt_dir = finetune_ckpt_dir + "-phase-reward"
+            if not os.path.exists(finetune_ckpt_dir):
+                os.makedirs(finetune_ckpt_dir)
+            agent.save(finetune_ckpt_dir, i)
 
     if FLAGS.wandb:
         wandb.finish()
