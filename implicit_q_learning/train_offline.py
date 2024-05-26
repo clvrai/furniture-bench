@@ -45,6 +45,7 @@ flags.DEFINE_string('wandb_project', '', 'wandb project')
 flags.DEFINE_string('wandb_entity', '', 'wandb entity')
 flags.DEFINE_string('normalization', '', '')
 flags.DEFINE_integer('iter_n', -1, 'Reward relabeling iteration')
+flags.DEFINE_boolean('use_layer_norm', False, 'Use layer normalization')
 
 
 def normalize(dataset):
@@ -178,7 +179,9 @@ def main(_):
                     env.action_space.sample()[np.newaxis],
                     max_steps=FLAGS.max_steps,
                     **kwargs,
-                    use_encoder=FLAGS.use_encoder)
+                    use_encoder=FLAGS.use_encoder,
+                    use_layer_norm=FLAGS.use_layer_norm,)
+    print(agent)
 
     eval_returns = []
     for i in tqdm.tqdm(range(1, FLAGS.max_steps + 1), smoothing=0.1, disable=not FLAGS.tqdm):

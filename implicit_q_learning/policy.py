@@ -29,6 +29,7 @@ class NormalTanhPolicy(nn.Module):
     log_std_max: Optional[float] = None
     tanh_squash_distribution: bool = True
     use_encoder: bool = False
+    use_layer_norm: bool = False
 
     @nn.compact
     def __call__(
@@ -46,7 +47,8 @@ class NormalTanhPolicy(nn.Module):
         # obs = jnp.concatenate([image_feature1, image_feature2, observations['robot_state']], axis=-1)
         obs = jnp.concatenate(features, axis=-1)
         outputs = MLP(self.hidden_dims, activate_final=True,
-                      dropout_rate=self.dropout_rate)(obs, training=training)
+                      dropout_rate=self.dropout_rate,
+                      use_layer_norm=self.use_layer_norm)(obs, training=training)
 
         means = nn.Dense(self.action_dim, kernel_init=default_init())(outputs)
 

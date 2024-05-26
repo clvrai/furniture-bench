@@ -73,7 +73,8 @@ class Learner(object):
         dropout_rate: Optional[float] = None,
         max_steps: Optional[int] = None,
         opt_decay_schedule: str = "cosine",
-        use_encoder: bool = False
+        use_encoder: bool = False,
+        use_layer_norm: bool = False
     ):
         """
         An implementation of the version of Soft-Actor-Critic described in https://arxiv.org/abs/1801.01290
@@ -102,7 +103,8 @@ class Learner(object):
             dropout_rate=dropout_rate,
             state_dependent_std=False,
             tanh_squash_distribution=False,
-            use_encoder=use_encoder
+            use_encoder=use_encoder,
+            use_layer_norm=use_layer_norm
         )
 
         if opt_decay_schedule == "cosine":
@@ -115,14 +117,14 @@ class Learner(object):
 
         actor = Model.create(actor_def, inputs=[actor_key, observations], tx=optimiser)
 
-        critic_def = value_net.DoubleCritic(hidden_dims, use_encoder=use_encoder)
+        critic_def = value_net.DoubleCritic(hidden_dims, use_encoder=use_encoder, use_layer_norm=use_layer_norm)
         critic = Model.create(
             critic_def,
             inputs=[critic_key, observations, actions],
             tx=optax.adam(learning_rate=critic_lr),
         )
 
-        value_def = value_net.ValueCritic(hidden_dims, use_encoder=use_encoder)
+        value_def = value_net.ValueCritic(hidden_dims, use_encoder=use_encoder, use_layer_norm=use_layer_norm)
         value = Model.create(
             value_def,
             inputs=[value_key, observations],
