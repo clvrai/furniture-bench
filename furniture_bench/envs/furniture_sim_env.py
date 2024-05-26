@@ -860,8 +860,8 @@ class FurnitureSimEnv(gym.Env):
             elif self.curr_phase == 3:
                 if self._insertion_success():
                     self.insertion_counter[env_idx] += 1
-        done = self._done()
         reward = self._reward()
+        done = self._done()
         if self.squeeze_done_reward:
             done = done.squeeze()
             reward = reward.squeeze()
@@ -1425,7 +1425,7 @@ class FurnitureSimEnv(gym.Env):
                 )
             else:
                 self.furnitures[env_idx].randomize_init_pose(
-                    self.from_skill, pos_range=[-0.0, 0.0], rot_range=0
+                    self.from_skill, pos_range=[-0.005, 0.005], rot_range=5
                 )
 
         if self.randomness == Randomness.MEDIUM:
