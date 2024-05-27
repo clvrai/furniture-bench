@@ -15,7 +15,7 @@ from tensorboardX import SummaryWriter
 from einops import rearrange
 import wrappers
 from dataset_utils import (Batch, D4RLDataset, ReplayBuffer, split_into_trajectories,
-                           FurnitureDataset)
+                           Dataset, FurnitureDataset)
 from evaluation import evaluate
 from learner import Learner
 
@@ -67,6 +67,11 @@ flags.DEFINE_boolean("phase_reward", None, "Use phase reward (for logging or tra
 
 flags.DEFINE_boolean("keyboard", None, "Use phase reward (for logging or training)")
 flags.DEFINE_boolean("save_data", None, "Save the training data.")
+flags.DEFINE_boolean("use_layer_norm", None, "Use layer normalization.")
+flags.DEFINE_boolean("online_buffer", None, "Use separate online buffer.")
+flags.DEFINE_boolean("fixed_init", None, "Use separate online buffer.")
+flags.DEFINE_float("temperature", 0.2, "Action sample temperature.")
+
 
 def normalize(dataset):
 
@@ -144,6 +149,23 @@ def replay_chunk_to_seq(trajectories):
     return seq
 
 
+def combine(one_dict, other_dict):
+    combined = {}
+    if isinstance(one_dict, Batch):
+        one_dict, other_dict = one_dict._asdict(), other_dict._asdict()
+    for k, v in one_dict.items():
+        if isinstance(v, dict):
+            combined[k] = combine(v, other_dict[k])
+        else:
+            # Use half.
+            v = v[:len(v) // 2]
+            vv = other_dict[k][:len(other_dict[k]) // 2]
+            tmp = np.concatenate([v,vv], axis=0)
+            combined[k] = tmp
+
+    return combined
+
+
 def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: bool,
                          encoder_type: str, red_reward: bool=False,
                          iter_n: int = -1) -> Tuple[gym.Env, D4RLDataset]:
@@ -173,6 +195,7 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
             encoder_type="r3m",
             squeeze_done_reward=True,
             phase_reward=FLAGS.phase_reward,
+            fixed_init=FLAGS.fixed_init,
         )
     else:
         env = gym.make(env_name)
@@ -245,7 +268,8 @@ def main(_):
                 max_steps=FLAGS.max_episodes,
                 **kwargs,
                 use_encoder=FLAGS.use_encoder,
-                opt_decay_schedule=None)
+                opt_decay_schedule=None,
+                use_layer_norm=FLAGS.use_layer_norm,)
 
     if FLAGS.red_reward:
         # load reward model.
@@ -291,18 +315,40 @@ def main(_):
     # Load the online data.
     online_data_dir = os.path.join(finetune_ckpt_dir, "online_dataset")
     data_files = glob.glob(os.path.join(online_data_dir, "*.pkl"))
+    print(f"Loaded {len(data_files)} data files.")
+
+    if FLAGS.online_buffer:
+        online_dataset = Dataset(
+            observations = None,
+            actions = None,
+            rewards = None,
+            masks = None,
+            dones_float = None,
+            next_observations = None,
+            size=0,
+        )
     for data_file in tqdm.tqdm(data_files):
         with open(data_file, "rb") as f:
             data = pickle.load(f)
             # Add to the replay buffer
-            dataset.add_trajectory(
-                data['observations'],
-                data['actions'],
-                data['rewards'],
-                data['masks'],
-                data['done_floats'],
-                data['next_observations']
-            )
+            if FLAGS.online_buffer:
+                online_dataset.add_trajectory(
+                    data['observations'],
+                    data['actions'],
+                    data['rewards'],
+                    data['masks'],
+                    data['done_floats'],
+                    data['next_observations']
+                )
+            else:
+                dataset.add_trajectory(
+                    data['observations'],
+                    data['actions'],
+                    data['rewards'],
+                    data['masks'],
+                    data['done_floats'],
+                    data['next_observations']
+                )
 
     # Load the fine-tune checkpoint if any.
     ckpt_idx = len(data_files)
@@ -324,7 +370,7 @@ def main(_):
 
         while not done:
             obs_without_rgb = {k: v for k, v in observation.items() if k != 'color_image1' and k != 'color_image2'}
-            action = agent.sample_actions(obs_without_rgb)
+            action = agent.sample_actions(obs_without_rgb, temperature=FLAGS.temperature)
             action = np.clip(action, -1, 1)
             next_observation, reward, done, info = env.step(action)
 
@@ -332,6 +378,8 @@ def main(_):
                 _, collect_enum = device_interface.get_action()
                 if collect_enum in [CollectEnum.FAIL, CollectEnum.SUCCESS]:
                     done = True
+                else:
+                    done = False
             phase = max(phase, info['phase'])
             if not done or 'TimeLimit.truncated' in info:
                 mask = 1.0
@@ -345,7 +393,7 @@ def main(_):
             next_observations.append(next_observation)
 
             observation = next_observation
-        if collect_enum == CollectEnum.FAIL:
+        if device_interface and collect_enum == CollectEnum.FAIL:
             # Skip the data saving, agent update, and evaluation.
             continue
         len_curr_traj = len(observations)
@@ -393,7 +441,10 @@ def main(_):
             agent.save(finetune_ckpt_dir, i)
 
         # Append to dataset.
-        dataset.add_trajectory(observations, actions, rewards, masks, done_floats, next_observations)
+        if FLAGS.online_buffer:
+            online_dataset.add_trajectory(observations, actions, rewards, masks, done_floats, next_observations)
+        else:
+            dataset.add_trajectory(observations, actions, rewards, masks, done_floats, next_observations)
         
         log_online_avg_reward.append(np.mean(rewards))
         log_phases.append(phase)
@@ -403,6 +454,12 @@ def main(_):
         # Update as the length of the current trajectory.
         for update_idx in range(len_curr_traj):
             batch = dataset.sample(FLAGS.batch_size)
+            if FLAGS.online_buffer:
+                online_batch = online_dataset.sample(FLAGS.batch_size)
+                # Merge batch half by half.
+                batch = combine(batch, online_batch)
+                from dataset_utils import Batch
+                batch = Batch(**batch)
             update_info = agent.update(batch)
 
         for k, v in update_info.items():

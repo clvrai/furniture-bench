@@ -78,6 +78,15 @@ class Dataset(object):
         self.use_encoder = use_encoder
     
     def add_trajectory(self, observations, actions, rewards, masks, dones_float, next_observations):
+        if self.observations is None:
+            self.observations = observations
+            self.actions = np.array(actions)
+            self.rewards = np.array(rewards)
+            self.masks = np.array(masks)
+            self.dones_float = np.array(dones_float)
+            self.next_observations = next_observations
+            self.size = len(observations)
+            return
         self.observations = np.concatenate([self.observations, observations], axis=0)
         self.actions = np.concatenate([self.actions, actions], axis=0)
         self.rewards = np.concatenate([self.rewards, rewards], axis=0)
