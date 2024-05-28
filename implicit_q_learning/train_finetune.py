@@ -70,7 +70,7 @@ flags.DEFINE_boolean("save_data", None, "Save the training data.")
 flags.DEFINE_boolean("use_layer_norm", None, "Use layer normalization.")
 flags.DEFINE_boolean("online_buffer", None, "Use separate online buffer.")
 flags.DEFINE_boolean("fixed_init", None, "Use separate online buffer.")
-flags.DEFINE_boolean("skip_update", None, "Skip the agent update.")
+flags.DEFINE_boolean("data_collection", None, "Skip the agent update.")
 flags.DEFINE_float("temperature", 0.2, "Action sample temperature.")
 
 
@@ -183,7 +183,7 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
             env_id,
             furniture=furniture_name,
             # max_env_steps=600,
-            headless=False,
+            headless=True,
             num_envs=1,  # Only support 1 for now.
             manual_done=False,
             # resize_img=True,
@@ -319,7 +319,6 @@ def main(_):
     # Check the online data if enough. >= 20.
     print(f"Loaded {len(data_files)} data files.")
     # Make sure the data is loaded correctly.
-    import pdb; pdb.set_trace()
 
     if FLAGS.online_buffer:
         online_dataset = Dataset(
@@ -356,8 +355,10 @@ def main(_):
 
     # Load the fine-tune checkpoint if any.
     ckpt_idx = len(data_files)
-    if ckpt_idx > 0:
-        agent.load(finetune_ckpt_dir, ckpt_idx)
+    # if ckpt_idx > 0:
+    #     if not FLAGS.data_collection:
+    #         agent.load(finetune_ckpt_dir, ckpt_idx)
+    import pdb; pdb.set_trace()
 
     for i in tqdm.tqdm(range(ckpt_idx, FLAGS.max_episodes + 1),
                        smoothing=0.1,
@@ -442,7 +443,7 @@ def main(_):
             print(f"Data saved at {data_path}")
             print(f"Total data collected: {collected_data}")
 
-            if FLAGS.skip_update:
+            if FLAGS.data_collection:
                 continue
 
         # Append to dataset.
@@ -478,7 +479,7 @@ def main(_):
     
         log_online_avg_reward = []
 
-        agent.save(finetune_ckpt_dir, i)
+        agent.save(finetune_ckpt_dir, i + 1)
 
         if i % FLAGS.eval_interval == 0 and ("Benchmark" not in FLAGS.env_name):
             if "Sim" in FLAGS.env_name:
