@@ -70,6 +70,7 @@ flags.DEFINE_boolean("save_data", None, "Save the training data.")
 flags.DEFINE_boolean("use_layer_norm", None, "Use layer normalization.")
 flags.DEFINE_boolean("online_buffer", None, "Use separate online buffer.")
 flags.DEFINE_boolean("fixed_init", None, "Use separate online buffer.")
+flags.DEFINE_boolean("skip_update", None, "Skip the agent update.")
 flags.DEFINE_float("temperature", 0.2, "Action sample temperature.")
 
 
@@ -310,12 +311,15 @@ def main(_):
         assert FLAGS.save_data
         assert FLAGS.keyboard
 
-    finetune_ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}-{ckpt_step}-finetune.{FLAGS.seed}")
+    finetune_ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}-{ckpt_step}-finetune-tmp-{FLAGS.temperature}.{FLAGS.seed}")
     
     # Load the online data.
     online_data_dir = os.path.join(finetune_ckpt_dir, "online_dataset")
     data_files = glob.glob(os.path.join(online_data_dir, "*.pkl"))
+    # Check the online data if enough. >= 20.
     print(f"Loaded {len(data_files)} data files.")
+    # Make sure the data is loaded correctly.
+    import pdb; pdb.set_trace()
 
     if FLAGS.online_buffer:
         online_dataset = Dataset(
@@ -355,7 +359,7 @@ def main(_):
     if ckpt_idx > 0:
         agent.load(finetune_ckpt_dir, ckpt_idx)
 
-    for i in tqdm.tqdm(range(1, FLAGS.max_episodes + 1),
+    for i in tqdm.tqdm(range(ckpt_idx, FLAGS.max_episodes + 1),
                        smoothing=0.1,
                        disable=not FLAGS.tqdm):
         observations = []
@@ -378,8 +382,7 @@ def main(_):
                 _, collect_enum = device_interface.get_action()
                 if collect_enum in [CollectEnum.FAIL, CollectEnum.SUCCESS]:
                     done = True
-                else:
-                    done = False
+                print(env.env_steps)
             phase = max(phase, info['phase'])
             if not done or 'TimeLimit.truncated' in info:
                 mask = 1.0
@@ -413,6 +416,7 @@ def main(_):
                 min_max_normalize(rewards)
             if FLAGS.normalization == "max":
                 rewards = max_normalize(rewards, max_rew)
+
         # Remove RGB from the observations.
         observations = [{k: v for k, v in obs.items() if k != 'color_image1' and k != 'color_image2'}
                         for obs in observations]
@@ -438,7 +442,8 @@ def main(_):
             print(f"Data saved at {data_path}")
             print(f"Total data collected: {collected_data}")
 
-            agent.save(finetune_ckpt_dir, i)
+            if FLAGS.skip_update:
+                continue
 
         # Append to dataset.
         if FLAGS.online_buffer:
@@ -472,6 +477,8 @@ def main(_):
         summary_writer.flush()
     
         log_online_avg_reward = []
+
+        agent.save(finetune_ckpt_dir, i)
 
         if i % FLAGS.eval_interval == 0 and ("Benchmark" not in FLAGS.env_name):
             if "Sim" in FLAGS.env_name:
