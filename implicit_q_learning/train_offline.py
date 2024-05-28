@@ -46,6 +46,7 @@ flags.DEFINE_string('wandb_entity', '', 'wandb entity')
 flags.DEFINE_string('normalization', '', '')
 flags.DEFINE_integer('iter_n', -1, 'Reward relabeling iteration')
 flags.DEFINE_boolean('use_layer_norm', False, 'Use layer normalization')
+flags.DEFINE_boolean('phase_reward', False, 'Use phase reward.')
 
 
 def normalize(dataset):
@@ -119,7 +120,8 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
             compute_device_id=0,
             graphics_device_id=0,
             # gripper_pos_control=True,
-            encoder_type="r3m"
+            encoder_type="r3m",
+            phase_reward=FLAGS.phase_reward
         )
     else:
         env = gym.make(env_name)
@@ -197,7 +199,9 @@ def main(_):
             summary_writer.flush()
 
         if i > FLAGS.min_eval_step and i % FLAGS.eval_interval == 0:
-            eval_stats = evaluate(agent, env, FLAGS.eval_episodes)
+            # eval_stats = evaluate(agent, env, FLAGS.eval_episodes)
+            eval_stats, _ = evaluate(agent, env, FLAGS.eval_episodes)
+
 
             for k, v in eval_stats.items():
                 summary_writer.add_scalar(f"evaluation/average_{k}s", v, i)
