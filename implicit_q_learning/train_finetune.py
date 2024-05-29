@@ -197,6 +197,7 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
             squeeze_done_reward=True,
             phase_reward=FLAGS.phase_reward,
             fixed_init=FLAGS.fixed_init,
+            from_skill=0
         )
     else:
         env = gym.make(env_name)
@@ -356,9 +357,8 @@ def main(_):
     # Load the fine-tune checkpoint if any.
     ckpt_idx = len(data_files)
     # if ckpt_idx > 0:
-    #     if not FLAGS.data_collection:
-    #         agent.load(finetune_ckpt_dir, ckpt_idx)
-    import pdb; pdb.set_trace()
+    if not FLAGS.data_collection:
+        agent.load(finetune_ckpt_dir, ckpt_idx)
 
     for i in tqdm.tqdm(range(ckpt_idx, FLAGS.max_episodes + 1),
                        smoothing=0.1,
@@ -384,7 +384,8 @@ def main(_):
                 if collect_enum in [CollectEnum.FAIL, CollectEnum.SUCCESS]:
                     done = True
                 print(env.env_steps)
-            phase = max(phase, info['phase'])
+            if 'phase' in info:
+                phase = max(phase, info['phase'])
             if not done or 'TimeLimit.truncated' in info:
                 mask = 1.0
             else:
@@ -418,12 +419,6 @@ def main(_):
             if FLAGS.normalization == "max":
                 rewards = max_normalize(rewards, max_rew)
 
-        # Remove RGB from the observations.
-        observations = [{k: v for k, v in obs.items() if k != 'color_image1' and k != 'color_image2'}
-                        for obs in observations]
-        next_observations = [{k: v for k, v in obs.items() if k != 'color_image1' and k != 'color_image2'}
-                             for obs in next_observations]
-
         if FLAGS.save_data:
             if not os.path.exists(online_data_dir):
                 os.makedirs(online_data_dir)
@@ -445,6 +440,12 @@ def main(_):
 
             if FLAGS.data_collection:
                 continue
+
+        # Remove RGB from the observations.
+        observations = [{k: v for k, v in obs.items() if k != 'color_image1' and k != 'color_image2'}
+                        for obs in observations]
+        next_observations = [{k: v for k, v in obs.items() if k != 'color_image1' and k != 'color_image2'}
+                             for obs in next_observations]
 
         # Append to dataset.
         if FLAGS.online_buffer:
@@ -481,9 +482,11 @@ def main(_):
 
         agent.save(finetune_ckpt_dir, i + 1)
 
-        if i % FLAGS.eval_interval == 0 and ("Benchmark" not in FLAGS.env_name):
+        if i % FLAGS.eval_interval == 0 and ("Bench" not in FLAGS.env_name):
             if "Sim" in FLAGS.env_name:
                 log_video = True
+            else:
+                log_video = None
 
             eval_stats, log_videos = evaluate(agent, env, FLAGS.eval_episodes, log_video=log_video)
 
