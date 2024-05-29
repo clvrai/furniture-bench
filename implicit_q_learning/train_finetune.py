@@ -15,7 +15,7 @@ from tensorboardX import SummaryWriter
 from einops import rearrange
 import wrappers
 from dataset_utils import (Batch, D4RLDataset, ReplayBuffer, split_into_trajectories,
-                           Dataset, FurnitureDataset)
+                           Dataset, FurnitureDataset, max_normalize, replay_chunk_to_seq, min_max_normalize)
 from evaluation import evaluate
 from learner import Learner
 
@@ -90,64 +90,6 @@ def normalize(dataset):
 
     dataset.rewards /= compute_returns(trajs[-1]) - compute_returns(trajs[0])
     dataset.rewards *= 1000.0
-
-
-def min_max_normalize(dataset):
-    max_val = np.max(dataset.rewards)
-    min_val = np.min(dataset.rewards)
-
-    normalized_data = np.array(
-        [(x - min_val) / (max_val - min_val) for x in dataset.rewards]
-    )
-    normalized_data -= 1  # (0, 1) -> (-1, 0)
-
-    dataset.rewards = normalized_data
-
-
-def max_normalize(rewards, max_rew):
-    """Divide the rewards by the maximum value."""
-    normalized_data = np.array([x / max_rew for x in rewards])
-
-    return normalized_data
-
-
-def replay_chunk_to_seq(trajectories):
-    """From: BPref-v2/bpref_v2/utils/reds_extract_reward.py"""
-    seq = []
-
-    for i in range(FLAGS.window_size - 1):
-        elem = {}
-        elem["is_first"] = i == 0
-        for key in ["observations", "rewards"]:
-            if key == "observations":
-                for _key, _val in trajectories[key][0].items():
-                    elem[_key] = _val
-            elif key == "rewards":
-                try:
-                    elem["reward"] = trajectories[key][0].squeeze()
-                except:
-                    elem['reward'] = trajectories[key][0]
-            elif isinstance(trajectories[key], np.ndarray):
-                elem[key] = trajectories[key][0]
-        seq.append(elem)
-
-    for i in range(len(trajectories["observations"])):
-        elem = {}
-        elem["is_first"] = i == -1
-        for key in ["observations", "rewards"]:
-            if key == "observations":
-                for _key, _val in trajectories[key][i].items():
-                    elem[_key] = _val
-            elif key == "rewards":
-                try:
-                    elem["reward"] = trajectories[key][i].squeeze()
-                except:
-                    elem['reward'] = trajectories[key][i]
-            elif isinstance(trajectories[key], np.ndarray):
-                elem[key] = trajectories[key][i]
-        seq.append(elem)
-
-    return seq
 
 
 def combine(one_dict, other_dict):
@@ -412,7 +354,7 @@ def main(_):
                 'actions': actions,
                 'rewards': rewards,
             }
-            seq = reward_model(replay_chunk_to_seq(x))
+            seq = reward_model(replay_chunk_to_seq(x, FLAGS.window_size))
             rewards = np.asarray([elem[reward_model.PUBLIC_LIKELIHOOD_KEY] for elem in seq])
             if FLAGS.normalization == "min_max":
                 min_max_normalize(rewards)
@@ -486,9 +428,28 @@ def main(_):
             if "Sim" in FLAGS.env_name:
                 log_video = True
             else:
-                log_video = None
+                log_video = False
+            if not FLAGS.red_reward:
+                reward_model = None
 
-            eval_stats, log_videos = evaluate(agent, env, FLAGS.eval_episodes, log_video=log_video)
+            if FLAGS.red_reward:
+                eval_stats, log_videos = evaluate(
+                    agent,
+                    env,
+                    FLAGS.eval_episodes,
+                    log_video=log_video,
+                    reward_model=reward_model,
+                    normalization=FLAGS.normalization,
+                    max_rew=max_rew,
+                    window_size=FLAGS.window_size,
+                )
+            else:
+                eval_stats, log_videos = evaluate(
+                    agent,
+                    env,
+                    FLAGS.eval_episodes,
+                    log_video=log_video,
+                )
 
             for k, v in eval_stats.items():
                 summary_writer.add_scalar(f'evaluation/average_{k}s', v, i)
