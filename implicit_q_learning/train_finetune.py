@@ -72,6 +72,7 @@ flags.DEFINE_boolean("online_buffer", None, "Use separate online buffer.")
 flags.DEFINE_boolean("fixed_init", None, "Use separate online buffer.")
 flags.DEFINE_boolean("data_collection", None, "Skip the agent update.")
 flags.DEFINE_float("temperature", 0.2, "Action sample temperature.")
+flags.DEFINE_boolean("load_finetune_ckpt", None, "Load the fine-tune checkpoint.")
 
 
 def normalize(dataset):
@@ -299,7 +300,7 @@ def main(_):
     # Load the fine-tune checkpoint if any.
     ckpt_idx = len(data_files)
     # if ckpt_idx > 0:
-    if not FLAGS.data_collection:
+    if not FLAGS.data_collection and FLAGS.load_finetune_ckpt:
         agent.load(finetune_ckpt_dir, ckpt_idx)
 
     for i in tqdm.tqdm(range(ckpt_idx, FLAGS.max_episodes + 1),
