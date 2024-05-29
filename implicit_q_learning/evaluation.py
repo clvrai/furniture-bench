@@ -17,6 +17,7 @@ def evaluate(
     log_phases = []
     log_videos = []
     
+    sum_success = 0
     for ep_idx in tqdm(range(num_episodes)):
         observation, done = env.reset(), False
         phase = 0
@@ -33,6 +34,9 @@ def evaluate(
                 # Make it channel first.
                 ep_video.append(observation['color_image2'])
 
+        if env.furnitures[0].all_assembled(): # Only single environment.
+            sum_success += 1
+
         log_phases.append(phase)
         if ep_video != []:
             # (T, C, H, W)
@@ -48,7 +52,8 @@ def evaluate(
     # for k, v in stats.items():
         # stats[k] = np.mean(v)
     stats['sum_of_reward'] = sum_reward
-    stats['success_rate'] = sum_reward / num_episodes
+    # stats['success_rate'] = sum_reward / num_episodes
+    stats['success_rate'] = sum_success / num_episodes
     stats['phase'] = np.mean(log_phases)
 
     return stats, log_videos

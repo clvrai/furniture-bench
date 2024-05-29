@@ -9,6 +9,7 @@ from absl import app, flags
 from ml_collections import config_flags
 from tensorboardX import SummaryWriter
 import wandb
+from einops import rearrange
 
 import wrappers
 from dataset_utils import D4RLDataset, FurnitureDataset, split_into_trajectories
@@ -47,6 +48,8 @@ flags.DEFINE_string('normalization', '', '')
 flags.DEFINE_integer('iter_n', -1, 'Reward relabeling iteration')
 flags.DEFINE_boolean('use_layer_norm', False, 'Use layer normalization')
 flags.DEFINE_boolean('phase_reward', False, 'Use phase reward.')
+
+flags.DEFINE_string("opt_decay_schedule", "cosine", "")
 
 
 def normalize(dataset):
@@ -182,7 +185,9 @@ def main(_):
                     max_steps=FLAGS.max_steps,
                     **kwargs,
                     use_encoder=FLAGS.use_encoder,
-                    use_layer_norm=FLAGS.use_layer_norm,)
+                    use_layer_norm=FLAGS.use_layer_norm,
+                    opt_decay_schedule=FLAGS.opt_decay_schedule, 
+                    )
     print(agent)
 
     eval_returns = []
@@ -200,12 +205,24 @@ def main(_):
 
         if i > FLAGS.min_eval_step and i % FLAGS.eval_interval == 0:
             # eval_stats = evaluate(agent, env, FLAGS.eval_episodes)
-            eval_stats, _ = evaluate(agent, env, FLAGS.eval_episodes)
-
+            log_video = "WithImage" in FLAGS.env_name
+            eval_stats, log_videos = evaluate(agent, env, FLAGS.eval_episodes, log_video=log_video)
 
             for k, v in eval_stats.items():
                 summary_writer.add_scalar(f"evaluation/average_{k}s", v, i)
             summary_writer.flush()
+            if log_video:
+                max_length = max(vid.shape[0] for vid in log_videos)  # Find the maximum sequence length
+                padded_vids = np.array([np.pad(vid, ((0, max_length - vid.shape[0]), (0, 0), (0, 0), (0, 0)), 'constant') for vid in log_videos])
+                # Make it np.int8
+                padded_vids = padded_vids.astype(np.uint8)
+
+                name = "rollout_video"
+                fps = 20
+                vids = rearrange(padded_vids, 'b t c h w -> (b t) c h w')
+                log_dict = {name: wandb.Video(vids, fps=fps, format="mp4")}
+                # log_dict = {name: [wandb.Video(vid, fps=fps, format="mp4") for vid in vids]}
+                wandb.log(log_dict, step=i)
 
             # eval_returns.append((i, eval_stats["sum_of_reward"]))
             # np.savetxt(
