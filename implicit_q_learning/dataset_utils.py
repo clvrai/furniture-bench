@@ -12,6 +12,66 @@ Batch = collections.namedtuple("Batch",
                                ["observations", "actions", "rewards", "masks", "next_observations"])
 
 
+
+def max_normalize(rewards, max_rew):
+    """Divide the rewards by the maximum value."""
+    normalized_data = np.array([x / max_rew for x in rewards])
+
+    return normalized_data
+
+
+
+def min_max_normalize(dataset):
+    max_val = np.max(dataset.rewards)
+    min_val = np.min(dataset.rewards)
+
+    normalized_data = np.array(
+        [(x - min_val) / (max_val - min_val) for x in dataset.rewards]
+    )
+    normalized_data -= 1  # (0, 1) -> (-1, 0)
+
+    dataset.rewards = normalized_data
+
+
+def replay_chunk_to_seq(trajectories, window_size):
+    """From: BPref-v2/bpref_v2/utils/reds_extract_reward.py"""
+    seq = []
+
+    for i in range(window_size - 1):
+        elem = {}
+        elem["is_first"] = i == 0
+        for key in ["observations", "rewards"]:
+            if key == "observations":
+                for _key, _val in trajectories[key][0].items():
+                    elem[_key] = _val
+            elif key == "rewards":
+                try:
+                    elem["reward"] = trajectories[key][0].squeeze()
+                except:
+                    elem['reward'] = trajectories[key][0]
+            elif isinstance(trajectories[key], np.ndarray):
+                elem[key] = trajectories[key][0]
+        seq.append(elem)
+
+    for i in range(len(trajectories["observations"])):
+        elem = {}
+        elem["is_first"] = i == -1
+        for key in ["observations", "rewards"]:
+            if key == "observations":
+                for _key, _val in trajectories[key][i].items():
+                    elem[_key] = _val
+            elif key == "rewards":
+                try:
+                    elem["reward"] = trajectories[key][i].squeeze()
+                except:
+                    elem['reward'] = trajectories[key][i]
+            elif isinstance(trajectories[key], np.ndarray):
+                elem[key] = trajectories[key][i]
+        seq.append(elem)
+
+    return seq
+
+
 def split_into_trajectories(observations, actions, rewards, masks, dones_float, next_observations):
     trajs = [[]]
 
