@@ -126,7 +126,7 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
             env_id,
             furniture=furniture_name,
             # max_env_steps=600,
-            headless=True,
+            headless=False,
             num_envs=1,  # Only support 1 for now.
             manual_done=False,
             # resize_img=True,
@@ -173,7 +173,12 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
 
 
 def main(_):
-    root_logdir = os.path.join(FLAGS.save_dir, 'tb', str(FLAGS.seed))
+    # root_logdir = os.path.join(FLAGS.save_dir, 'tb', str(FLAGS.seed))
+    ckpt_step = FLAGS.ckpt_step or FLAGS.max_steps
+    root_logdir = os.path.join(
+            FLAGS.save_dir, "tb", f"{FLAGS.run_name}-{ckpt_step}-finetune-tmp-{FLAGS.temperature}.{FLAGS.seed}"
+        )
+
     os.makedirs(FLAGS.save_dir, exist_ok=True)
 
     env, dataset = make_env_and_dataset(FLAGS.env_name, FLAGS.seed, FLAGS.data_path,
@@ -193,7 +198,7 @@ def main(_):
         wandb.tensorboard.patch(root_logdir=root_logdir)
         wandb.init(project=FLAGS.wandb_project,
                    entity=FLAGS.wandb_entity,
-                   name=FLAGS.env_name + '-' + str(FLAGS.seed) + '-' + str(FLAGS.run_name) + '-finetune' + ('-phase-reward' if FLAGS.phase_reward else ''),
+                   name=FLAGS.env_name + '-' + str(FLAGS.seed) + '-' + str(FLAGS.run_name) + f'-act_tmp_{FLAGS.temperature}'+ '-finetune' + ('-phase-reward' if FLAGS.phase_reward else ''),
                    config=kwargs,
                    sync_tensorboard=True)
 
@@ -476,8 +481,8 @@ def main(_):
 
         if i % FLAGS.eval_interval == 0:
             # Save last step if it is not saved.
-            if FLAGS.phase_reward:
-                finetune_ckpt_dir = finetune_ckpt_dir + "-phase-reward"
+            # if FLAGS.phase_reward:
+            #     finetune_ckpt_dir = finetune_ckpt_dir + "-phase-reward"
             if not os.path.exists(finetune_ckpt_dir):
                 os.makedirs(finetune_ckpt_dir)
             agent.save(finetune_ckpt_dir, i)
