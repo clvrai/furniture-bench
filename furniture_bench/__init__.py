@@ -36,6 +36,11 @@ register(
 )
 
 register(
+    id="FurnitureSimVEnv-v0",
+    entry_point="furniture_bench.envs.furniture_sim_venv:FurnitureSimVEnv",
+)
+
+register(
     id="FurnitureSimLegacy-v0",
     entry_point="furniture_bench.envs.legacy_envs.furniture_sim_legacy_env:FurnitureSimEnvLegacy",
 )
@@ -44,6 +49,11 @@ register(
 register(
     id="FurnitureSimFull-v0",
     entry_point="furniture_bench.envs.furniture_sim_env:FurnitureSimFullEnv",
+)
+
+register(
+    id="FurnitureSimFullVEnv-v0",
+    entry_point="furniture_bench.envs.furniture_sim_venv:FurnitureSimFullVEnv",
 )
 
 # FurnitureSim with R3M or VIP image feature observation.

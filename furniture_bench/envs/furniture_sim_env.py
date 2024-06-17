@@ -242,6 +242,9 @@ class FurnitureSimEnv(gym.Env):
         self.base_idxs = []
         self.part_idxs = {}
         self.franka_handles = []
+        self._franka_effort_limits = []
+        self.franka_dof_lower_limits = []
+        self.franka_dof_upper_limits = []
         for i in range(self.num_envs):
             env = self.isaac_gym.create_env(self.sim, env_lower, env_upper, num_per_row)
             self.envs.append(env)
@@ -419,6 +422,19 @@ class FurnitureSimEnv(gym.Env):
                     env, part.name, gymapi.DOMAIN_ENV
                 )
         
+        for joint in range(franka_num_dofs):
+            self._franka_effort_limits.append(franka_dof_props["effort"][joint])
+            self.franka_dof_lower_limits.append(franka_dof_props["lower"][joint])
+            self.franka_dof_upper_limits.append(franka_dof_props["upper"][joint])
+        self._franka_effort_limits = torch.tensor(
+            self._franka_effort_limits, device=self.device
+        )
+        self.franka_dof_lower_limits = torch.tensor(
+            self.franka_dof_lower_limits, device=self.device
+        )
+        self.franka_dof_upper_limits = torch.tensor(
+            self.franka_dof_upper_limits, device=self.device
+        )
         # print(f'Getting the separate actor indices for the frankas and the furniture parts (not the handles)')
         self.franka_actor_idx_all = []
         self.part_actor_idx_all = []  # global list of indices, when resetting all parts
@@ -595,6 +611,7 @@ class FurnitureSimEnv(gym.Env):
         _forces = self.isaac_gym.acquire_dof_force_tensor(self.sim)
         _forces = gymtorch.wrap_tensor(_forces)
         self.forces = _forces.view(self.num_envs, 9)
+        self.eef_state = self.rb_states.view( self.num_envs, -1, 13)[:, self.ee_handles[0], :]
 
         # Get DoF tensor
         _dof_states = self.isaac_gym.acquire_dof_state_tensor(self.sim)
@@ -702,6 +719,17 @@ class FurnitureSimEnv(gym.Env):
 
         return gym.spaces.Dict(obs_dict)
 
+    def _process_action(self, action):
+        if isinstance(action, np.ndarray):
+            action = torch.from_numpy(action).float().to(device=self.device)
+        if len(action.shape) == 1:
+            action = action.unsqueeze(0)
+        # Clip the action to be within the action space.
+        low = torch.from_numpy(self.action_space.low).to(device=self.device)
+        high = torch.from_numpy(self.action_space.high).to(device=self.device)
+        action = torch.clamp(action, low, high)
+        return action
+
     @torch.no_grad()
     def step(self, action):
         """Robot takes an action.
@@ -712,15 +740,7 @@ class FurnitureSimEnv(gym.Env):
                 (num_envs, 10): End-effector delta in [x, y, z, 6D rotation, gripper] if self.act_rot_repr == "rot_6d".
                 (num_envs, 7): End-effector delta in [x, y, z, ax, ay, az, gripper] if self.act_rot_repr == "axis".
         """
-        if isinstance(action, np.ndarray):
-            action = torch.from_numpy(action).float().to(device=self.device)
-        if len(action.shape) == 1:
-            action = action.unsqueeze(0)
-
-        # Clip the action to be within the action space.
-        low = torch.from_numpy(self.action_space.low).to(device=self.device)
-        high = torch.from_numpy(self.action_space.high).to(device=self.device)
-        action = torch.clamp(action, low, high)
+        action = self._process_action(action)
 
         sim_steps = int(
             1.0
