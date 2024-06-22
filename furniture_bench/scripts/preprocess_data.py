@@ -81,6 +81,11 @@ parser.add_argument(
     action="store_true",
 )
 
+parser.add_argument(
+    "--low_dim",
+    action="store_true",
+)
+
 args = parser.parse_args()
 
 
@@ -202,24 +207,18 @@ def main():
                     for o in new_traj["observations"]
                 ]
             else:
-                if args.no_flat_robot_state:
-                    new_traj["observations"] = [
-                        {
-                            "color_image1": o["color_image1"],  # Wrist cam
-                            "color_image2": o["color_image2"],  # Front cam
-                            "robot_state": o["robot_state"],
-                        }
-                        for o in new_traj["observations"]
-                    ]
-                else:
-                    new_traj["observations"] = [
-                        {
-                            "color_image1": o["color_image1"],  # Wrist cam
-                            "color_image2": o["color_image2"],  # Front cam
-                            "robot_state": filter_and_concat_robot_state(o["robot_state"]),
-                        }
-                        for o in new_traj["observations"]
-                    ]
+                obs_keys = ["color_image1", "color_image2", "robot_state"]
+                if args.low_dim:
+                    obs_keys.append('parts_poses')
+                new_obs = []
+                for o in new_traj['observations']:
+                    d = {}
+                    for k in obs_keys:
+                        if not args.no_flat_robot_state and k == "robot_state":
+                            d[k] = filter_and_concat_robot_state(o["robot_state"])
+                        else:
+                            d[k] = o[k]
+                    new_obs.append(d)
 
             if args.no_robot_state:
                 for obs in new_traj["observations"]:

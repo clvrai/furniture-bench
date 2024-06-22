@@ -119,12 +119,14 @@ def main(_):
                     # 'image_feature': feature1,
                     'image1': image1,
                     'image2': image2,
+                    "parts_poses": x["observations"][i]["parts_poses"],
                     'robot_state': x["observations"][i]['robot_state']
                 })
                 next_obs_.append({
                     # 'image_feature': next_feature1,
                     'image1': next_image1,
                     'image2': next_image2,
+                    "parts_poses": x["observations"][i]["parts_poses"],
                     'robot_state': x["observations"][i + 1]['robot_state']
                 })
 
