@@ -65,7 +65,7 @@ def main(_):
         reds_rewards = {}
         x = pickle.load(f)
         for key in x.keys():
-            if "reds_rewards_iter" in key:
+            if ("reds_rewards_iter" in key) or ("drs_rewards" in key) and ("ckpt_path" not in key):
                 reds_rewards[key] = []
 
     if len_files == 0:

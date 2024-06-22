@@ -90,6 +90,8 @@ def main():
     parser.add_argument("--resize-sim-img", action="store_true")
     parser.add_argument("--gripper-pos-control", action="store_true")
     parser.add_argument("--phase-reward", action="store_true")
+    parser.add_argument("--fixed-init", action="store_true")
+    parser.add_argument("--save-failure-only", action="store_true")
 
 
     args = parser.parse_args()
@@ -98,7 +100,8 @@ def main():
         assert args.is_sim
         device_interface = None
     else:
-        device_interface = make_device(args.input_device)
+        # device_interface = make_device(args.input_device)
+        device_interface = None
 
     data_path = osp.join(args.out_data_path, args.furniture)
     if not osp.isdir(data_path):
@@ -125,6 +128,8 @@ def main():
         ckpt_dir=args.ckpt_dir,
         ckpt_step=args.ckpt_step,
         phase_reward=args.phase_reward,
+        fixed_init=args.fixed_init,
+        save_failure_only=args.save_failure_only,
     )
     data_collector.collect()
 
