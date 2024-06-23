@@ -49,6 +49,8 @@ flags.DEFINE_integer('iter_n', -1, 'Reward relabeling iteration')
 flags.DEFINE_boolean('use_layer_norm', False, 'Use layer normalization')
 flags.DEFINE_boolean('phase_reward', False, 'Use phase reward.')
 
+flags.DEFINE_integer('gpu', 0, 'GPU device to use')
+
 flags.DEFINE_string("opt_decay_schedule", "cosine", "")
 
 
@@ -99,7 +101,8 @@ def max_normalize(dataset):
 def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: bool,
                          encoder_type: str, red_reward: bool=False,
                          normalization:str = None,
-                         iter_n: int = -1) -> Tuple[gym.Env, D4RLDataset]:
+                         iter_n: int = -1,
+                         gpu: int = 0) -> Tuple[gym.Env, D4RLDataset]:
     if "Furniture" in env_name:
         import furniture_bench
 
@@ -120,11 +123,12 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
             # np_step_out=False,  # Always output Tensor in this setting. Will change to numpy in this code.
             # channel_first=False,
             randomness="low",
-            compute_device_id=0,
-            graphics_device_id=0,
+            compute_device_id=gpu,
+            graphics_device_id=gpu,
             # gripper_pos_control=True,
             encoder_type="r3m",
-            phase_reward=FLAGS.phase_reward
+            phase_reward=FLAGS.phase_reward,
+            gpu=gpu,
         )
     else:
         env = gym.make(env_name)
@@ -161,13 +165,16 @@ def make_env_and_dataset(env_name: str, seed: int, data_path: str, use_encoder: 
 
 
 def main(_):
+    import jax
+    jax.config.update("jax_default_device", jax.devices()[FLAGS.gpu])
+    
     os.makedirs(FLAGS.save_dir, exist_ok=True)
     tb_dir = os.path.join(FLAGS.save_dir, "tb", f"{FLAGS.run_name}.{FLAGS.seed}")
     ckpt_dir = os.path.join(FLAGS.save_dir, "ckpt", f"{FLAGS.run_name}.{FLAGS.seed}")
 
     env, dataset = make_env_and_dataset(FLAGS.env_name, FLAGS.seed, FLAGS.data_path,
                                         FLAGS.use_encoder, FLAGS.encoder_type,
-                                        FLAGS.red_reward, FLAGS.normalization, FLAGS.iter_n)
+                                        FLAGS.red_reward, FLAGS.normalization, FLAGS.iter_n, FLAGS.gpu)
 
     kwargs = dict(FLAGS.config)
     if FLAGS.wandb:
