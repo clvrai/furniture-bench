@@ -1,6 +1,6 @@
 import collections
 import pickle
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 # import d4rl
 import gym
@@ -127,7 +127,8 @@ class Dataset(object):
                  dones_float: np.ndarray,
                  next_observations: np.ndarray,
                  size: int,
-                 use_encoder: bool = False):
+                 use_encoder: bool = False,
+                 obs_keys: List[str] = ""):
         self.observations = observations
         self.actions = actions
         self.rewards = rewards
@@ -136,6 +137,7 @@ class Dataset(object):
         self.next_observations = next_observations
         self.size = size
         self.use_encoder = use_encoder
+        self.obs_keys = obs_keys
     
     def add_trajectory(self, observations, actions, rewards, masks, dones_float, next_observations):
         if self.observations is None:
@@ -226,27 +228,17 @@ class Dataset(object):
                               dtype=jnp.float32)
                 },
             )
+        observations = {}
+        next_observations = {}
+        for k in self.obs_keys:
+            observations[k] = jnp.array([self.observations[i][k] for i in indx], dtype=jnp.float32)
+            next_observations[k] = jnp.array([self.next_observations[i][k] for i in indx], dtype=jnp.float32)
         return Batch(
-            observations={
-                'image1':
-                jnp.array([self.observations[i]['image1'] for i in indx], dtype=jnp.float32),
-                'image2':
-                jnp.array([self.observations[i]['image2'] for i in indx], dtype=jnp.float32),
-                'robot_state':
-                jnp.array([self.observations[i]['robot_state'] for i in indx], dtype=jnp.float32)
-            },
+            observations=observations,
             actions=self.actions[indx],
             rewards=self.rewards[indx],
             masks=self.masks[indx],
-            next_observations={
-                'image1':
-                jnp.array([self.next_observations[i]['image1'] for i in indx], dtype=jnp.float32),
-                'image2':
-                jnp.array([self.next_observations[i]['image2'] for i in indx], dtype=jnp.float32),
-                'robot_state':
-                jnp.array([self.next_observations[i]['robot_state'] for i in indx],
-                          dtype=jnp.float32)
-            },
+            next_observations=next_observations
         )
 
 
@@ -289,7 +281,8 @@ class FurnitureDataset(Dataset):
                  eps: float = 1e-5,
                  use_encoder: bool = False,
                  red_reward: bool = False,
-                 iter_n: int = -1):
+                 iter_n: int = -1,
+                 obs_keys: List[str] = ""):
         if isinstance(data_path, list):
             datasets = []
             for path in data_path:
@@ -328,7 +321,12 @@ class FurnitureDataset(Dataset):
         #                 dataset[obs][i][img][:, :, 0] = (dataset[obs][i][img][:, :, 0] - 0.485) / 0.229
         #                 dataset[obs][i][img][:, :, 1] = (dataset[obs][i][img][:, :, 1] - 0.456) / 0.224
         #                 dataset[obs][i][img][:, :, 2] = (dataset[obs][i][img][:, :, 2] - 0.406) / 0.225
-
+        
+        if isinstance(dataset['observations'][0]['robot_state'], dict):
+            from furniture_bench.robot.robot_state import filter_and_concat_robot_state
+            for i in range(len(dataset['observations'])):
+                dataset['observations'][i]['robot_state'] = filter_and_concat_robot_state(dataset['observations'][i]['robot_state'])
+                dataset['next_observations'][i]['robot_state'] = filter_and_concat_robot_state(dataset['next_observations'][i]['robot_state'])
         for i in range(len(dones_float) - 1):
             if (np.linalg.norm(dataset["observations"][i + 1]['robot_state'] -
                                dataset["next_observations"][i]['robot_state']) > 1e-6
@@ -336,6 +334,14 @@ class FurnitureDataset(Dataset):
                 dones_float[i] = 1
             else:
                 dones_float[i] = 0
+        
+        new_obs = []
+        new_next_obs = []
+        for i in range(len(dataset['observations'])):
+            new_obs.append({k: dataset['observations'][i][k] for k in obs_keys})
+            new_next_obs.append({k: dataset['next_observations'][i][k] for k in obs_keys})
+        dataset['observations'] = new_obs
+        dataset['next_observations'] = new_next_obs
 
         dones_float[-1] = 1
         
@@ -352,7 +358,8 @@ class FurnitureDataset(Dataset):
                          dones_float=dones_float,
                          next_observations=dataset["next_observations"],
                          size=len(dataset["observations"]),
-                         use_encoder=use_encoder)
+                         use_encoder=use_encoder,
+                         obs_keys=obs_keys)
 
 
 class ReplayBuffer(Dataset):

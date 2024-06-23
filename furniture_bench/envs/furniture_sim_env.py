@@ -130,8 +130,7 @@ class FurnitureSimEnv(gym.Env):
         self.resize_img = resize_img
         self.manual_label = manual_label
         self.manual_done = manual_done
-        # self.headless = headless
-        self.headless = False
+        self.headless = headless
         self.move_neutral = False
         self.ctrl_started = False
         self.init_assembled = init_assembled

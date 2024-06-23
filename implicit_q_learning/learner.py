@@ -88,11 +88,13 @@ class Learner(object):
         rng = jax.random.PRNGKey(seed)
         rng, actor_key, critic_key, value_key = jax.random.split(rng, 4)
 
-        if len(observations['image1'].shape) == 3 or len(observations['image1'].shape) == 1:
+        if 'image1' in observations.keys() and (len(observations['image1'].shape) == 3 or len(observations['image1'].shape) == 1):
             observations['image1'] = observations['image1'][np.newaxis]
             observations['image2'] = observations['image2'][np.newaxis]
         if len(observations['robot_state'].shape) == 1:
             observations['robot_state'] = observations['robot_state'][np.newaxis]
+        if 'parts_poses' in observations.keys() and len(observations['parts_poses'].shape) == 1:
+            observations['parts_poses'] = observations['parts_poses'][np.newaxis]
 
         action_dim = actions.shape[-1]
         actor_def = policy.NormalTanhPolicy(

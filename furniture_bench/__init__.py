@@ -64,6 +64,11 @@ register(
 )
 
 register(
+    id="FurnitureSimLowDimWithImage-v0",
+    entry_point="furniture_bench.envs.policy_envs.furniture_sim_low_dim_with_image:FurnitureSimLowDimWithImage",
+)
+
+register(
     id="FurnitureSimImageFeatureCollect-v0",
     entry_point="furniture_bench.envs.policy_envs.furniture_sim_image_feature_collect:FurnitureSimImageFeatureCollect",
 )
