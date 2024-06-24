@@ -896,19 +896,19 @@ class FurnitureSimEnv(gym.Env):
             if rewards[env_idx] == 1.0: # Assemble reward.
                 if self.phase_reward:
                     rewards[env_idx] = 1.0
-            elif self.curr_phase == 0:
+            elif self.phase_reward and self.curr_phase == 0:
                 done_phase = self.done_with_grasp(env_idx)
                 if self.phase_reward and done_phase:
                     rewards[env_idx] = 1.0
-            elif self.curr_phase == 1:
+            elif self.phase_reward and self.curr_phase == 1:
                 done_phase = self.done_with_place(env_idx)
                 if self.phase_reward and done_phase:
                     rewards[env_idx] = 1.0
-            elif self.curr_phase == 2:
+            elif self.phase_reward and self.curr_phase == 2:
                 done_phase = self.done_with_lift(env_idx)
                 if self.phase_reward and done_phase:
                     rewards[env_idx] = 1.0
-            elif self.curr_phase == 3:
+            elif self.phase_reward and self.curr_phase == 3:
                 done_phase = self.done_with_insertion(env_idx)
                 if self.phase_reward and done_phase:
                     rewards[env_idx] = 1.0
