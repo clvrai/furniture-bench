@@ -34,3 +34,14 @@ DEFAULT_STATE_OBS = [
     "robot_state/gripper_width",
     "parts_poses",
 ]
+
+DEFAULT_VISUAL_STATE_OBS = [
+    "robot_state/ee_pos",
+    "robot_state/ee_quat",
+    "robot_state/ee_pos_vel",
+    "robot_state/ee_ori_vel",
+    "robot_state/gripper_width",
+    "color_image1",
+    "color_image2",
+    "parts_poses",
+]

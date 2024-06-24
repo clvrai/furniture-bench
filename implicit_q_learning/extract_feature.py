@@ -65,7 +65,7 @@ def main(_):
         reds_rewards = {}
         x = pickle.load(f)
         for key in x.keys():
-            if "reds_rewards_iter" in key:
+            if ("reds_rewards_iter" in key) or ("drs_rewards" in key) and ("ckpt_path" not in key):
                 reds_rewards[key] = []
 
     if len_files == 0:
@@ -119,12 +119,14 @@ def main(_):
                     # 'image_feature': feature1,
                     'image1': image1,
                     'image2': image2,
+                    "parts_poses": x["observations"][i]["parts_poses"],
                     'robot_state': x["observations"][i]['robot_state']
                 })
                 next_obs_.append({
                     # 'image_feature': next_feature1,
                     'image1': next_image1,
                     'image2': next_image2,
+                    "parts_poses": x["observations"][i]["parts_poses"],
                     'robot_state': x["observations"][i + 1]['robot_state']
                 })
 

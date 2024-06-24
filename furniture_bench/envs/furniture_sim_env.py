@@ -895,23 +895,23 @@ class FurnitureSimEnv(gym.Env):
 
             if rewards[env_idx] == 1.0: # Assemble reward.
                 if self.phase_reward:
-                    rewards[env_idx] = 5.0
-            elif self.curr_phase == 0:
+                    rewards[env_idx] = 1.0
+            elif self.phase_reward and self.curr_phase == 0:
                 done_phase = self.done_with_grasp(env_idx)
                 if self.phase_reward and done_phase:
                     rewards[env_idx] = 1.0
-            elif self.curr_phase == 1:
+            elif self.phase_reward and self.curr_phase == 1:
                 done_phase = self.done_with_place(env_idx)
                 if self.phase_reward and done_phase:
-                    rewards[env_idx] = 2.0
-            elif self.curr_phase == 2:
+                    rewards[env_idx] = 1.0
+            elif self.phase_reward and self.curr_phase == 2:
                 done_phase = self.done_with_lift(env_idx)
                 if self.phase_reward and done_phase:
-                    rewards[env_idx] = 3.0
-            elif self.curr_phase == 3:
+                    rewards[env_idx] = 1.0
+            elif self.phase_reward and self.curr_phase == 3:
                 done_phase = self.done_with_insertion(env_idx)
                 if self.phase_reward and done_phase:
-                    rewards[env_idx] = 4.0
+                    rewards[env_idx] = 1.0
             else:
                 done_phase = False
         if self.np_step_out:
@@ -1185,6 +1185,9 @@ class FurnitureSimEnv(gym.Env):
         assembled_rel_poses = self.furniture.assembled_rel_poses[(part_idx1, part_idx2)]
         # Do not check the orientation, but only the position.
         if self.furniture.assembled(rel_pose.cpu().numpy(), assembled_rel_poses, ori_bound=-1, pos_threshold=[0.015, 0.015, 0.02]):
+            gripper_width = self.gripper_width()
+            if gripper_width >= 0.055:
+                return True
             return True
         return False
 

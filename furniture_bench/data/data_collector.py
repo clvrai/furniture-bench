@@ -46,6 +46,7 @@ class DataCollector:
         ckpt_step: int = None,
         phase_reward: bool = False,
         fixed_init: bool = False,
+        save_failure_only: bool = False,
     ):
         """
         Args:
@@ -73,10 +74,11 @@ class DataCollector:
             self.env = gym.make(
                 env,
                 furniture=furniture,
-                max_env_steps=sim_config["scripted_timeout"][furniture]
-                if scripted
-                else 3000,
-                headless=headless,
+                max_env_steps=sim_config["scripted_timeout"][furniture],
+                # if scripted
+                # else 3000,
+                # headless=headless,
+                headless=False,
                 num_envs=1,  # Only support 1 for now.
                 manual_done=manual_done,
                 resize_img=resize_sim_img,
@@ -141,6 +143,8 @@ class DataCollector:
 
         self._reset_collector_buffer()
         self.failure_phase_counter = 0
+        self.phase_reward = phase_reward
+        self.save_failure_only = save_failure_only
 
     def collect(self):
         print("[data collection] Start collecting the data!")
@@ -154,14 +158,17 @@ class DataCollector:
                 action, skill_complete = self.env.get_assembly_action()
                 collect_enum = CollectEnum.DONE_FALSE
             else:
-                action, collect_enum = self.device_interface.get_action()
+                if self.device_interface is not None:
+                    action, collect_enum = self.device_interface.get_action()
+                    skill_complete = int(collect_enum == CollectEnum.SKILL)
+                    if skill_complete == 1:
+                        self.skill_set.append(skill_complete)
                 if self.ckpt_dir: # Use policy.
                     obs_without_image = {k: v for k, v in obs.items() if k != "color_image1" and k != "color_image2"}
-                    # action = self.agent.sample_actions(obs_without_image, temperature=0.00)
-                    action = self.agent.sample_actions(obs_without_image, temperature=0.05)
-                skill_complete = int(collect_enum == CollectEnum.SKILL)
-                if skill_complete == 1:
-                    self.skill_set.append(skill_complete)
+                    action = self.agent.sample_actions(obs_without_image, temperature=0.6)
+            if self.device_interface is None:
+                collect_enum = CollectEnum.DONE_FALSE
+                skill_complete = 0
 
             if collect_enum == CollectEnum.TERMINATE:
                 print("Terminate the program.")
@@ -193,18 +200,27 @@ class DataCollector:
                 #     n_ob["parts_poses"] = next_obs["parts_poses"]
                 # self.obs.append(n_ob)
 
-                done = False
                 if done and not self.env.furnitures[0].all_assembled():
                     if self.save_failure:
+                        idxs = np.where(np.array(self.rews) > 0)[0]
+                        self.skills = np.array(self.skills)
+                        self.skills[idxs] = 1
+                        self.skills = list(self.skills)
                         print("Saving failure trajectory.")
                         collect_enum = CollectEnum.FAIL
                         obs = self.save_and_reset(collect_enum, {})
+                        self.num_success += 1
                     else:
                         print("Failed to assemble the furniture, reset without saving.")
                         obs = self.reset()
                         collect_enum = CollectEnum.SUCCESS
-                    self.num_fail += 1
+                    # self.num_fail += 1
                 else:
+                    if self.save_failure_only:
+                        print("SKIP")
+                        obs = self.reset()
+                        collect_enum = CollectEnum.SUCCESS
+                        continue
                     if self.manual_done and collect_enum == CollectEnum.FAIL:
                         if self.save_failure:
                             print("Saving failure trajectory.")
@@ -218,9 +234,11 @@ class DataCollector:
                         if done:
                             collect_enum = CollectEnum.SUCCESS
 
-                        if sum(self.rews) != 4:
+                        if self.phase_reward and sum(self.rews) != 1 + 2 + 3 + 4 + 5:
                             self.failure_phase_counter += 1
                             print("Failure phase counter: ", self.failure_phase_counter)
+                            collect_enum = CollectEnum.FAIL
+                            obs = self.save_and_reset(collect_enum, {})
                         else:
                             obs = self.save_and_reset(collect_enum, {})
                             self.num_success += 1
@@ -317,7 +335,7 @@ class DataCollector:
         self._reset_collector_buffer()
 
         print("Start collecting the data!")
-        if not self.scripted:
+        if not self.is_sim:
             print("Press enter to start")
             while True:
                 if input() == "":
