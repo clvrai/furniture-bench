@@ -82,6 +82,10 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "--phase-reward",
+    action="store_true"
+)
+parser.add_argument(
     "--low_dim",
     action="store_true",
 )
@@ -147,6 +151,16 @@ def main():
                 new_traj["actions"] = new_traj["actions"][:done_idx]
                 new_traj["rewards"] = new_traj["rewards"][:done_idx]
                 new_traj["skills"] = new_traj["skills"][:done_idx]
+            
+            if args.phase_reward:
+                assert not args.done_when_assembled, "Index doesn't match with phase reward"
+                idxs = np.where(np.array(new_traj["skills"]) == 1)[0]
+                new_traj['rewards'] = np.array(new_traj['rewards'])
+                new_traj['rewards'] = np.zeros_like(new_traj['rewards'])
+                
+                new_traj['rewards'][idxs] = 1
+                assert sum(new_traj["rewards"]) == 5
+                new_traj['rewards'] = new_traj['rewards'].tolist()
 
             # Skill benchmark.
             if args.from_skill is not None:
