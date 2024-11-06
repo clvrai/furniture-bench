@@ -4,7 +4,6 @@ ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
 ENV VENV_NAME=client-gpu
 ARG LIBFRANKA_VERSION=0.13.3
 ARG PYTHON_VERSION=3.8
-ARG SSH_PRIVATE_KEY
 
 # Use bash as a default shell.
 SHELL ["/bin/bash", "-c"]
@@ -27,17 +26,11 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py38_23.1.0-1-Li
     && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
     && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc
 
-RUN mkdir -p /root/.ssh && \
-    echo "$SSH_PRIVATE_KEY" | tr -d '\r' > /root/.ssh/id_rsa && \
-    chmod 600 /root/.ssh/id_rsa && \
-    ssh-keyscan github.com >> /root/.ssh/known_hosts
-
-# RUN git clone --recursive https://github.com/facebookresearch/fairo.git
-# RUN git clone --recursive https://github.com/minoring/fairo.git --branch furniture
 COPY fairo-FR3 /fairo
 
 # Install Polymetis.
-RUN /opt/conda/bin/conda update -n base -c defaults conda \
+RUN --mount=type=ssh \
+    /opt/conda/bin/conda update -n base -c defaults conda \
     && /opt/conda/bin/conda install -n base -c conda-forge mamba \
     && export MAMBA_ROOT_PREFIX=/opt/conda \
     && cd /fairo/polymetis \
