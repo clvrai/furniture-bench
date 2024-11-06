@@ -21,6 +21,21 @@ Troubleshooting
      $ cd /fairo/polymetis/polymetis/build/
      $ make -j
 
+[Q&A] Docker Build
+~~~~~~~~~~~~~~~
+**Q:** I'm encountering ``git@github.com: Permission denied (publickey). fatal: Could not read from remote repository.`` when trying to clone fairo while building a Docker image. How can I fix this?
+
+    **A:** Ensure your public key is added to your GitHub account. Then, run the following commands:
+
+    .. code::
+
+        eval "$(ssh-agent -s)"
+        # Add your SSH private key to the agent
+        ssh-add ~/.ssh/id_rsa
+        
+        # Verify the connection to GitHub
+        ssh -T git@github.com
+
 **Q:** I'm encountering issues while building Polymetis from the source. How can I resolve this?
 
 

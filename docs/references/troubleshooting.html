@@ -329,6 +329,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#q-a-docker-build">
+   [Q&amp;A] Docker Build
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#q-a-device-connections">
    [Q&amp;A] Device Connections
   </a>
@@ -380,6 +385,11 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#q-a-polymetis">
    [Q&amp;A] Polymetis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#q-a-docker-build">
+   [Q&amp;A] Docker Build
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -435,6 +445,21 @@ title="Print to PDF"
 <div><p><strong>A:</strong> If you encounter a Segmentation fault (core dumped) error in the client PC while using a robot, you should rebuild fairo by running the command below in the Docker image. This might be caused by the linking error because of the reinstall of PyTorch.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd /fairo/polymetis/polymetis/build/
 $ make -j
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="q-a-docker-build">
+<h2>[Q&amp;A] Docker Build<a class="headerlink" href="#q-a-docker-build" title="Permalink to this headline">#</a></h2>
+<p><strong>Q:</strong> I’m encountering <code class="docutils literal notranslate"><span class="pre">git&#64;github.com:</span> <span class="pre">Permission</span> <span class="pre">denied</span> <span class="pre">(publickey).</span> <span class="pre">fatal:</span> <span class="pre">Could</span> <span class="pre">not</span> <span class="pre">read</span> <span class="pre">from</span> <span class="pre">remote</span> <span class="pre">repository.</span></code> when trying to clone fairo while building a Docker image. How can I fix this?</p>
+<blockquote>
+<div><p><strong>A:</strong> Ensure your public key is added to your GitHub account. Then, run the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">eval</span> <span class="s2">&quot;$(ssh-agent -s)&quot;</span>
+<span class="c1"># Add your SSH private key to the agent</span>
+<span class="n">ssh</span><span class="o">-</span><span class="n">add</span> <span class="o">~/.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span>
+
+<span class="c1"># Verify the connection to GitHub</span>
+<span class="n">ssh</span> <span class="o">-</span><span class="n">T</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span>
 </pre></div>
 </div>
 </div></blockquote>

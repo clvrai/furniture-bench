@@ -340,10 +340,12 @@ We provide a Docker image for data collection, training, and evaluation. We prov
 
       # GPU version
       DOCKER_BUILDKIT=1 docker build -t client-gpu . -f docker/client_gpu.Dockerfile
-
+      
       # CPU-only version
       DOCKER_BUILDKIT=1 docker build -t client . -f docker/client.Dockerfile
 
+      # Franka Research 3 (FR3) w/ GPU
+      DOCKER_BUILDKIT=1 docker build --ssh default  -t client12_2_research3 . -f docker/client_gpu12_2_research3.Dockerfile
 
 Install Server Software
 -----------------------
@@ -370,6 +372,9 @@ The server computer needs a real-time kernel and high-speed CPU (e.g., at least 
     .. code:: bash
 
        DOCKER_BUILDKIT=1 docker build -t server . -f docker/server.Dockerfile
+       
+       # Franka Research 3 (FR3)
+       DOCKER_BUILDKIT=1 docker build --ssh default  -t server_research3 . -f docker/server_research3.Dockerfile
 
 
 Run Client
@@ -408,6 +413,9 @@ Run Client
 
   # GPU image with FurnitureSim + pulled from Docker Hub
   ./launch_client.sh --sim-gpu --pulled
+  
+  # GPU image with FurnitureSim for Franka Research 3 (FR3) + locally built
+  ./launch_client.sh --sim-gpu --built_12_2_research3
 
 .. tip::
 
@@ -442,6 +450,13 @@ To maintain the connection permanently, you can modify lines 12-15 in ``furnitur
     CAM_WRIST_SERIAL = os.getenv("CAM_WRIST_SERIAL", "<serial number of the wrist camera>")
     CAM_FRONT_SERIAL = os.getenv("CAM_FRONT_SERIAL", "<serial number of the front camera>")
     CAM_REAR_SERIAL = os.getenv("CAM_REAR_SERIAL", "<serial number of the rear camera>")
+
+If you use FR3, you should set the following environment variable in ``furniture_bench/config.py``:
+
+.. code-block:: bash
+
+    config.robot.FR3 = True # Default is False
+
 
 To make sure that all the cameras are correctly installed and appropriately connected, execute the following command in the client Docker container and confirm the items in the checklist.
 
@@ -501,6 +516,7 @@ Then, launch a server-side daemon:
 
   ./launch_server.sh --pulled  # (case 1) Docker pull.
   ./launch_server.sh --built   # (case 2) Local build.
+  ./launch_server.sh --built-research3 # (case 3) Local build for Franka Research 3 (FR3)
 
 3. Specify IP of Franka Control (shop floor network), not IP of the Robot arm, in the server Docker container.
 
@@ -513,6 +529,8 @@ Then, launch a server-side daemon:
 .. code:: bash
 
   /furniture-bench/launch_daemon.sh
+  
+  /furniture-bench/launch_daemon.sh --FR3 # For Franka Research 3 (FR3)
 
 .. tip::
 
