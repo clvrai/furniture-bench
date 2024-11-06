@@ -1,0 +1,3 @@
+[submodule "fairo-FR3"]
+	path = fairo-FR3
+	url = git@github.com:clvrai/fairo-FR3.git
