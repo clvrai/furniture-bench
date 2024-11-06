@@ -64,6 +64,7 @@ class Panda:
         # Count how many times the robot has stopped moving in a row.
         # This is used to declare "done" when the robot stopped moving.
         self.motion_stopped_counter = 0
+        self.is_fr3 = robot_config['FR3']
 
     def init_controller(self, kp: torch.Tensor, kv: torch.Tensor):
         """Initialize the OSC controller.
@@ -143,7 +144,13 @@ class Panda:
         goal_ee_quat = torch.tensor(
             T.quat_multiply(ee_quat, act_quat), dtype=torch.float32
         )
-        self.arm.update_desired_ee_pose(position=goal_ee_pos, orientation=goal_ee_quat)
+        if not self.is_fr3:
+            self.arm.update_desired_ee_pose(position=goal_ee_pos, orientation=goal_ee_quat)
+        else:
+            self.arm.update_current_policy({
+                "ee_pos_desired": goal_ee_pos,
+                "ee_quat_desired": goal_ee_quat
+            })
         # Gripper action.
 
         if (

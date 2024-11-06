@@ -51,6 +51,7 @@ config: Dict[str, Any] = {
         "pos_noise_med": 0.05,  # Positional noise for medium randomness.
         "rot_noise_med": 15,  # Rotational noise for medium randomness.
         "motion_stopped_counter_threshold": 50,  # Number of steps to wait when the robot stopped moving before declaring the episode done.
+        "FR3": False # Whether the robot is Franka Research 3.
     },
     "camera": {
         "num_camera": 3,
