@@ -274,7 +274,13 @@ class Panda:
         sleep_time=2.0,
     ):
         """Update the end-effector pose and sleep for a given amount of time."""
-        self.arm.update_desired_ee_pose(position=position, orientation=orientation)
+        if not self.is_fr3:
+            self.arm.update_desired_ee_pose(position=position, orientation=orientation)
+        else:
+            self.arm.update_current_policy({
+                "ee_pos_desired": position,
+                "ee_quat_desired": orientation
+            })
         time.sleep(sleep_time)
 
     def go(
