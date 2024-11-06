@@ -29,8 +29,11 @@ else
     # Use second argument to determine which CLIENT_DOCKER to use.
     built=false
     pulled=false
+    built_12_2_research3=false
     if [ "$2" = "--built" ]; then
         built=true
+    elif [ "$2" = "--built_12_2_research3" ]; then
+        built_12_2_research3=true
     elif [ "$2" = "--pulled" ]; then
         pulled=true
     elif [ -z "$2" ]; then
@@ -53,6 +56,15 @@ else
     elif [ "$pulled" = true ]; then
         if [ "$gpu" = true ] || [ "$sim_gpu" = true ]; then
             CLIENT_DOCKER="furniturebench/client-gpu:latest"
+        elif [ "$cpu" = true ]; then
+            CLIENT_DOCKER="furniturebench/client:latest"
+        else
+            echo "No option provided"
+            exit 1
+        fi
+    elif [ "$built_12_2_research3" = true ]; then
+        if [ "$gpu" = true ] || [ "$sim_gpu" = true ]; then
+            CLIENT_DOCKER="client12_2_research3"
         elif [ "$cpu" = true ]; then
             CLIENT_DOCKER="furniturebench/client:latest"
         else
