@@ -6,10 +6,13 @@ if [ -n "$SERVER_DOCKER" ]; then
 else
     built=false
     pulled=false
+    built_research3=false
     if [ "$1" = "--built" ]; then
         built=true
     elif [ "$1" = "--pulled" ]; then
         pulled=true
+    elif [ "$1" = "--built-research3" ]; then
+        built_research3=true
     elif [ -z "$1" ]; then
         echo "No first argument provided"
         exit 1
@@ -22,6 +25,8 @@ else
         SERVER_DOCKER=server
     elif [ "$pulled" = true ]; then
         SERVER_DOCKER=furniturebench/server:latest
+    elif [ "$built_research3" = true ]; then
+        SERVER_DOCKER=server_research3
     else
         echo "Unknown first argument: $1"
         exit 1
