@@ -26,7 +26,11 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py38_23.1.0-1-Li
     && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
     && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc
 
-COPY fairo-FR3 /fairo
+# Add GitHub to known hosts
+RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+# COPY fairo-FR3 /fairo
+RUN --mount=type=ssh git clone --recurse-submodules https://github.com/clvrai/fairo-FR3.git /fairo
 
 # Install Polymetis.
 RUN --mount=type=ssh \
@@ -111,23 +115,24 @@ SHELL ["/opt/conda/bin/conda", "run", "-n", "client-gpu", "/bin/bash", "-c"]
 
 RUN apt-get update && apt install -y robotpkg-py38-hpp-fcl
 
-RUN cd fairo/polymetis \
+RUN --mount=type=ssh \
+    cd /fairo \
+    && cd polymetis/polymetis/src/clients/franka_panda_client/third_party/libfranka \
+    && git checkout ${LIBFRANKA_VERSION}
+
+# Then, proceed with the remaining RUN command
+RUN cd /fairo/polymetis \
     && /opt/conda/envs/${VENV_NAME}/bin/pip install -e ./polymetis \
     && export PATH=/opt/openrobots/bin:$PATH \
     && export PKG_CONFIG_PATH=/opt/openrobots/lib/pkgconfig:$PKG_CONFIG_PATH \
     && export LD_LIBRARY_PATH=/opt/openrobots/lib:$LD_LIBRARY_PATH \
     && export PYTHONPATH=/opt/openrobots/lib/python3.8/site-packages:$PYTHONPATH \
     && export CMAKE_PREFIX_PATH=/opt/openrobots:$CMAKE_PREFIX_PATH \
-    && cd /fairo \
-    && git submodule update --init --recursive \
-    && cd /fairo/polymetis/polymetis/src/clients/franka_panda_client/third_party/libfranka \
-    && git checkout ${LIBFRANKA_VERSION} \
-    && cd /fairo/polymetis \
-    && ./scripts/build_libfranka.sh ${LIBFRANKA_VERSION} && \
-    mkdir -p ./polymetis/build && \
-    cd ./polymetis/build && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_FRANKA=ON -DBUILD_TESTS=ON -DBUILD_DOCS=ON -DCMAKE_CXX_STANDARD=17 && \
-    make -j
+    && ./scripts/build_libfranka.sh ${LIBFRANKA_VERSION} \
+    && mkdir -p ./polymetis/build \
+    && cd ./polymetis/build \
+    && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_FRANKA=ON -DBUILD_TESTS=ON -DBUILD_DOCS=ON -DCMAKE_CXX_STANDARD=17 \
+    && make -j
 
 COPY docker/nvidia_icd.json /usr/share/vulkan/icd.d/nvidia_icd.json
 COPY docker/10_nvidia.json /usr/share/glvnd/egl_vendor.d/10_nvidia.json
@@ -145,6 +150,20 @@ RUN /opt/conda/envs/${VENV_NAME}/bin/pip install gym==0.21.0
 
 RUN /opt/conda/envs/${VENV_NAME}/bin/pip install ur_rtde atomics threadpoolctl av zarr robosuite
 RUN /opt/conda/envs/${VENV_NAME}/bin/pip install --upgrade PyOpenGL PyOpenGL_accelerate
+
+# Install spacemouse.
+RUN /opt/conda/envs/${VENV_NAME}/bin/pip install termcolor atomics scipy \
+    && /opt/conda/envs/${VENV_NAME}/bin/pip install git+https://github.com/cheng-chi/spnav
+RUN apt-get update \
+    && apt install -y libspnav-dev spacenavd systemd
+
+RUN apt-get update && apt-get install -y dbus spacenavd && apt-get clean
+CMD dbus-daemon --system && spacenavd
+
+# Enable systemd within the container
+ENV container docker
+STOPSIGNAL SIGRTMIN+3
+CMD ["/lib/systemd/systemd"]
 
 # Copy the entrypoint.sh script to the Docker image
 COPY entrypoint.sh /entrypoint.sh
