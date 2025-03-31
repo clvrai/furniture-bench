@@ -40,6 +40,8 @@ class FurnitureBenchEnv(gym.Env):
         visualize_init_pose: bool = True,
         record: bool = False,
         manual_reset: bool = True,
+        num_cameras: int = 4,
+        no_apriltag: bool = False,
     ):
         """
         Args:
@@ -91,6 +93,8 @@ class FurnitureBenchEnv(gym.Env):
         self.manual_reset = manual_reset
         if self.manual_reset:
             self.device_interface = make_device("keyboard")
+        self.num_cameras = num_cameras
+        self.no_apriltag = no_apriltag
 
         gym.logger.set_level(gym.logger.INFO)
 
@@ -111,7 +115,7 @@ class FurnitureBenchEnv(gym.Env):
 
         # Setup cameras.
         self._get_cam_info()
-        self.furniture.start_detection()
+        self.furniture.start_detection(self.num_cameras, self.no_apriltag)
 
         if self.record:
             record_dir = Path(
@@ -129,16 +133,11 @@ class FurnitureBenchEnv(gym.Env):
         gym.logger.info("Getting camera information...")
         self.cam_intrs = {}
         self.cam_to_base = {}
-        for i in range(1, 4):
-            cam = RealsenseCam(
-                config["camera"][i]["serial"],
-                config["camera"]["color_img_size"],
-                config["camera"]["depth_img_size"],
-                config["camera"]["frame_rate"],
-            )
-            self.cam_intrs[i] = cam.intr_mat.copy()
-            self.cam_to_base[i] = get_cam_to_base(cam, i)
-            del cam
+        for i in range(1, self.num_cameras + 1):
+            # Give none values to fast the process
+            self.cam_intrs[i] = None
+            self.cam_to_base[i] = None
+             
 
     @property
     def action_space(self):
@@ -437,11 +436,13 @@ class FurnitureBenchEnv(gym.Env):
             self.furniture.reset_pos_diff_threshold = [0.05, 0.05, 0.05]  # 5cm
             self.furniture.reset_ori_bound = np.cos(np.radians(30))  # 30 degree
 
-        # High randomness only checks if parts can be found.
-        check_found_only = self.randomness == Randomness.HIGH_COLLECT
-        in_reset_pose = self.furniture.check_parts_in_reset_pose(
-            self.from_skill, check_found_only
-        )
+        # Is in reset is always true for high randomness
+        if self.randomness in [Randomness.HIGH, Randomness.HIGH_COLLECT] or self.no_apriltag:
+            in_reset_pose = True
+        else:
+            in_reset_pose = self.furniture.check_parts_in_reset_pose(
+                self.from_skill
+            )
         self.env_steps = 0
         img = None
 

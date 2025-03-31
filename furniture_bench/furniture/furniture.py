@@ -201,7 +201,7 @@ class Furniture(ABC):
                 continue
             return T.pose2mat(part_pose)
 
-    def start_detection(self):
+    def start_detection(self, num_cameras: int, no_apriltag: bool):
         self.ctx = mp.get_context("spawn")
 
         if self.detection_started:
@@ -219,9 +219,13 @@ class Furniture(ABC):
                 self.tag_size,
                 self.lock,
                 self.shm,
+                num_cameras,
+                no_apriltag,
             ),
             daemon=True,
         )
+        self.num_cameras = num_cameras
+        self.no_apriltag = no_apriltag
         self.proc.start()
         self.detection_started = True
         self._wait_detection_start()
@@ -236,6 +240,8 @@ class Furniture(ABC):
                     # Heuristic to check whether the detection started. (At least one part is found.)
                     return
                 time.sleep(0.03)
+            if self.no_apriltag:
+                return
 
             input(
                 "Could not find any furniture parts from the cameras\n Press enter after putting the furniture in the workspace."
