@@ -1,6 +1,7 @@
 import copy
 import pdb
 from abc import ABC, abstractmethod
+from typing import Optional
 
 import numpy as np
 import numpy.typing as npt
@@ -48,14 +49,16 @@ class Part(ABC):
             "part_attached_skill_idx", np.inf
         )
 
-    def randomize_init_pose(self, from_skill=0, pos_range=[-0.05, 0.05], rot_range=45):
+    def randomize_init_pose(self, from_skill=0, pos_range=[-0.05, 0.05], rot_range=45, generator: Optional[np.random.Generator] = None):
+        if generator is None:
+            generator = np.random.default_rng()
         self.reset_pos[from_skill][:2] = self.part_config["reset_pos"][from_skill][
             :2
-        ] + np.random.uniform(
-            pos_range[0], pos_range[1], size=2
+        ] + generator.uniform(
+            low=pos_range[0], high=pos_range[1], size=2
         )  # x, y
         self.mut_ori = rot_mat(
-            [0, 0, np.random.uniform(np.radians(-rot_range), np.radians(rot_range))],
+            [0, 0, generator.uniform(low=np.radians(-rot_range), high=np.radians(rot_range))],
             hom=True,
         )
         self.reset_ori[from_skill] = (

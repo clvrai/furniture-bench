@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "furniture_bench"
+version = "0.1"
+authors = [
+    { name = "CLVR @ KAIST", email = "clvr.kaist@gmail.com" }
+]
+description = "FurnitureBench: Reproducible Real-World Furniture Assembly Benchmark (RSS 2023)"
+readme = "README.md"
+requires-python = ">3.7,<3.9"
+dependencies = [
+    "opencv-python",
+    "pynput",
+    "gymnasium",
+    "joblib",
+    "numba",
+    "pyrealsense2",
+    "dt-apriltags",
+    "rich",
+    "tqdm"
+]
+
+[tool.setuptools.packages]
+find = {}

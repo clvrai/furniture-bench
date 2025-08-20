@@ -1,5 +1,6 @@
 """Define base class for all furniture. It contains the core functions and properties for the furniture (e.g., furniture parts, computing reward function, getting observation,etc.)"""
 from abc import ABC
+import logging
 import time
 import multiprocessing as mp
 from multiprocessing import shared_memory
@@ -7,7 +8,7 @@ from typing import Optional, Tuple, List
 
 import numpy as np
 import numpy.typing as npt
-from gym import logger
+from gymnasium import logger
 
 import furniture_bench.utils.transform as T
 from furniture_bench.utils.pose import is_similar_pose
@@ -66,7 +67,7 @@ class Furniture(ABC):
         self.assembled_pos_threshold = config["furniture"]["assembled_pos_threshold"]
 
     def randomize_init_pose(
-        self, from_skill, pos_range=[-0.05, 0.05], rot_range=45
+        self, from_skill, pos_range=[-0.05, 0.05], rot_range=45, generator=None
     ) -> bool:
         """Randomize the furniture initial pose."""
         trial = 0
@@ -74,12 +75,12 @@ class Furniture(ABC):
         while True:
             trial += 1
             for part in self.parts:
-                part.randomize_init_pose(from_skill, pos_range, rot_range)
+                part.randomize_init_pose(from_skill, pos_range, rot_range, generator=generator)
             if trial > max_trial:
                 logger.error("Failed to randomize init pose")
                 return False
             if self._in_boundary(from_skill) and not self._check_collision():
-                logger.info("Found collision-free init pose")
+                logging.info("Found collision-free init pose")
                 return True
 
     def randomize_high(self, high_random_idx: int):
@@ -114,7 +115,7 @@ class Furniture(ABC):
                 logger.error("Failed to randomize init pose")
                 return False
             if not self._check_collision(from_skill) and self._in_boundary(from_skill):
-                logger.info("Found initialization pose")
+                logging.info("Found initialization pose")
                 return True
 
     def _check_collision(self):
@@ -354,7 +355,7 @@ class Furniture(ABC):
             pair = (part_idx1, part_idx2)
             if self.is_assembled_idx(part_idx1, part_idx2, parts_poses, founds):
                 if pair not in self.assembled_set:
-                    logger.info(
+                    logging.info(
                         f"{self.parts[pair[0]].name} (id: {pair[0]}), {self.parts[pair[1]].name} (id: {pair[1]}) are assembled."
                     )
                     self.assembled_set.add(pair)
@@ -372,7 +373,7 @@ class Furniture(ABC):
                 log_message += " / "
             log_messages.append(log_message)
         full_log_message = " ".join(log_messages)
-        logger.info(full_log_message)
+        logging.info(full_log_message)
 
     def manual_assemble_label(self, part_idx):
         """Manually label assembled with keyboard input."""
@@ -384,7 +385,7 @@ class Furniture(ABC):
             ) and pair not in self.assembled_set:
                 self._log_assemble_set()
                 self.assembled_set.add(pair)
-                logger.info(f"{pair} assembled")
+                logging.info(f"{pair} assembled")
                 return 1
         return 0
 
@@ -424,6 +425,7 @@ class Furniture(ABC):
         part_idx2: int,
         parts_poses: Optional[npt.NDArray[np.float32]] = None,
         founds: Optional[npt.NDArray[np.bool_]] = None,
+        assembled_pos_threshold: Optional[List[float]] = None,
     ) -> bool:
         """Compute whether the part_idx1 and part_idx2 are assembled or not."""
         if (part_idx1, part_idx2) not in self.should_be_assembled:
@@ -451,6 +453,8 @@ class Furniture(ABC):
         assembled_rel_poses = self.assembled_rel_poses[(part_idx1, part_idx2)]
         if assembled_rel_poses is None:
             raise Exception("No relative pose!")
+
+        assembled_pos_threshold = assembled_pos_threshold or self.assembled_pos_threshold
 
         for assembled_rel_pose in assembled_rel_poses:
             ori_bound = (

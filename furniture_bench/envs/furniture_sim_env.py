@@ -22,7 +22,7 @@ from pathlib import Path
 
 import torch
 import cv2
-import gym
+import gymnasium as gym
 import numpy as np
 
 import furniture_bench.utils.transform as T
@@ -54,6 +54,7 @@ class FurnitureSimEnv(gym.Env):
         num_envs: int = 1,
         resize_img: bool = True,
         obs_keys=None,
+        use_april_tag_coords: bool = True,
         concat_robot_state: bool = False,
         manual_label: bool = False,
         manual_done: bool = False,
@@ -77,6 +78,7 @@ class FurnitureSimEnv(gym.Env):
             num_envs (int): Number of parallel environments.
             resize_img (bool): If true, images are resized to 224 x 224.
             obs_keys (list): List of observations for observation space (i.e., RGB-D image from three cameras, proprioceptive states, and poses of the furniture parts.)
+            use_april_tag_coords (bool): Whether to use AprilTag coords for parts
             concat_robot_state (bool): Whether to return concatenated `robot_state` or its dictionary form in observation.
             manual_label (bool): If true, the environment reward is manually labeled.
             manual_done (bool): If true, the environment is terminated manually.
@@ -109,6 +111,7 @@ class FurnitureSimEnv(gym.Env):
         for furn in self.furnitures:
             furn.max_env_steps = max_env_steps
 
+        self.use_april_tag_coords = use_april_tag_coords
         self.furniture_name = furniture
         self.num_envs = num_envs
         self.obs_keys = obs_keys or DEFAULT_VISUAL_OBS
@@ -164,8 +167,6 @@ class FurnitureSimEnv(gym.Env):
 
         self.init_ee_pos, self.init_ee_quat = self.get_ee_pose()
 
-        gym.logger.set_level(gym.logger.INFO)
-
         self.record = record
         if self.record:
             record_dir = Path("sim_record") / datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -174,7 +175,7 @@ class FurnitureSimEnv(gym.Env):
                 str(record_dir / "video.mp4"),
                 cv2.VideoWriter_fourcc(*"MP4V"),
                 30,
-                (self.img_size[1] * 2, self.img_size[0]),  # Wrist and front cameras.
+                (self.img_size[0] * 2, self.img_size[1]),  # Wrist and front cameras.
             )
 
         if act_rot_repr != "quat" and act_rot_repr != "axis" and act_rot_repr != "rot_6d":
@@ -690,7 +691,7 @@ class FurnitureSimEnv(gym.Env):
             elif k.startswith("depth"):
                 obs_dict[k] = gym.spaces.Box(0, 255, img_size)
             elif k == "parts_poses":
-                obs_dict[k] = gym.spaces.Box(low, high, parts_poses)
+                obs_dict[k] = gym.spaces.Box(low, high, (parts_poses,))
             else:
                 raise ValueError(f"FurnitureSim does not support observation ({k}).")
 
@@ -819,6 +820,20 @@ class FurnitureSimEnv(gym.Env):
         obs = self._get_observation()
         self.env_steps += 1
 
+        if self.record:
+            record_images = []
+            color_obs = {k: v for k, v in obs.items() if k.startswith("color")}
+            for k in sorted(color_obs.keys()):
+                img = color_obs[k][0]
+                if not self.np_step_out:
+                    img = img.cpu().numpy().copy()
+                if self.channel_first:
+                    img = img.transpose(0, 2, 3, 1)
+                record_images.append(img.squeeze())
+            stacked_img = np.hstack(record_images)
+            self.video_writer.write(cv2.cvtColor(stacked_img, cv2.COLOR_RGB2BGR))
+
+
         return (
             obs,
             self._reward(),
@@ -888,17 +903,18 @@ class FurnitureSimEnv(gym.Env):
                 rb_idx = self.part_idxs[part.name][env_idx]
                 part_pose = self.rb_states[rb_idx, :7]
                 # To AprilTag coordinate.
-                part_pose = torch.concat(
-                    [
-                        *C.mat2pose(
-                            self.sim_coord_to_april_coord(
-                                C.pose2mat(
-                                    part_pose[:3], part_pose[3:7], device=self.device
+                if self.use_april_tag_coords:
+                    part_pose = torch.concat(
+                        [
+                            *C.mat2pose(
+                                self.sim_coord_to_april_coord(
+                                    C.pose2mat(
+                                        part_pose[:3], part_pose[3:7], device=self.device
+                                    )
                                 )
                             )
-                        )
-                    ]
-                )
+                        ]
+                    )
                 parts_poses[
                     env_idx, part_idx * self.pose_dim : (part_idx + 1) * self.pose_dim
                 ] = part_pose
@@ -1056,7 +1072,7 @@ class FurnitureSimEnv(gym.Env):
             norm = np.linalg.norm(v)
             return v / norm if norm > 0 else v
 
-        forward = normalize(cam_target - cam_pos)
+        forward = normalize(cam_pos - cam_target)
         up = np.array([0, 1, 0])
         right = normalize(np.cross(up, forward))
         # Recompute Up Vector
@@ -1098,18 +1114,6 @@ class FurnitureSimEnv(gym.Env):
             else:
                 robot_state = torch.cat(list(robot_state.values()), -1)
 
-        if self.record:
-            record_images = []
-            for k in sorted(color_obs.keys()):
-                img = color_obs[k][0]
-                if not self.np_step_out:
-                    img = img.cpu().numpy().copy()
-                if self.channel_first:
-                    img = img.transpose(0, 2, 3, 1)
-                record_images.append(img.squeeze())
-            stacked_img = np.hstack(record_images)
-            self.video_writer.write(cv2.cvtColor(stacked_img, cv2.COLOR_RGB2BGR))
-
         obs = {}
         if (
             isinstance(robot_state, (np.ndarray, torch.Tensor)) or robot_state
@@ -1149,13 +1153,18 @@ class FurnitureSimEnv(gym.Env):
     def is_success(self):
         return [{"task": self.furnitures[env_idx].all_assembled()} for env_idx in range(self.num_envs)]
 
-    def reset(self):
+    def reset(self, **kwargs):
         # can also reset the full set of robots/parts, without applying torques and refreshing
+        from gymnasium.utils import seeding
+        if "seed" in kwargs:
+            seed = kwargs["seed"]
+            if seed is not None:
+                self._np_random, self._np_random_seed = seeding.np_random(seed)
         # self._reset_franka_all()
         # self._reset_parts_all()
         for i in range(self.num_envs):
             # if using ._reset_*_all(), can set reset_franka=False and reset_parts=False in .reset_env
-            self.reset_env(i)  
+            self.reset_env(i, self._np_random)  
 
             # apply zero torque across the board and refresh in between each env reset (not needed if using ._reset_*_all())
             torque_action = torch.zeros_like(self.dof_pos)
@@ -1183,7 +1192,7 @@ class FurnitureSimEnv(gym.Env):
         for i in range(self.num_envs):
             self.reset_env_to(i, state[i])
 
-    def reset_env(self, env_idx, reset_franka=True, reset_parts=True):
+    def reset_env(self, env_idx, generator, reset_franka=True, reset_parts=True):
         """Resets the environment. **MUST refresh in between multiple calls
         to this function to have changes properly reflected in each environment.
         Also might want to set a zero-torque action via .set_dof_actuation_force_tensor
@@ -1197,7 +1206,7 @@ class FurnitureSimEnv(gym.Env):
         self.furnitures[env_idx].reset()
         if self.randomness == Randomness.LOW and not self.init_assembled:
             self.furnitures[env_idx].randomize_init_pose(
-                self.from_skill, pos_range=[-0.015, 0.015], rot_range=15
+                self.from_skill, pos_range=[-0.015, 0.015], rot_range=15, generator=generator
             )
 
         if self.randomness == Randomness.MEDIUM:
