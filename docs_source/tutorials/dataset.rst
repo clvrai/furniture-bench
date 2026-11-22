@@ -9,6 +9,15 @@ Each furniture assembly task has three different levels with respect to the rand
 Download Dataset
 ~~~~~~~~~~~~~~~~
 
+All 5,100 FurnitureBench demonstrations are available in RLDS format through
+`Open X-Embodiment (OXE) <https://robotic-transformer-x.github.io/>`__.
+Download the `FurnitureBench RLDS files <https://huggingface.co/datasets/lerobot-raw/furniture_bench_dataset_raw/tree/main>`__
+from Hugging Face or use Google Cloud Storage.
+
+.. code:: bash
+
+   gsutil -m cp -r gs://gdm-robotics-open-x-embodiment/furniture_bench_dataset_converted_externally_to_rlds .
+
 The FurnitureBench dataset is available on `our Google Drive <https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing>`__:
 ::
 
